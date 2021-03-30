@@ -4,14 +4,29 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Locations
+
 Paths = struct(); % I make structs of variables so they don't flood the workspace
 
 % get path where these scripts were saved
 Paths.Analysis = mfilename('fullpath');
-Paths.Analysis = extractBefore(Paths.Analysis, 'General_Parameters');
+Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
 Paths.Datasets ='D:\LSM\Raw'; % where the raw data is saved (split by participant)
 Paths.Preprocessed = 'D:\LSM\Preprocessed'; % where the preprocessed data gets saved (split by task)
+
+
+% add location of subfunctions
+addpath(fullfile(Paths.Analysis, 'functions','general'))
+addpath(fullfile(Paths.Analysis, 'functions','eeg'))
+
+% add external functions
+% run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
+
+% if eeglab has not run, run it so all the subdirectories get added
+if ~exist('topoplot', 'file')
+    eeglab
+    close all
+end
 
 % Folders where raw data is located
 Folders = struct();
@@ -20,20 +35,6 @@ Folders.Ignore = {'CSVs', 'other', 'Lazy', 'P00', 'Applicants'};
 
 [Folders.Subfolders, Folders.Datasets] = AllFolderPaths(Paths.Datasets, ...
     Folders.Template, false, Folders.Ignore);
-
-
-% add location of subfunctions
-addpath(fullfile(Paths.Analysis, 'functions','general'))
-addpath(fullfile(Paths.Analysis, 'functions','eeg'))
-
-% add external functions
-run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
-
-% if eeglab has not run, run it so all the subdirectories get added
-if ~exist('topoplot', 'file')
-    eeglab
-    close all
-end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
