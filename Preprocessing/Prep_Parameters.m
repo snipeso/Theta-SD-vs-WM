@@ -10,13 +10,13 @@ Paths = struct(); % I make structs of variables so they don't flood the workspac
 Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'General_Parameters');
 
-Paths.Datasets ='D:\Data\Raw'; % where the raw data is saved (split by participant)
-Paths.Preprocessed = 'D:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
+Paths.Datasets ='D:\LSM\Raw'; % where the raw data is saved (split by participant)
+Paths.Preprocessed = 'D:\LSM\Preprocessed'; % where the preprocessed data gets saved (split by task)
 
 % Folders where raw data is located
 Folders = struct();
 Folders.Template = 'PXX';
-Folders.Ignore = {'CSVs', 'other', 'Lazy', 'P00', 'Applications'};
+Folders.Ignore = {'CSVs', 'other', 'Lazy', 'P00', 'Applicants'};
 
 [Folders.Subfolders, Folders.Datasets] = AllFolderPaths(Paths.Datasets, ...
     Folders.Template, false, Folders.Ignore);
