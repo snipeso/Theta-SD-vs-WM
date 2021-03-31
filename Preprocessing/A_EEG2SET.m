@@ -10,7 +10,7 @@ Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-load('StandardChanlocs128.mat') % has channel locations in StandardChanlocs
+load('StandardChanlocs128.mat', 'StandardChanlocs') % has channel locations in StandardChanlocs
 
 %%% loop through all EEG folders, and convert whatever files possible
 for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
@@ -55,13 +55,8 @@ for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
             continue
         end
         
-        % load EEG, skip if this fails for some reason
-        try
-            EEG = pop_loadbv(Path, Filename.VHDR);
-        catch
-            warning(['Failed to load ', Filename.VHDR])
-            continue
-        end
+        % load EEG
+        EEG = pop_loadbv(Path, Filename.VHDR);
         
         % update EEG structure
         EEG.ref = 'CZ';
