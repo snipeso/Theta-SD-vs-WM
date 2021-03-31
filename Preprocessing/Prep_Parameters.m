@@ -52,40 +52,34 @@ EEG_Channels.notSourceLoc = [EEG_Channels.notEEG, 48, 119, 125, 128];
 %%% Parameters
 
 % Cleaning: data for quickly scanning data and selecting bad timepoints
-Parameters(2).Format = 'Cleaning'; % reference name
-Parameters(2).fs = 125; % new sampling rate
-Parameters(2).lp = 40; % low pass filter
-Parameters(2).hp = 0.5; % high pass filter
-Parameters(2).hp_stopband = 0.25; % high pass filter
+Parameters.Cleaning.fs = 125; % new sampling rate
+Parameters.Cleaning.lp = 40; % low pass filter
+Parameters.Cleaning.hp = 0.5; % high pass filter
+Parameters.Cleaning.hp_stopband = 0.25; % high pass filter gradual roll-off to this freuqency
 
-% Wake: starting data for properly cleaned wake data
-Parameters(3).Format = 'Wake'; % reference name
-Parameters(3).fs = 500; % new sampling rate
-Parameters(3).lp = 40; % low pass filter
-Parameters(3).hp = 0.5; % high pass filter
-Parameters(3).hp_stopband = 0.25; % high pass filter
-
+% Power: starting data for properly cleaned wake data
+Parameters.Power.fs = 250; % new sampling rate
+Parameters.Power.lp = 40; % low pass filter
+Parameters.Power.hp = 0.5; % high pass filter
+Parameters.Power.hp_stopband = 0.25; % high pass filter gradual roll-off
 
 % ICA: heavily filtered data for getting ICA components
-Parameters(4).Format = 'ICA'; % reference name
-Parameters(4).fs = 500; % new sampling rate
-Parameters(4).lp = 100; % low pass filter
-Parameters(4).hp = 2.5; % high pass filter
-Parameters(4).hp_stopband = .5; % high pass filter
+Parameters.ICA.fs = 500; % new sampling rate
+Parameters.ICA.lp = 100; % low pass filter
+Parameters.ICA.hp = 2.5; % high pass filter
+Parameters.ICA.hp_stopband = 1.5; % high pass filter gradual roll-off
 
 % Scoring: has special script for running this
-Parameters(5).Format = 'Scoring';
-Parameters(5).fs = 128;
-Parameters(5).SpChannel = 6;
-Parameters(5).lp = 40; % low pass filter
-Parameters(5).hp = .5; % high pass filter
-Parameters(5).hp_stopband = .2; % high pass filter
+Parameters.Scoring.fs = 128;
+Parameters.Scoring.SpChannel = 6;
+Parameters.Scoring.lp = 40; % low pass filter
+Parameters.Scoring.hp = .5; % high pass filter
+Parameters.Scoring.hp_stopband = .2; % high pass filter gradual roll-off
 
-% Wake: starting data for properly cleaned wake data
-Parameters(6).Format = 'ERP'; % reference name
-Parameters(6).fs = 500; % new sampling rate
-Parameters(6).lp = 40; % low pass filter
-Parameters(6).hp = 0.1; % high pass filter
-Parameters(6).hp_stopband = 0.05; % high pass filter
+% ERP: starting data for properly cleaned ERPs
+Parameters.ERP.fs = 250; % new sampling rate
+Parameters.ERP.lp = 40; % low pass filter
+Parameters.ERP.hp = 0.1; % high pass filter
+Parameters.ERP.hp_stopband = 0.05; % high pass filter gradual roll-off
 
 % Trigger_Padding = 1; % amount of time in seconds to keep around start and stop triggers
