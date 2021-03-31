@@ -44,6 +44,7 @@ if Randomize && ~isempty(FilteredFilename)
         
         if ~isempty(Uncut) % randomly select one of the uncut files left
             FilteredFilename = [Uncut{randi(numel(Uncut))}, '.set'];
+            Source = fullfile(Source, Folder);
         else % if no more uncut files, remove this folder from list
             Unchecked(Indx) = [];
         end
