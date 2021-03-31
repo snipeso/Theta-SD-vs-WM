@@ -45,33 +45,11 @@ EEG = loadEEGtoCut(Source, Destination, Filename, Randomize); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
 
 
-
-%% Section 2: autoclean
-%%% You can opt out of this, but it's recommended. You can run it as is,
-%%% and it will automatically find sections of the data to cut. Your job
-%%% will then be to fix it. If AutoCut is cutting out too much clean data,
-%%% or too little, you can manually change the threshold. First look at the
-%%% plot (set showPlots to true), and set the threshold.
-%%% If you want to remove all the autoCuts, just run RemoveCuts(), which
-%%% removes all the yellow ([1,1,0]) markings.
-%%NOTE: ONLY RUN ONCE for each file! If you are opening everything for a second time,
-%%this will just make a mess.
-
-Threshold = [];
-Color = [1, 1, 0]; % Color for AutoCut
-showPlots = false;
-% AutoCut(EEG, Color, [], showPlots)
-
-%TODO: Autoremove EMG
-% RemoveCuts(EEG, [1, 1, 0]) % removes autocut data
-
-%% Section 3: plot all
-%%% run this function to open the popup window for marking the data. SAVE
-%%% BEFORE CLOSING. But if you do that, you can always open wherever you
-%%% left off. Run as many times as you want
+% remove already the channels that don't get used for the ICA anyway
 rmCh(EEG.CutFilepath, EEG_Channels.notEEG)
- 
-MarkData(EEG) 
+
+% open the window for cleaning the data
+MarkData(EEG)  % rerun this every time you want to see updates on removed channels and segments
 
 %% remove or restore a whole channel
 %%% Use these to mark whole channels to be removed; sometimes this is a
@@ -85,20 +63,20 @@ MarkData(EEG)
 % Ch = [];
 
 % rmCh(EEG.CutFilepath, Ch) % remove channel or list of channels
-% restoreCh(EEG.CutFilepath, Ch) % restore removed channels
+% rsCh(EEG.CutFilepath, Ch) % restore removed channels
 
 % function to plot a given dataset, with prev markings if exist, save the markings to a file
 
 %% remove or restore a little piece of a channel
 %%% If there's a little chunck of a channel that wen't haywire, but the
 %%% rest of the channel is fine, you can mark a section to remove, by
-%%% running CutSnippt(), indicating in seconds the start time and end time
+%%% running rsSnippt(), indicating in seconds the start time and end time
 %%% of the channel you want to remove. If you run this, then open
 %%% MarkData() it will highlight the section in red.
 
 % remove channels entirely
-% CutSnippet(EEG, StartTime, EndTime, Channel)
-% RestoreSnippet(EEG, StartTime, EndTime, Channel)
+% rmSnippet(EEG, StartTime, EndTime, Channel)
+% rsSnippet(EEG, StartTime, EndTime, Channel)
 
 
 
