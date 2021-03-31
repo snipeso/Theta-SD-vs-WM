@@ -60,14 +60,19 @@ for Indx_T = 1:numel(Tasks)
             badchans = [];
         end
         
+        if ~exist('cutData', 'var')
+            cutData = [];
+        end
+        
+        
         % remove bad channels
         badchans(badchans<1 | badchans>128) = []; % this is a precaution from some previously badly written scripts
         EEG = pop_select(EEG, 'nochannel', unique(badchans));
         
         
         % clean data segments
-        %         [EEG, badchans] = InterpolateSegments(EEG, fullfile(Source_Cuts, Filename_Cuts), EEG_Channels);
-        [EEG, badchans] = InterpolateSegments(EEG, fullfile(Source_Cuts, Filename_Cuts), EEG_Channels, true);
+        %         [EEG, badchans] = InterpolateSegments(EEG, badchans, cutData, srate);
+        [EEG, badchans] = InterpolateSnippets(EEG, badchans, cutData, srate, true);
         
         % add Cz
         EEG.data(end+1, :) = zeros(1, size(EEG.data, 2));
