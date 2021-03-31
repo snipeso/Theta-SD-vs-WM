@@ -64,6 +64,9 @@ else
     x = 'auto';
 end
 
+% interpolate channels
+ NewEEG = pop_interp(NewEEG, StandardChanlocs);
+
 % save or loop, depending on response
 switch x
     case 'y'

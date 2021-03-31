@@ -71,8 +71,8 @@ for Indx_T = 1:numel(Tasks)
         
         
         % clean data segments
-        %         [EEG, badchans] = InterpolateSegments(EEG, badchans, cutData, srate);
-        [EEG, badchans] = InterpolateSnippets(EEG, badchans, cutData, srate, true);
+        %         EEG = InterpolateSegments(EEG, badchans, cutData, srate);
+        EEG = InterpolateSnippets(EEG, badchans, cutData, srate, true);
         
         % add Cz
         EEG.data(end+1, :) = zeros(1, size(EEG.data, 2));

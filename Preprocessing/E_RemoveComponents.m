@@ -26,7 +26,7 @@ Automate = false; % automatically apply previous selection of components to Data
 Refresh = false; % redo already done files
 
 Component_Folder = 'Components'; % 'Components';
-Destination_Folder = 'Deblinked'; % 'Deblinked'
+Destination_Folder = 'Clean'; % 'Deblinked'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -36,12 +36,12 @@ if ~exist('Task', 'var') || isempty(Task)
 end
 
 % get files and paths
-
+load('StandardChanlocs128.mat', 'StandardChanlocs')
 load('Cz.mat', 'CZ')
 
 Source_Comps = fullfile(Paths.Preprocessed, 'ICA', Component_Folder, Task);
 Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
-Destination = fullfile(Paths.Preprocessed, 'ICA', [Destination_Folder, '_',Data_Type], Task);
+Destination = fullfile(Paths.Preprocessed, Destination_Folder, Data_Type, Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
@@ -65,7 +65,7 @@ for Indx_F = 1:nFiles % loop through files in source folder
     end
     
     Filename_Data = replace(Filename_Comps, 'ICA_Components', Data_Type);
-    Filename_Destination = [extractBefore(Filename_Data, Data_Type), 'Deblinked.set'];
+    Filename_Destination = [extractBefore(Filename_Data, Data_Type), '_Clean.set'];
     
     
     % skip if file already exists or data doesn't exist yet
@@ -88,6 +88,9 @@ for Indx_F = 1:nFiles % loop through files in source folder
     
     % remove channels from Data that aren't in EEG
     Data = pop_select(Data, 'channel', labels2indexes({EEG.chanlocs.labels}, Data.chanlocs));
+    
+    % interpolate bad snippets
+    Data = InterpolateSnippets(Data, [], cutData, srate, true);
     
     % add CZ
     Data.data(end+1, :) = zeros(1, size(Data.data, 2));

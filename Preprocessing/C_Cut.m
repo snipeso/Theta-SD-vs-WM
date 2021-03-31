@@ -33,12 +33,12 @@ Old_Destination = ''; % 'Old_Cuts'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ~isempty(Filename)
-    Source = fullfile(Paths.Preprocessed, 'Cleaning', Source_Folder, Folder);
-    Destination = fullfile(Paths.Preprocessed, 'Cleaning', Destination_Folder, Folder);
+    Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Folder);
+    Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder, Folder);
     Randomize = false;
 else
-    Source = fullfile(Paths.Preprocessed, 'Cleaning', Source_Folder);
-    Destination = fullfile(Paths.Preprocessed, 'Cleaning', Destination_Folder);
+    Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder);
+    Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder);
     Randomize = true;
 end
 
