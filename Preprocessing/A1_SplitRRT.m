@@ -54,8 +54,7 @@ for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
         Filename.SET = Content(SET, :);
         
         % if not going to refresh and file already split, skip
-        if ~Refresh && CheckSet(Paths_Standing) && CheckSet(Paths_Oddball) ...
-                && CheckSet(Paths_QuestionnaireEEG)
+        if ~Refresh && CheckSet(Paths_Standing) && CheckSet(Paths_Oddball)
             disp(['****** Skipping ', Filename.SET, ' *******'])
             continue
         end
@@ -104,6 +103,12 @@ for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
         % get start standing
         StartStandIndx = find(strcmpi(allEvents, StartStandCode));
         StartStandEvent = EEG.event(StartStandIndx);
+        
+        if isempty( StartStandEvent)
+            warning([Filename.SET 'is missing standing'])
+            StartStandIndx = numel(EEG.event)+1;
+            StartStand = EEG.pnts;
+        else
         StartStand = StartStandEvent.latency  - EEG.srate*Padding;
         
         % get end standing
@@ -127,6 +132,8 @@ for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
             'savemode', 'onefile', ...
             'version', '7.3');
         
+        end
+        
         % get start oddball
         StartOddball = EndFixEvent.latency - EEG.srate*Padding;
         
@@ -148,6 +155,10 @@ for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
         
         StartQ = EndOddball + EEG.srate*Padding;
         EndQ = StartStand -  EEG.srate*Padding;
+        if EndQ <= StartQ
+            warning(['Something wrong with questionnaire for ', Filename.SET])
+            continue
+        end
         
         % cut
         EEGQ = pop_select(EEG, 'point', [StartQ, EndQ]);
