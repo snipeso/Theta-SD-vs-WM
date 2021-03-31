@@ -18,6 +18,9 @@ EndStandCode = 'S 15';
 Folders.RRT = cellstr(ls(fullfile(Paths.Datasets, Folders.Template, 'Fixation')));
 Folders.RRT(contains(Folders.RRT, '.')) = [];
 
+load('StandardChanlocs128.mat', 'StandardChanlocs') % has channel locations in StandardChanlocs
+
+
 for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
     
     for Indx_F = 1:numel(Folders.RRT)
@@ -57,7 +60,26 @@ for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
             continue
         end
         
-        EEG = pop_loadset('filename', Filename.SET, 'filepath', Paths_Fixation);
+        % load EEG
+        Content = ls(Paths_Fixation);
+        VHDR = contains(string(Content), '.vhdr');
+        if ~any(VHDR)
+            if any(strcmpi(Levels, 'EEG'))
+                warning([Path, ' is missing EEG files'])
+            end
+            continue
+        elseif nnz(VHDR) > 1 % or if there's more than 1 file
+            warning([Path, ' has more than one eeg file'])
+            continue
+        end
+        Filename.VHDR = Content(VHDR, :);
+        EEG = pop_loadbv(Paths_Fixation, Filename.VHDR);
+        
+        % update EEG structure
+        EEG.ref = 'CZ';
+        EEG.chanlocs = StandardChanlocs;
+        EEG.info.oldname = Filename.VHDR;
+        EEG.info.oldpath = Paths_Fixation;
         
         % get start fixation
         allEvents = {EEG.event.type};
@@ -86,8 +108,14 @@ for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
         
         % get end standing
         EndStandEvent = EEG.event(strcmpi(allEvents, EndStandCode));
-        EndStand = EndStandEvent.latency  + EEG.srate*Padding;
-        if EndStand > EEG.pnts; EndStand = EEG.pnts; end
+        
+        if isempty(EndStandEvent)
+            EndStand = EEG.pnts;
+        else
+            EndStand = EndStandEvent.latency  + EEG.srate*Padding;
+            if EndStand > EEG.pnts; EndStand = EEG.pnts; end
+        end
+        
         
         % cut
         EEGStand = pop_select(EEG, 'point', [StartStand, EndStand]);
