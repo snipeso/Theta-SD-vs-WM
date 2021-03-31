@@ -10,6 +10,5 @@ hpFilter = designfilt('highpassfir', 'PassbandFrequency', high_pass, ...
     'StopbandFrequency', hp_stopband, 'StopbandAttenuation', StopAtten, ...
     'PassbandRipple', PassRipple, 'SampleRate', fs, 'DesignMethod', 'kaiser');
 
-filtz(hpFilter);
 EEG_filt = firfilt(EEG, hpFilter.Coefficients);
 

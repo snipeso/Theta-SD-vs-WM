@@ -12,6 +12,7 @@ Tasks = {'Fixation', 'Oddball', 'Standing', ...
     'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)
 
 Destination_Formats = {'Power', 'Cleaning', 'ICA'}; % chooses which filtering to do
+
 % options: 'Scoring', 'Cleaning', 'ICA', 'Power'
 
 Refresh = false; % redo files that are already in destination folder
@@ -34,8 +35,8 @@ for Indx_DF = 1:numel(Destination_Formats)
     hp_stopband = Parameters.(Destination_Format).hp_stopband;
     
     
-    for Indx_D =  1:size(Folders.Datasets,1) % loop through participants
-        for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders % TEMP: make parfor
+    for Indx_D =  2 %1:size(Folders.Datasets,1) % loop through participants
+        parfor Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders % TEMP: make parfor
             
             %%%%%%%%%%%%%%%%%%%%%%%%
             %%% Check if data exists
