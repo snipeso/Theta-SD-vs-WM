@@ -11,8 +11,8 @@ Paths = struct(); % I make structs of variables so they don't flood the workspac
 Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
-Paths.Datasets ='D:\LSM\Raw'; % where the raw data is saved (split by participant)
-Paths.Preprocessed = 'D:\LSM\Preprocessed'; % where the preprocessed data gets saved (split by task)
+Paths.Datasets ='D:\LSM\Data\Raw'; % where the raw data is saved (split by participant)
+Paths.Preprocessed = 'D:\LSM\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
 
 
 % add location of subfunctions
