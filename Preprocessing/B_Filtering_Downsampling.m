@@ -35,8 +35,8 @@ for Indx_DF = 1:numel(Destination_Formats)
     hp_stopband = Parameters.(Destination_Format).hp_stopband;
     
     
-    for Indx_D =  2 %1:size(Folders.Datasets,1) % loop through participants
-        parfor Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders % TEMP: make parfor
+    for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
+        parfor Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
             
             %%%%%%%%%%%%%%%%%%%%%%%%
             %%% Check if data exists
@@ -115,7 +115,7 @@ for Indx_DF = 1:numel(Destination_Formats)
             EEG.filename = Filename_Destination;
             EEG.original.filename = Filename_SET;
             EEG.original.filepath = Path;
-            EEG.preprocessing = Parameters(Destination_Format);
+            EEG.filtering = Parameters.(Destination_Format);
             
             % save EEG
             pop_saveset(EEG, 'filename', Filename_Destination, ...
