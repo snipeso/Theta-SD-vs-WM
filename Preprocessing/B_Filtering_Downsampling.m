@@ -35,7 +35,7 @@ for Indx_DF = 1:numel(Destination_Formats)
     
     
     for Indx_D =  1:size(Folders.Datasets,1) % loop through participants
-        parfor Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
+        for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders % TEMP: make parfor
             
             %%%%%%%%%%%%%%%%%%%%%%%%
             %%% Check if data exists
@@ -91,26 +91,22 @@ for Indx_DF = 1:numel(Destination_Formats)
             
             EEG = pop_loadset('filepath', Path, 'filename', Filename_SET);
             
-            try
-                % low-pass filter
-                EEG = pop_eegfiltnew(EEG, [], lowpass); % this is a form of antialiasing, but it not really needed because usually we use 40hz with 256 srate
-                
-                % notch filter for line noise
-                EEG = lineFilter(EEG, 50, false);
-                
-                % resample
-                EEG = pop_resample(EEG, new_fs);
-                
-                % high-pass filter
-                % NOTE: this is after resampling, otherwise crazy slow.
-                EEG = hpEEG(EEG, highpass, hp_stopband);
-                
-                EEG = eeg_checkset(EEG);
-                
-            catch
-                warning(['could not clean ', Filename_SET])
-                continue
-            end
+            EEG2 = EEG;
+            
+            % low-pass filter
+            EEG = pop_eegfiltnew(EEG, [], lowpass); % this is a form of antialiasing, but it not really needed because usually we use 40hz with 256 srate
+            
+            % notch filter for line noise
+            EEG = lineFilter(EEG, 50, false);
+            
+            % resample
+            EEG = pop_resample(EEG, new_fs);
+            
+            % high-pass filter
+            % NOTE: this is after resampling, otherwise crazy slow.
+            EEG = hpEEG(EEG, highpass, hp_stopband);
+            
+            EEG = eeg_checkset(EEG);
             
             
             % save preprocessing info in eeg structure
