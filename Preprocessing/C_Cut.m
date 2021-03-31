@@ -1,6 +1,6 @@
 %%% Instructions:
 %%% This script calls the commands to help you mark the data that contains
-%%% noise. 
+%%% noise.
 %%% Run each section one at a time (click on it so it turns yellow, then click "run
 %%% section" in the above tool bar). Each section explains how it works.
 %%% Numbered sections have to happen first, and in their order, other
@@ -27,7 +27,8 @@ Prep_Parameters
 Filename = []; % choose this if you want to randomly select a file to clean from the list
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
-Destination_Folder = 'Cuts'; % location where to save cuts
+Destination_Folder = 'New_Cuts'; % location where to save cuts
+Old_Destination = ''; % 'Old_Cuts'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -36,7 +37,7 @@ if ~isempty(Filename)
     Destination = fullfile(Paths.Preprocessed, 'Cleaning', Destination_Folder, Folder);
     Randomize = false;
 else
-     Source = fullfile(Paths.Preprocessed, 'Cleaning', Source_Folder);
+    Source = fullfile(Paths.Preprocessed, 'Cleaning', Source_Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cleaning', Destination_Folder);
     Randomize = true;
 end
@@ -44,6 +45,26 @@ end
 EEG = loadEEGtoCut(Source, Destination, Filename, Randomize); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
 
+% if provided, get old TMPREJ and nan matrix (this is to use old cuts to avoid wasting too much time)
+if exist('Old_Destination', 'var')
+    OldCutFilepath = replace(EEG.CutFilepath, Destination_Folder, Old_Destination);
+    AlreadyDid = whos(m);
+    if ~contains(AlreadyDid, 'TMPREJ')
+        load(OldCutFilepath, 'TMPREJ') % create cuts file, load it to current workspace
+        
+        if exist('TMPREJ', 'var')
+            m.TMPREJ = TMPREJ;
+        end
+    end
+    
+    if ~contains(AlreadyDid, 'cutData')
+            load(OldCutFilepath, 'cutData') % create cuts file, load it to current workspace
+        
+        if exist('cutData', 'var')
+            m.cutData = cutData;
+        end
+    end
+end
 
 % remove already the channels that don't get used for the ICA anyway
 rmCh(EEG.CutFilepath, EEG_Channels.notEEG)
@@ -75,8 +96,8 @@ MarkData(EEG)  % rerun this every time you want to see updates on removed channe
 %%% MarkData() it will highlight the section in red.
 
 % remove channels entirely
-% rmSnippet(EEG, StartTime, EndTime, Channel)
-% rsSnippet(EEG, StartTime, EndTime, Channel)
+% rmSnip(EEG, StartTime, EndTime, Channel)
+% rsSnip(EEG, StartTime, EndTime, Channel)
 
 
 
