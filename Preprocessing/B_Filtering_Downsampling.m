@@ -8,11 +8,10 @@ Prep_Parameters
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Tasks = {'Fixation', 'Oddball', 'Standing', ...
-    'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)
+
+% Tasks = {'Fixation'}; % select this if you only need to filter one folder
 
 Destination_Formats = {'Power', 'Cleaning', 'ICA'}; % chooses which filtering to do
-
 % options: 'Scoring', 'Cleaning', 'ICA', 'Power'
 
 Refresh = false; % redo files that are already in destination folder
@@ -87,12 +86,11 @@ for Indx_DF = 1:numel(Destination_Formats)
                 continue
             end
             
+            
             %%%%%%%%%%%%%%%%%%%
             %%% process the data
             
             EEG = pop_loadset('filepath', Path, 'filename', Filename_SET);
-            
-            EEG2 = EEG;
             
             % low-pass filter
             EEG = pop_eegfiltnew(EEG, [], lowpass); % this is a form of antialiasing, but it not really needed because usually we use 40hz with 256 srate

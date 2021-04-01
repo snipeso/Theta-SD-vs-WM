@@ -40,4 +40,5 @@ codegen/
 
 # To keep
 !StandardChanlocs128.mat
+!Cz.mat
 generalFunctions/desktop.ini
