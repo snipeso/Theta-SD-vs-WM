@@ -28,7 +28,7 @@ Filename = []; % choose this if you want to randomly select a file to clean from
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'New_Cuts'; % location where to save cuts
-Old_Destination = ''; % 'Old_Cuts'
+Old_Destination =  'Old_Cuts'; % 'Old_Cuts'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -48,20 +48,22 @@ m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to cur
 % if provided, get old TMPREJ and nan matrix (this is to use old cuts to avoid wasting too much time)
 if exist('Old_Destination', 'var')
     OldCutFilepath = replace(EEG.CutFilepath, Destination_Folder, Old_Destination);
-    AlreadyDid = whos(m);
-    if ~contains(AlreadyDid, 'TMPREJ')
-        load(OldCutFilepath, 'TMPREJ') % create cuts file, load it to current workspace
-        
-        if exist('TMPREJ', 'var')
-            m.TMPREJ = TMPREJ;
+    if exist(OldCutFilepath, 'file')
+        AlreadyDid = who(m);
+        if ~contains('TMPREJ', AlreadyDid)
+            load(OldCutFilepath, 'TMPREJ') % get selected timepoints to cut
+            
+            if exist('TMPREJ', 'var')
+                m.TMPREJ = TMPREJ;
+            end
         end
-    end
-    
-    if ~contains(AlreadyDid, 'cutData')
-            load(OldCutFilepath, 'cutData') % create cuts file, load it to current workspace
         
-        if exist('cutData', 'var')
-            m.cutData = cutData;
+        if ~contains('cutData', AlreadyDid)
+            load(OldCutFilepath, 'cutData') % get snippets to cut
+            
+            if exist('cutData', 'var')
+                m.cutData = cutData;
+            end
         end
     end
 end

@@ -52,10 +52,10 @@ Tasks = {'Fixation', 'Oddball', 'Standing', ...
 %%% Parameters
 
 % Cleaning: data for quickly scanning data and selecting bad timepoints
-Parameters.Cleaning.fs = 125; % new sampling rate
-Parameters.Cleaning.lp = 40; % low pass filter
-Parameters.Cleaning.hp = 0.5; % high pass filter
-Parameters.Cleaning.hp_stopband = 0.25; % high pass filter gradual roll-off to this freuqency
+Parameters.Cutting.fs = 125; % new sampling rate
+Parameters.Cutting.lp = 40; % low pass filter
+Parameters.Cutting.hp = 0.5; % high pass filter
+Parameters.Cutting.hp_stopband = 0.25; % high pass filter gradual roll-off to this freuqency
 
 % Power: starting data for properly cleaned wake data
 Parameters.Power.fs = 250; % new sampling rate

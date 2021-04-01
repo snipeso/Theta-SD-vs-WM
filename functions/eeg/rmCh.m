@@ -1,7 +1,7 @@
 function rmCh(CutFilename, Ch)
 % function for C_Cuts in preprocessing to remove a channel
 
-if Ch < 1 || Ch > 128
+if any(Ch < 1) || any(Ch > 128)
     error('not real channels!')
 end
 

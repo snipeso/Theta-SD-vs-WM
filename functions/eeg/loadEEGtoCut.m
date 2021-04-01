@@ -12,7 +12,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Randomly choose a file that hasn't been cut yet
 
-if Randomize && ~isempty(FilteredFilename)
+if Randomize && isempty(FilteredFilename)
     
     Unchecked = string(ls(Source));
     Unchecked(contains(Unchecked, '.')) = [];
@@ -32,9 +32,9 @@ if Randomize && ~isempty(FilteredFilename)
         
         AllEEG = ls(fullfile(Source, Folder));
         AllEEG = AllEEG(contains(string(AllEEG), '.set'), :); % only take sets
-        AllEEG = extractBefore(cellstr(AllEEG), '.set'); % get filename cores
+        AllEEG = extractBefore(cellstr(AllEEG), '_Cutting.set'); % get filename cores
         
-        AllCuts = ls(Destination); % do the same for the cut files
+        AllCuts = ls(fullfile(Destination, Folder)); % do the same for the cut files
         AllCuts = AllCuts(contains(string(AllCuts), '.mat'), :);
         AllCuts = extractBefore(cellstr(AllCuts), Extention);
         
@@ -43,8 +43,9 @@ if Randomize && ~isempty(FilteredFilename)
         Uncut(contains(AllEEG, intersect(AllEEG, AllCuts))) = [];
         
         if ~isempty(Uncut) % randomly select one of the uncut files left
-            FilteredFilename = [Uncut{randi(numel(Uncut))}, '.set'];
+            FilteredFilename = [Uncut{randi(numel(Uncut))}, '_Cutting.set'];
             Source = fullfile(Source, Folder);
+            Destination = fullfile(Destination, Folder);
         else % if no more uncut files, remove this folder from list
             Unchecked(Indx) = [];
         end
@@ -55,13 +56,17 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Load the EEG file
 
-CutFilename = [extractBefore(FilteredFilename, '.set'), Extention];
+CutFilename = [extractBefore(FilteredFilename, '_Cutting.set'), Extention];
 
 % load EEG
-EEG = pop_loadset('filename', FilteredFilename, 'filepath', Source);
+EEG = pop_loadset('filename', FilteredFilename, 'filepath', Source{1});
 clc % don't show filename info
 
 % save the corresponding file inside the mat file.
+if ~exist(Destination, 'dir')
+    mkdir(Destination)
+end
+
 CutFilepath = fullfile(Destination, CutFilename);
 m = matfile(CutFilepath,'Writable',true);
 m.filename = FilteredFilename;
