@@ -10,6 +10,7 @@ if ~ismember('cutData', {Content.name})
 end
 
 fs = EEG.srate;
+[ch, pnts] = size(EEG.data); 
 Start = round(StartTime*fs);
 End = round(EndTime*fs);
 

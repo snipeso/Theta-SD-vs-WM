@@ -21,8 +21,8 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Filename = 'P10_Match2Sample_Session2_Cleaning.set'; % choose this if you want to clean a specific file
-% Folder = 'Match2Sample';
+% Filename = 'P08_PVT_MainPost_Cutting.set'; % choose this if you want to clean a specific file
+% Folder = 'PVT';
 
 Filename = []; % choose this if you want to randomly select a file to clean from the list
 
@@ -72,7 +72,7 @@ end
 rmCh(EEG.CutFilepath, EEG_Channels.notEEG)
 
 % open the window for cleaning the data
-MarkData(EEG)  % rerun this every time you want to see updates on removed channels and segments
+markData(EEG)  % rerun this every time you want to see updates on removed channels and segments
 
 %% remove or restore a whole channel
 %%% Use these to mark whole channels to be removed; sometimes this is a

@@ -45,6 +45,7 @@ if Randomize && isempty(FilteredFilename)
         if ~isempty(Uncut) % randomly select one of the uncut files left
             FilteredFilename = [Uncut{randi(numel(Uncut))}, '_Cutting.set'];
             Source = fullfile(Source, Folder);
+            Source = Source{1};
             Destination = fullfile(Destination, Folder);
         else % if no more uncut files, remove this folder from list
             Unchecked(Indx) = [];
@@ -59,7 +60,7 @@ end
 CutFilename = [extractBefore(FilteredFilename, '_Cutting.set'), Extention];
 
 % load EEG
-EEG = pop_loadset('filename', FilteredFilename, 'filepath', Source{1});
+EEG = pop_loadset('filename', FilteredFilename, 'filepath', Source);
 clc % don't show filename info
 
 % save the corresponding file inside the mat file.

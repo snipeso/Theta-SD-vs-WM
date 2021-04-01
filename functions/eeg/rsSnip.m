@@ -6,7 +6,7 @@ m = matfile(EEG.CutFilepath,'Writable',true);
 Content = whos(m);
 
 fs = EEG.srate;
-[ch, pnts] = EEG.data;
+[ch, pnts] = size(EEG.data);
 
 % get latencies in points
 Start = round(StartTime*fs);
