@@ -14,7 +14,7 @@ Prep_Parameters
 
 Refresh = false;
 
-Source_Cuts_Folder = 'Cuts'; % 'Cuts'
+Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
 Destination_Folder = 'Components'; % 'Components'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,7 +25,7 @@ for Indx_T = 1:numel(Tasks)
     Target = Tasks{Indx_T};
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Target);
-    Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', Source_Cuts_Folder, Target);
+    Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Target);
     Destination = fullfile(Paths.Preprocessed, 'ICA', Destination_Folder, Target);
     
     if ~exist(Destination, 'dir')
@@ -39,7 +39,7 @@ for Indx_T = 1:numel(Tasks)
         
         % get filenames
         Filename_Source = Files{Indx_F};
-        Filename_Cuts =  [extractBefore(Filename_Source,'_ICA'), '_Cleaning_Cuts.mat'];
+        Filename_Cuts =  [extractBefore(Filename_Source,'_ICA'), '_Cuts.mat'];
         Filename_Destination = [extractBefore(Filename_Source,'.set'), '_Components.set'];
         
         % skip if file already exists
@@ -72,7 +72,9 @@ for Indx_T = 1:numel(Tasks)
         
         % clean data segments
         %         EEG = InterpolateSegments(EEG, badchans, cutData, srate);
-        EEG = InterpolateSnippets(EEG, badchans, cutData, srate, true);
+        if ~isempty(cutData)
+        EEG = interpolateSnippets(EEG, badchans, cutData, srate, true);
+        end
         
         % add Cz
         EEG.data(end+1, :) = zeros(1, size(EEG.data, 2));
