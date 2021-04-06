@@ -11,7 +11,7 @@ Prep_Parameters
 
 % Tasks = {'Fixation'}; % select this if you only need to filter one folder
 
-Destination_Formats = {'Power', 'Cleaning', 'ICA'}; % chooses which filtering to do
+Destination_Formats = {'Power', 'Cutting', 'ICA'}; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Power'
 
 Refresh = false; % redo files that are already in destination folder
