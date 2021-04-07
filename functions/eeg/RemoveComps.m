@@ -32,6 +32,7 @@ end
 NewEEG = EEG;
 NewEEG.data = Data.data;
 NewEEG.pnts = Data.pnts;
+NewEEG.srate = Data.srate;
 NewEEG.xmax = Data.xmax;
 NewEEG.times = Data.times;
 NewEEG.event = Data.event;
@@ -65,7 +66,10 @@ else
 end
 
 % interpolate channels
- NewEEG = pop_interp(NewEEG, StandardChanlocs);
+FinalChanlocs = StandardChanlocs;
+FinalChanlocs(ismember({StandardChanlocs.labels}, string(EEG_Channels.notEEG))) = [];
+FinalChanlocs(end+1) = CZ;
+ NewEEG = pop_interp(NewEEG, FinalChanlocs);
 
 % save or loop, depending on response
 switch x
@@ -92,8 +96,7 @@ switch x
             'check', 'on', ...
             'savemode', 'onefile', ...
             'version', '7.3');
-        
-        disp(['***********', 'Finished ', Filename_Destination, '***********'])
+        clc
         close all
         Break = false;
         
