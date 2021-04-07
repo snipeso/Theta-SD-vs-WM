@@ -9,19 +9,19 @@ EEGnew = EEG;
 ChanLabels = {EEG.chanlocs.labels}; % list of channel labels
 
 % get clusters of data to interpolate (overlapping segments)
-cutData(badchans, :) = []; % remove bad channels from cuts, so it matches the EEG
+% cutData(badchans, :) = []; % remove bad channels from cuts, so it matches the EEG
 
 if isempty(cutData)
     return
-elseif size(cutData, 1) ~= size(EEGnew.data, 1)
-    error('not the same number of channels in cuts and in EEG data')
+% elseif size(cutData, 1) ~= size(EEGnew.data, 1)
+%     error('not the same number of channels in cuts and in EEG data')
 end
 
 % convert matrix of nans to "table" indicating time points that aren't nan
 Snippets = nandata2windows(cutData); 
 Snippets(:, 2:3) = Snippets(:, 2:3)/cut_srate; % convert into seconds
 
-% ignore segments that don't have neighbors needed for interp
+% ignore segments that are part of removed channels
 Snippets(ismember(Snippets(:, 1), badchans), :) = []; 
 
 % group segments into clusters based on temporal overlap

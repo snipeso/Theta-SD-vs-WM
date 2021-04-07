@@ -10,7 +10,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Tasks = {'Fixation'}; % select this if you only need to filter one folder
+% Tasks = {'Match2Sample'}; % select this if you only need to filter one folder
 
 Refresh = false;
 
@@ -21,7 +21,12 @@ Destination_Folder = 'Components'; % 'Components'
 
 load('Cz.mat', 'CZ')
 
+if ~exist('Tasks', 'var')
+    Tasks = allTasks;
+end
+
 for Indx_T = 1:numel(Tasks)
+    
     Target = Tasks{Indx_T};
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Target);
@@ -55,7 +60,7 @@ for Indx_T = 1:numel(Tasks)
         EEG = pop_loadset('filepath', Source, 'filename', Filename_Source);
         
         % load cuts
-        load(fullfile(Source_Cuts, Filename_Cuts))
+        load(fullfile(Source_Cuts, Filename_Cuts), 'badchans', 'cutData', 'srate', 'TMPREJ')
         if ~exist('badchans', 'var')
             badchans = [];
         end
@@ -67,13 +72,14 @@ for Indx_T = 1:numel(Tasks)
         
         % remove bad channels
         badchans(badchans<1 | badchans>128) = []; % this is a precaution from some previously badly written scripts
-        EEG = pop_select(EEG, 'nochannel', unique(badchans));
+        badchans = unique(badchans);
+        EEG = pop_select(EEG, 'nochannel', badchans);
         
         
         % clean data segments
-        %         EEG = InterpolateSegments(EEG, badchans, cutData, srate);
         if ~isempty(cutData)
-        EEG = interpolateSnippets(EEG, badchans, cutData, srate, true);
+            EEG = interpolateSnippets(EEG, badchans, cutData, srate);
+            
         end
         
         % add Cz
@@ -82,10 +88,9 @@ for Indx_T = 1:numel(Tasks)
         
         % remove bad segments
         if exist('TMPREJ', 'var')
-            EEG = eeg_eegrej(EEG,eegplot2event(TMPREJ, -1));
+            EEG = eeg_eegrej(EEG, eegplot2event(TMPREJ, -1));
         else
-            A=1;
-            error('breakpoint')
+            TMPREJ = [];
         end
         
         % rereference to average
@@ -102,5 +107,6 @@ for Indx_T = 1:numel(Tasks)
             'version', '7.3');
         
         disp(['***********', 'Finished ', Filename_Destination, '***********'])
+        clear cutData srate badchans TMPREJ
     end
 end

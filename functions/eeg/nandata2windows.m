@@ -13,5 +13,5 @@ for Indx_Ch = 1:Channels
     
     [Starts, Ends] = data2windows(Ch);
     
-    Segments = append(1, Segments, [Indx_Ch*ones(numel(Starts), 1), Starts(:), Ends(:)]);
+    Segments = cat(1, Segments, [Indx_Ch*ones(numel(Starts), 1), Starts(:), Ends(:)]);
 end

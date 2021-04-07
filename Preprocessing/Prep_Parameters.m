@@ -11,8 +11,8 @@ Paths = struct(); % I make structs of variables so they don't flood the workspac
 Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
-Paths.Datasets ='D:\LSM\Data\Raw'; % where the raw data is saved (split by participant)
-Paths.Preprocessed = 'D:\LSM\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
+Paths.Datasets ='E:\Data\Raw'; % where the raw data is saved (split by participant)
+Paths.Preprocessed = 'E:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
 
 
 % add location of subfunctions
@@ -45,7 +45,7 @@ EEG_Channels = struct();
 EEG_Channels.notEEG = [49, 56, 107, 113, 126, 127];
 EEG_Channels.notSourceLoc = [EEG_Channels.notEEG, 48, 119, 125, 128];
 
-Tasks = {'Fixation', 'Oddball', 'Standing', ...
+allTasks = {'Fixation', 'Oddball', 'Standing', ...
     'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
