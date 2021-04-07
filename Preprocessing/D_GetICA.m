@@ -27,11 +27,11 @@ end
 
 for Indx_T = 1:numel(Tasks)
     
-    Target = Tasks{Indx_T};
+    Task = Tasks{Indx_T};
     % get files and paths
-    Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Target);
-    Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Target);
-    Destination = fullfile(Paths.Preprocessed, 'ICA', Destination_Folder, Target);
+    Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Task);
+    Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
+    Destination = fullfile(Paths.Preprocessed, 'ICA', Destination_Folder, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -58,39 +58,17 @@ for Indx_T = 1:numel(Tasks)
         
         % load dataset
         EEG = pop_loadset('filepath', Source, 'filename', Filename_Source);
-        
-        % load cuts
-        load(fullfile(Source_Cuts, Filename_Cuts), 'badchans', 'cutData', 'srate', 'TMPREJ')
-        if ~exist('badchans', 'var')
-            badchans = [];
-        end
-        
-        if ~exist('cutData', 'var')
-            cutData = [];
-        end
-        
-        
-        % remove bad channels
-        badchans(badchans<1 | badchans>128) = []; % this is a precaution from some previously badly written scripts
-        badchans = unique(badchans);
-        EEG = pop_select(EEG, 'nochannel', badchans);
-        
-        
-        % clean data segments
-        if ~isempty(cutData)
-            EEG = interpolateSnippets(EEG, badchans, cutData, srate);
-            
-        end
+     
+        % remove data marked manually
+        [EEG, TMPREJ] = cleanCuts(EEG, fullfile(Source_Cuts, Filename_Cuts));
         
         % add Cz
         EEG.data(end+1, :) = zeros(1, size(EEG.data, 2));
         EEG.chanlocs(end+1) = CZ;
         
         % remove bad segments
-        if exist('TMPREJ', 'var')
+        if ~isempty(TMPREJ)
             EEG = eeg_eegrej(EEG, eegplot2event(TMPREJ, -1));
-        else
-            TMPREJ = [];
         end
         
         % rereference to average

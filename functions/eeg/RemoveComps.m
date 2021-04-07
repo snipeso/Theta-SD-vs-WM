@@ -99,6 +99,6 @@ switch x
         
     otherwise
         % re-do
-        RemoveComponents
+        RemoveComps
 end
 
