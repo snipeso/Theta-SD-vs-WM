@@ -21,10 +21,8 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Filename = 'P08_PVT_MainPost_Cutting.set'; % choose this if you want to clean a specific file
+% Filename = 'P05_PVT_Session2Beam_Cutting.set'; % choose this if you want to clean a specific file
 % Folder = 'PVT';
-
-Filename = []; % choose this if you want to randomly select a file to clean from the list
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'New_Cuts'; % location where to save cuts
@@ -32,7 +30,7 @@ Old_Destination =  'Old_Cuts'; % 'Old_Cuts'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ~isempty(Filename)
+if exist('Filename', 'var') && ~isempty(Filename)
     Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder, Folder);
     Randomize = false;
@@ -40,6 +38,7 @@ else
     Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder);
     Randomize = true;
+    Filename = [];
 end
 
 EEG = loadEEGtoCut(Source, Destination, Filename, Randomize); % load file

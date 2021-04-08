@@ -17,8 +17,9 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data_Type = 'Power';
-% Filename = ['P01_Game_Session2_ICA_Components.set'];
-Task = 'Fixation';
+% Filename = ['P15_Game_Session2_ICA_Components.set'];
+% Task = 'Game';
+% allTasks = {'Fixation', 'Oddball', 'Standing'};
 Filename = [];
 
 CheckOutput = true; % manually verify if selection was good at the end
