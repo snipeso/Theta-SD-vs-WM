@@ -48,19 +48,19 @@ if CheckOutput
     Pix = get(0,'screensize');
     
     
-%     PlotPoints = 100*EEG.srate:300*EEG.srate;
-%     if size(NewEEG.data, 2)>PlotPoints(end)
-%         eegplot(Data.data(:, PlotPoints), 'spacing', 20, 'srate', NewEEG.srate, ...
-%             'winlength', 20, 'position',[0 0 Pix(3) Pix(4)*.97])
-%         eegplot(NewEEG.data(:, 100*EEG.srate:300*EEG.srate),'spacing', 20, 'srate', NewEEG.srate, ...
-%             'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97])
-%         
-%     else % if there's not enough space for plotting 200s, then just look at the whole file
-        eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
-            'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97])
-        eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
-            'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],   'winrej',  TMPREJ)
-%     end
+    %     PlotPoints = 100*EEG.srate:300*EEG.srate;
+    %     if size(NewEEG.data, 2)>PlotPoints(end)
+    %         eegplot(Data.data(:, PlotPoints), 'spacing', 20, 'srate', NewEEG.srate, ...
+    %             'winlength', 20, 'position',[0 0 Pix(3) Pix(4)*.97])
+    %         eegplot(NewEEG.data(:, 100*EEG.srate:300*EEG.srate),'spacing', 20, 'srate', NewEEG.srate, ...
+    %             'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97])
+    %
+    %     else % if there's not enough space for plotting 200s, then just look at the whole file
+    eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
+        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],  'eloc_file', {Data.chanlocs.labels})
+    eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
+        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], 'eloc_file', {NewEEG.chanlocs.labels},  'winrej',  TMPREJ)
+    %     end
     
     pause(5) % wait a little so person can look
     x = input('Is the file ok? (y/n/s) ', 's');
@@ -72,7 +72,7 @@ end
 FinalChanlocs = StandardChanlocs;
 FinalChanlocs(ismember({StandardChanlocs.labels}, string(EEG_Channels.notEEG))) = [];
 FinalChanlocs(end+1) = CZ;
- NewEEG = pop_interp(NewEEG, FinalChanlocs);
+NewEEG = pop_interp(NewEEG, FinalChanlocs);
 
 % save or loop, depending on response
 switch x
@@ -104,9 +104,9 @@ switch x
         Break = false;
     case 'redo'
         delete(fullfile(Source_Comps, Filename_Comps))
-         disp(['***********', 'Deleting ', Filename_Destination, '***********'])
-           close all
-         Break = true;
+        disp(['***********', 'Deleting ', Filename_Destination, '***********'])
+        close all
+        Break = true;
     otherwise
         % re-do
         RemoveComps

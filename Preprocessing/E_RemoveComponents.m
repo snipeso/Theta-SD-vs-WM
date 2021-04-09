@@ -1,12 +1,5 @@
-% This script is for manually removing components containing noise. Click
-% run. A popup will appear with the top 35 components of a randomly
-% selected file. Select the bad components, then press ok. 2 popups will
-% show the new data; evaluate if it is sufficiently cleaned. When prompted
-% in the editor, indicate 'y' for accepting selection, 'n' for rejecting it
-% and running it again, and 's' to skip and do a different one.
-
-% if you indicate "automate", it will just apply the selection and removal
-% of components already done to the indicated datatype.
+% This script is for manually removing components containing noise. Cl
+% indicated datatype.
 
 clear
 eeglab % needs to be run every time to clear global variables
