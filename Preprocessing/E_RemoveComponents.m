@@ -18,7 +18,7 @@ Prep_Parameters
 
 Data_Type = 'Power';
 % Filename = ['P15_Game_Session2_ICA_Components.set'];
-% Task = 'Game';
+Task = 'Fixation';
 % allTasks = {'Fixation', 'Oddball', 'Standing'};
 Filename = [];
 
@@ -95,7 +95,7 @@ for Indx_F = 1:nFiles % loop through files in source folder
     
     
     % interpolate bad snippets
-    [Data, ~] = cleanCuts(Data, fullfile(Source_Cuts, Filename_Cuts));
+    [Data, TMPREJ] = cleanCuts(Data, fullfile(Source_Cuts, Filename_Cuts));
     
     % add CZ
     Data.data(end+1, :) = zeros(1, size(Data.data, 2));

@@ -46,19 +46,21 @@ NewEEG = pop_eegfiltnew(NewEEG, [], Parameters.(Data_Type).lp); % for whatever r
 % plot outcome
 if CheckOutput
     Pix = get(0,'screensize');
-    PlotPoints = 100*EEG.srate:300*EEG.srate;
-    if size(NewEEG.data, 2)>PlotPoints(end)
-        eegplot(Data.data(:, PlotPoints), 'spacing', 20, 'srate', NewEEG.srate, ...
-            'winlength', 20, 'position',[0 0 Pix(3) Pix(4)*.97])
-        eegplot(NewEEG.data(:, 100*EEG.srate:300*EEG.srate),'spacing', 20, 'srate', NewEEG.srate, ...
-            'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97])
-        
-    else % if there's not enough space for plotting 200s, then just look at the whole file
+    
+    
+%     PlotPoints = 100*EEG.srate:300*EEG.srate;
+%     if size(NewEEG.data, 2)>PlotPoints(end)
+%         eegplot(Data.data(:, PlotPoints), 'spacing', 20, 'srate', NewEEG.srate, ...
+%             'winlength', 20, 'position',[0 0 Pix(3) Pix(4)*.97])
+%         eegplot(NewEEG.data(:, 100*EEG.srate:300*EEG.srate),'spacing', 20, 'srate', NewEEG.srate, ...
+%             'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97])
+%         
+%     else % if there's not enough space for plotting 200s, then just look at the whole file
         eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
             'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97])
         eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
-            'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97])
-    end
+            'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],   'winrej',  TMPREJ)
+%     end
     
     pause(5) % wait a little so person can look
     x = input('Is the file ok? (y/n/s) ', 's');

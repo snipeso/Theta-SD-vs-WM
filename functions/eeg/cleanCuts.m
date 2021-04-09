@@ -12,6 +12,8 @@ if ~exist('cutData', 'var')
 end
 if ~exist('TMPREJ', 'var')
     TMPREJ = [];
+elseif ~isempty(TMPREJ)
+    TMPREJ(:, 1:2) =  (TMPREJ(:, 1:2)./srate)*EEG.srate; % convert tmprej to new srate
 end
 
 % remove bad channels
