@@ -57,9 +57,9 @@ if CheckOutput
     %
     %     else % if there's not enough space for plotting 200s, then just look at the whole file
     eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
-        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],  'eloc_file', {Data.chanlocs.labels})
+        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],  'eloc_file', Data.chanlocs)
     eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
-        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], 'eloc_file', {NewEEG.chanlocs.labels},  'winrej',  TMPREJ)
+        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], 'eloc_file', NewEEG.chanlocs,  'winrej',  TMPREJ)
     %     end
     
     pause(5) % wait a little so person can look
