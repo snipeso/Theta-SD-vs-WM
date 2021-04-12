@@ -11,7 +11,7 @@ Prep_Parameters
 
 Data_Type = 'Power';
 % Filename = ['P15_Game_Session2_ICA_Components.set'];
-Task = 'Fixation';
+% Task = 'Fixation';
 % allTasks = {'Fixation', 'Oddball', 'Standing'};
 Filename = [];
 
