@@ -41,7 +41,7 @@ NewEEG.event = Data.event;
 NewEEG = pop_subcomp(NewEEG, badcomps);
 
 % low-pass filter
-NewEEG = pop_eegfiltnew(NewEEG, [], Parameters.(Data_Type).lp); % for whatever reason, sometimes ICA removal introduces high frequency noise
+NewEEG = pop_eegfiltnew(NewEEG, [], Parameters.(Data_Type).lp_final); % for whatever reason, sometimes ICA removal introduces high frequency noise
 
 % plot outcome
 if CheckOutput

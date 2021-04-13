@@ -10,9 +10,9 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Tasks = {'Match2Sample'}; % select this if you only need to filter one folder
+Tasks = {'Fixation', 'Game'}; % select this if you only need to filter one folder
 
-Refresh = true;
+Refresh = false;
 
 Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
 Destination_Folder = 'Components'; % 'Components'
@@ -29,9 +29,9 @@ for Indx_T = 1:numel(Tasks)
     
     Task = Tasks{Indx_T};
     % get files and paths
-    Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Task);
+    Source = fullfile(Paths.Preprocessed, 'ICA2', 'SET', Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
-    Destination = fullfile(Paths.Preprocessed, 'ICA', Destination_Folder, Task);
+    Destination = fullfile(Paths.Preprocessed, 'ICA2', Destination_Folder, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)

@@ -10,24 +10,24 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data_Type = 'Power';
-% Filename = ['P15_Game_Session2_ICA_Components.set'];
+% Filename = ['P01_Fixation_MainPre_ICA_Components.set'];
 % Task = 'Fixation';
-% allTasks = {'Fixation', 'Oddball', 'Standing'};
-Filename = [];
+% allTasks = {'Fixation', 'Game'};
+% Filename = [];
 
 CheckOutput = true; % manually verify if selection was good at the end
 Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
-Refresh = false; % redo already done files
+Refresh = true; % redo already done files
 
 Component_Folder = 'Components'; % 'Components';
-Destination_Folder = 'Clean'; % 'Deblinked'
+Destination_Folder = 'Clean'; % 'Clean'
 Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+ICA_Folder = 'ICA';
+
 % choose a random task
-
-
 if ~exist('Task', 'var') || isempty(Task)
     Task = allTasks{randi(numel(allTasks))};
 end
@@ -36,7 +36,7 @@ end
 load('StandardChanlocs128.mat', 'StandardChanlocs')
 load('Cz.mat', 'CZ')
 
-Source_Comps = fullfile(Paths.Preprocessed, 'ICA', Component_Folder, Task);
+Source_Comps = fullfile(Paths.Preprocessed, ICA_Folder, Component_Folder, Task);
 Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
 Destination = fullfile(Paths.Preprocessed, Destination_Folder, Data_Type, Task);
@@ -62,7 +62,7 @@ for Indx_F = 1:nFiles % loop through files in source folder
         Filename_Comps = Filename;
     end
     
-     Filename_Core = extractBefore(Filename_Comps, '_ICA_Components');
+     Filename_Core = extractBefore(Filename_Comps, ['_', ICA_Folder, '_Components']);
     Filename_Data = [Filename_Core, '_' Data_Type, '.set'];
    
     Filename_Destination = [Filename_Core, '_Clean.set'];
