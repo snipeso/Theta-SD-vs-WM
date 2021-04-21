@@ -10,14 +10,14 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data_Type = 'Power';
-% Filename = ['P01_Fixation_MainPre_ICA_Components.set'];
-% Task = 'Fixation';
-% allTasks = {'Fixation', 'Game'};
-% Filename = [];
+% Filename = ['P18_Game_Baseline_ICA_Components.set'];
+% Task = 'Game';
+allTasks = {'Match2Sample', 'Music', 'SpFT', 'Game'};
+Filename = [];
 
 CheckOutput = true; % manually verify if selection was good at the end
 Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
-Refresh = true; % redo already done files
+Refresh = false; % redo already done files
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
@@ -56,15 +56,15 @@ for Indx_F = 1:nFiles % loop through files in source folder
     
     %%% get filenames
     
-    if isempty(Filename)
+    if ~exist('Filename', 'var') || isempty(Filename)
         Filename_Comps = Files{Indx_F};
     else
         Filename_Comps = Filename;
     end
     
-     Filename_Core = extractBefore(Filename_Comps, ['_', ICA_Folder, '_Components']);
+    Filename_Core = extractBefore(Filename_Comps, '_ICA_Components');
     Filename_Data = [Filename_Core, '_' Data_Type, '.set'];
-   
+    
     Filename_Destination = [Filename_Core, '_Clean.set'];
     Filename_Cuts =  [Filename_Core, '_Cuts.mat'];
     

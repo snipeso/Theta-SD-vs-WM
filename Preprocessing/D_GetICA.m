@@ -10,7 +10,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'Fixation', 'Game'}; % select this if you only need to filter one folder
+% Tasks = {'Match2Sample'}; % select this if you only need to filter one folder
 
 Refresh = false;
 
@@ -28,10 +28,11 @@ end
 for Indx_T = 1:numel(Tasks)
     
     Task = Tasks{Indx_T};
+    
     % get files and paths
-    Source = fullfile(Paths.Preprocessed, 'ICA2', 'SET', Task);
+    Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
-    Destination = fullfile(Paths.Preprocessed, 'ICA2', Destination_Folder, Task);
+    Destination = fullfile(Paths.Preprocessed, 'ICA', Destination_Folder, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -58,7 +59,7 @@ for Indx_T = 1:numel(Tasks)
         
         % load dataset
         EEG = pop_loadset('filepath', Source, 'filename', Filename_Source);
-     
+        
         % remove data marked manually
         [EEG, TMPREJ] = cleanCuts(EEG, fullfile(Source_Cuts, Filename_Cuts));
         
@@ -75,6 +76,7 @@ for Indx_T = 1:numel(Tasks)
         EEG = pop_reref(EEG, []);
         
         % run ICA (takes a while)
+        %         EEG = pop_runica(EEG, 'runica', 'extended', [1]);
         EEG = pop_runica(EEG, 'runica');
         
         % save new dataset

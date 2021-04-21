@@ -11,7 +11,7 @@ Paths = struct(); % I make structs of variables so they don't flood the workspac
 Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
-Paths.Datasets ='E:\Data\Raw'; % where the raw data is saved (split by participant)
+Paths.Datasets ='D:\LSM\Data\Raw'; % where the raw data is saved (split by participant)
 Paths.Preprocessed = 'E:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
 
 
@@ -60,28 +60,14 @@ Parameters.Cutting.hp_stopband = 0.25; % high pass filter gradual roll-off to th
 % Power: starting data for properly cleaned wake data
 Parameters.Power.fs = 250; % new sampling rate
 Parameters.Power.lp = 40; % low pass filter
-Parameters.Power.lp_final = 40; % low pass filter
 Parameters.Power.hp = 0.5; % high pass filter
 Parameters.Power.hp_stopband = 0.25; % high pass filter gradual roll-off
 
-% Power: starting data for properly cleaned wake data
-Parameters.Power2.fs = 500; % new sampling rate
-Parameters.Power2.lp = 100; % low pass filter
-Parameters.Power2.lp_final = 40; % low pass filter
-Parameters.Power2.hp = 0.5; % high pass filter
-Parameters.Power2.hp_stopband = 0.25; % high pass filter gradual roll-off
-
 % ICA: heavily filtered data for getting ICA components
-Parameters.ICA.fs = 500; % new sampling rate
-Parameters.ICA.lp = 100; % low pass filter
+Parameters.ICA.fs = 250; % new sampling rate
+Parameters.ICA.lp = 40; % low pass filter
 Parameters.ICA.hp = 2.5; % high pass filter
 Parameters.ICA.hp_stopband = 1.5; % high pass filter gradual roll-off
-
-% ICA: heavily filtered data for getting ICA components
-Parameters.ICA2.fs = 250; % new sampling rate
-Parameters.ICA2.lp = 40; % low pass filter
-Parameters.ICA2.hp = 2.5; % high pass filter
-Parameters.ICA2.hp_stopband = 1.5; % high pass filter gradual roll-off
 
 % Scoring: has special script for running this
 Parameters.Scoring.fs = 128;
