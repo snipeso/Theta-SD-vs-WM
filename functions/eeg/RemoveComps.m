@@ -6,6 +6,12 @@ clc
 
 if ~Automate
     % open interface for selecting components
+    %     pop_eegplot(EEG, 0, 'reject', 0)
+    Pix = get(0,'screensize');
+    tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
+    eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 10, 'dispchans', 35, ...
+        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
+        'limits', [EEG.xmin EEG.xmax]*1000);
     pop_selectcomps(EEG, 1:35);
     
     disp('press enter to proceed')
@@ -17,6 +23,7 @@ end
 
 badcomps = find(EEG.reject.gcompreject); % get indexes of selected components
 clc
+close all
 
 if ~Automate % TODO: check if this really needs to happen after identifying "badcomps"
     
@@ -56,6 +63,7 @@ if CheckOutput
     %             'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97])
     %
     %     else % if there's not enough space for plotting 200s, then just look at the whole file
+    
     eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],  'eloc_file', Data.chanlocs)
     eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
