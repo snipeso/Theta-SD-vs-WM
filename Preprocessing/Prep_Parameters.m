@@ -12,6 +12,7 @@ Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
 Paths.Datasets ='D:\LSM\Data\Raw'; % where the raw data is saved (split by participant)
+% Paths.Preprocessed = 'D:\LSM\Data\Preprocessed';
 Paths.Preprocessed = 'E:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
 
 

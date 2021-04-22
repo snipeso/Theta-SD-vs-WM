@@ -13,19 +13,19 @@ ChanLabels = {EEG.chanlocs.labels}; % list of channel labels
 
 if isempty(cutData)
     return
-% elseif size(cutData, 1) ~= size(EEGnew.data, 1)
-%     error('not the same number of channels in cuts and in EEG data')
+    % elseif size(cutData, 1) ~= size(EEGnew.data, 1)
+    %     error('not the same number of channels in cuts and in EEG data')
 end
 
 % convert matrix of nans to "table" indicating time points that aren't nan
-Snippets = nandata2windows(cutData); 
+Snippets = nandata2windows(cutData);
 Snippets(:, 2:3) = Snippets(:, 2:3)/cut_srate; % convert into seconds
 
 % ignore segments that are part of removed channels
-Snippets(ismember(Snippets(:, 1), badchans), :) = []; 
+Snippets(ismember(Snippets(:, 1), badchans), :) = [];
 
 % group segments into clusters based on temporal overlap
-Clusters = segments2clusters(Snippets); 
+Clusters = segments2clusters(Snippets);
 
 
 
@@ -36,6 +36,10 @@ for Indx_C = 1:size(Clusters, 2)
     % select the column of data of the current cluster
     Start = round(EEGnew.srate*Clusters(Indx_C).Start); % convert back to points of current EEG data
     End = round(EEGnew.srate*Clusters(Indx_C).End);
+    
+    if End > size(EEGnew.data, 2)
+        End =  size(EEGnew.data, 2);
+    end
     
     EEGmini =  pop_select(EEG, 'point', [Start, End]);
     
@@ -58,6 +62,7 @@ for Indx_C = 1:size(Clusters, 2)
     
     % replace interpolated data into new data structure
     EEGnew.data(:, Start:End) = EEGmini.data;
+    
 end
 
 

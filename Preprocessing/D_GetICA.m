@@ -76,7 +76,6 @@ for Indx_T = 1:numel(Tasks)
         EEG = pop_reref(EEG, []);
         
         % run ICA (takes a while)
-        %         EEG = pop_runica(EEG, 'runica', 'extended', [1]);
         EEG = pop_runica(EEG, 'runica');
         
         % save new dataset
