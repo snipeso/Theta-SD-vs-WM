@@ -11,7 +11,6 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Tasks = {'Match2Sample'}; % select this if you only need to filter one folder
-
 Refresh = false;
 
 Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
@@ -60,12 +59,16 @@ for Indx_T = 1:numel(Tasks)
         % load dataset
         EEG = pop_loadset('filepath', Source, 'filename', Filename_Source);
         
+        % convert to double
+        EEG.data = double(EEG.data);
+        
         % remove data marked manually
         [EEG, TMPREJ] = cleanCuts(EEG, fullfile(Source_Cuts, Filename_Cuts));
         
         % add Cz
         EEG.data(end+1, :) = zeros(1, size(EEG.data, 2));
         EEG.chanlocs(end+1) = CZ;
+        EEG = eeg_checkset(EEG);
         
         % remove bad segments
         if ~isempty(TMPREJ)
@@ -76,7 +79,12 @@ for Indx_T = 1:numel(Tasks)
         EEG = pop_reref(EEG, []);
         
         % run ICA (takes a while)
-        EEG = pop_runica(EEG, 'runica');
+        Rank = sum(eig(cov(double(EEG.data'))) > 1E-7);
+        if Rank ~= size(EEG.data, 1)
+            warning(['Applying PCA reduction for ', Filename_Source])
+        end
+        
+        EEG = pop_runica(EEG, 'runica', 'pca', Rank);
         
         % save new dataset
         pop_saveset(EEG, 'filename', Filename_Destination, ...

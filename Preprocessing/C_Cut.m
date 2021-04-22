@@ -21,8 +21,8 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
-% Filename = 'P15_SpFT_Baseline_Cutting.set'; % choose this if you want to clean a specific file
-% Folder = 'SpFT';
+Filename = 'P01_Fixation_MainPre_Cutting.set'; % choose this if you want to clean a specific file
+Folder = 'Fixation';
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'New_Cuts'; % location where to save cuts

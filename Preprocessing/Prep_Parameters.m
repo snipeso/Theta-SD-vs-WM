@@ -65,8 +65,8 @@ Parameters.Power.hp = 0.5; % high pass filter
 Parameters.Power.hp_stopband = 0.25; % high pass filter gradual roll-off
 
 % ICA: heavily filtered data for getting ICA components
-Parameters.ICA.fs = 250; % new sampling rate
-Parameters.ICA.lp = 40; % low pass filter
+Parameters.ICA.fs = 500; % new sampling rate
+Parameters.ICA.lp = 100; % low pass filter
 Parameters.ICA.hp = 2.5; % high pass filter
 Parameters.ICA.hp_stopband = 1.5; % high pass filter gradual roll-off
 

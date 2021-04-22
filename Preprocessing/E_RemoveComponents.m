@@ -10,10 +10,10 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data_Type = 'Power';
-% Filename = ['P18_Game_Baseline_ICA_Components.set'];
+% Filename = ['P18_Fixation_BaselinePost_ICA_Components.set'];
 % Task = 'Game';
-allTasks = {'Match2Sample', 'Music', 'SpFT', 'Game'};
-Filename = [];
+allTasks = {'Fixation'};
+% Filename = [];
 
 CheckOutput = true; % manually verify if selection was good at the end
 Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
