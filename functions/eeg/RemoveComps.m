@@ -13,7 +13,7 @@ if ~Automate
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
         'limits', [EEG.xmin EEG.xmax]*1000);
     pop_selectcomps(EEG, 1:35);
-    
+  
     disp('press enter to proceed')
     
     % wait, only proceed when prompted

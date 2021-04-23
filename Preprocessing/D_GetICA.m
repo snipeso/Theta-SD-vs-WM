@@ -10,7 +10,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Tasks = {'Match2Sample'}; % select this if you only need to filter one folder
+Tasks = {'Fixation'}; % select this if you only need to filter one folder
 Refresh = false;
 
 Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
@@ -62,7 +62,7 @@ for Indx_T = 1:numel(Tasks)
         % convert to double
         EEG.data = double(EEG.data);
         
-        % remove data marked manually
+        % interpote bad snippets and remove bad channels
         [EEG, TMPREJ] = cleanCuts(EEG, fullfile(Source_Cuts, Filename_Cuts));
         
         % add Cz
@@ -70,7 +70,7 @@ for Indx_T = 1:numel(Tasks)
         EEG.chanlocs(end+1) = CZ;
         EEG = eeg_checkset(EEG);
         
-        % remove bad segments
+        % remove bad segments in time
         if ~isempty(TMPREJ)
             EEG = eeg_eegrej(EEG, eegplot2event(TMPREJ, -1));
         end
