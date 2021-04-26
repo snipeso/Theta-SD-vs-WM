@@ -8,7 +8,7 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Task = 'Fixation';
-Refresh = true;
+Refresh = false;
 
 Data_Type = 'Power';
 
@@ -41,6 +41,11 @@ nFiles = numel(Files);
 for Indx_F = 1:nFiles
     
     Filename = Files{Indx_F};
+    NewFilename = [extractBefore(Filename, '_Clean'), '.mat'];
+    if ~Refresh && exist(fullfile(Destination, NewFilename), 'file')
+        disp(['***********', 'Already did ', Filename, '***********'])
+        continue
+    end
     EEG = pop_loadset('filepath', Source, 'filename', Filename);
     
     
@@ -95,7 +100,7 @@ for Indx_F = 1:nFiles
     
     Data = eeglab2fieldtrip(EEG, 'raw', 'none');
     
-    NewFilename = [extractBefore(Filename, '_Clean'), '.mat'];
+    
     save(fullfile(Destination, NewFilename), 'Data', '-v7.3');
     
 end

@@ -10,14 +10,14 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data_Type = 'Power';
-% Filename = ['P01_Fixation_Main7_ICA_Components.set'];
-% Task = 'Fixation';
+Filename = ['P10_Fixation_BaselinePost_ICA_Components.set'];
+Task = 'Fixation';
 % allTasks = {'Fixation', 'Standing', 'Oddball', 'Game'};
-Filename = [];
+% Filename = [];
 
 CheckOutput = true; % manually verify if selection was good at the end
 Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
-Refresh = false; % redo already done files
+Refresh = true; % redo already done files
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
