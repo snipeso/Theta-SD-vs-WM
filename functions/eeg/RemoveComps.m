@@ -6,23 +6,29 @@ clc
 
 if ~Automate
     % open interface for selecting components
-    %     pop_eegplot(EEG, 0, 'reject', 0)
     Pix = get(0,'screensize');
+    
+    % turn red all the components selected
     StandardColor = {[0.19608  0.19608  0.51765]};
-Colors = repmat(StandardColor, size(EEG.data, 1), 1);
-badcomps = find(EEG.reject.gcompreject); % get indexes of selected components
-Colors(badcomps) =  {[1, 0, 0]};
-
+    Colors = repmat(StandardColor, size(EEG.data, 1), 1);
+    Colors(find(EEG.reject.gcompreject)) =  {[1, 0, 0]};
+    
+    % plot in time all the components
     tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
     eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 10, 'dispchans', 35, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
         'color',Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
-    pop_selectcomps(EEG, 1:35);
-  
-    disp('press enter to proceed')
     
-    % wait, only proceed when prompted
-    pause
+    % if selection has problems, go over the components again
+    x = input('Is the comp selection ok? (y/n) ', 's');
+    if ~strcmp(x, 'y')
+        pop_selectcomps(EEG, 1:35);
+        
+        % wait, only proceed when prompted
+         disp('press enter to proceed')
+        pause
+    end
+    
     
 end
 
@@ -58,17 +64,7 @@ NewEEG = pop_eegfiltnew(NewEEG, [], Parameters.(Data_Type).lp); % for whatever r
 % plot outcome
 if CheckOutput
     Pix = get(0,'screensize');
-    
-    
-    %     PlotPoints = 100*EEG.srate:300*EEG.srate;
-    %     if size(NewEEG.data, 2)>PlotPoints(end)
-    %         eegplot(Data.data(:, PlotPoints), 'spacing', 20, 'srate', NewEEG.srate, ...
-    %             'winlength', 20, 'position',[0 0 Pix(3) Pix(4)*.97])
-    %         eegplot(NewEEG.data(:, 100*EEG.srate:300*EEG.srate),'spacing', 20, 'srate', NewEEG.srate, ...
-    %             'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97])
-    %
-    %     else % if there's not enough space for plotting 200s, then just look at the whole file
-    
+
     eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],  'eloc_file', Data.chanlocs)
     eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
