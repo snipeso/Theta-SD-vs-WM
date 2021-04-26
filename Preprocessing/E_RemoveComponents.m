@@ -10,10 +10,10 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data_Type = 'Power';
-Filename = ['P01_Fixation_Main7_ICA_Components.set'];
-Task = 'Fixation';
+% Filename = ['P01_Fixation_Main7_ICA_Components.set'];
+% Task = 'Fixation';
 % allTasks = {'Fixation', 'Standing', 'Oddball', 'Game'};
-% Filename = [];
+Filename = [];
 
 CheckOutput = true; % manually verify if selection was good at the end
 Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
@@ -101,9 +101,9 @@ for Indx_F = 1:nFiles % loop through files in source folder
     
     % only first time, plot all the components open
     
-     pop_prop( EEG, 0, 1:35, gcbo, { 'freqrange', [1 40] });
-      disp('press enter to proceed')
-     pause
+    pop_prop( EEG, 0, 1:35, gcbo, { 'freqrange', [1 40] });
+    disp('press enter to proceed')
+    pause
     RemoveComps
     if Break
         break
