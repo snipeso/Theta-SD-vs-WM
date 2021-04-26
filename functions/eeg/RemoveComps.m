@@ -8,10 +8,15 @@ if ~Automate
     % open interface for selecting components
     %     pop_eegplot(EEG, 0, 'reject', 0)
     Pix = get(0,'screensize');
+    StandardColor = {[0.19608  0.19608  0.51765]};
+Colors = repmat(StandardColor, size(EEG.data, 1), 1);
+badcomps = find(EEG.reject.gcompreject); % get indexes of selected components
+Colors(badcomps) =  {[1, 0, 0]};
+
     tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
     eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 10, 'dispchans', 35, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
-        'limits', [EEG.xmin EEG.xmax]*1000);
+        'color',Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
     pop_selectcomps(EEG, 1:35);
   
     disp('press enter to proceed')
