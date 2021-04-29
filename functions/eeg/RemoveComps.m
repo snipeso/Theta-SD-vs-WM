@@ -69,7 +69,8 @@ if CheckOutput
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],  'eloc_file', Data.chanlocs)
     eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], 'eloc_file', NewEEG.chanlocs,  'winrej',  TMPREJ)
-    %     end
+
+    PlotSpectopo(NewEEG, 100, 200);
     
     pause(5) % wait a little so person can look
     x = input('Is the file ok? (y/n/s) ', 's');

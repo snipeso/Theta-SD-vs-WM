@@ -73,6 +73,9 @@ rmCh(EEG.CutFilepath, EEG_Channels.notEEG)
 % open the window for cleaning the data
 markData(EEG)  % rerun this every time you want to see updates on removed channels and segments
 
+EEGr = pop_reref(EEG, []);
+PlotSpectopo(EEGr, 100, 200);
+
 %% remove or restore a whole channel
 %%% Use these to mark whole channels to be removed; sometimes this is a
 %%% trial and error process, so it helps to write out the variable Ch
