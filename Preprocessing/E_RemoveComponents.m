@@ -10,7 +10,7 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data_Type = 'Power';
-% Filename = ['P10_Fixation_BaselinePost_ICA_Components.set'];
+% Filename = ['P09_Oddball_Main7_ICA_Components.set'];
 % Task = 'Fixation';
 % allTasks = {'Fixation', 'Standing', 'Oddball', 'Game'};
 Filename = [];
@@ -23,8 +23,8 @@ Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
 Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
 
-IC_Threshold = 0.8; % %confidence of automatic IC classifier in determining a non-brain artifact
-IC_Max = 35;
+IC_Threshold = 0.2; % %confidence of automatic IC classifier in determining a brain artifact
+IC_Max = 40;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

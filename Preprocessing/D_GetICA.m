@@ -84,7 +84,11 @@ for Indx_T = 1:numel(Tasks)
             warning(['Applying PCA reduction for ', Filename_Source])
         end
         
+        % calculate components
         EEG = pop_runica(EEG, 'runica', 'pca', Rank);
+        
+        % classify components
+        EEG = iclabel(EEG);
         
         % save new dataset
         pop_saveset(EEG, 'filename', Filename_Destination, ...

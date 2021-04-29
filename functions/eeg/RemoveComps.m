@@ -15,7 +15,9 @@ if ~Automate
         end
         
         % mark as bad any "non brain" artifact with a confidence > IC_Threshold
-        EEG.reject.gcompreject = max(EEG.etc.ic_classification.ICLabel.classifications(:, 2:end)') > IC_Threshold;
+        %         EEG.reject.gcompreject = max(EEG.etc.ic_classification.ICLabel.classifications(:, 2:end)') > IC_Threshold;
+        % mark as bad anything with brain < .
+        EEG.reject.gcompreject = EEG.etc.ic_classification.ICLabel.classifications(:, 1)' < IC_Threshold;
         EEG.reject.gcompreject(IC_Max+1:end) = 0;
     end
     
@@ -29,20 +31,22 @@ if ~Automate
     
     % plot in time all the components
     tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
-    eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 10, 'dispchans', 35, ...
+    eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 10, 'dispchans', IC_Max, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
         'color',Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
     
     % if selection has problems, go over the components again
-    x = input('Is the comp selection ok? (y/ or max comp to plot) ', 's');
-    if ~isnan(str2double(x))
-        pop_prop( EEG, 0, 1:str2double(x), gcbo, { 'freqrange', [1 40] });
+    y = 'y';
+    n = 'n';
+    x = input('Is the comp selection ok? (y/n/ or list of comps to plot) ');
+    if isnumeric(x)
+        pop_prop( EEG, 0, x, gcbo, { 'freqrange', [1 40] });
         
         % wait, only proceed when prompted
         disp('press enter to proceed')
         pause
     elseif ~strcmp(x, 'y')
-         pop_selectcomps(EEG, 1:IC_Max);
+        pop_selectcomps(EEG, 1:IC_Max);
         
         % wait, only proceed when prompted
         disp('press enter to proceed')
@@ -94,7 +98,7 @@ if CheckOutput
     PlotSpectopo(EEGTMP, 1, EEGTMP.xmax);
     
     pause(5) % wait a little so person can look
-    x = input('Is the file ok? (y/n/s) ', 's');
+    x = input('Is the file ok? (y/n/s/redo)', 's');
 else
     x = 'auto';
 end
@@ -136,7 +140,7 @@ switch x
     case 'redo'
         delete(fullfile(Source_Comps, Filename_Comps))
         disp(['***********', 'Deleting ', Filename_Destination, '***********'])
-        close all
+%         close all
         Break = true;
     otherwise
         % re-do
