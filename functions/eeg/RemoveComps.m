@@ -5,6 +5,20 @@ close all
 clc
 
 if ~Automate
+    
+    % automatically identify bad components if there are no other components
+    if ~any(EEG.reject.gcompreject)
+        
+        % run classification
+        if ~isfield(EEG.etc, 'ic_classification')
+            EEG = iclabel(EEG);
+        end
+        
+        % mark as bad any "non brain" artifact with a confidence > IC_Threshold
+        EEG.reject.gcompreject = max(EEG.etc.ic_classification.ICLabel.classifications(:, 2:end)') > IC_Threshold;
+        EEG.reject.gcompreject(IC_Max+1:end) = 0;
+    end
+    
     % open interface for selecting components
     Pix = get(0,'screensize');
     
@@ -20,12 +34,18 @@ if ~Automate
         'color',Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
     
     % if selection has problems, go over the components again
-    x = input('Is the comp selection ok? (y/n) ', 's');
-    if ~strcmp(x, 'y')
-        pop_selectcomps(EEG, 1:35);
+    x = input('Is the comp selection ok? (y/ or max comp to plot) ', 's');
+    if ~isnan(str2double(x))
+        pop_prop( EEG, 0, 1:str2double(x), gcbo, { 'freqrange', [1 40] });
         
         % wait, only proceed when prompted
-         disp('press enter to proceed')
+        disp('press enter to proceed')
+        pause
+    elseif ~strcmp(x, 'y')
+         pop_selectcomps(EEG, 1:IC_Max);
+        
+        % wait, only proceed when prompted
+        disp('press enter to proceed')
         pause
     end
     
@@ -64,13 +84,14 @@ NewEEG = pop_eegfiltnew(NewEEG, [], Parameters.(Data_Type).lp); % for whatever r
 % plot outcome
 if CheckOutput
     Pix = get(0,'screensize');
-
+    
     eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],  'eloc_file', Data.chanlocs)
     eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], 'eloc_file', NewEEG.chanlocs,  'winrej',  TMPREJ)
-
-    PlotSpectopo(NewEEG, 100, 200);
+    
+    [EEGTMP, ~] = eeg_eegrej(NewEEG,eegplot2event(TMPREJ, -1));
+    PlotSpectopo(EEGTMP, 1, EEGTMP.xmax);
     
     pause(5) % wait a little so person can look
     x = input('Is the file ok? (y/n/s) ', 's');

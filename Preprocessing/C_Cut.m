@@ -21,8 +21,8 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % 
-% Filename = 'P19_LAT_BaselineComp_Cutting.set'; % choose this if you want to clean a specific file
-% Folder = 'LAT';
+Filename = 'P04_Match2Sample_Session2_Cutting.set'; % choose this if you want to clean a specific file
+Folder = 'Match2Sample';
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'New_Cuts'; % location where to save cuts
@@ -73,7 +73,12 @@ rmCh(EEG.CutFilepath, EEG_Channels.notEEG)
 % open the window for cleaning the data
 markData(EEG)  % rerun this every time you want to see updates on removed channels and segments
 
-EEGr = pop_reref(EEG, []);
+  EEGr = EEG;
+try
+   EEGr = pop_select(EEGr, 'nochannel', m.badchans);
+end
+
+EEGr = pop_reref(EEGr, []);
 PlotSpectopo(EEGr, 100, 200);
 
 %% remove or restore a whole channel

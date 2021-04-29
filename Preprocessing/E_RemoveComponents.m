@@ -17,11 +17,14 @@ Filename = [];
 
 CheckOutput = true; % manually verify if selection was good at the end
 Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
-Refresh = true; % redo already done files
+Refresh = false; % redo already done files
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
 Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
+
+IC_Threshold = 0.8; % %confidence of automatic IC classifier in determining a non-brain artifact
+IC_Max = 35;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -98,12 +101,10 @@ for Indx_F = 1:nFiles % loop through files in source folder
     Data = pop_reref(Data, []);
     
     %%% interface for selecting components
-    
-    % only first time, plot all the components open
-    
-    pop_prop( EEG, 0, 1:35, gcbo, { 'freqrange', [1 40] });
-    disp('press enter to proceed')
-    pause
+    %     % only first time, plot all the components open
+    %     pop_prop( EEG, 0, 1:35, gcbo, { 'freqrange', [1 40] });
+    %     disp('press enter to proceed')
+    %     pause
     RemoveComps
     if Break
         break

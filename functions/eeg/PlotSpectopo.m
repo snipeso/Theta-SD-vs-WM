@@ -25,7 +25,7 @@ for Indx_B = 1:size(Bands, 1)
     F = dsearchn( Freqs', Bands(Indx_B, :)');
     Power = mean(FFT(:, F(1):F(2)), 2);
     subplot(2, 2, Indx_B)
-    topoplot(log(Power), EEG.chanlocs, 'style', 'map', 'headrad', 'rim', 'electrodes', 'labels');
+    topoplot(log(Power), EEG.chanlocs, 'style', 'map', 'headrad', 'rim', 'electrodes', 'labels', 'maplimits', 'maxmin');
     colorbar
     colormap(Colormap)
     title(BandLabels{Indx_B})
