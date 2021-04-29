@@ -124,6 +124,8 @@ if isnumeric(x)
 end
 
 % remove bad channels
+badchans_postICA = []; %#ok<NASGU>
+load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA')
 NewEEG = pop_select(NewEEG, 'nochannel', badchans_postICA);
 
 % interpolate channels
@@ -172,3 +174,7 @@ switch x
         RemoveComps
 end
 
+
+% To fix if removed wrong channel, run the following, and rerun this section
+% rsCh_postICA(fullfile(Source_Cuts, Filename_Cuts), [])
+% CheckOutput = false; 
