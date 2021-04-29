@@ -1,4 +1,4 @@
-function rsCh(CutFilepath, Ch)
+function rsCh_postICA(CutFilepath, Ch)
 % function for C_Cuts in preprocessing to restore a channel
 
 if any(Ch < 1) || any(Ch > 128)
@@ -8,7 +8,7 @@ end
 m = matfile(CutFilepath,'Writable',true);
 
 Content = whos(m);
-if ismember('badchans', {Content.name})
-   m.badchans(ismember(m.badchans, Ch)) = [];
+if ismember('badchans_postICA', {Content.name})
+   m.badchans_postICA(ismember(m.badchans_postICA, Ch)) = [];
 end
     

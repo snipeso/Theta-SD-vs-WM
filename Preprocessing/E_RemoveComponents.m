@@ -9,15 +9,19 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Data_Type = 'Power';
-% Filename = ['P09_Oddball_Main7_ICA_Components.set'];
-% Task = 'Fixation';
+
 % allTasks = {'Fixation', 'Standing', 'Oddball', 'Game'};
-Filename = [];
+% Filename = [];
+
+Data_Type = 'Power';
+Filename = ['P05_Match2Sample_Session2_ICA_Components.set'];
+FN = split(Filename, '_');
+Task = FN{2};
+
 
 CheckOutput = true; % manually verify if selection was good at the end
 Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
-Refresh = false; % redo already done files
+Refresh = true; % redo already done files
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
@@ -29,6 +33,13 @@ IC_Max = 40;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ICA_Folder = 'ICA';
+StandardColor = {[0.19608  0.19608  0.51765]}; % for plotting
+
+% standard responses for user inputs
+redo = 'redo';
+s = 's';
+y = 'y';
+n = 'n';
 
 % choose a random task
 if ~exist('Task', 'var') || isempty(Task)
@@ -82,7 +93,6 @@ for Indx_F = 1:nFiles % loop through files in source folder
     
     
     %%% Get data ready
-    
     % load data
     Data = pop_loadset('filepath', Source_Data, 'filename', Filename_Data); % this is the data where you want to remove the components
     clc
@@ -101,12 +111,8 @@ for Indx_F = 1:nFiles % loop through files in source folder
     Data = pop_reref(Data, []);
     
     %%% interface for selecting components
-    %     % only first time, plot all the components open
-    %     pop_prop( EEG, 0, 1:35, gcbo, { 'freqrange', [1 40] });
-    %     disp('press enter to proceed')
-    %     pause
     RemoveComps
-    if Break
+    if Break % this is important to let the script loop when running automatically on all the files
         break
     end
     

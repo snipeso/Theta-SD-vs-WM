@@ -21,8 +21,9 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % 
-Filename = 'P10_Match2Sample_Session2_Cutting.set'; % choose this if you want to clean a specific file
-Folder = 'Match2Sample';
+Filename = 'P12_Match2Sample_Session2_Cutting.set'; % choose this if you want to clean a specific file
+FN = split(Filename, '_');
+Folder = FN{2};
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'New_Cuts'; % location where to save cuts
