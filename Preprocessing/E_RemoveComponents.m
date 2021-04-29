@@ -9,14 +9,15 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Data_Type = 'Power';
 
 % allTasks = {'Fixation', 'Standing', 'Oddball', 'Game'};
-% Filename = [];
+Filename = [];
 
-Data_Type = 'Power';
-Filename = ['P05_Match2Sample_Session2_ICA_Components.set'];
-FN = split(Filename, '_');
-Task = FN{2};
+
+% Filename = ['P05_Match2Sample_Session2_ICA_Components.set'];
+% FN = split(Filename, '_');
+% Task = FN{2};
 
 
 CheckOutput = true; % manually verify if selection was good at the end
