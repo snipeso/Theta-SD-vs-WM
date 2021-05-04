@@ -34,6 +34,11 @@ if ~Automate
     
     % if selection has problems, go over the components again
     x = input('Is the comp selection ok? (y/n/ or list of comps to plot) ');
+    
+    if isempty(x)
+        x = y;
+    end
+    
     if isnumeric(x)
         pop_prop( EEG, 0, x, gcbo, { 'freqrange', [1 40] });
         
@@ -106,13 +111,14 @@ if CheckOutput
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], 'eloc_file', ...
         NewEEG.chanlocs,  'winrej',  TMPREJ, 'color', Colors)
     
-    % plot standard power bands topography to detect final outliers
+    % plot standard power bands topography to detect final outliers in
+    % clean parts of data
     [EEGTMP, ~] = eeg_eegrej(NewEEG,eegplot2event(TMPREJ, -1));
     EEGTMP = pop_select(EEGTMP, 'nochannel', badchans_postICA); % remove bad channels from topography
     PlotSpectopo(EEGTMP, 1, EEGTMP.xmax);
     
     pause(5) % wait a little so person can look
-    x = input('Is the file ok? (y/n/s/redo/channel list)');
+    x = input('Is the file ok? (y/n/s/redo/channel list) ');
 else
     x = 'auto';
 end
