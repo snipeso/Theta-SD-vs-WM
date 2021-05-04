@@ -14,15 +14,13 @@ Data_Type = 'Power';
 % allTasks = {'Fixation', 'Standing', 'Oddball', 'Game'};
 Filename = [];
 
-
-% Filename = ['P05_Match2Sample_Session2_ICA_Components.set'];
+% Filename = 'P13_Standing_Main2_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 
-
 CheckOutput = true; % manually verify if selection was good at the end
 Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
-Refresh = true; % redo already done files
+Refresh = false; % redo already done files
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'

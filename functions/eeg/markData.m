@@ -4,7 +4,7 @@ function markData(EEG)
 % indicate snippets to interpolate. Red channels indicate channels to
 % remove.
 
-close all
+% close all
 
 CURRENTSET = 1;
 ALLEEG(1) = EEG;

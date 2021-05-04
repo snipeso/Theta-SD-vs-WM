@@ -19,6 +19,8 @@ Paths.Preprocessed = 'E:\Data\Preprocessed'; % where the preprocessed data gets 
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis, 'functions','general'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
+addpath(fullfile(Paths.Analysis, 'functions','eeg'))
+run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
 
 % add external functions
 % run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))

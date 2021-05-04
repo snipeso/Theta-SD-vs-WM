@@ -21,7 +21,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % 
-Filename = 'P12_Match2Sample_Session2_Cutting.set'; % choose this if you want to clean a specific file
+Filename = 'P18_SpFT_Baseline_Cutting.set'; % choose this if you want to clean a specific file
 FN = split(Filename, '_');
 Folder = FN{2};
 
