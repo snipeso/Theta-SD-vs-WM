@@ -33,26 +33,28 @@ for Indx_B = 1:size(Bands, 1)
     
 end
 
-R = corr(Data');
 
-X = [EEG.chanlocs.X];
-Y = [EEG.chanlocs.Y];
-Z = [EEG.chanlocs.Z];
-Distances = sqrt((X-X').^2+(Y-Y').^2+(Z-Z').^2);
-
-% get mean of all neighbors
-R(Distances>60) = nan;
-Mean = nanmean(abs(R))';
-
-% black out all "non neighbors"
-R(Distances>60) = 1;
-
-
-figure('units','normalized','outerposition',[0 0 .75 1])
-imagesc([zeros(size(R, 1), 1), Mean,  zeros(size(R, 1), 1), abs(R)])
-caxis([0 .75])
-yticks(1:size(EEG.data,1))
-yticklabels({EEG.chanlocs.labels})
-colormap(flip(colorcet('fire')))
-colorbar
-axis square
+% Scripts for plotting correlation of data. It doesnt help much.
+% R = corr(Data');
+% 
+% X = [EEG.chanlocs.X];
+% Y = [EEG.chanlocs.Y];
+% Z = [EEG.chanlocs.Z];
+% Distances = sqrt((X-X').^2+(Y-Y').^2+(Z-Z').^2);
+% 
+% % get mean of all neighbors
+% R(Distances>60) = nan;
+% Mean = nanmean(abs(R))';
+% 
+% % black out all "non neighbors"
+% R(Distances>60) = 1;
+% 
+% 
+% figure('units','normalized','outerposition',[0 0 .75 1])
+% imagesc([zeros(size(R, 1), 1), Mean,  zeros(size(R, 1), 1), abs(R)])
+% caxis([0 .75])
+% yticks(1:size(EEG.data,1))
+% yticklabels({EEG.chanlocs.labels})
+% colormap(flip(colorcet('fire')))
+% colorbar
+% axis square
