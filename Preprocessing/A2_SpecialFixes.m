@@ -1,0 +1,13 @@
+% script for fixing up indivudal eeg files that were saved in same file.
+% First open the set file in eeglab, then run these lines with the
+% appropriate cutoffs.
+
+EEG1 = pop_select(EEG, 'time', [130, 520]);
+
+Filename = EEG.filename;
+Destination = 'G:\LSM\Data\Raw\P10\Fixation\MainPost\EEG';
+ pop_saveset(EEG1, 'filename', Filename, ...
+            'filepath', Destination, ...
+            'check', 'on', ...
+            'savemode', 'onefile', ...
+            'version', '7.3');
