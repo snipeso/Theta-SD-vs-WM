@@ -20,10 +20,9 @@ close all
 Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % 
-Filename = 'P18_SpFT_Baseline_Cutting.set'; % choose this if you want to clean a specific file
-FN = split(Filename, '_');
-Folder = FN{2};
+% %
+% Filename = 'P03_LAT_Session2Comp_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'New_Cuts'; % location where to save cuts
@@ -32,6 +31,9 @@ Old_Destination =  'Old_Cuts'; % 'Old_Cuts'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if exist('Filename', 'var') && ~isempty(Filename)
+    FN = split(Filename, '_');
+    Folder = FN{2};
+    
     Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder, Folder);
     Randomize = false;
@@ -74,9 +76,9 @@ rmCh(EEG.CutFilepath, EEG_Channels.notEEG)
 % open the window for cleaning the data
 markData(EEG)  % rerun this every time you want to see updates on removed channels and segments
 
-  EEGr = EEG;
+EEGr = EEG;
 try
-   EEGr = pop_select(EEGr, 'nochannel', m.badchans);
+    EEGr = pop_select(EEGr, 'nochannel', m.badchans);
 end
 
 EEGr = pop_reref(EEGr, []);
