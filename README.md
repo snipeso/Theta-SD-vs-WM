@@ -1,25 +1,13 @@
-# LSM-analysis
-This repository contains the complete analysis used for the LSM experiment. 
+# Paper 1
+This repository contains the complete analysis used for paper XXX.
  
 ## Content
-### eeg
-Contains preprocessing scripts, then scripts for analyzing EEG data in different ways. 
-
-### functions
-Contains subfolders with different sets of functions used by other scripts. Some are more general use than others. 
-
-### questionnaires
-Contains scripts for analyzing all the questionnaire data.
-
-### statistics
-Contains scripts for doing statistics on the data. 
-
-### tasks
-Contains scripts for running analyses on the tasks.
+### Preprocessing
 
 
 ## Setup
-Scripts in "eeg", "questionnaires" and "tasks" can be run independently. Scripts in "statistics" are usually done on an aggregate from any or all of the three.
+1. Download EEGLAB
+    - in the "pop_loadset" function, disable line 117:  fprintf('pop_loadset(): loading file %s ...\n', filename); so that you can't see which file is being loaded during the randomized file cleaning
 
 ### External scripts
 
@@ -45,6 +33,6 @@ Task output is also saved as a JSON, but the scripts here will gladly convert th
 #### Reference papers
 
 #### External functions
- sigstar: 
+ sigstar: Rob Campbell (2020). raacampbell/sigstar (https://www.github.com/raacampbell/sigstar), GitHub. Retrieved April 27, 2020.
 
-Rob Campbell (2020). raacampbell/sigstar (https://www.github.com/raacampbell/sigstar), GitHub. Retrieved April 27, 2020.
+ colorcet: https://colorcet.holoviz.org/ 

@@ -11,16 +11,18 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-% allTasks = {'Fixation', 'Standing', 'Oddball', 'Game'};
+allTasks = {'SpFT'};
 Filename = [];
+Refresh = false; % redo already done files
 
-% Filename = 'P13_Standing_Main2_ICA_Components.set';
+% Filename = 'P03_Music_Session2_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
+% Refresh = true;
 
 CheckOutput = true; % manually verify if selection was good at the end
 Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
-Refresh = false; % redo already done files
+
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
