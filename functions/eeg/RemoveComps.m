@@ -15,6 +15,7 @@ if ~Automate
         end
         
         % mark as bad anything with brain < threshold
+      
         EEG.reject.gcompreject = EEG.etc.ic_classification.ICLabel.classifications(:, 1)' < IC_Threshold;
         EEG.reject.gcompreject(IC_Max+1:end) = 0;
     end
@@ -23,12 +24,13 @@ if ~Automate
     Pix = get(0,'screensize');
     
     % turn red all the bad components
-    Colors = repmat(StandardColor, size(EEG.data, 1), 1);
+    nComps = size(EEG.icaweights,1);
+    Colors = repmat(StandardColor, nComps, 1);
     Colors(find(EEG.reject.gcompreject)) =  {[1, 0, 0]}; %#ok<FNDSB>
     
     % plot in time all the components
-    tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
-    eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 7, 'dispchans', IC_Max, ...
+    tmpdata = eeg_getdatact(EEG, 'component', 1:nComps);
+    eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 5, 'dispchans', IC_Max, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
         'color',Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
     
@@ -41,6 +43,12 @@ if ~Automate
     
     if isnumeric(x)
         pop_prop( EEG, 0, x, gcbo, { 'freqrange', [1 40] });
+        
+        
+        % print IC weights to figure out what went wrong with classification
+        %  classes: {'Brain'  'Muscle'  'Eye'  'Heart'  'Line Noise'  'Channel Noise'  'Other'}
+        clc
+        disp([[1:nComps]', EEG.etc.ic_classification.ICLabel.classifications])
         
         % wait, only proceed when prompted
         disp('press enter to proceed')
