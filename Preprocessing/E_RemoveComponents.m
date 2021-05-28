@@ -5,17 +5,20 @@ clear
 eeglab % needs to be run every time to clear global variables
 close all
 clc
+
+StartTic = tic;
+
 Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data_Type = 'Power';
 
-% allTasks = {'SpFT'};
+% allTasks = {'MWT'};
 Filename = [];
 Refresh = false; % redo already done files
 
-% Filename = 'P13_Standing_MainPost_ICA_Components.set';
+% Filename = 'P10_SpFT_Session2_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;
@@ -28,8 +31,10 @@ Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
 Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
 
-IC_Threshold = 0.1; % %confidence of automatic IC classifier in determining a brain artifact
-IC_Max = 50;
+IC_Brain_Threshold = 0.1; % %confidence of automatic IC classifier in determining a brain artifact
+IC_Other_Threshold = 0.6; % %confidence of automatic IC classifier in determining a brain artifact
+
+IC_Max = 40;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

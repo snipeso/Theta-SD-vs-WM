@@ -16,12 +16,12 @@
 %%% select a file from your chosen folder that hasn't been marked yet.
 clear
 clc
-close all
+% close all
 Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %
-% Filename = 'P03_LAT_Session2Comp_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+Filename = 'P10_Match2Sample_Session2_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)

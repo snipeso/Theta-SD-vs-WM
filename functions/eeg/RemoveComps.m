@@ -15,8 +15,11 @@ if ~Automate
         end
         
         % mark as bad anything with brain < threshold
-      
-        EEG.reject.gcompreject = EEG.etc.ic_classification.ICLabel.classifications(:, 1)' < IC_Threshold;
+        EEG.reject.gcompreject = EEG.etc.ic_classification.ICLabel.classifications(:, 1)' < IC_Brain_Threshold;
+        
+        % switch to good any of the bad channels with "other" too high
+        EEG.reject.gcompreject(EEG.reject.gcompreject & EEG.etc.ic_classification.ICLabel.classifications(:, end)' > IC_Other_Threshold) = 0;
+        
         EEG.reject.gcompreject(IC_Max+1:end) = 0;
     end
     
@@ -161,7 +164,7 @@ switch x
         disp(['***********', 'Finished ', Filename_Destination, '***********'])
         close all
         Break = true;
-        
+        disp(['Completed in: ', num2str(toc(StartTic)/60)])
     case 's'
         % skip this file, do another one
         Break = false;
@@ -183,6 +186,7 @@ switch x
         disp(['***********', 'Deleting ', Filename_Destination, '***********'])
         close all
         Break = true;
+          disp(toc(StartTic))
     otherwise
         % re-do
         RemoveComps
