@@ -11,8 +11,7 @@ Bands = [
 BandLabels = {'delta', 'theta', 'alpha', 'beta'};
 Freqs = 1:.5:30;
 % 
-Colormap = parula;
-% 
+ 
 Data = EEG.data(:, round(Start*EEG.srate):round(Stop*EEG.srate));
 % 
 % 
@@ -25,9 +24,10 @@ for Indx_B = 1:size(Bands, 1)
     F = dsearchn( Freqs', Bands(Indx_B, :)');
     Power = mean(FFT(:, F(1):F(2)), 2);
     subplot(2, 2, Indx_B)
-    topoplot(log(Power), EEG.chanlocs, 'style', 'map', 'headrad', 'rim', 'electrodes', 'labels', 'maplimits', 'maxmin');
+    topoplot(log(Power), EEG.chanlocs, 'style', 'map', ...
+        'headrad', 'rim', 'electrodes', 'labels', 'maplimits', 'maxmin');
     colorbar
-    colormap(Colormap)
+    colormap(parula)
     title(BandLabels{Indx_B})
     
     

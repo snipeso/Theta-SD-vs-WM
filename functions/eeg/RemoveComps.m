@@ -4,24 +4,30 @@
 close all
 clc
 
-if ~Automate
+% automatically identify bad components if there no components selected
+if ~any(EEG.reject.gcompreject)
+    disp('********** Automatically selecting components to remove **********')
     
-    % automatically identify bad components if there are no other components
-    if ~any(EEG.reject.gcompreject)
-        
-        % run classification
-        if ~isfield(EEG.etc, 'ic_classification') % this is for those hundred-odd files that got ICA components before I implemented this in part D
-            EEG = iclabel(EEG);
-        end
-        
-        % mark as bad anything with brain < threshold
-        EEG.reject.gcompreject = EEG.etc.ic_classification.ICLabel.classifications(:, 1)' < IC_Brain_Threshold;
-        
-        % switch to good any of the bad channels with "other" too high
-        EEG.reject.gcompreject(EEG.reject.gcompreject & EEG.etc.ic_classification.ICLabel.classifications(:, end)' > IC_Other_Threshold) = 0;
-        
-        EEG.reject.gcompreject(IC_Max+1:end) = 0;
+    % run classification if it doesn't exist
+    if ~isfield(EEG.etc, 'ic_classification') % this is for those hundred-odd files that got ICA components before I implemented this in part D
+        EEG = iclabel(EEG); % this is an EEGLAB function
     end
+    
+    % mark as bad anything with brain < threshold
+    EEG.reject.gcompreject = ...
+        EEG.etc.ic_classification.ICLabel.classifications(:, 1)' < IC_Brain_Threshold;
+    
+    % switch to good any of the bad channels with "other" too high
+    Other = EEG.reject.gcompreject & ...
+        EEG.etc.ic_classification.ICLabel.classifications(:, end)' > IC_Other_Threshold;
+    EEG.reject.gcompreject(Other) = 0;
+    
+    EEG.reject.gcompreject(IC_Max+1:end) = 0; % don't do anything to smaller components
+end
+
+
+%%% show components removed
+if CheckOutput
     
     % open interface for selecting components
     Pix = get(0,'screensize');
@@ -33,70 +39,26 @@ if ~Automate
     
     % plot in time all the components
     tmpdata = eeg_getdatact(EEG, 'component', 1:nComps);
-    eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 5, 'dispchans', IC_Max, ...
+    eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 5, 'dispchans', 40, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
         'color',Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
-    
-    % if selection has problems, go over the components again
-    x = input('Is the comp selection ok? (y/n/ or list of comps to plot) ');
-    
-    if isempty(x)
-        x = y;
-    end
-    
-    if isnumeric(x)
-        pop_prop( EEG, 0, x, gcbo, { 'freqrange', [1 40] });
-        
-        
-        % print IC weights to figure out what went wrong with classification
-        %  classes: {'Brain'  'Muscle'  'Eye'  'Heart'  'Line Noise'  'Channel Noise'  'Other'}
-        clc
-        disp([[1:nComps]', EEG.etc.ic_classification.ICLabel.classifications])
-        
-        % wait, only proceed when prompted
-        disp('press enter to proceed')
-        pause
-    elseif ~strcmp(x, 'y')
-        pop_selectcomps(EEG, 1:IC_Max);
-        
-        % wait, only proceed when prompted
-        disp('press enter to proceed')
-        pause
-    end
-    
-    
 end
 
-badcomps = find(EEG.reject.gcompreject); % get indexes of selected components
-clc
-close all
-
-if ~Automate % TODO: check if this really needs to happen after identifying "badcomps"
-    
-    % save dataset, now containing new components to remove
-    pop_saveset(EEG, 'filename', Filename_Comps, ...
-        'filepath', Source_Comps, ...
-        'check', 'on', ...
-        'savemode', 'onefile', ...
-        'version', '7.3');
-end
-
-
-%%
-% merge data with component structure
-NewEEG = EEG;
-NewEEG.data = Data.data;
-NewEEG.pnts = Data.pnts;
+%%% merge data with component structure
+NewEEG = EEG; % gets everything from IC structure
+NewEEG.data = Data.data; % replaces data
+NewEEG.pnts = Data.pnts; % replaces data related fields
 NewEEG.srate = Data.srate;
 NewEEG.xmax = Data.xmax;
 NewEEG.times = Data.times;
 NewEEG.event = Data.event;
 
-% remove components
+%%% remove components
+badcomps = find(EEG.reject.gcompreject); % get indexes of selected components
 NewEEG = pop_subcomp(NewEEG, badcomps);
 
-% low-pass filter
-NewEEG = pop_eegfiltnew(NewEEG, [], Parameters.(Data_Type).lp); % for whatever reason, sometimes ICA removal introduces high frequency noise
+% % low-pass filter
+% NewEEG = pop_eegfiltnew(NewEEG, [], Parameters.(Data_Type).lp); % for whatever reason, sometimes ICA removal introduces high frequency noise
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,15 +66,12 @@ NewEEG = pop_eegfiltnew(NewEEG, [], Parameters.(Data_Type).lp); % for whatever r
 % plot outcome
 if CheckOutput
     
-    % prepare plotting parameters
-    Pix = get(0,'screensize');
-    Colors = repmat(StandardColor, size(EEG.data, 1), 1);
-    
     % load post-ICA bad channels if they alread exist
     badchans_postICA = []; %#ok<NASGU>
     load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA')
     
     % color in red channels to remove after ICA
+    Colors = repmat(StandardColor, size(EEG.data, 1), 1);
     Colors(badchans_postICA) = {[1 0 0]};
     
     % plot pre and post data
@@ -124,70 +83,144 @@ if CheckOutput
     
     % plot standard power bands topography to detect final outliers in
     % clean parts of data
-    [EEGTMP, ~] = eeg_eegrej(NewEEG,eegplot2event(TMPREJ, -1));
+    [EEGTMP, ~] = eeg_eegrej(NewEEG, eegplot2event(TMPREJ, -1));
     EEGTMP = pop_select(EEGTMP, 'nochannel', badchans_postICA); % remove bad channels from topography
     PlotSpectopo(EEGTMP, 1, EEGTMP.xmax);
     
-    pause(5) % wait a little so person can look
-    x = input('Is the file ok? (y/n/s/redo/channel list) ');
+    % plot data as image to spot outliers
+    figure('units','normalized','outerposition',[0 .70 1 .35])
+    imagesc(abs(EEGTMP.data)); caxis([0 50]); colorbar
+    colormap(colorcet('L8'))
+    
+    %%%%%%%%%%%%%%%
+    %%% User input
+    
+    %%% Is component selection ok
+    % if selection has problems, go over the components again
+    clc
+    disp('Instructions: First check if any major noisy components were missed or miss-removed. If...')
+    disp('Comp selection is ok, type y and press enter, or just press enter')
+    disp('Some missing comps, make a list of all the bad comps, and then press enter. Must be at least 2')
+    disp('Its all terrible, type n and press enter')
+    disp('__________________________________________________________________________________________')
+    xComp = input('Is the COMPONENT selection ok? ');
+    
+    if isempty(xComp)
+        xComp = y;
+    end
+    
+    if isnumeric(xComp) % if list of components
+        
+        % plot single component windows
+        pop_prop(EEG, 0, xComp, gcbo, { 'freqrange', [1 40]});
+        
+        
+        % print IC weights to figure out what went wrong with classification
+        %  classes: {'Brain'  'Muscle'  'Eye'  'Heart'  'Line Noise'  'Channel Noise'  'Other'}
+        clc
+        disp([[1:nComps]', EEG.etc.ic_classification.ICLabel.classifications])
+        
+        % wait, only proceed when prompted
+        disp('press enter to proceed')
+        pause
+        
+        % save IC dataset, now containing new components to remove
+        pop_saveset(EEG, 'filename', Filename_Comps,  'filepath', Source_Comps, ...
+            'check', 'on', 'savemode', 'onefile', 'version', '7.3');
+        
+    elseif ~strcmp(xComp, 'y') % if answered n, or anything else
+        
+        pop_selectcomps(EEG, 1:IC_Max); % plot grid of all components
+        
+        % wait, only proceed when prompted
+        disp('press enter to proceed')
+        pause
+        
+        % save IC dataset, now containing new components to remove
+        pop_saveset(EEG, 'filename', Filename_Comps,  'filepath', Source_Comps, ...
+            'check', 'on', 'savemode', 'onefile', 'version', '7.3');
+    end
+    
+    %%% Is final product ok?
+    if strcmp(xComp, 'y') % if component selection was ok, see if final product is ok
+        clc
+        disp('Instructions: look at final EEG.')
+        disp('If all is good, type y and press enter')
+        disp('If you want to try comp selection again, type n')
+        disp('If its unfixable, or cutting was done wrong, type redo')
+        disp('If you dont want to deal with it now, press s')
+        disp('If its mostly fine, but you want to remove a few extra channels, just list them.')
+        xEEG = input('Is the EEG ok? (y/n/s/redo/channel list) ');
+        
+        % add new bad channels to the list
+        if isnumeric(xEEG)
+            rmCh_postICA(fullfile(Source_Cuts, Filename_Cuts), xEEG)
+            xEEG = 'y';
+        end
+    else
+        xEEG = 'n';
+    end
 else
-    x = 'auto';
+    xEEG = 'auto';
 end
 
-% add new bad channels to the list
-if isnumeric(x)
-    rmCh_postICA(fullfile(Source_Cuts, Filename_Cuts), x)
-    x = 'y';
-end
 
-% remove bad channels
-badchans_postICA = []; %#ok<NASGU>
-load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA')
-NewEEG = pop_select(NewEEG, 'nochannel', badchans_postICA);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% save or loop, depending on response
 
-% interpolate channels
-FinalChanlocs = StandardChanlocs;
-FinalChanlocs(ismember({StandardChanlocs.labels}, string(EEG_Channels.notEEG))) = [];
-FinalChanlocs(end+1) = CZ;
-NewEEG = pop_interp(NewEEG, FinalChanlocs);
-
-% save or loop, depending on response
-switch x
-    case 'y'
+% if it's good, interpolate bad channels and save
+if strcmp(xEEG, 'y') || strcmp(xEEG, 'auto')
+    
+        % remove bad channels
+        badchans_postICA = []; %#ok<NASGU>
+        load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA') % manually selected bad channels
+        
+        NotEEGCh = find(ismember({NewEEG.chanlocs.labels}, string(EEG_Channels.notEEG))); % remove channels that you don't want in final dataset
+        
+        NewEEG = pop_select(NewEEG, 'nochannel', [badchans_postICA, NotEEGCh]); 
+        
+        % interpolate channels
+        FinalChanlocs = StandardChanlocs;
+        FinalChanlocs(ismember({StandardChanlocs.labels}, string(EEG_Channels.notEEG))) = [];
+        FinalChanlocs(end+1) = CZ;
+        NewEEG = pop_interp(NewEEG, FinalChanlocs);
+        
         % save new dataset
         pop_saveset(NewEEG, 'filename', Filename_Destination, ...
             'filepath', Destination, ...
             'check', 'on', ...
             'savemode', 'onefile', ...
             'version', '7.3');
-        
-        disp(['***********', 'Finished ', Filename_Destination, '***********'])
         close all
+        clc
+        disp(['***********', 'Finished ', Filename_Destination, '***********'])
+end
+
+% determine what happens next
+switch xEEG
+    case 'y' % end        
         Break = true;
         disp(['Completed in: ', num2str(toc(StartTic)/60)])
-    case 's'
-        % skip this file, do another one
+        
+    case 's' % go to another file
         Break = false;
         
-    case 'auto'
+    case 'auto' % go to another file
         % save it and move on to the next one
-        pop_saveset(NewEEG, 'filename', Filename_Destination, ...
-            'filepath', Destination, ...
-            'check', 'on', ...
-            'savemode', 'onefile', ...
-            'version', '7.3');
-        clc
-        close all
         Break = false;
         
-    case 'redo'
+    case 'redo' % end
         % completely deletes components file
         delete(fullfile(Source_Comps, Filename_Comps))
+        
+        % restore "bad" channels to remove after ICA
+        rsCh_postICA(fullfile(Source_Cuts, Filename_Cuts), badchans_postICA)
+        
         disp(['***********', 'Deleting ', Filename_Destination, '***********'])
         close all
         Break = true;
-          disp(toc(StartTic))
-    otherwise
+        
+    otherwise % loop again
         % re-do
         RemoveComps
 end
@@ -195,4 +228,5 @@ end
 
 % To fix if removed wrong channel, run the following, and rerun this section
 % rsCh_postICA(fullfile(Source_Cuts, Filename_Cuts), [])
-% CheckOutput = false; 
+% CheckOutput = false;
+

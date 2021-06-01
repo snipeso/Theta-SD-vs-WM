@@ -18,14 +18,12 @@ Data_Type = 'Power';
 Filename = [];
 Refresh = false; % redo already done files
 
-% Filename = 'P10_SpFT_Session2_ICA_Components.set';
+% Filename = 'P06_PVT_Session2Comp_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;
 
 CheckOutput = true; % manually verify if selection was good at the end
-Automate = false; % automatically apply previous selection of components to Data_Type (used when applying to ERP data)
-
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
@@ -34,7 +32,7 @@ Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
 IC_Brain_Threshold = 0.1; % %confidence of automatic IC classifier in determining a brain artifact
 IC_Other_Threshold = 0.6; % %confidence of automatic IC classifier in determining a brain artifact
 
-IC_Max = 40;
+IC_Max = 60; % limit of components automatically considered for elimination
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
