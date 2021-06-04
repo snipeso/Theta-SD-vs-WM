@@ -18,7 +18,7 @@ Data_Type = 'Power';
 Filename = [];
 Refresh = false; % redo already done files
 
-% Filename = 'P06_PVT_Session2Comp_ICA_Components.set';
+% Filename = 'P15_SpFT_Session1_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;

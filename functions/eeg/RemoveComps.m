@@ -4,14 +4,14 @@
 close all
 clc
 
+% run classification if it doesn't exist
+if ~isfield(EEG.etc, 'ic_classification') % this is for those hundred-odd files that got ICA components before I implemented this in part D
+    EEG = iclabel(EEG); % this is an EEGLAB function
+end
+
 % automatically identify bad components if there no components selected
 if ~any(EEG.reject.gcompreject)
     disp('********** Automatically selecting components to remove **********')
-    
-    % run classification if it doesn't exist
-    if ~isfield(EEG.etc, 'ic_classification') % this is for those hundred-odd files that got ICA components before I implemented this in part D
-        EEG = iclabel(EEG); % this is an EEGLAB function
-    end
     
     % mark as bad anything with brain < threshold
     EEG.reject.gcompreject = ...
@@ -171,34 +171,34 @@ end
 % if it's good, interpolate bad channels and save
 if strcmp(xEEG, 'y') || strcmp(xEEG, 'auto')
     
-        % remove bad channels
-        badchans_postICA = []; %#ok<NASGU>
-        load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA') % manually selected bad channels
-        
-        NotEEGCh = find(ismember({NewEEG.chanlocs.labels}, string(EEG_Channels.notEEG))); % remove channels that you don't want in final dataset
-        
-        NewEEG = pop_select(NewEEG, 'nochannel', [badchans_postICA, NotEEGCh]); 
-        
-        % interpolate channels
-        FinalChanlocs = StandardChanlocs;
-        FinalChanlocs(ismember({StandardChanlocs.labels}, string(EEG_Channels.notEEG))) = [];
-        FinalChanlocs(end+1) = CZ;
-        NewEEG = pop_interp(NewEEG, FinalChanlocs);
-        
-        % save new dataset
-        pop_saveset(NewEEG, 'filename', Filename_Destination, ...
-            'filepath', Destination, ...
-            'check', 'on', ...
-            'savemode', 'onefile', ...
-            'version', '7.3');
-        close all
-        clc
-        disp(['***********', 'Finished ', Filename_Destination, '***********'])
+    % remove bad channels
+    badchans_postICA = []; %#ok<NASGU>
+    load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA') % manually selected bad channels
+    
+    NotEEGCh = find(ismember({NewEEG.chanlocs.labels}, string(EEG_Channels.notEEG))); % remove channels that you don't want in final dataset
+    
+    NewEEG = pop_select(NewEEG, 'nochannel', [badchans_postICA, NotEEGCh]);
+    
+    % interpolate channels
+    FinalChanlocs = StandardChanlocs;
+    FinalChanlocs(ismember({StandardChanlocs.labels}, string(EEG_Channels.notEEG))) = [];
+    FinalChanlocs(end+1) = CZ;
+    NewEEG = pop_interp(NewEEG, FinalChanlocs);
+    
+    % save new dataset
+    pop_saveset(NewEEG, 'filename', Filename_Destination, ...
+        'filepath', Destination, ...
+        'check', 'on', ...
+        'savemode', 'onefile', ...
+        'version', '7.3');
+    close all
+    clc
+    disp(['***********', 'Finished ', Filename_Destination, '***********'])
 end
 
 % determine what happens next
 switch xEEG
-    case 'y' % end        
+    case 'y' % end
         Break = true;
         disp(['Completed in: ', num2str(toc(StartTic)/60)])
         

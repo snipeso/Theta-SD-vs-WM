@@ -21,7 +21,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %
-Filename = 'P15_Match2Sample_Session2_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+Filename = 'P09_MWT_Main_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
