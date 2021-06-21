@@ -17,8 +17,8 @@ Data_Type = 'Power';
 % allTasks = {'MWT'};
 Filename = [];
 Refresh = false; % redo already done files
-
-% Filename = 'P15_SpFT_Session1_ICA_Components.set';
+% 
+% Filename = 'P12_Fixation_Main8_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;

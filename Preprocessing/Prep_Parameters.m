@@ -13,7 +13,7 @@ Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
 Paths.Datasets ='D:\LSM\Data\Raw'; % where the raw data is saved (split by participant)
 % Paths.Preprocessed = 'D:\Data\Preprocessed';
-Paths.Preprocessed = 'E:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
+Paths.Preprocessed = 'D:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
 
 
 % add location of subfunctions
@@ -48,8 +48,10 @@ EEG_Channels = struct();
 EEG_Channels.notEEG = [49, 56, 107, 113, 126, 127];
 EEG_Channels.notSourceLoc = [EEG_Channels.notEEG, 48, 119, 125, 128];
 
+% allTasks = {'Fixation', 'Oddball', 'Standing', 'MWT', ...
+%     'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)
 allTasks = {'Fixation', 'Oddball', 'Standing', 'MWT', ...
-    'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)
+    'Match2Sample', 'PVT', 'LAT', 'SpFT'}; % which tasks to convert (for now)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
