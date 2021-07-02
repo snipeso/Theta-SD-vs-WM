@@ -22,9 +22,6 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
 
-% add external functions
-% run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
-
 % if eeglab has not run, run it so all the subdirectories get added
 if ~exist('topoplot', 'file')
     eeglab
@@ -50,8 +47,7 @@ EEG_Channels.notSourceLoc = [EEG_Channels.notEEG, 48, 119, 125, 128];
 
 % allTasks = {'Fixation', 'Oddball', 'Standing', 'MWT', ...
 %     'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)
-allTasks = {'Fixation', 'Oddball', 'Standing', 'MWT', ...
-    'Match2Sample', 'PVT', 'LAT', 'SpFT'}; % which tasks to convert (for now)
+allTasks = {'Fixation', 'Oddball', 'Standing', 'PVT', 'LAT'}; % which tasks to convert (for now)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
