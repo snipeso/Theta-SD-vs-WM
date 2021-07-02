@@ -19,7 +19,7 @@ if ~any(EEG.reject.gcompreject)
     
     % switch to good any of the bad channels with "other" too high
     Other = EEG.reject.gcompreject & ...
-        EEG.etc.ic_classification.ICLabel.classifications(:, end)' > IC_Ot her_Threshold;
+        EEG.etc.ic_classification.ICLabel.classifications(:, end)' > IC_Other_Threshold;
     EEG.reject.gcompreject(Other) = 0;
     
     EEG.reject.gcompreject(IC_Max+1:end) = 0; % don't do anything to smaller components

@@ -14,7 +14,7 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-% allTasks = {'MWT'};
+allTasks = {'Fixation', 'Standing', 'Oddball'};
 Filename = [];
 Refresh = false; % redo already done files
 % % 
