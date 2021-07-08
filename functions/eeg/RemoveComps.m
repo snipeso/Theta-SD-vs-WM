@@ -52,13 +52,11 @@ NewEEG.srate = Data.srate;
 NewEEG.xmax = Data.xmax;
 NewEEG.times = Data.times;
 NewEEG.event = Data.event;
+NewEEG.icaact = [];
 
 %%% remove components
 badcomps = find(EEG.reject.gcompreject); % get indexes of selected components
 NewEEG = pop_subcomp(NewEEG, badcomps);
-
-% % low-pass filter
-% NewEEG = pop_eegfiltnew(NewEEG, [], Parameters.(Data_Type).lp); % for whatever reason, sometimes ICA removal introduces high frequency noise
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,7 +87,7 @@ if CheckOutput
     
     % plot data as image to spot outliers
     figure('units','normalized','outerposition',[0 .70 1 .35])
-    imagesc(abs(EEGTMP.data)); caxis([0 50]); colorbar
+    imagesc(abs(EEGTMP.data)); caxis([0 100]); colorbar
     colormap(colorcet('L8'))
     
     %%%%%%%%%%%%%%%

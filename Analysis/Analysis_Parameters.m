@@ -13,13 +13,19 @@ Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', ...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Locations
 
-Paths.Preprocessed = 'D:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
-Paths.Datasets ='D:\LSM\Data\Raw'; 
+Core = 'D:\Data\';
+Paths.Preprocessed = fullfile(Core, 'Preprocessed'); % where the preprocessed data gets saved (split by task)
+Paths.Datasets = fullfile(Core, 'D:\LSM\Data\Raw'); 
+Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
+
+% get path where these scripts were saved
+Paths.Analysis = mfilename('fullpath');
+Paths.Analysis = fullfile(extractBefore(Paths.Analysis, 'Analysis'));
 
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis, 'functions','general'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
-addpath(fullfile(Paths.Analysis, 'functions','eeg'))
+addpath(fullfile(Paths.Analysis, 'functions','plots'))
 run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
 
 
