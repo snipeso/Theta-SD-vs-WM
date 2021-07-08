@@ -63,3 +63,7 @@ Bands.Delta = [1 4];
 Bands.Theta = [4 8];
 Bands.Alpha = [8 12];
 Bands.Beta = [15 25];
+
+Channels = struct();
+Channels.Sample = [11, 129, 52, 70];
+Channels.Sample_Titles = {'Fz', 'Cz', 'P3', 'O1'};

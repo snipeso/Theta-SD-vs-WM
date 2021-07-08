@@ -46,17 +46,17 @@ for Indx_P = 1:numel(Participants)
 end
 
 % z-score it
-zData = ZscoreData(AllData, 'last');
+zData = ZscoreData(AllData, 'last-1');
 
 Theta = dsearchn(Freqs', Bands.Theta');
-Theta = Theta(1):Theta(2); % bleah
+
 %%
 
 %%% plots and stats
 
 % N1 vs N3 BL, SD1 and SD2 topoplot (retention)
 % identify fmTheta, and how it changes with SD
-CLims = [-5 5];
+CLims = [-6 6];
 Levels = [1 3];
 figure('units','normalized','outerposition',[0 0 .5 .4])
 for Indx_S = 1:numel(Sessions)
@@ -66,7 +66,7 @@ for Indx_S = 1:numel(Sessions)
         for Indx_L = 1:numel(Levels)
             Tr = AllLevels(Indx_P, Indx_S, :) == Levels(Indx_L);
             Data_Leveled(Indx_P, :, Indx_L) = ...
-                squeeze(nanmean(nanmean(zData(Indx_P, Indx_S, 3, :, Theta, Tr), 5), 6));
+                squeeze(nanmean(nanmean(zData(Indx_P, Indx_S, 3, :, Theta(1):Theta(2), Tr), 5), 6));
         end
     end
     
@@ -79,7 +79,7 @@ for Indx_S = 1:numel(Sessions)
 end
 
 saveas(gcf,fullfile(Results, [TitleTag, '_fmTheta_Topography_by_Session.svg']))
-
+saveas(gcf,fullfile(Results, [TitleTag, '_fmTheta_Topography_by_Session.png']))
 
 
 % BL vs SD2 for encoding, retention, bl and probe
@@ -89,8 +89,8 @@ Windows = {'Baseline', 'Encoding', 'Retention'};
 figure('units','normalized','outerposition',[0 0 .5 .4])
 for Indx_W = 1:numel(Windows)
     
-    BL = squeeze(nanmean(nanmean(zData(:, 1, Indx_W, :, Theta, :), 5), 6));
-    SD = squeeze(nanmean(nanmean(zData(:, 3, Indx_W, :, Theta, :), 5), 6));
+    BL = squeeze(nanmean(nanmean(zData(:, 1, Indx_W, :, Theta(1):Theta(2), :), 5), 6));
+    SD = squeeze(nanmean(nanmean(zData(:, 3, Indx_W, :, Theta(1):Theta(2), :), 5), 6));
     
     subplot(1, numel(Windows), Indx_W)
     PlotTopoDiff(BL, SD, Chanlocs, CLims, Format)
@@ -98,10 +98,51 @@ for Indx_W = 1:numel(Windows)
     
 end
 saveas(gcf,fullfile(Results, [TitleTag, '_sdTheta_Topography_by_Window.svg']))
+saveas(gcf,fullfile(Results, [TitleTag, '_sdTheta_Topography_by_Window.png']))
 
+
+%%
+% plot spectrums of key channels
+Ch = Channels.Sample;
+Ch = labels2indexes(Ch, Chanlocs);
+ChLabels = Channels.Sample_Titles;
+
+
+for Indx_Ch = 1:numel(Ch)
+figure('units','normalized','outerposition',[0 0 1 1])
+Indx= 1;
+for Indx_W = 1:3
+   for Indx_S = 1:numel(Sessions)
+      
+           Data_Leveled = nan(numel(Participants), numel(Levels),  numel(Freqs));
+    for Indx_P = 1:numel(Participants)
+        for Indx_L = 1:numel(Levels)
+            Tr = AllLevels(Indx_P, Indx_S, :) == Levels(Indx_L);
+            Data_Leveled(Indx_P, Indx_L, :) = ...
+                squeeze(nanmean(zData(Indx_P, Indx_S, Indx_W, Ch(Indx_Ch), :, Tr), 6));
+        end
+    end
+
+       
+      subplot(3, 3, Indx)
+      PlotPowerHighlight(Data_Leveled, Freqs, Theta, Format.Colormap.Rainbow([1, 100], :), Format, {'N1', 'N3'})
+      title(strjoin({Sessions{Indx_S}, Windows{Indx_W}, ChLabels{Indx_Ch}}, ' '))
+      Indx = Indx+1;
+   end
+    
+end
+
+NewLims = SetLims(3, 3, 'y');
+    
+
+saveas(gcf,fullfile(Results, [TitleTag,  ChLabels{Indx_Ch}, '_Spectrum.svg']))
+saveas(gcf,fullfile(Results, [TitleTag,  ChLabels{Indx_Ch}, '_Spectrum.png']))
+
+end
 
 % stats: hotspot theta N1 vs N3 (p value, cohen's d) and bl/ret BL v SD2 and v
 % SD1
 
 
 % peak frequency: N3 - N1 peak VS SD2 - BL peak (in retention and encoding and bl)
+

@@ -3,6 +3,9 @@ function Indexes = labels2indexes(Labels, Chanlocs)
 
 Labels = string(Labels);
 
+% handles exception of Cz, which for some stupid reason I saved as Cz.
+Labels(strcmp(Labels, '129')) = 'CZ';
+
 ChanLabels = string({Chanlocs.labels});
 
 [Members, Indexes] = ismember(Labels, ChanLabels);
