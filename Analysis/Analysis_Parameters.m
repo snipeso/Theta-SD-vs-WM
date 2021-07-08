@@ -15,7 +15,7 @@ Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', ...
 
 Core = 'D:\Data\';
 Paths.Preprocessed = fullfile(Core, 'Preprocessed'); % where the preprocessed data gets saved (split by task)
-Paths.Datasets = fullfile(Core, 'D:\LSM\Data\Raw'); 
+Paths.Datasets = 'G:\LSM\Data\Raw'; 
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
 Paths.Results = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and tables end up
 
@@ -27,6 +27,7 @@ Paths.Analysis = fullfile(extractBefore(Paths.Analysis, 'Analysis'));
 addpath(fullfile(Paths.Analysis, 'functions','general'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 addpath(fullfile(Paths.Analysis, 'functions','plots'))
+addpath(fullfile(Paths.Analysis, 'functions','tasks'))
 run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
 
 
@@ -47,5 +48,18 @@ Format.FontName = 'Tw Cen MT'; % use something else for papers
 Format.TopoRes = 300;
 
 Format.Colormap.Linear = flip(colorcet('L17'));
-Format.Colormap.Dvergent = flip(colorcet('D1'));
+Keep = round(linspace(1, size(Format.Colormap.Linear, 1), 20));
+Format.Colormap.Linear = Format.Colormap.Linear(Keep, :);
+
+Format.Colormap.Divergent = colorcet('D1');
+Keep = round(linspace(1, size(Format.Colormap.Divergent, 1), 20));
+Format.Colormap.Divergent = Format.Colormap.Divergent(Keep, :);
+
+
 Format.Colormap.Rainbow = unirainbow;
+
+
+Bands.Delta = [1 4];
+Bands.Theta = [4 8];
+Bands.Alpha = [8 12];
+Bands.Beta = [15 25];

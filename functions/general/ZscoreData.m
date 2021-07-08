@@ -26,6 +26,12 @@ switch Dimentions
                         Mean = nanmean(Row(:));
                         Std = nanstd(Row(:));
                         Data(Indx_P, :, :, :, Indx_L) = (Row-Mean)./Std;
+                        
+                                            case 6
+                        Row = Data(Indx_P,:, :, :, :, Indx_L);
+                        Mean = nanmean(Row(:));
+                        Std = nanstd(Row(:));
+                        Data(Indx_P, :, :, :, :, Indx_L) = (Row-Mean)./Std;
                     otherwise
                         error('dimention not known')
                 end

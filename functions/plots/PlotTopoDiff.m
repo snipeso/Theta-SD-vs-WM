@@ -4,8 +4,8 @@ function PlotTopoDiff(Matrix1, Matrix2, Chanlocs, CLims, Format)
 
 % get t values
 [~, p, ~, stats] = ttest((Matrix2 - Matrix1));
-[~, Sig] = fdr(p, .05);
-% Sig = p< 0.01;
+% [~, Sig] = fdr(p, .05);
+Sig = p< 0.01;
 Diff = stats.tstat';
 
 CLabel = 't values';

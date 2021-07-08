@@ -27,7 +27,7 @@ for Indx_T = 1:numel(Tasks)
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', Task);
-    Destination = fullfile(Paths.Data, Task); % TODO: put in 'Unlocked'
+    Destination = fullfile(Paths.Data, 'EEG', 'Unlocked', Task); % TODO: put in 'Unlocked'
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)

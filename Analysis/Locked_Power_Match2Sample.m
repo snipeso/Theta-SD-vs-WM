@@ -39,11 +39,30 @@ TotTrials = 10*Blocks*Levels;
 % get files and paths
 Source = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', Task);
-Destination = fullfile(Paths.Data, 'Locked', Task);
+Source_Tables = fullfile(Paths.Data, 'Behavior');
+Destination = fullfile(Paths.Data, 'EEG', 'Locked', Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
 end
+
+
+% get trial information
+% get response times
+Answers_Path = fullfile(Source_Tables, [Task, '_AllAnswers.mat']);
+if  ~Refresh &&  exist(Answers_Path, 'file')
+    load(Answers_Path, 'Answers')
+else
+    if ~exist(Source_Tables, 'dir')
+        mkdir(Source_Tables)
+    end
+    
+    AllAnswers = importTask(Paths.Datasets, Task, Source_Tables); % needs to have access to raw data folder
+    Answers = cleanupMatch2Sample(AllAnswers);
+    
+    save(Answers_Path, 'Answers');
+end
+
 
 Files = deblank(cellstr(ls(Source)));
 Files(~contains(Files, '.set')) = [];
@@ -94,10 +113,19 @@ for Indx_F = 1:numel(Files)
     Baseline = PowerTrials(EEG, Freqs, StartBaselines, EndBaselines, WelchWindow);
     Encoding = PowerTrials(EEG, Freqs, EndBaselines, StartRetentions, WelchWindow);
     
-    % TODO: get trial information
+    
     % TODO: run for probe
     
-    Trials = nan(TotTrials,1);
+    % get trial information
+    Info = split(Filename_Core, '_');
+    Trials = Answers(strcmp(Answers.Participant, Info{1})& ...
+        strcmp(Answers.Session, Info{3}), :);
+    
+    if size(Trials, 1) ~= numel(EndBaselines) || size(Trials, 1) ~= numel(StartRetentions)
+        warning(['Something went wrong with triggers for ', EEG_Filename])
+        continue
+    end
+    
     
     % save
     save(fullfile(Destination, Filename), 'Baseline', 'Encoding', 'Retention',  'Freqs', 'Chanlocs', 'Trials')
