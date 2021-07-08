@@ -17,6 +17,7 @@ Core = 'D:\Data\';
 Paths.Preprocessed = fullfile(Core, 'Preprocessed'); % where the preprocessed data gets saved (split by task)
 Paths.Datasets = fullfile(Core, 'D:\LSM\Data\Raw'); 
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
+Paths.Results = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and tables end up
 
 % get path where these scripts were saved
 Paths.Analysis = mfilename('fullpath');

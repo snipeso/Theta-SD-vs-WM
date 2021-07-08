@@ -36,7 +36,7 @@ for Indx_T = 1:numel(Tasks)
     Files = deblank(cellstr(ls(Source)));
     Files(~contains(Files, '.set')) = [];
     
-    parfor Indx_F = 1:numel(Files)
+    for Indx_F = 1:numel(Files)
         
         File = Files{Indx_F};
         Filename_Core = extractBefore(File, '_Clean.set');
@@ -74,11 +74,11 @@ for Indx_T = 1:numel(Tasks)
         % set to nan all cut data
         Cuts_Filepath = fullfile(Source_Cuts, [Filename_Core, '_Cuts.mat']);
         
-        try
+%         try
         EEG = rmNoise(EEG, Cuts_Filepath);
-        catch
-            continue
-        end
+%         catch
+%             continue
+%         end
         
         
         %%% get power

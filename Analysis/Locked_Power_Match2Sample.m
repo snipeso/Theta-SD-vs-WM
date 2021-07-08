@@ -33,7 +33,7 @@ Trigger.Retention.Window = [0 2]; % could be as long as 4s
 
 Levels = 3;
 Blocks = 4;
-Trials = 10*Blocks*Levels;
+TotTrials = 10*Blocks*Levels;
 
 
 % get files and paths
@@ -65,43 +65,41 @@ for Indx_F = 1:numel(Files)
     
     
     %%% Set as nan all noise
-    
     [Channels, Points] = size(EEG.data);
     fs = EEG.srate;
     Chanlocs = EEG.chanlocs;
     
-    
     % set to nan all cut data
     Cuts_Filepath = fullfile(Source_Cuts, [Filename_Core, '_Cuts.mat']);
-    
     EEG = nanNoise(EEG, Cuts_Filepath);
     
     
     %%% get power
-    
     
     % epoch times
     AllTriggerTypes = {EEG.event.type};
     AllTriggerTimes =  [EEG.event.latency];
     EndBaselines =  AllTriggerTimes(strcmp(AllTriggerTypes, Trigger.Baseline.Trigger));
     StartRetentions =  AllTriggerTimes(strcmp(AllTriggerTypes, Trigger.Retention.Trigger));
-    StartBaselines = EndBaselines - round(Trigger.Baseline.Window*fs);
-    EndRetentions = StartRetentions + round(Trigger.Retention.Window*fs);
+    StartBaselines = EndBaselines - round(WelchWindow*fs);
+    EndRetentions = StartRetentions + round(WelchWindow*fs);
     
     
-    if Trials ~= numel(EndBaselines) || size(Trials, 1) ~= numel(StartRetentions)
+    if TotTrials ~= numel(EndBaselines) || TotTrials ~= numel(StartRetentions)
         warning(['Something went wrong with triggers for ', EEG_Filename])
         continue
     end
     
-    Retention = PowerTrials(EEG, Freqs, StartRetentions, EndRetentions);
-    Baseline = PowerTrials(EEG, Freqs, StartBaselines, EndBaselines);
-    Encoding = PowerTrials(EEG, Freqs, EndBaselines, StartRetentions);
+    Retention = PowerTrials(EEG, Freqs, StartRetentions, EndRetentions, WelchWindow);
+    Baseline = PowerTrials(EEG, Freqs, StartBaselines, EndBaselines, WelchWindow);
+    Encoding = PowerTrials(EEG, Freqs, EndBaselines, StartRetentions, WelchWindow);
     
     % TODO: get trial information
     % TODO: run for probe
     
+    Trials = nan(TotTrials,1);
+    
     % save
-    save(fname, 'Baseline', 'Encoding', 'Retention',  'Freqs', 'Chanlocs', 'Trials')
+    save(fullfile(Destination, Filename), 'Baseline', 'Encoding', 'Retention',  'Freqs', 'Chanlocs', 'Trials')
     disp(['*************finished ',Filename '*************'])
 end

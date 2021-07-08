@@ -15,8 +15,15 @@ for Indx_S = 1:numel(Starts)
         continue
     end
     
+    
     Data(:, nanPoints) = [];
-    FFT = pwelch(Data', Window*fs, (Window*fs)/2, Freqs, fs)';
+    
+    if size(Data, 2) < Window*fs
+        W = size(Data, 2);
+    else
+        W = Window*fs;
+    end
+    [FFT, ~] = pwelch(Data', W, W/2, Freqs, fs);
    
     Power(:, :, Indx_S) = FFT';
 end

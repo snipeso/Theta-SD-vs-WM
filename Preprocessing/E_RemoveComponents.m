@@ -14,7 +14,7 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks = { 'LAT'};
+allTasks = {  'SpFT'};
 Filename = [];
 Refresh = false; % redo already done files
 % % 
