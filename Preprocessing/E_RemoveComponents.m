@@ -14,11 +14,11 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks = {'Fixation', 'Standing', 'Oddball'};
+allTasks = { 'LAT'};
 Filename = [];
 Refresh = false; % redo already done files
 % % 
-% Filename = 'P17_Fixation_MainPost_ICA_Components.set';
+% Filename = 'P16_LAT_Session2Comp_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;
@@ -88,7 +88,7 @@ for Indx_F = 1:nFiles % loop through files in source folder
     
     % skip if file already exists or data doesn't exist yet
     if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
-        disp(['***********', 'Already did ', Filename_Destination, '***********'])
+%         disp(['***********', 'Already did ', Filename_Destination, '***********'])
         continue
     elseif ~exist(fullfile(Source_Data, Filename_Data), 'file')
         disp(['***********', 'No data for ', Filename_Destination, '***********'])
@@ -121,3 +121,4 @@ for Indx_F = 1:nFiles % loop through files in source folder
     end
     
 end
+disp(Task)

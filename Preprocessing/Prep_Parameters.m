@@ -45,9 +45,9 @@ EEG_Channels = struct();
 EEG_Channels.notEEG = [49, 56, 107, 113, 126, 127];
 EEG_Channels.notSourceLoc = [EEG_Channels.notEEG, 48, 119, 125, 128];
 
-% allTasks = {'Fixation', 'Oddball', 'Standing', 'MWT', ...
-%     'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)
-allTasks = {'Fixation', 'Oddball', 'Standing', 'PVT', 'LAT'}; % which tasks to convert (for now)
+allTasks = {'Fixation', 'Oddball', 'Standing', 'MWT', ...
+    'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)
+% allTasks = {'Fixation', 'Oddball', 'Standing', 'PVT', 'LAT'}; % which tasks to convert (for now)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters

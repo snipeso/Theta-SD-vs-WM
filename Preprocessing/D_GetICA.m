@@ -10,7 +10,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'SpFT'}; % select this if you only need to filter one folder
+Tasks = {  'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % select this if you only need to filter one folder
 Refresh = false;
 
 Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
