@@ -60,7 +60,7 @@ CLims = [-6 6];
 Levels = [1 3];
 figure('units','normalized','outerposition',[0 0 .5 .4])
 for Indx_S = 1:numel(Sessions)
-
+    
     Data_Leveled = nan(numel(Participants), numel(Chanlocs), numel(Levels));
     for Indx_P = 1:numel(Participants)
         for Indx_L = 1:numel(Levels)
@@ -72,7 +72,7 @@ for Indx_S = 1:numel(Sessions)
     
     N1 = squeeze(Data_Leveled(:, :, 1));
     N3 = squeeze(Data_Leveled(:, :, 2));
-  
+    
     subplot(1, numel(Sessions), Indx_S)
     PlotTopoDiff(N1, N3, Chanlocs, CLims, Format)
     title([Sessions{Indx_S}, ' N3vN1'])
@@ -109,40 +109,89 @@ ChLabels = Channels.Sample_Titles;
 
 
 for Indx_Ch = 1:numel(Ch)
-figure('units','normalized','outerposition',[0 0 1 1])
-Indx= 1;
-for Indx_W = 1:3
-   for Indx_S = 1:numel(Sessions)
-      
-           Data_Leveled = nan(numel(Participants), numel(Levels),  numel(Freqs));
-    for Indx_P = 1:numel(Participants)
-        for Indx_L = 1:numel(Levels)
-            Tr = AllLevels(Indx_P, Indx_S, :) == Levels(Indx_L);
-            Data_Leveled(Indx_P, Indx_L, :) = ...
-                squeeze(nanmean(zData(Indx_P, Indx_S, Indx_W, Ch(Indx_Ch), :, Tr), 6));
+    figure('units','normalized','outerposition',[0 0 1 1])
+    Indx= 1;
+    for Indx_W = 1:3
+        for Indx_S = 1:numel(Sessions)
+            
+            Data_Leveled = nan(numel(Participants), numel(Levels),  numel(Freqs));
+            for Indx_P = 1:numel(Participants)
+                for Indx_L = 1:numel(Levels)
+                    Tr = AllLevels(Indx_P, Indx_S, :) == Levels(Indx_L);
+                    Data_Leveled(Indx_P, Indx_L, :) = ...
+                        squeeze(nanmean(zData(Indx_P, Indx_S, Indx_W, Ch(Indx_Ch), :, Tr), 6));
+                end
+            end
+            
+            
+            subplot(3, 3, Indx)
+            PlotPowerHighlight(Data_Leveled, Freqs, Theta, Format.Colormap.Rainbow([1, 100], :), Format, {'N1', 'N3'})
+            title(strjoin({Sessions{Indx_S}, Windows{Indx_W}, ChLabels{Indx_Ch}}, ' '))
+            Indx = Indx+1;
         end
+        
     end
-
-       
-      subplot(3, 3, Indx)
-      PlotPowerHighlight(Data_Leveled, Freqs, Theta, Format.Colormap.Rainbow([1, 100], :), Format, {'N1', 'N3'})
-      title(strjoin({Sessions{Indx_S}, Windows{Indx_W}, ChLabels{Indx_Ch}}, ' '))
-      Indx = Indx+1;
-   end
     
-end
-
-NewLims = SetLims(3, 3, 'y');
+    NewLims = SetLims(3, 3, 'y');
     
-
-saveas(gcf,fullfile(Results, [TitleTag,  ChLabels{Indx_Ch}, '_Spectrum.svg']))
-saveas(gcf,fullfile(Results, [TitleTag,  ChLabels{Indx_Ch}, '_Spectrum.png']))
-
+    
+    saveas(gcf,fullfile(Results, [TitleTag,  ChLabels{Indx_Ch}, '_Spectrum.svg']))
+    saveas(gcf,fullfile(Results, [TitleTag,  ChLabels{Indx_Ch}, '_Spectrum.png']))
+    
 end
 
 % stats: hotspot theta N1 vs N3 (p value, cohen's d) and bl/ret BL v SD2 and v
 % SD1
 
 
+%% show peak change
 % peak frequency: N3 - N1 peak VS SD2 - BL peak (in retention and encoding and bl)
 
+Hotspot = Channels.Hotspot;
+Hotspot = labels2indexes(Hotspot, Chanlocs);
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+fmTheta = nan(numel(Participants), 1);
+
+for Indx_P = 1:numel(Participants)
+
+        N1 = AllLevels(Indx_P, 1, :) == 1;
+        Data_N1 = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, N1), 4),6));
+        
+        N3 = AllLevels(Indx_P, 1, :) == 3;
+        Data_N3 = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, N3), 4),6));
+        
+        [Peak, Amp] = bandPeak(Data_N3-Data_N1, Freqs, Bands.Theta);
+        fmTheta(Indx_P) = Peak;
+end
+
+
+sdTheta = nan(numel(Participants), 1);
+
+for Indx_P = 1:numel(Participants)
+
+        Data_BL = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, :), 4),6));
+
+        Data_SD2 = squeeze(nanmean(nanmean(zData(Indx_P, 3, 3, Hotspot, :, :), 4),6));
+        
+        [Peak, Amp] = bandPeak(Data_SD2-Data_BL, Freqs, Bands.Theta);
+        sdTheta(Indx_P) = Peak;
+end
+
+
+
+PlotConfettiSpaghetti([fmTheta, sdTheta], {'fmTheta', 'sdTheta'}, [], [], [], Format, true)
+ylabel('Peak Frequency')
+
+ saveas(gcf,fullfile(Results, [TitleTag,  'fmThetaPeak_vs_sdTheta_Peak.png']))
+ 
+ [~, p, ~, stats] = ttest(fmTheta, sdTheta);
+ 
+ clc
+ disp(['sdTheta (Mean+-STD): ', num2str(nanmean(sdTheta)), '+-', num2str(nanstd(sdTheta)) ])
+
+ disp(['fmTheta (Mean+-STD): ', num2str(nanmean(fmTheta)), '+-', num2str(nanstd(fmTheta)) ])
+
+ disp(['p-value: ', num2str(p)])

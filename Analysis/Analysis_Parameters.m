@@ -58,6 +58,9 @@ Format.Colormap.Divergent = Format.Colormap.Divergent(Keep, :);
 
 Format.Colormap.Rainbow = unirainbow;
 
+Format.Colors.Participants = Format.Colormap.Rainbow(floor(linspace(1, ...
+    size(Format.Colormap.Rainbow, 1), numel(Participants))), :);
+Format.Alpha.Participants = .3;
 
 Bands.Delta = [1 4];
 Bands.Theta = [4 8];
@@ -67,3 +70,4 @@ Bands.Beta = [15 25];
 Channels = struct();
 Channels.Sample = [11, 129, 52, 70];
 Channels.Sample_Titles = {'Fz', 'Cz', 'P3', 'O1'};
+Channels.Hotspot = [2:6, 9:13, 15, 16, 18:20, 23, 24, 26:29, 111, 112, 117, 118, 123, 124];
