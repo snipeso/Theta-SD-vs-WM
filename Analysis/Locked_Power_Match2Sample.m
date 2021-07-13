@@ -16,7 +16,7 @@ Refresh = false;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Task = 'Match2Sample';
-WelchWindow = 2;
+WelchWindow = 4;
 Freqs = 0.5:(1/WelchWindow):40;
 
 % triggers
@@ -40,7 +40,7 @@ TotTrials = 10*Blocks*Levels;
 Source = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', Task);
 Source_Tables = fullfile(Paths.Data, 'Behavior');
-Destination = fullfile(Paths.Data, 'EEG', ['Locked_', num2str(Window)], Task);
+Destination = fullfile(Paths.Data, 'EEG', ['Locked_', num2str(WelchWindow)], Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)

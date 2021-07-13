@@ -6,9 +6,10 @@ clc
 Analysis_Parameters
 
 Task = 'Match2Sample';
-TitleTag = strjoin({'SfN', 'M2S', 'Abstract'}, '_');
+WelchWindow = 4;
+TitleTag = strjoin({'SfN', 'M2S', 'Abstract', num2str(WelchWindow)}, '_');
 Sessions = {'Baseline', 'Session1', 'Session2'};
-Filepath =  fullfile(Paths.Data, 'EEG', 'Locked', Task);
+Filepath =  fullfile(Paths.Data, 'EEG', ['Locked_', num2str(WelchWindow)], Task);
 
 Results = fullfile(Paths.Results, 'SfN');
 if ~exist(Results, 'dir')
@@ -144,6 +145,52 @@ end
 % SD1
 
 
+
+%% show peak difference
+% difference between N3 peak and SD2 peak
+
+
+Hotspot = Channels.Hotspot;
+Hotspot = labels2indexes(Hotspot, Chanlocs);
+
+N3_Peak = nan(numel(Participants), 1);
+
+for Indx_P = 1:numel(Participants)
+ 
+    N3 = AllLevels(Indx_P, 1, :) == 3;
+    Data_N3 = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, N3), 4),6));
+    
+    [Peak, Amp] = bandPeak(Data_N3, Freqs, Bands.Theta);
+    N3_Peak(Indx_P) = Peak;
+end
+
+
+SD_Peak = nan(numel(Participants), 2);
+
+for Indx_P = 1:numel(Participants)
+    
+    for Indx_S = [2, 3]
+    Data_SD = squeeze(nanmean(nanmean(zData(Indx_P, Indx_S, 3, Hotspot, :, :), 4),6));
+    
+    [Peak, Amp] = bandPeak(Data_SD, Freqs, Bands.Theta);
+    SD_Peak(Indx_P, Indx_S-1) = Peak;
+    end
+end
+figure
+PlotConfettiSpaghetti([N3_Peak, SD_Peak], {'N3 Peak', 'SD1 Peak',  'SD2 Peak'}, [], [], [], Format, true);
+title('N3 vs SD peak frequency')
+ylabel('Peak Frequency')
+
+saveas(gcf,fullfile(Results, [TitleTag,  'N3Peak_vs_SD2Peak.png']))
+
+[~, p, ~, stats] = ttest(N3_Peak, SD_Peak(:, 2));
+
+
+disp(['SD2 Peak (Mean+-STD): ', num2str(nanmean(SD_Peak(:, 2))), '+-', num2str(nanstd(SD_Peak(:, 2))) ])
+disp(['fmTheta (Mean+-STD): ', num2str(nanmean(N3_Peak)), '+-', num2str(nanstd(N3_Peak)) ])
+disp(['p-value: ', num2str(p)])
+
+
 %% show peak change
 % peak frequency: N3 - N1 peak VS SD2 - BL peak (in retention and encoding and bl)
 
@@ -151,47 +198,44 @@ Hotspot = Channels.Hotspot;
 Hotspot = labels2indexes(Hotspot, Chanlocs);
 
 
-figure('units','normalized','outerposition',[0 0 1 1])
-
 fmTheta = nan(numel(Participants), 1);
 
 for Indx_P = 1:numel(Participants)
-
-        N1 = AllLevels(Indx_P, 1, :) == 1;
-        Data_N1 = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, N1), 4),6));
-        
-        N3 = AllLevels(Indx_P, 1, :) == 3;
-        Data_N3 = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, N3), 4),6));
-        
-        [Peak, Amp] = bandPeak(Data_N3-Data_N1, Freqs, Bands.Theta);
-        fmTheta(Indx_P) = Peak;
+    
+    N1 = AllLevels(Indx_P, 1, :) == 1;
+    Data_N1 = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, N1), 4),6));
+    
+    N3 = AllLevels(Indx_P, 1, :) == 3;
+    Data_N3 = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, N3), 4),6));
+    
+    [Peak, Amp] = bandPeak(Data_N3-Data_N1, Freqs, Bands.Theta);
+    fmTheta(Indx_P) = Peak;
 end
 
 
 sdTheta = nan(numel(Participants), 1);
 
 for Indx_P = 1:numel(Participants)
-
-        Data_BL = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, :), 4),6));
-
-        Data_SD2 = squeeze(nanmean(nanmean(zData(Indx_P, 3, 3, Hotspot, :, :), 4),6));
-        
-        [Peak, Amp] = bandPeak(Data_SD2-Data_BL, Freqs, Bands.Theta);
-        sdTheta(Indx_P) = Peak;
+    
+    Data_BL = squeeze(nanmean(nanmean(zData(Indx_P, 1, 3, Hotspot, :, :), 4),6));
+    
+    Data_SD2 = squeeze(nanmean(nanmean(zData(Indx_P, 3, 3, Hotspot, :, :), 4),6));
+    
+    [Peak, Amp] = bandPeak(Data_SD2-Data_BL, Freqs, Bands.Theta);
+    sdTheta(Indx_P) = Peak;
 end
 
 
-
-PlotConfettiSpaghetti([fmTheta, sdTheta], {'fmTheta', 'sdTheta'}, [], [], [], Format, true)
+figure
+PlotConfettiSpaghetti([fmTheta, sdTheta], {'fmTheta', 'sdTheta'}, [], [], [], Format, true);
 ylabel('Peak Frequency')
+title('N3-N1 Peak vs SD-BL Peak')
 
- saveas(gcf,fullfile(Results, [TitleTag,  'fmThetaPeak_vs_sdTheta_Peak.png']))
- 
- [~, p, ~, stats] = ttest(fmTheta, sdTheta);
- 
- clc
- disp(['sdTheta (Mean+-STD): ', num2str(nanmean(sdTheta)), '+-', num2str(nanstd(sdTheta)) ])
+saveas(gcf,fullfile(Results, [TitleTag,  'fmThetaPeak_vs_sdThetaPeak.png']))
 
- disp(['fmTheta (Mean+-STD): ', num2str(nanmean(fmTheta)), '+-', num2str(nanstd(fmTheta)) ])
+[~, p, ~, stats] = ttest(fmTheta, sdTheta);
 
- disp(['p-value: ', num2str(p)])
+
+disp(['sdTheta (Mean+-STD): ', num2str(nanmean(sdTheta)), '+-', num2str(nanstd(sdTheta)) ])
+disp(['fmTheta (Mean+-STD): ', num2str(nanmean(fmTheta)), '+-', num2str(nanstd(fmTheta)) ])
+disp(['p-value: ', num2str(p)])
