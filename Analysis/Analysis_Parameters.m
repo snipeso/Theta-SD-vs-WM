@@ -8,6 +8,7 @@
 Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', ...
     'P09', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P19'};
 
+AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'Fixation'};
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,3 +72,17 @@ Channels = struct();
 Channels.Sample = [11, 129, 52, 70];
 Channels.Sample_Titles = {'Fz', 'Cz', 'P3', 'O1'};
 Channels.Hotspot = [2:6, 9:13, 15, 16, 18:20, 23, 24, 26:29, 111, 112, 117, 118, 123, 124];
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Labels
+
+Sessions.Match2Sample = {'Baseline', 'Session1', 'Session2'};
+Sessions.LAT = {'BaselineComp', 'Session1Comp', 'Session2Comp'};
+Sessions.PVT = {'BaselineComp', 'Session1Comp', 'Session2Comp'};
+Sessions.SpFT = {'Baseline', 'Session1', 'Session2'};
+Sessions.Game = {'Baseline', 'Session1', 'Session2'};
+Sessions.Music = {'Baseline', 'Session1', 'Session2'};
+Sessions.Fixation = {'BaselinePost', 'Main3', 'Main7'};
+Sessions.Labels = {'BL', 'SR', 'SD'};

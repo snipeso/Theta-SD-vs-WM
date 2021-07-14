@@ -1,4 +1,4 @@
-function PlotTopoDiff(Matrix1, Matrix2, Chanlocs, CLims, Format)
+function [ p, Sig] = PlotTopoDiff(Matrix1, Matrix2, Chanlocs, CLims, Format)
 % Plot t values of difference between two conditions.
 % Each matrix needs the same number of dimentions; participant x ch
 
@@ -6,18 +6,18 @@ function PlotTopoDiff(Matrix1, Matrix2, Chanlocs, CLims, Format)
 [~, p, ~, stats] = ttest((Matrix2 - Matrix1));
 [~, Sig] = fdr(p, .05);
 % Sig = p< 0.01;
-Diff = stats.tstat';
+t_values = stats.tstat';
 
 CLabel = 't values';
 Indexes = 1:numel(Chanlocs);
 
 
 if isempty(CLims)
-    Max = max(abs([quantile(Diff(:), .01), quantile(Diff(:), .99)]));
+    Max = max(abs([quantile(t_values(:), .01), quantile(t_values(:), .99)]));
     CLims = [-Max Max];
 end
 
-topoplot(Diff, Chanlocs, 'maplimits', CLims, ...
+topoplot(t_values, Chanlocs, 'maplimits', CLims, ...
     'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
     'emarker2', {Indexes(logical(Sig)), 'o', 'w', 3, .01});
 h = colorbar;

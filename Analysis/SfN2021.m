@@ -8,7 +8,7 @@ Analysis_Parameters
 Task = 'Match2Sample';
 WelchWindow = 4;
 TitleTag = strjoin({'SfN', 'M2S', 'Abstract', num2str(WelchWindow)}, '_');
-Sessions = {'Baseline', 'Session1', 'Session2'};
+Sessions = Sessions.(Task);
 Filepath =  fullfile(Paths.Data, 'EEG', ['Locked_', num2str(WelchWindow)], Task);
 
 Results = fullfile(Paths.Results, 'SfN');
@@ -184,12 +184,18 @@ ylabel('Peak Frequency')
 saveas(gcf,fullfile(Results, [TitleTag,  'N3Peak_vs_SD2Peak.png']))
 
 [~, p, ~, stats] = ttest(N3_Peak, SD_Peak(:, 2));
-
-
 disp(['SD2 Peak (Mean+-STD): ', num2str(nanmean(SD_Peak(:, 2))), '+-', num2str(nanstd(SD_Peak(:, 2))) ])
+disp(['fmTheta (Mean+-STD): ', num2str(nanmean(N3_Peak)), '+-', num2str(nanstd(N3_Peak)) ])
+disp(['p-value: ', num2str(p), '; t-value: ', num2str(stats.tstat)])
+
+[~, p, ~, stats] = ttest(N3_Peak, SD_Peak(:, 1));
+disp(['SD1 Peak (Mean+-STD): ', num2str(nanmean(SD_Peak(:, 1))), '+-', num2str(nanstd(SD_Peak(:, 1))) ])
 disp(['fmTheta (Mean+-STD): ', num2str(nanmean(N3_Peak)), '+-', num2str(nanstd(N3_Peak)) ])
 disp(['p-value: ', num2str(p)])
 
+
+figure
+PlotConfettiSpaghetti([N3_Peak, SD_Peak(:, 2)], {'N3 Peak', 'SD2 Peak'}, [], [], [], Format, true);
 
 %% show peak change
 % peak frequency: N3 - N1 peak VS SD2 - BL peak (in retention and encoding and bl)

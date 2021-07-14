@@ -29,13 +29,13 @@ end
 % plot each participant
 hold on
 for Indx_P = 1:Tot_Peeps
-%     plot(Matrix(Indx_P, :), 'o-', 'LineWidth', .7, ...
-%         'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha', .5, 'Color', Colors(Indx_P, :))
-
- plot(Matrix(Indx_P, :), 'LineWidth', .7, 'Color', [Colors(Indx_P, :),  Format.Alpha.Participants])
- scatter(1:numel(SessionLabels), Matrix(Indx_P, :), 50, ...
-     'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha',  Format.Alpha.Participants, ...
-     'MarkerEdgeAlpha',  Format.Alpha.Participants, 'MarkerEdgeColor', Colors(Indx_P, :))
+    %     plot(Matrix(Indx_P, :), 'o-', 'LineWidth', .7, ...
+    %         'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha', .5, 'Color', Colors(Indx_P, :))
+    
+    plot(Matrix(Indx_P, :), 'LineWidth', .7, 'Color', [Colors(Indx_P, :),  Format.Alpha.Participants])
+    scatter(1:numel(SessionLabels), Matrix(Indx_P, :), 50, ...
+        'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha',  Format.Alpha.Participants, ...
+        'MarkerEdgeAlpha',  Format.Alpha.Participants, 'MarkerEdgeColor', Colors(Indx_P, :))
 end
 
 
@@ -83,15 +83,15 @@ if exist('Stats', 'var') && Stats
     Pairs = {};
     pValues = [];
     for Indx_S1 = 1:numel(SessionLabels)-1
-       for Indx_S2 = Indx_S1+1:numel(SessionLabels)
-              [~, pValue] = ttest(Matrix(:, Indx_S1), Matrix(:, Indx_S2));
-              if pValue < .05
-                 Pairs = cat(1, Pairs, [Indx_S1, Indx_S2]);
-                 pValues = cat(1, pValues, pValue);
-              end
+        for Indx_S2 = Indx_S1+1:numel(SessionLabels)
+            [~, pValue] = ttest(Matrix(:, Indx_S1), Matrix(:, Indx_S2));
+            if pValue < .05
+                Pairs = cat(1, Pairs, [Indx_S1, Indx_S2]);
+                pValues = cat(1, pValues, pValue);
+            end
+        end
     end
-    end
- 
+    
     
     sigstar(Pairs, pValues, repmat({[0 0 0]}, size(Pairs)))
 end
