@@ -64,7 +64,7 @@ for Indx_S = 1 %:numel(Sessions.LAT)
         end
         [p, Sig] = PlotTopoDiff(Fix, Topo, Chanlocs, CLims, Format);
         title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}])
-        saveas(gcf,fullfile(Results, strjoin({TitleTag, 'FixBL_vs', AllTasks{Indx_T}, Sessions.Labels{Indx_S}, '.svg'}, '_')))
+        saveas(gcf,fullfile(Results, strjoin({TitleTag, 'FixBL_vs', AllTasks{Indx_T}, [Sessions.Labels{Indx_S}, '.png']}, '_')))
         
         % Fz effect sizes:
         statsHedges = mes(Topo(:, ES_Ch), Fix(:, ES_Ch), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
@@ -95,9 +95,9 @@ for Indx_T = 1:numel(AllTasks)
         subplot(1, 2, Indx_S-1)
         [p, Sig] = PlotTopoDiff(BL, SD, Chanlocs, CLims, Format);
         title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}])
-       
-          % Fz effect sizes:
-        statsHedges = mes(Topo(:, ES_Ch), Fix(:, ES_Ch), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
+        
+        % Fz effect sizes:
+        statsHedges = mes(SD(:, ES_Ch), BL(:, ES_Ch), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
         
         disp([AllTasks{Indx_T} ' ' Sessions.Labels{Indx_S}, ...
             ' sig channels: ' num2str(round(100*(nnz(Sig)/numel(Sig)))), ...
@@ -105,12 +105,39 @@ for Indx_T = 1:numel(AllTasks)
             ])
         
     end
-    saveas(gcf,fullfile(Results, strjoin({TitleTag, 'BL_vs', AllTasks{Indx_T}, '.svg'}, '_')))
+    saveas(gcf,fullfile(Results, strjoin({TitleTag, 'BL_vs', [AllTasks{Indx_T}, '.png']}, '_')))
 end
 
 
+%% Change in peak frequency
 % freq: confetti spaghetti of BL theta vs SD2 theta peak freq for each task
 
+Ch = Channels.Sample;
+Ch = labels2indexes(Ch, Chanlocs);
+ChLabels = Channels.Sample_Titles;
+YLims = [4 8];
+for Indx_Ch = 1:numel(Ch)
+    figure('units','normalized','outerposition',[0 0 1 .5])
+    
+    for Indx_T = 1:numel(AllTasks)-1
+        Theta_Peak = nan(numel(Participants), numel(Sessions.Labels));
+        for Indx_P = 1:numel(Participants)
+            for Indx_S = 1:numel(Sessions.Labels)
+                
+                Data = squeeze(zData(Indx_P, Indx_S, Indx_T, Ch(Indx_Ch), :));
+                [Peak, Amp] = bandPeak(Data, Freqs, Bands.Theta);
+                Theta_Peak(Indx_P, Indx_S) = Peak;
+            end
+        end
+        
+        subplot(1, numel(AllTasks)-1, Indx_T)
+        PlotConfettiSpaghetti(Theta_Peak, Sessions.Labels, YLims, [], [], Format, true);
+        ylabel('Peak Frequency')
+        title([AllTasks{Indx_T}, ' ', ChLabels{Indx_Ch} ])
 
+    end
+    saveas(gcf,fullfile(Results, [TitleTag, '_PeakTheta_', ChLabels{Indx_Ch}, '.png']))
+    
+end
 
 
