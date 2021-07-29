@@ -21,7 +21,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %
-Filename = 'P12_SpFT_Session2_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+Filename = 'P09_Fixation_Main2_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
@@ -81,8 +81,8 @@ try
     EEGr = pop_select(EEGr, 'nochannel', m.badchans);
 end
 
-% EEGr = pop_reref(EEGr, []);
-% PlotSpectopo(EEGr, 100, 200);
+EEGr = pop_reref(EEGr, []);
+PlotSpectopo(EEGr, 100, 200);
 
 %% remove or restore a whole channel
 %%% Use these to mark whole channels to be removed; sometimes this is a

@@ -14,11 +14,12 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks = {  'SpFT'};
+allTasks = {'Oddball'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
-% % 
-% Filename = 'P16_LAT_Session2Comp_ICA_Components.set';
+
+%%% emergency code if I need to fix a specific file
+% Filename = 'P16_LAT_Session2Beam3_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;
