@@ -26,5 +26,6 @@ ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 14)
 set(gca, 'FontName', Format.FontName)
 colormap(Format.Colormap.Divergent)
 
+set(gcf, 'InvertHardcopy', 'off')
 % TODO: seperately plot markers if significiant for p<.05, and for cluster
 % correction

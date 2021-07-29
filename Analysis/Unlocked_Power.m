@@ -12,12 +12,12 @@ Analysis_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = false;
-Tasks = { 'Fixation', 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'};
+Refresh = true;
+Tasks = { 'Fixation', 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music', 'MWT', 'Standing', 'Oddball'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-WelchWindow = 5;
+WelchWindow = 10;
 Freqs = 0.5:(1/WelchWindow):40;
 
 for Indx_T = 1:numel(Tasks)
@@ -41,6 +41,7 @@ for Indx_T = 1:numel(Tasks)
         File = Files{Indx_F};
         Filename_Core = extractBefore(File, '_Clean.set');
         Filename = [Filename_Core, '_Welch.mat'];
+        Filename_Figure = [Filename_Core, '_Welch.jpg'];
         
         % skip if already done
         if ~Refresh && exist(fullfile(Destination, Filename), 'file')
@@ -74,24 +75,23 @@ for Indx_T = 1:numel(Tasks)
         % set to nan all cut data
         Cuts_Filepath = fullfile(Source_Cuts, [Filename_Core, '_Cuts.mat']);
         
-%         try
         EEG = rmNoise(EEG, Cuts_Filepath);
-%         catch
-%             continue
-%         end
         
         
         %%% get power
         [Power, ~] = pwelch(EEG.data', fs*WelchWindow,  (fs*WelchWindow)/2, Freqs, fs);
         Power = Power';
         
+        
+        % plot it
+        PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Format)
+        
+        
         % save
-        parsave(fullfile(Destination, Filename), Power, Freqs, Chanlocs)
+        save(fullfile(Destination, Filename), 'Power', 'Freqs', 'Chanlocs')
+        saveas(gcf,fullfile(Destination, Filename_Figure))
+        close
         disp(['*************finished ',Filename '*************'])
     end
     
-end
-
-function parsave(fname, Power, Freqs, Chanlocs)
-save(fname, 'Power', 'Freqs', 'Chanlocs')
 end

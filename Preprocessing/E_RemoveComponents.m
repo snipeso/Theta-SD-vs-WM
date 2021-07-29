@@ -14,7 +14,7 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks = {'Oddball'}; % which tasks to convert (for now)
+allTasks = {  'PVT'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
 
