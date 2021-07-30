@@ -14,7 +14,7 @@ end
 
 % plot as image
 imagesc(Grid)
-% axis off
+axis off
 axis square
 colorbar
 

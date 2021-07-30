@@ -112,8 +112,8 @@ Data = squeeze(nansum(Data, 5).*FreqRes); % integral of band
 Data = nanmean(Data, 1);
 
 figure
-topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'electrodes', 'labels', ...
-    'maplimits', [-12 12], 'gridscale', Format.TopoRes);
+gridTopo(Data, Chanlocs, true)
+caxis([-15 15])
 title('SD Theta Game')
 colormap(Format.Colormap.Divergent)
 
@@ -124,9 +124,45 @@ Data = squeeze(nansum(Data, 5).*FreqRes); % integral of band
 Data = nanmean(Data, 1);
 
 figure
-topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'electrodes', 'labels', ...
-    'maplimits', [-12 12], 'gridscale', Format.TopoRes);
+gridTopo(Data, Chanlocs, true)
+caxis([-15 15])
 title('SD Theta LAT')
 colormap(Format.Colormap.Divergent)
 
+%% identify theta peak location in hotspot
 
+Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks));
+Hotspot = labels2indexes(Channels.Hotspot, Chanlocs);
+
+for Indx_P = 1:numel(Participants)
+    for Indx_S = 1:numel(Sessions.Labels)
+        
+        for Indx_T = 1:numel(AllTasks)
+            Data = zData(:, Indx_S, Indx_T, Hotspot, Theta(1):Theta(2));
+            Data = squeeze(nanmean(Data, 5).*FreqRes);
+            [~, I] = max(Data, [], 2);
+            
+            Peaks(:, Indx_S, Indx_T) = Channels.Hotspot(I);
+            
+        end
+    end
+end
+
+%%
+% plot peak topographies
+gridChanlocs
+figure('units','normalized','outerposition',[0 0 1 .6])
+Indx = 1;
+for Indx_S = 1:numel(Sessions.Labels)
+    for Indx_T = 1:numel(AllTasks)
+        subplot(numel(Sessions.Labels), numel(AllTasks), Indx)
+        Table = tabulate(Peaks(:, Indx_S, Indx_T));
+        Data = zeros(numel(Chanlocs), 1);
+        Data(1:size(Table, 1)) = Table(:, 2);
+        gridTopo(Data, Chanlocs, false)
+        colormap(Format.Colormap.Linear)
+        title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}])
+        Indx = Indx+1;
+    end
+end
+setLims(numel(Sessions.Labels), numel(AllTasks), 'c')
