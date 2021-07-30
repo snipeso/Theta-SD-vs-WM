@@ -19,10 +19,10 @@ Filename = [];
 Refresh = false; % redo already done files
 
 %%% emergency code if I need to fix a specific file
-% Filename = 'P16_LAT_Session2Beam3_ICA_Components.set';
-% FN = split(Filename, '_');
-% Task = FN{2};
-% Refresh = true;
+Filename = 'P14_Game_Session1_ICA_Components.set';
+FN = split(Filename, '_');
+Task = FN{2};
+Refresh = true;
 
 CheckOutput = true; % manually verify if selection was good at the end
 

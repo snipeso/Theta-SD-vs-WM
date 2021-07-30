@@ -12,7 +12,7 @@ Analysis_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = true;
+Refresh = false;
 Tasks = { 'Fixation', 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music', 'MWT', 'Standing', 'Oddball'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,7 +75,11 @@ for Indx_T = 1:numel(Tasks)
         % set to nan all cut data
         Cuts_Filepath = fullfile(Source_Cuts, [Filename_Core, '_Cuts.mat']);
         
+        try
         EEG = rmNoise(EEG, Cuts_Filepath);
+        catch
+            continue
+        end
         
         
         %%% get power
