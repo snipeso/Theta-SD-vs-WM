@@ -10,6 +10,9 @@ Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', ...
 
 AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'Fixation'};
 TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music', 'Rest'};
+% 
+% AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'Standing', 'Oddball', 'Fixation'};
+% TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music', 'EC', 'Oddball', 'EO'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Locations
@@ -69,8 +72,19 @@ Bands.Alpha = [8 12];
 Bands.Beta = [15 25];
 
 Channels = struct();
-Channels.Sample = [11, 129, 52, 70];
-Channels.Sample_Titles = {'Fz', 'Cz', 'P3', 'O1'};
+Channels.Sample = [11, 129, 52, 70, 96];
+Channels.Sample_Titles = {'Fz', 'Cz', 'P3', 'O1', 'T6'};
+
+Channels.Peaks.fm = [11 12 5 6];
+Channels.Peaks.ftl = [44 43 38];
+Channels.Peaks.ftr = [114 120 121];
+Channels.Peaks.ocm = [71 76 75];
+Channels.Peaks.otl = [57 58 65];
+Channels.Peaks.otr = [90 96 100];
+Channels.Troughs.cl = [41 40 35 34];
+Channels.Troughs.cr = [103 109 110 116];
+Channels.Troughs.om = [74 82 81];
+
 Channels.Hotspot = [2:6, 9:13, 15, 16, 18:20, 23, 24, 26:29, 111, 112, 117, 118, 123, 124];
 
 
@@ -85,4 +99,6 @@ Sessions.SpFT = {'Baseline', 'Session1', 'Session2'};
 Sessions.Game = {'Baseline', 'Session1', 'Session2'};
 Sessions.Music = {'Baseline', 'Session1', 'Session2'};
 Sessions.Fixation = {'BaselinePost', 'Main3', 'Main7'};
+Sessions.Standing = {'BaselinePost', 'Main3', 'Main7'};
+Sessions.Oddball = {'BaselinePost', 'Main3', 'Main7'};
 Sessions.Labels = {'BL', 'SR', 'SD'};
