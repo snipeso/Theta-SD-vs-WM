@@ -44,7 +44,7 @@ for Indx_T = 1:numel(AllTasks)
             
             % plot topoplot
             subplot(numel(BandLabels), numel(Sessions.Labels), Indx)
-            topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', ...
+            topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
                 'maplimits', CLims(Indx_B, :), 'gridscale', Format.TopoRes);
             title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}])
             colorbar
@@ -83,7 +83,7 @@ for Indx_B = 1:numel(BandLabels)
             
             % plot topoplot
             subplot(numel(AllTasks), numel(Sessions.Labels), Indx)
-            topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', ...
+            topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
                 'maplimits', CLims(Indx_B, :), 'gridscale', Format.TopoRes);
             title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}])
             colorbar
@@ -166,3 +166,16 @@ for Indx_S = 1:numel(Sessions.Labels)
     end
 end
 setLims(numel(Sessions.Labels), numel(AllTasks), 'c')
+
+
+% q1 did it move?
+% q2 where did it move?
+
+%%
+close all
+ChanlocsHotspot = Chanlocs(Hotspot);
+figure
+topoplot(Data, ChanlocsHotspot, 'style', 'map', 'headrad', .5, 'whitebk', 'on', ...
+               'electrodes', 'on', 'maplimits', CLims(Indx_B, :), 'gridscale', Format.TopoRes)
+
+
