@@ -65,15 +65,15 @@ end
 
 %% plot topographies by band
 
-    for Indx_B = 1:numel(BandLabels)
+for Indx_B = 1:numel(BandLabels)
     figure('units','normalized','outerposition',[0 0 .3 1])
     Indx = 1;
-
-        Band = Bands.(BandLabels{Indx_B});
-        Band = dsearchn(Freqs', Band');
+    
+    Band = Bands.(BandLabels{Indx_B});
+    Band = dsearchn(Freqs', Band');
+    
+    for Indx_T = 1:numel(AllTasks)
         
-        for Indx_T = 1:numel(AllTasks)
-            
         for Indx_S = 1:numel(Sessions.Labels)
             
             % get data
@@ -99,3 +99,34 @@ end
     saveas(gcf,fullfile(Results, [Fig_Title, '.png']))
     
 end
+
+
+
+%% plot representative topoplot with labels
+% SD theta LAT, and SR theta game
+
+% game
+Theta = dsearchn(Freqs', Bands.Theta');
+Data = zData(:, 2, 5, :, Theta(1):Theta(2));
+Data = squeeze(nansum(Data, 5).*FreqRes); % integral of band
+Data = nanmean(Data, 1);
+
+figure
+topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'electrodes', 'labels', ...
+    'maplimits', [-12 12], 'gridscale', Format.TopoRes);
+title('SD Theta Game')
+colormap(Format.Colormap.Divergent)
+
+
+% lat
+Data = zData(:, 3, 2, :, Theta(1):Theta(2));
+Data = squeeze(nansum(Data, 5).*FreqRes); % integral of band
+Data = nanmean(Data, 1);
+
+figure
+topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'electrodes', 'labels', ...
+    'maplimits', [-12 12], 'gridscale', Format.TopoRes);
+title('SD Theta LAT')
+colormap(Format.Colormap.Divergent)
+
+
