@@ -32,6 +32,7 @@ addpath(fullfile(Paths.Analysis, 'functions','general'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 addpath(fullfile(Paths.Analysis, 'functions','plots'))
 addpath(fullfile(Paths.Analysis, 'functions','tasks'))
+addpath(fullfile(Paths.Analysis, 'functions','stats'))
 run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
 
 
@@ -65,6 +66,26 @@ Format.Colormap.Rainbow = unirainbow;
 Format.Colors.Participants = Format.Colormap.Rainbow(floor(linspace(1, ...
     size(Format.Colormap.Rainbow, 1), numel(Participants))), :);
 Format.Alpha.Participants = .3;
+
+% basic colors for simple plots
+Format.Colors.Dark1 = [99 88 226]/255; % fixation purple
+
+Format.Colors.Tasks.PVT = [244, 204, 32]/255;
+Format.Colors.Tasks.LAT = [246, 162, 75]/255;
+Format.Colors.Tasks.Match2Sample = [228, 104, 90]/255;
+
+Format.Colors.Tasks.SpFT = [185, 204, 38]/255;
+Format.Colors.Tasks.Game = [44, 190, 107]/255;
+Format.Colors.Tasks.Music = [22, 144, 167]/255;
+
+Format.Colors.Tasks.Oddball = [222, 122, 184]/255;
+Format.Colors.Tasks.Fixation = [172, 86, 224]/255;
+Format.Colors.Tasks.Standing = [99, 88, 226]/255;
+
+Format.Colors.AllTasks = nan(numel(AllTasks), 3);
+for Indx_T = 1:numel(AllTasks)
+    Format.Colors.AllTasks(Indx_T, :) = Format.Colors.Tasks.(AllTasks{Indx_T});
+end
 
 Bands.Delta = [1 4];
 Bands.Theta = [4 8];

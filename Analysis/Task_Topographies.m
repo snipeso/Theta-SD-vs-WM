@@ -157,18 +157,105 @@ saveFig(strjoin({TitleTag, 'PeakLoc'}, '_'), Results, Format)
 
 %% Topography correlations
 
-Combo = numel(Sessions.Labels)*numel(AllTasks);
-R = nan(numel(Participants), Combo, Combo);
+Combo = numel(Sessions.Labels)*numel(AllTasks); % comination of all sessions and tasks
 
-for Indx_P = 1:numel(Participants)
-    Indx = 1;
-    for Indx_S = 1:numel(Sessions)
+%%% gather correlations for each band
+for Indx_B = 1:numel(BandLabels)
+    R = nan(numel(Participants), Combo, Combo);
+    SessionLabels = cell([2, Combo]);
+    
+    for Indx_P = 1:numel(Participants)
+        AllTopos = nan(numel(Chanlocs), Combo);
+        Indx = 1;
+        for Indx_S = 1:numel(Sessions.Labels)
+            for Indx_T = 1:numel(AllTasks)
+                AllTopos(:, Indx) = squeeze(bData(Indx_P, Indx_S, Indx_T, :, Indx_B));
+                
+                SessionLabels(1, Indx) = Sessions.Labels(Indx_S);
+                SessionLabels(2, Indx) = AllTasks(Indx_T);
+                Indx = Indx+1;
+            end
+        end
+        R(Indx_P, :, :) = corrcoef(AllTopos);
+    end
+    
+    
+    
+    
+    
+    % plot matrix of averages of correlations
+    figure
+    Data = squeeze(nanmean(R, 1));
+    imagesc(Data)
+    colorbar
+    colormap(Format.Colormap.Linear)
+    
+    yticks(1:Combo)
+    yticklabels(SessionLabels(2, :))
+    xticks(numel(AllTasks)/2:numel(AllTasks):Combo);
+    xticklabels(Sessions.Labels)
+    caxis([min(Data(:)) max(Data(Data~=1))])
+    axis square
+    set(gca, 'FontName', Format.FontName)
+    title(strjoin({'Corr', BandLabels{Indx_B}, 'Raw Topographies'}, ' '))
+
+    % plot session grid
+    hold on
+    for Indx_S = 1:numel(Sessions.Labels)-1
+        X = Indx_S*numel(AllTasks) + .5;
+        Y = Combo + .5;
+        plot([X, X], [0 Y], 'k')
+        plot([0 Y], [X X], 'k')
+    end
+    saveFig(strjoin({TitleTag, 'TopoCorr', BandLabels{Indx_B}}, '_'), Results, Format)
+    
+        
+    %%% plot averages for tasks & sessions
+    
+    % gather data
+    DataS = nan(numel(Participants), numel(Sessions.Labels));
+    DataT = nan(numel(Participants), numel(AllTasks));
+    for Indx_P = 1:numel(Participants)
+        
+        % sessions
+        for Indx_S = 1:numel(Sessions.Labels)
+            Indexes = strcmp(SessionLabels(1, :), Sessions.Labels{Indx_S});
+            R_temp  = squeeze(R(Indx_P, Indexes, Indexes));
+            R_temp(tril(logical(R_temp))) = nan; % set to nan the diagonal and below, since it repeats
+            DataS(Indx_P, Indx_S) = nanmean(R_temp(:));
+        end
+        
+        % tasks
         for Indx_T = 1:numel(AllTasks)
-            Topo1 = 
-            R(Indx_P, Indx, Indx) = corrcoef(Topo1, Topo2); 
-            
-            Indx = Indx+1;
+            Indexes = strcmp(SessionLabels(2, :), AllTasks{Indx_T});
+            R_temp  = squeeze(R(Indx_P, Indexes, Indexes));
+            R_temp(tril(logical(R_temp))) = nan; % set to nan the diagonal and below, since it repeats
+            DataT(Indx_P, Indx_T) = nanmean(R_temp(:));
         end
     end
+    
+    
+    figure('units','normalized','outerposition',[0 0 1 .6])
+    
+    % plot average corr for each session
+    subplot(1, 3, 1)
+    PlotBars(DataS, Sessions.Labels, [0 0 0; .4 .4 .4; .8 .8 .8], Format, 'vertical', true)
+    title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Sessions'}, ' '))
+    
+    % plot average corr for each task
+    subplot(1, 3, 2)
+    PlotBars(DataT, TaskLabels, Format.Colors.AllTasks, Format, 'vertical', true)
+    title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Tasks'}, ' '))
+    
+    % plot average corr for sessions vs tasks
+    Data = [nanmean(DataS, 2),  nanmean(DataT, 2)];
+     subplot(1, 3, 3)
+    PlotBars(Data, {'Sessions', 'Tasks'}, [.5 .5 .5; Format.Colors.Dark1], Format, 'vertical', true)
+    title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Tasks'}, ' '))
+
+
+    setLims(1, 3, 'y')
+    
+    saveFig(strjoin({TitleTag, 'TopoCorrAverages', BandLabels{Indx_B}}, '_'), Results, Format)
 end
 

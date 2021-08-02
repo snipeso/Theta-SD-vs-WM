@@ -3,4 +3,8 @@ function saveFig(Title, Destination, Format)
 % I want
 
 saveas(gcf, fullfile(Destination, [Title, '.svg']));
-saveas(gcf, fullfile(Destination, [Title, '.png']));
+try
+saveas(gcf, fullfile(Destination, [Title, '.jpg']));
+catch
+    warning(['couldnt save jpg ', Title])
+end
