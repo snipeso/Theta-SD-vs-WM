@@ -1,4 +1,5 @@
-% this script plots the average topographies for BL, SD1 and SD2 z-scored.
+% this script plots the average topographies for BL, SD1 and SD2 z-scored
+% for all the tasks. No statistics.
 
 clear
 close all
@@ -17,8 +18,11 @@ end
 Load_All_Power % results in variable "AllData"; P x S x T x Ch x F
 
 % z-score it
-zData = ZscoreData(AllData, 'last');
+zData = zScoreData(AllData, 'last');
 
+
+% save it into bands
+bData = bandData(zData, Freqs, Bands, 'last');
 
 %% plot topographies by task
 BandLabels = fieldnames(Bands);
@@ -32,15 +36,10 @@ for Indx_T = 1:numel(AllTasks)
     figure('units','normalized','outerposition',[0 0 .5 1])
     Indx = 1;
     for Indx_B = 1:numel(BandLabels)
-        Band = Bands.(BandLabels{Indx_B});
-        Band = dsearchn(Freqs', Band');
-        
         for Indx_S = 1:numel(Sessions.Labels)
             
             % get data
-            Data = zData(:, Indx_S, Indx_T, :, Band(1):Band(2));
-            Data = squeeze(nansum(Data, 5).*FreqRes); % integral of band
-            Data = nanmean(Data, 1);
+            Data = nanmean(squeeze(bData(:, Indx_S, Indx_T, :, Indx_B)), 1);
             
             % plot topoplot
             subplot(numel(BandLabels), numel(Sessions.Labels), Indx)
@@ -55,10 +54,7 @@ for Indx_T = 1:numel(AllTasks)
     colormap(Format.Colormap.Divergent)
     
     % save
-    Fig_Title = strjoin({TitleTag,  'All', 'Bands', AllTasks{Indx_T}}, '_');
-    saveas(gcf,fullfile(Results, [Fig_Title, '.svg']))
-    saveas(gcf,fullfile(Results, [Fig_Title, '.png']))
-    
+    saveFig(strjoin({TitleTag,  'All', 'Bands', AllTasks{Indx_T}}, '_'), Results, Format)
 end
 
 
@@ -69,17 +65,11 @@ for Indx_B = 1:numel(BandLabels)
     figure('units','normalized','outerposition',[0 0 .3 1])
     Indx = 1;
     
-    Band = Bands.(BandLabels{Indx_B});
-    Band = dsearchn(Freqs', Band');
-    
     for Indx_T = 1:numel(AllTasks)
-        
         for Indx_S = 1:numel(Sessions.Labels)
             
             % get data
-            Data = zData(:, Indx_S, Indx_T, :, Band(1):Band(2));
-            Data = squeeze(nansum(Data, 5).*FreqRes); % integral of band
-            Data = nanmean(Data, 1);
+            Data = nanmean(squeeze(bData(:, Indx_S, Indx_T, :, Indx_B)), 1);
             
             % plot topoplot
             subplot(numel(AllTasks), numel(Sessions.Labels), Indx)
@@ -94,10 +84,7 @@ for Indx_B = 1:numel(BandLabels)
     colormap(Format.Colormap.Divergent)
     
     % save
-    Fig_Title = strjoin({TitleTag, 'All', 'Tasks', BandLabels{Indx_B}}, '_');
-    saveas(gcf,fullfile(Results, [Fig_Title, '.svg']))
-    saveas(gcf,fullfile(Results, [Fig_Title, '.png']))
-    
+    saveFig(strjoin({TitleTag, 'All', 'Tasks', BandLabels{Indx_B}}, '_'), Results, Format)
 end
 
 
@@ -105,29 +92,30 @@ end
 %% plot representative topoplot with labels
 % SD theta LAT, and SR theta game
 
-% game
-Theta = dsearchn(Freqs', Bands.Theta');
-Data = zData(:, 2, 5, :, Theta(1):Theta(2));
-Data = squeeze(nansum(Data, 5).*FreqRes); % integral of band
-Data = nanmean(Data, 1);
-
+% game theta SD1
 figure
+Data = nanmean(squeeze(bData(:, 2, 5, :, 2)), 1);
 gridTopo(Data, Chanlocs, true)
 caxis([-15 15])
 title('SD Theta Game')
 colormap(Format.Colormap.Divergent)
 
+% save
+saveFig(strjoin({TitleTag, 'exampleGrid','Theta', 'SD1'}, '_'), Results, Format)
 
-% lat
-Data = zData(:, 3, 2, :, Theta(1):Theta(2));
-Data = squeeze(nansum(Data, 5).*FreqRes); % integral of band
-Data = nanmean(Data, 1);
 
+% lat theta SD2
 figure
+Data = nanmean(squeeze(bData(:, 3, 2, :, 2)), 1);
 gridTopo(Data, Chanlocs, true)
 caxis([-15 15])
 title('SD Theta LAT')
 colormap(Format.Colormap.Divergent)
+
+% save
+saveFig(strjoin({TitleTag, 'exampleGrid', 'LAT', 'SD2'}, '_'), Results, Format)
+
+
 
 %% identify theta peak location in hotspot
 
@@ -136,21 +124,16 @@ Hotspot = labels2indexes(Channels.Hotspot, Chanlocs);
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions.Labels)
-        
         for Indx_T = 1:numel(AllTasks)
-            Data = zData(:, Indx_S, Indx_T, Hotspot, Theta(1):Theta(2));
-            Data = squeeze(nanmean(Data, 5).*FreqRes);
-            [~, I] = max(Data, [], 2);
-            
-            Peaks(:, Indx_S, Indx_T) = Channels.Hotspot(I);
-            
+            Data = squeeze(bData(Indx_P, Indx_S, Indx_T, Hotspot, 2));
+            [~, I] = max(Data);
+            Peaks(Indx_P, Indx_S, Indx_T) = Channels.Hotspot(I);
         end
     end
 end
 
-%%
+
 % plot peak topographies
-gridChanlocs
 figure('units','normalized','outerposition',[0 0 1 .6])
 Indx = 1;
 for Indx_S = 1:numel(Sessions.Labels)
@@ -161,21 +144,31 @@ for Indx_S = 1:numel(Sessions.Labels)
         Data(1:size(Table, 1)) = Table(:, 2);
         gridTopo(Data, Chanlocs, false)
         colormap(Format.Colormap.Linear)
-        title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}])
+        title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', 14)
         Indx = Indx+1;
     end
 end
 setLims(numel(Sessions.Labels), numel(AllTasks), 'c')
 
+% save
+saveFig(strjoin({TitleTag, 'PeakLoc'}, '_'), Results, Format)
 
-% q1 did it move?
-% q2 where did it move?
 
-%%
-close all
-ChanlocsHotspot = Chanlocs(Hotspot);
-figure
-topoplot(Data, ChanlocsHotspot, 'style', 'map', 'headrad', .5, 'whitebk', 'on', ...
-               'electrodes', 'on', 'maplimits', CLims(Indx_B, :), 'gridscale', Format.TopoRes)
 
+%% Topography correlations
+
+Combo = numel(Sessions.Labels)*numel(AllTasks);
+R = nan(numel(Participants), Combo, Combo);
+
+for Indx_P = 1:numel(Participants)
+    Indx = 1;
+    for Indx_S = 1:numel(Sessions)
+        for Indx_T = 1:numel(AllTasks)
+            Topo1 = 
+            R(Indx_P, Indx, Indx) = corrcoef(Topo1, Topo2); 
+            
+            Indx = Indx+1;
+        end
+    end
+end
 

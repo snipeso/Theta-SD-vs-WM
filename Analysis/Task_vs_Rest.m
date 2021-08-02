@@ -14,19 +14,25 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
 
-Tasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
 Baseline_Task = 'Fixation';
 Baseline_Session = 'BaselinePost';
 
+WelchWindow = 10;
+TitleTag = strjoin({'Task', 'Topos', 'vs' Baseline_Task, 'Welch', num2str(WelchWindow), 'zscored'}, '_');
 
 
+Results = fullfile(Paths.Results, 'Task_vs_Rest_Topographies');
+if ~exist(Results, 'dir')
+    mkdir(Results)
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-% write little script that gathers data and normalizes it. Keep raw data
-% handy.
+Load_All_Power % results in variable "AllData"; P x S x T x Ch x F
 
+% z-score it
+zData = ZscoreData(AllData, 'last');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data

@@ -1,4 +1,4 @@
-function Data = ZscoreData(Data, Dimentions)
+function Data = zScoreData(Data, Dimentions)
 % z-scores a matrix across the first dimention (presumed participant) and
 % seperately for the last dimention (presumed frequency), if option
 % selected.
