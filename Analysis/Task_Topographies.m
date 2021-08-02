@@ -172,7 +172,7 @@ for Indx_B = 1:numel(BandLabels)
                 AllTopos(:, Indx) = squeeze(bData(Indx_P, Indx_S, Indx_T, :, Indx_B));
                 
                 SessionLabels(1, Indx) = Sessions.Labels(Indx_S);
-                SessionLabels(2, Indx) = AllTasks(Indx_T);
+                SessionLabels(2, Indx) = TaskLabels(Indx_T);
                 Indx = Indx+1;
             end
         end
@@ -186,27 +186,8 @@ for Indx_B = 1:numel(BandLabels)
     % plot matrix of averages of correlations
     figure
     Data = squeeze(nanmean(R, 1));
-    imagesc(Data)
-    colorbar
-    colormap(Format.Colormap.Linear)
-    
-    yticks(1:Combo)
-    yticklabels(SessionLabels(2, :))
-    xticks(numel(AllTasks)/2:numel(AllTasks):Combo);
-    xticklabels(Sessions.Labels)
-    caxis([min(Data(:)) max(Data(Data~=1))])
-    axis square
-    set(gca, 'FontName', Format.FontName)
-    title(strjoin({'Corr', BandLabels{Indx_B}, 'Raw Topographies'}, ' '))
-
-    % plot session grid
-    hold on
-    for Indx_S = 1:numel(Sessions.Labels)-1
-        X = Indx_S*numel(AllTasks) + .5;
-        Y = Combo + .5;
-        plot([X, X], [0 Y], 'k')
-        plot([0 Y], [X X], 'k')
-    end
+PlotCorrMatrix_AllSessions(Data, SessionLabels, Sessions.Labels, numel(AllTasks), Format)
+     title(strjoin({'Corr', BandLabels{Indx_B}, 'Raw Topographies'}, ' '))
     saveFig(strjoin({TitleTag, 'TopoCorr', BandLabels{Indx_B}}, '_'), Results, Format)
     
         
@@ -259,3 +240,15 @@ for Indx_B = 1:numel(BandLabels)
     saveFig(strjoin({TitleTag, 'TopoCorrAverages', BandLabels{Indx_B}}, '_'), Results, Format)
 end
 
+
+%%% For reference, correlation across bands for different sessions
+for Indx_S = 1:numel(Sessions.Labels)
+   for Indx_T = 1:numel(AllTasks) 
+       R = nan(numel(Participants), numel(BandLabels), numel(BandLabels));
+       for Indx_P = 1:numel(Participants)
+           Data = squeeze(bData(Indx_P, Indx_S, Indx_T, :, Indx_B));
+           R(Indx_P, :, :) = corrcoef(Data);
+       end
+       
+   end
+end
