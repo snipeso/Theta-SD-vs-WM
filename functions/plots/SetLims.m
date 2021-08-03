@@ -7,6 +7,7 @@ Lims = nan(Tot, 2);
 
 for Indx_Sp = 1:Tot
     subplot(Dim1, Dim2, Indx_Sp)
+    hold on
     switch Axis
         case 'y'
             Lims(Indx_Sp, :) = ylim;
@@ -23,7 +24,7 @@ NewLims = [min(Lims(:, 1)), max(Lims(:, 2))];
 
 for Indx_Sp = 1:Tot
     subplot(Dim1, Dim2, Indx_Sp)
-    
+    hold on
     switch Axis
         case 'y'
             ylim(NewLims)

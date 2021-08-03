@@ -23,6 +23,7 @@ zData = zScoreData(AllData, 'last');
 
 % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
+bAllData = bandData(log(AllData), Freqs, Bands, 'last');
 
 %% plot topographies by task
 BandLabels = fieldnames(Bands);
@@ -93,29 +94,30 @@ end
 % SD theta LAT, and SR theta game
 
 % game theta SD1
-figure
-Data = nanmean(squeeze(bData(:, 2, 5, :, 2)), 1);
-gridTopo(Data, Chanlocs, true)
-caxis([-15 15])
-title('SD Theta Game')
-colormap(Format.Colormap.Divergent)
-
-% save
-saveFig(strjoin({TitleTag, 'exampleGrid','Theta', 'SD1'}, '_'), Results, Format)
-
-
-% lat theta SD2
-figure
-Data = nanmean(squeeze(bData(:, 3, 2, :, 2)), 1);
-gridTopo(Data, Chanlocs, true)
-caxis([-15 15])
-title('SD Theta LAT')
-colormap(Format.Colormap.Divergent)
-
-% save
-saveFig(strjoin({TitleTag, 'exampleGrid', 'LAT', 'SD2'}, '_'), Results, Format)
-
-
+for Indx_B = 1:numel(BandLabels)
+    figure
+    Data = nanmean(squeeze(bData(:, 2, 5, :, Indx_B)), 1);
+    gridTopo(Data, Chanlocs, true)
+    caxis( CLims(Indx_B, :))
+    title(['SD ', BandLabels{Indx_B}, ' Game'])
+    colormap(Format.Colormap.Divergent)
+    
+    % save
+    saveFig(strjoin({TitleTag, 'exampleGrid', 'Game' , BandLabels{Indx_B}, 'SD1'}, '_'), Results, Format)
+    
+    
+    % lat theta SD2
+    figure
+    Data = nanmean(squeeze(bData(:, 3, 2, :, Indx_B)), 1);
+    gridTopo(Data, Chanlocs, true)
+    caxis( CLims(Indx_B, :))
+    title(['SD ', BandLabels{Indx_B}, ' LAT'])
+    colormap(Format.Colormap.Divergent)
+    
+    % save
+    saveFig(strjoin({TitleTag, 'exampleGrid', 'LAT', BandLabels{Indx_B}, 'SD2'}, '_'), Results, Format)
+    
+end
 
 %% identify theta peak location in hotspot
 
@@ -186,11 +188,11 @@ for Indx_B = 1:numel(BandLabels)
     % plot matrix of averages of correlations
     figure
     Data = squeeze(nanmean(R, 1));
-PlotCorrMatrix_AllSessions(Data, SessionLabels, Sessions.Labels, numel(AllTasks), Format)
-     title(strjoin({'Corr', BandLabels{Indx_B}, 'Raw Topographies'}, ' '))
+    PlotCorrMatrix_AllSessions(Data, SessionLabels(2, :), Sessions.Labels, numel(AllTasks), Format)
+    title(strjoin({'Corr', BandLabels{Indx_B}, 'Raw Topographies'}, ' '))
     saveFig(strjoin({TitleTag, 'TopoCorr', BandLabels{Indx_B}}, '_'), Results, Format)
     
-        
+    
     %%% plot averages for tasks & sessions
     
     % gather data
@@ -230,25 +232,71 @@ PlotCorrMatrix_AllSessions(Data, SessionLabels, Sessions.Labels, numel(AllTasks)
     
     % plot average corr for sessions vs tasks
     Data = [nanmean(DataS, 2),  nanmean(DataT, 2)];
-     subplot(1, 3, 3)
+    subplot(1, 3, 3)
     PlotBars(Data, {'Sessions', 'Tasks'}, [.5 .5 .5; Format.Colors.Dark1], Format, 'vertical', true)
     title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Tasks'}, ' '))
-
-
+    
+    
     setLims(1, 3, 'y')
     
     saveFig(strjoin({TitleTag, 'TopoCorrAverages', BandLabels{Indx_B}}, '_'), Results, Format)
 end
 
 
+%%
 %%% For reference, correlation across bands for different sessions
+figure('units','normalized','outerposition',[0 0 1 .6])
+Indx = 1;
 for Indx_S = 1:numel(Sessions.Labels)
-   for Indx_T = 1:numel(AllTasks) 
-       R = nan(numel(Participants), numel(BandLabels), numel(BandLabels));
-       for Indx_P = 1:numel(Participants)
-           Data = squeeze(bData(Indx_P, Indx_S, Indx_T, :, Indx_B));
-           R(Indx_P, :, :) = corrcoef(Data);
-       end
-       
-   end
+    for Indx_T = 1:numel(AllTasks)
+        R = nan(numel(Participants), numel(BandLabels), numel(BandLabels));
+        for Indx_P = 1:numel(Participants)
+            Data = squeeze(bData(Indx_P, Indx_S, Indx_T, :, :));
+            R(Indx_P, :, :) = corrcoef(Data);
+        end
+        
+        Data = squeeze(nanmean(R, 1));
+        subplot(numel(Sessions.Labels), numel(AllTasks), Indx)
+        PlotCorrMatrix_AllSessions(Data, BandLabels, [], [], Format)
+        title(strjoin({Sessions.Labels{Indx_S}, TaskLabels{Indx_T}}, ' '))
+        Indx = Indx+1;
+    end
 end
+setLims(numel(Sessions.Labels), numel(AllTasks), 'c');
+colormap(Format.Colormap.Monochrome)
+
+saveFig(strjoin({TitleTag, 'TopoCorr', 'AllBands'}, '_'), Results, Format)
+
+
+
+%% Plot Fix, Game, LAT at BL, SD1, and SD2 for everyone
+
+
+Tasks = {'Fixation', 'Game', 'LAT'};
+Tasks = find(ismember(AllTasks, Tasks));
+
+for Indx_P = 1:numel(Participants)
+    Band = 2;
+    Data = squeeze(bAllData(Indx_P, :, :, :, Band));
+    CLims = quantile(Data(:), [ .01 .99]);
+    
+   figure
+   Indx = 1;
+   for Indx_S = 1:numel(Sessions.Labels)
+    for Indx_T = Tasks
+        
+        Data = squeeze(bAllData(Indx_P, Indx_S, Indx_T, :, Band));
+        subplot(numel(Sessions.Labels), numel(Tasks), Indx)
+          topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
+               'maplimits', CLims,  'gridscale', Format.TopoRes); %  CLims(Indx_B, :),
+        title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' '))
+        colormap(Format.Colormap.Linear)
+        colorbar
+        Indx = Indx+1;
+    end
+   end
+   
+    saveFig(strjoin({TitleTag, 'Example', 'Theta', Participants{Indx_P} }, '_'), Results, Format)
+end
+
+

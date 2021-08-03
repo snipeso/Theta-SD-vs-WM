@@ -56,6 +56,10 @@ Format.Colormap.Linear = flip(colorcet('L17'));
 Keep = round(linspace(1, size(Format.Colormap.Linear, 1), 20));
 Format.Colormap.Linear = Format.Colormap.Linear(Keep, :);
 
+Format.Colormap.Monochrome = colorcet('L1');
+Keep = round(linspace(1, size(Format.Colormap.Monochrome, 1), 20));
+Format.Colormap.Monochrome = Format.Colormap.Monochrome(Keep, :);
+
 Format.Colormap.Divergent = colorcet('D1');
 Keep = round(linspace(1, size(Format.Colormap.Divergent, 1), 20));
 Format.Colormap.Divergent = Format.Colormap.Divergent(Keep, :);

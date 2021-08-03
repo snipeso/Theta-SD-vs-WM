@@ -10,7 +10,7 @@ colormap(Format.Colormap.Linear)
 nYLabels = numel(yLabels);
 
 yticks(1:nYLabels)
-yticklabels(yLabels(2, :))
+yticklabels(yLabels)
 
 xticks(Grid/2:Grid:nYLabels);
 xticklabels(xLabels)
