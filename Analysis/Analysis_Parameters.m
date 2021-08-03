@@ -73,6 +73,7 @@ Format.Alpha.Participants = .3;
 
 % basic colors for simple plots
 Format.Colors.Dark1 = [99 88 226]/255; % fixation purple
+Format.Colors.Red = [228, 104, 90]/255; % M2S red
 
 Format.Colors.Tasks.PVT = [244, 204, 32]/255;
 Format.Colors.Tasks.LAT = [246, 162, 75]/255;
@@ -95,6 +96,7 @@ Bands.Delta = [1 4];
 Bands.Theta = [4 8];
 Bands.Alpha = [8 12];
 Bands.Beta = [15 25];
+% Bands.Gamma = [25 35];
 
 Channels = struct();
 Channels.Sample = [11, 129, 52, 70, 96];

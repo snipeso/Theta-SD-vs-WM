@@ -23,7 +23,7 @@ zData = zScoreData(AllData, 'last');
 
 % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
-bAllData = bandData(log(AllData), Freqs, Bands, 'last');
+bAllData = bandData(AllData, Freqs, Bands, 'last');
 
 %% plot topographies by task
 BandLabels = fieldnames(Bands);
@@ -31,6 +31,7 @@ FreqRes = Freqs(2)-Freqs(1);
 CLims = [ -5 5;
     -12 12;
     -12 12;
+    -20 20;
     -20 20];
 
 for Indx_T = 1:numel(AllTasks)
@@ -278,9 +279,9 @@ Tasks = find(ismember(AllTasks, Tasks));
 for Indx_P = 1:numel(Participants)
     Band = 2;
     Data = squeeze(bAllData(Indx_P, :, :, :, Band));
-    CLims = quantile(Data(:), [ .01 .99]);
+    CLims = quantile(Data(:), [ .01 1]);
     
-   figure
+   figure('units','normalized','outerposition',[0 0 .3 .4])
    Indx = 1;
    for Indx_S = 1:numel(Sessions.Labels)
     for Indx_T = Tasks
