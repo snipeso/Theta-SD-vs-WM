@@ -75,7 +75,7 @@ for Indx_S = 1:numel(Sessions)
     N3 = squeeze(Data_Leveled(:, :, 2));
     
     subplot(1, numel(Sessions), Indx_S)
-    PlotTopoDiff(N1, N3, Chanlocs, CLims, Format)
+    plotTopoDiff(N1, N3, Chanlocs, CLims, Format)
     title([Sessions{Indx_S}, ' N3vN1'])
 end
 
@@ -94,7 +94,7 @@ for Indx_W = 1:numel(Windows)
     SD = squeeze(nanmean(nanmean(zData(:, 3, Indx_W, :, Theta(1):Theta(2), :), 5), 6));
     
     subplot(1, numel(Windows), Indx_W)
-    PlotTopoDiff(BL, SD, Chanlocs, CLims, Format)
+    plotTopoDiff(BL, SD, Chanlocs, CLims, Format)
     title([Windows{Indx_W}, ' SD2vBL'])
     
 end

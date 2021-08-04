@@ -1,4 +1,4 @@
-function [ p, Sig] = PlotTopoDiff(Matrix1, Matrix2, Chanlocs, CLims, Format)
+function [ p, Sig] = plotTopoDiff(Matrix1, Matrix2, Chanlocs, CLims, Format)
 % Plot t values of difference between two conditions.
 % Each matrix needs the same number of dimentions; participant x ch
 

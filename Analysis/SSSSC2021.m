@@ -34,7 +34,7 @@ for Indx_S = 1 %:numel(Sessions.LAT)
         if Indx_S == 1 && Indx_T == numel(AllTasks)
             continue
         end
-        [p, Sig] = PlotTopoDiff(Fix, Topo, Chanlocs, CLims, Format);
+        [p, Sig] = plotTopoDiff(Fix, Topo, Chanlocs, CLims, Format);
         title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}])
         saveas(gcf,fullfile(Results, strjoin({TitleTag, 'FixBL_vs', AllTasks{Indx_T}, [Sessions.Labels{Indx_S}, '.png']}, '_')))
         
@@ -65,7 +65,7 @@ for Indx_T = 1:numel(AllTasks)
             continue
         end
         subplot(1, 2, Indx_S-1)
-        [p, Sig] = PlotTopoDiff(BL, SD, Chanlocs, CLims, Format);
+        [p, Sig] = plotTopoDiff(BL, SD, Chanlocs, CLims, Format);
         title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}])
         
         % Fz effect sizes:
