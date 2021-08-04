@@ -20,7 +20,6 @@ Load_All_Power % results in variable "AllData"; P x S x T x Ch x F
 % z-score it
 zData = zScoreData(AllData, 'last');
 
-
 % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
 bAllData = bandData(AllData, Freqs, Bands, 'last');
@@ -45,15 +44,12 @@ for Indx_T = 1:numel(AllTasks)
             
             % plot topoplot
             subplot(numel(BandLabels), numel(Sessions.Labels), Indx)
-            topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
-                'maplimits', CLims(Indx_B, :), 'gridscale', Format.TopoRes);
-            title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}])
-            colorbar
-            set(gca, 'FontName', Format.FontName, 'FontSize', 20)
+            plotTopo(Data, Chanlocs, CLims(Indx_B, :), 'Divergent', Format)
+            title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}],  'FontSize', 20)
+            
             Indx = Indx+1;
         end
     end
-    colormap(Format.Colormap.Divergent)
     
     % save
     saveFig(strjoin({TitleTag,  'All', 'Bands', AllTasks{Indx_T}}, '_'), Results, Format)
@@ -75,15 +71,13 @@ for Indx_B = 1:numel(BandLabels)
             
             % plot topoplot
             subplot(numel(AllTasks), numel(Sessions.Labels), Indx)
-            topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
-                'maplimits', CLims(Indx_B, :), 'gridscale', Format.TopoRes);
-            title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}])
-            colorbar
-            set(gca, 'FontName', Format.FontName)
+            plotTopo(Data, Chanlocs, CLims(Indx_B, :), 'Divergent', Format)
+            title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}], 'FontSize', 14)
+            
             Indx = Indx+1;
         end
     end
-    colormap(Format.Colormap.Divergent)
+    
     
     % save
     saveFig(strjoin({TitleTag, 'All', 'Tasks', BandLabels{Indx_B}}, '_'), Results, Format)
@@ -119,6 +113,7 @@ for Indx_B = 1:numel(BandLabels)
     saveFig(strjoin({TitleTag, 'exampleGrid', 'LAT', BandLabels{Indx_B}, 'SD2'}, '_'), Results, Format)
     
 end
+
 
 %% identify theta peak location in hotspot
 
@@ -281,22 +276,21 @@ for Indx_P = 1:numel(Participants)
     Data = squeeze(bAllData(Indx_P, :, :, :, Band));
     CLims = quantile(Data(:), [ .01 1]);
     
-   figure('units','normalized','outerposition',[0 0 .3 .4])
-   Indx = 1;
-   for Indx_S = 1:numel(Sessions.Labels)
-    for Indx_T = Tasks
-        
-        Data = squeeze(bAllData(Indx_P, Indx_S, Indx_T, :, Band));
-        subplot(numel(Sessions.Labels), numel(Tasks), Indx)
-          topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
-               'maplimits', CLims,  'gridscale', Format.TopoRes); %  CLims(Indx_B, :),
-        title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' '))
-        colormap(Format.Colormap.Linear)
-        colorbar
-        Indx = Indx+1;
+    figure('units','normalized','outerposition',[0 0 .3 .4])
+    Indx = 1;
+    for Indx_S = 1:numel(Sessions.Labels)
+        for Indx_T = Tasks
+            
+            Data = squeeze(bAllData(Indx_P, Indx_S, Indx_T, :, Band));
+            
+            subplot(numel(Sessions.Labels), numel(Tasks), Indx)
+            plotTopo(Data, Chanlocs, CLims, 'Linear', Format)
+            title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' '))
+            
+            Indx = Indx+1;
+        end
     end
-   end
-   
+    
     saveFig(strjoin({TitleTag, 'Example', 'Theta', Participants{Indx_P} }, '_'), Results, Format)
 end
 
