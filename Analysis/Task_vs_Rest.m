@@ -14,10 +14,19 @@ clear
 close all
 clc
 
-Analysis_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
+
+P = analysisParameters();
+
+Paths = P.Paths;
+Participants = P.Participants;
+AllTasks = P.AllTasks;
+TaskLabels = P.TaskLabels;
+Bands = P.Bands;
+Format = P.Format;
+Sessions = P.Sessions;
 
 Baseline_Task = 'Fixation';
 Baseline_Session = 'BaselinePost';
@@ -34,7 +43,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-Load_All_Power % results in variable "AllData"; P x S x T x Ch x F
+[AllData, Freqs, Chanlocs] = loadAllPower(P);
 
 % z-score it
 zData = zScoreData(AllData, 'last');
