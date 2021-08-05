@@ -1,13 +1,13 @@
 % Calculates power for the different stages of the match2sample task
 % trials. The mat file contains a Ch x Freq x Trial matrix for Baseline,
 % Encoding, Retention, and Probe periods.
-
-
 close all
 clear
 clc
 
-Analysis_Parameters
+
+P = analysisParameters();
+Paths = P.Paths;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

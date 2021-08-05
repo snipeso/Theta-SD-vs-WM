@@ -8,7 +8,13 @@ close all
 clear
 clc
 
-Analysis_Parameters
+P = analysisParameters();
+
+Paths = P.Paths;
+Bands = P.Bands;
+Format = P.Format;
+Channels = P.Channels;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

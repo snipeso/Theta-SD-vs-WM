@@ -2,7 +2,11 @@ clear
 clc
 close all
 
-Analysis_Parameters
+P = analysisParameters();
+
+Paths = P.Paths;
+Bands = P.Bands;
+Format = P.Format;
 
 
 Filename = 'P01_Game_Session2_Clean.set';

@@ -5,7 +5,19 @@ clear
 close all
 clc
 
-Analysis_Parameters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Parameters
+
+P = analysisParameters();
+
+Paths = P.Paths;
+Participants = P.Participants;
+AllTasks = P.AllTasks;
+TaskLabels = P.TaskLabels;
+Bands = P.Bands;
+Format = P.Format;
+Sessions = P.Sessions;
+Channels = P.Channels;
 
 WelchWindow = 10;
 TitleTag = strjoin({'Task', 'Topos', 'Welch', num2str(WelchWindow), 'zScored'}, '_');
@@ -15,7 +27,10 @@ if ~exist(Results, 'dir')
     mkdir(Results)
 end
 
-Load_All_Power % results in variable "AllData"; P x S x T x Ch x F
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Setup data
+
+[AllData, Freqs, Chanlocs] = loadAllPower(P);
 
 % z-score it
 zData = zScoreData(AllData, 'last');

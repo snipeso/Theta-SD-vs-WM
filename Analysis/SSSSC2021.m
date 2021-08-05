@@ -3,7 +3,16 @@ close all
 clear
 clc
 
-Analysis_Parameters
+P = analysisParameters();
+
+Paths = P.Paths;
+Participants = P.Participants;
+AllTasks = P.AllTasks;
+TaskLabels = P.TaskLabels;
+Bands = P.Bands;
+Format = P.Format;
+Sessions = P.Sessions;
+Channels = P.Channels;
 
 WelchWindow = 5;
 TitleTag = strjoin({'SSSSC', 'Abstract', num2str(WelchWindow)}, '_');
@@ -35,13 +44,13 @@ for Indx_S = 1 %:numel(Sessions.LAT)
             continue
         end
         [p, Sig] = plotTopoDiff(Fix, Topo, Chanlocs, CLims, Format);
-        title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}])
+        title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}])
         saveas(gcf,fullfile(Results, strjoin({TitleTag, 'FixBL_vs', AllTasks{Indx_T}, [Sessions.Labels{Indx_S}, '.png']}, '_')))
         
         % Fz effect sizes:
         statsHedges = mes(Topo(:, ES_Ch), Fix(:, ES_Ch), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
         
-        disp([AllTasks{Indx_T} ' ' Sessions.Labels{Indx_S}, ...
+        disp([TaskLabels{Indx_T} ' ' Sessions.Labels{Indx_S}, ...
             ' sig channels: ' num2str(round(100*(nnz(Sig)/numel(Sig)))), ...
             '%; hedges g: ', num2str(statsHedges.hedgesg)
             ])
@@ -66,12 +75,12 @@ for Indx_T = 1:numel(AllTasks)
         end
         subplot(1, 2, Indx_S-1)
         [p, Sig] = plotTopoDiff(BL, SD, Chanlocs, CLims, Format);
-        title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}])
+        title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}])
         
         % Fz effect sizes:
         statsHedges = mes(SD(:, ES_Ch), BL(:, ES_Ch), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
         
-        disp([AllTasks{Indx_T} ' ' Sessions.Labels{Indx_S}, ...
+        disp([TaskLabels{Indx_T} ' ' Sessions.Labels{Indx_S}, ...
             ' sig channels: ' num2str(round(100*(nnz(Sig)/numel(Sig)))), ...
             '%; hedges g: ', num2str(statsHedges.hedgesg)
             ])
@@ -105,7 +114,7 @@ for Indx_Ch = 1:numel(Ch)
         subplot(1, numel(AllTasks)-1, Indx_T)
         PlotConfettiSpaghetti(Theta_Peak, Sessions.Labels, YLims, [], [], Format, true);
         ylabel('Peak Frequency')
-        title([AllTasks{Indx_T}, ' ', ChLabels{Indx_Ch} ])
+        title([TaskLabels{Indx_T}, ' ', ChLabels{Indx_Ch} ])
 
     end
     saveas(gcf,fullfile(Results, [TitleTag, '_PeakTheta_', ChLabels{Indx_Ch}, '.png']))

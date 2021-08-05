@@ -3,7 +3,14 @@ close all
 clear
 clc
 
-Analysis_Parameters
+P = analysisParameters();
+
+Paths = P.Paths;
+Participants = P.Participants;
+Bands = P.Bands;
+Format = P.Format;
+Sessions = P.Sessions;
+Channels = P.Channels;
 
 Task = 'Match2Sample';
 WelchWindow = 4;
