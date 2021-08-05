@@ -96,7 +96,7 @@ Bands.Delta = [1 4];
 Bands.Theta = [4 8];
 Bands.Alpha = [8 12];
 Bands.Beta = [15 25];
-% Bands.Gamma = [25 35];
+Bands.Gamma = [25 35];
 
 Channels = struct();
 Channels.Sample = [11, 129, 52, 70, 96];

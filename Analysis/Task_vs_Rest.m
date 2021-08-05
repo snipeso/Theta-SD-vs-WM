@@ -10,6 +10,11 @@
 % If LS/N1 hypothesis is true, general frontal increase in SD, independant of
 % theta in tasks.
 
+clear
+close all
+clc
+
+Analysis_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
@@ -32,23 +37,64 @@ end
 Load_All_Power % results in variable "AllData"; P x S x T x Ch x F
 
 % z-score it
-zData = ZscoreData(AllData, 'last');
+zData = zScoreData(AllData, 'last');
+
+% save it into bands
+bData = bandData(zData, Freqs, Bands, 'last');
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 
+BandLabels = fieldnames(Bands);
+BL_CLabel = 'A.U.';
+CLims_BL = [ -10 10;
+    -10 10;
+    -10 10;
+    -20 20;
+    -20 20];
+CLims_Diff = [-10 10];
 
-%%% Plot participants' baselines, as a control that it's all reasonable
-% spectrograms
+%% Plot all topo changes together
 
-% DTAB topographies
-
-
-%%% plot BL, SD1, SD2 topographies of DTAB
-
-
-
-
-
-
-
+for Indx_B = 1:numel(BandLabels)
+    for Indx_T = 1:numel(AllTasks)
+        figure('units','normalized','outerposition',[0 0 .5 .5])
+        
+        % plot baseline topography
+        Data = squeeze(bData(:, 1, Indx_T, :, Indx_B));
+        
+        subplot(2, 3, 1)
+        plotTopo(nanmean(Data, 1), Chanlocs, CLims_BL(Indx_B, :), BL_CLabel, 'Divergent', Format)
+        title(strjoin({'BL', TaskLabels{Indx_T}, BandLabels{Indx_B}}, ' '), ...
+            'FontSize', 14)
+        
+        % plot change from BL
+        for Indx_S = [2,3]
+            Data2 = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
+            
+            subplot(2, 3, Indx_S)
+            plotTopoDiff(Data, Data2, Chanlocs, CLims_Diff, Format);
+            title(strjoin({Sessions.Labels{Indx_S}, 'vs BL', TaskLabels{Indx_T}, BandLabels{Indx_B}}, ' '), ...
+                'FontSize', 14)
+        end
+        
+        % plot change from Fix
+        for Indx_S = 1:numel(Sessions.Labels)
+            if Indx_T == numel(AllTasks) % skip for fixation
+                continue
+            end
+            
+            Data1 = squeeze(bData(:, Indx_S, end, :, Indx_B));
+            Data2 = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
+            
+            subplot(2, 3, Indx_S+3)
+            plotTopoDiff(Data1, Data2, Chanlocs, CLims_Diff, Format);
+            title(strjoin({Sessions.Labels{Indx_S}, TaskLabels{Indx_T}, 'vs', Sessions.Labels{Indx_S}, 'Rest'}, ' '), ...
+                'FontSize', 14)
+        end
+        
+        % save
+        saveFig(strjoin({TitleTag, 'Diffs', TaskLabels{Indx_T}, BandLabels{Indx_B}}, '_'), Results, Format)
+    end
+end

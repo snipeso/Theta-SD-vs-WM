@@ -4,7 +4,7 @@ function saveFig(Title, Destination, Format)
 
 
 % set(gcf, 'Color', 'none');
-% set(gcf, 'InvertHardcopy', 'off')
+set(gcf, 'InvertHardcopy', 'off')
 
 saveas(gcf, fullfile(Destination, [Title, '.svg']));
 try
@@ -12,4 +12,3 @@ saveas(gcf, fullfile(Destination, [Title, '.jpg']));
 catch
     warning(['couldnt save jpg ', Title])
 end
-

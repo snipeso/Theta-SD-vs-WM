@@ -26,12 +26,14 @@ bAllData = bandData(AllData, Freqs, Bands, 'last');
 
 %% plot topographies by task
 BandLabels = fieldnames(Bands);
+CLabel = 'A.U.';
 FreqRes = Freqs(2)-Freqs(1);
 CLims = [ -5 5;
     -12 12;
     -12 12;
     -20 20;
     -20 20];
+
 
 for Indx_T = 1:numel(AllTasks)
     figure('units','normalized','outerposition',[0 0 .5 1])
@@ -44,7 +46,7 @@ for Indx_T = 1:numel(AllTasks)
             
             % plot topoplot
             subplot(numel(BandLabels), numel(Sessions.Labels), Indx)
-            plotTopo(Data, Chanlocs, CLims(Indx_B, :), 'Divergent', Format)
+            plotTopo(Data, Chanlocs, CLims(Indx_B, :), CLabel, 'Divergent', Format)
             title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}],  'FontSize', 20)
             
             Indx = Indx+1;
@@ -71,7 +73,7 @@ for Indx_B = 1:numel(BandLabels)
             
             % plot topoplot
             subplot(numel(AllTasks), numel(Sessions.Labels), Indx)
-            plotTopo(Data, Chanlocs, CLims(Indx_B, :), 'Divergent', Format)
+            plotTopo(Data, Chanlocs, CLims(Indx_B, :), CLabel, 'Divergent', Format)
             title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}], 'FontSize', 14)
             
             Indx = Indx+1;
@@ -284,7 +286,7 @@ for Indx_P = 1:numel(Participants)
             Data = squeeze(bAllData(Indx_P, Indx_S, Indx_T, :, Band));
             
             subplot(numel(Sessions.Labels), numel(Tasks), Indx)
-            plotTopo(Data, Chanlocs, CLims, 'Linear', Format)
+            plotTopo(Data, Chanlocs, CLims, CLabel, 'Linear', Format)
             title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' '))
             
             Indx = Indx+1;

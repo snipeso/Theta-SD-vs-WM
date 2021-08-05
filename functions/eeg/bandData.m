@@ -7,14 +7,6 @@ Dims = size(Data);
 BandLabels = fieldnames(Bands);
 FreqRes = Freqs(2)-Freqs(1);
 
-% switch numel(Dims)
-%     case 5
-%         bData = nan();
-%         
-%     otherwise
-%         error('dimention not known')
-% end
-
 switch fDim
     case 'last'
         bData = nan([Dims(1:end-1), numel(BandLabels)]);

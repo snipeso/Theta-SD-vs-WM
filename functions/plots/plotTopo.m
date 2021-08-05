@@ -1,4 +1,4 @@
-function plotTopo(Data, Chanlocs, CLims, Colormap, Format)
+function plotTopo(Data, Chanlocs, CLims, CLabel, Colormap, Format)
 % Data is a Ch x 1 matrix. If CLims is empty, uses "minmax". Colormap is
 % string.
 
@@ -11,6 +11,8 @@ topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
 
 set(gca, 'FontName', Format.FontName, 'FontSize', 12)
 
-colorbar
+h = colorbar;
+ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 12)
+
 Colormap = Format.Colormap.(Colormap);
 colormap(Colormap)
