@@ -28,12 +28,8 @@ Bands = P.Bands;
 Format = P.Format;
 Sessions = P.Sessions;
 
-Baseline_Task = 'Fixation';
-Baseline_Session = 'BaselinePost';
-
 WelchWindow = 10;
-TitleTag = strjoin({'Task', 'Topos', 'vs' Baseline_Task, 'Welch', num2str(WelchWindow), 'zscored'}, '_');
-
+TitleTag = strjoin({'Task', 'Topos', 'vs' 'Fixation', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
 
 Results = fullfile(Paths.Results, 'Task_vs_Rest_Topographies');
 if ~exist(Results, 'dir')

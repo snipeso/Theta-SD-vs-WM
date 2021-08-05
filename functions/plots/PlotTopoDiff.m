@@ -19,7 +19,7 @@ end
 
 topoplot(t_values, Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
     'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
-    'emarker2', {Indexes(logical(Sig)), 'o', 'w', 3, .01});
+   'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 3, .01});
 h = colorbar;
 ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 12)
 set(gca, 'FontName', Format.FontName, 'FontSize', 12)

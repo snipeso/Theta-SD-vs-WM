@@ -7,7 +7,7 @@ if numel(CLims) ~= 2
 end
 
 topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
-    'maplimits', CLims, 'gridscale', Format.TopoRes);
+   'electrodes', 'on',  'maplimits', CLims, 'gridscale', Format.TopoRes);
 
 set(gca, 'FontName', Format.FontName, 'FontSize', 12)
 
