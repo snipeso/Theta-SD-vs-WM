@@ -76,6 +76,7 @@ Format.Alpha.Participants = .3;
 % basic colors for simple plots
 Format.Colors.Dark1 = [99 88 226]/255; % fixation purple
 Format.Colors.Red = [228, 104, 90]/255; % M2S red
+Format.Colors.Light1 = [244, 204, 32]/255; % PVT yellow
 
 Format.Colors.Tasks.PVT = [244, 204, 32]/255;
 Format.Colors.Tasks.LAT = [246, 162, 75]/255;
@@ -106,12 +107,12 @@ Channels.Sample_Titles = {'Fz', 'Cz', 'P3', 'O1', 'T6'};
 
 Channels.Peaks.Frontspot = [11 12 5 6]; % frontal midline
 Channels.Peaks.LeftWing = [44 43 38]; % fronto-temporal left
-Channels.Peaks.RightWing = [114 120 121]; % fronto-temporal right
+% Channels.Peaks.RightWing = [114 120 121]; % fronto-temporal right
 Channels.Peaks.BackSpot = [71 76 75]; % occipital-central midline
 Channels.Peaks.LeftTail = [57 58 65]; % occipital-temporal left
-Channels.Peaks.RightTail = [90 96 100];
+% Channels.Peaks.RightTail = [90 96 100];
 Channels.Peaks.LeftDip = [41 40 35 34]; % center left
-Channels.Peaks.RightDip = [103 109 110 116];
+% Channels.Peaks.RightDip = [103 109 110 116];
 
 
 Channels.Frontspot = [2:6, 9:13, 15, 16, 18:20, 23, 24, 26:29, 111, 112, 117, 118, 123, 124];
