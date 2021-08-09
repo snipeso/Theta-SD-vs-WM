@@ -37,11 +37,12 @@ end
 zData = zScoreData(AllData, 'last');
 
 % average across channels
-
+chData = meanChData(zData, Chanlocs, Channels.Peaks, 4);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
+
 
 
 %% Plot spectrums as task x ch coloring all channels

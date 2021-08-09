@@ -1,5 +1,5 @@
 function Indexes = labels2indexes(Labels, Chanlocs)
-% function for converting from labels to indexes
+% function for converting from labels to indexes.
 
 Labels = string(Labels);
 
