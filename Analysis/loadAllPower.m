@@ -16,11 +16,15 @@ for Indx_P = 1:numel(P.Participants)
             
             if ~exist(Path, 'file')
                 warning(['Missing ', Filename])
+                if not(Indx_P==1 && Indx_S ==1 && Indx_T==1)
+                    AllData(Indx_P, Indx_S, Indx_T, 1:numel(Chanlocs), 1:numel(Freqs)) = nan; %#ok<NODEF>
+                end
                 continue
             end
             
             load(Path, 'Power', 'Freqs', 'Chanlocs')
             if isempty(Power)
+                 AllData(Indx_P, Indx_S, Indx_T, 1:numel(Chanlocs), 1:numel(Freqs)) = nan;
                 continue
             end
             

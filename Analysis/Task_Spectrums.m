@@ -19,6 +19,8 @@ Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
 
+PeakRange = [3 15];
+
 WelchWindow = 10;
 TitleTag = strjoin({'Task', 'Spectrums', 'Welch', num2str(WelchWindow), 'zScored'}, '_');
 
@@ -98,7 +100,7 @@ LineWidth = 2;
 
 for Indx_Ch =  1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
-       figure('units','normalized','outerposition',[0 0 .24 1])
+        figure('units','normalized','outerposition',[0 0 .24 1])
         for Indx_S = 1:numel(Sessions.Labels)
             
             Data = squeeze(chData(:, Indx_S, Indx_T, Indx_Ch, :));
@@ -108,9 +110,9 @@ for Indx_Ch =  1:numel(ChLabels)
             title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
         end
         setLims(numel(Sessions.Labels), 1, 'y');
-    
-    saveFig(strjoin({TitleTag, 'Channel', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
-    
+        
+        saveFig(strjoin({TitleTag, 'Channel', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+        
     end
     
 end
@@ -118,8 +120,60 @@ end
 
 %% for each task, get peak frequency for every session, and every change with SD for all channels
 
+disp('Gathering peaks, this is slow')
 
+Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(Chanlocs));
+DiffPeaks = Peaks;
+BL_Task = find(strcmp(AllTasks, 'Fixation'));
 
+for Indx_P = 1:numel(Participants)
+    for Indx_S = 1:numel(Sessions.Labels)
+        BL = squeeze(zData(Indx_P, Indx_S, BL_Task, :, :));
+        for Indx_T = 1:numel(AllTasks)
+            Data = squeeze(zData(Indx_P, Indx_S, Indx_T, :, :));
+            [Peaks(Indx_P, Indx_S, Indx_T, :), ~] = findPeaks(Data, PeakRange, Freqs, true);
+            
+            if Indx_T==BL_Task
+                continue
+            else
+                DiffPeaks(Indx_P, Indx_S, Indx_T, :) = findPeaks(Data-BL, PeakRange, Freqs, true);
+            end
+            
+            
+        end
+    end
+end
+
+clc
+
+%% plot mean peak frequencies for each ch and each task/session
+
+BubbleSize = 50;
+PeakPlotRange = [3 13];
+Colormap = reduxColormap(Format.Colormap.Rainbow, numel(3:15));
+
+for Indx_T = 1:numel(AllTasks)
+    figure('units','normalized','outerposition',[0 0 .5 .5])
+    for Indx_S = 1:numel(Sessions.Labels)
+        
+        Data = squeeze(nanmean(Peaks(:, Indx_S, Indx_T, :), 1));
+        
+        subplot(2, numel(Sessions.Labels), Indx_S)
+        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', false, Format)
+        caxis(PeakPlotRange)
+        colormap(Colormap)
+        title(strjoin({Sessions.Labels{Indx_S}, TaskLabels{Indx_T}}, ' '))
+        
+        Data = squeeze(nanmean(DiffPeaks(:, Indx_S, Indx_T, :), 1));
+        subplot(2, numel(Sessions.Labels), numel(Sessions.Labels)+Indx_S)
+        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', false, Format)
+          caxis(PeakPlotRange)
+           colormap(Colormap)
+        title(strjoin({Sessions.Labels{Indx_S},  TaskLabels{Indx_T}, 'vs Rest'}, ' '))
+    end
+    
+    saveFig(strjoin({TitleTag, 'PeakFreqTopo', AllTasks{Indx_T}}, '_'), Results, Format)
+end
 
 
 %% Plot theta peak pairwise compared to each channel

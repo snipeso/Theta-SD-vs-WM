@@ -5,7 +5,7 @@ BandLabels = fieldnames(Bands);
 
 Data = 10*log(Power);
 bData = bandData(Data, Freqs, Bands, 'last');
-chData = meanChData(Data, Chanlocs, Channels.Peaks, 1);
+chData = meanChData(Power, Chanlocs, Channels.Peaks, 1);
  
 ChLabels = fieldnames(Channels.Peaks);
 figure('units','normalized','outerposition',[0 0 .7 .5])

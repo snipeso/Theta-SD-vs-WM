@@ -1,5 +1,6 @@
 function bubbleTopo(Color, Chanlocs, Size, Type, Labels, Format)
 % plots topoplot as a circle per channel.
+% if labels, mark label indexes
 
 
 TextColor = [.75 .75 .75];
@@ -19,6 +20,8 @@ switch Type
             textscatter(x, y, {Chanlocs.labels}, 'ColorData', TextColor, 'FontName', Format.FontName)
         end
         axis square
+        xlim([min(x) max(x)])
+        ylim([min(y) max(y)])
     case '3D'
         X = [Chanlocs.X];
         Y = [Chanlocs.Y];
@@ -38,3 +41,10 @@ set(gca, 'visible', 'off', 'FontName', Format.FontName)
 title('')
 
 set(findall(gca, 'type', 'text'), 'visible', 'on')
+
+Dims = size(Color);
+
+if Dims(2) ~=3 % if not a color triplet
+    colormap(Format.Colormap.Linear)
+    colorbar
+end

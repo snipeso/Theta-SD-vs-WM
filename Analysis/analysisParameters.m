@@ -54,23 +54,20 @@ Format = struct();
 Format.FontName = 'Tw Cen MT'; % use something else for papers
 Format.TopoRes = 300;
 
-Format.Colormap.Linear = flip(colorcet('L17'));
-Keep = round(linspace(1, size(Format.Colormap.Linear, 1), 20));
-Format.Colormap.Linear = Format.Colormap.Linear(Keep, :);
 
-Format.Colormap.Monochrome = colorcet('L1');
-Keep = round(linspace(1, size(Format.Colormap.Monochrome, 1), 20));
-Format.Colormap.Monochrome = Format.Colormap.Monochrome(Keep, :);
+Linear = flip(colorcet('L17'));
+Format.Colormap.Linear = reduxColormap(Linear, 20);
 
-Format.Colormap.Divergent = colorcet('D1');
-Keep = round(linspace(1, size(Format.Colormap.Divergent, 1), 20));
-Format.Colormap.Divergent = Format.Colormap.Divergent(Keep, :);
+Monochrome = colorcet('L1');
+Format.Colormap.Monochrome = reduxColormap(Monochrome, 20);
 
+Divergent = colorcet('D1');
+Format.Colormap.Divergent = reduxColormap(Divergent, 20);
 
-Format.Colormap.Rainbow = unirainbow;
+Rainbow = unirainbow;
+Format.Colormap.Rainbow = Rainbow;
+Format.Colors.Participants = reduxColormap(Rainbow, numel(P.Participants));
 
-Format.Colors.Participants = Format.Colormap.Rainbow(floor(linspace(1, ...
-    size(Format.Colormap.Rainbow, 1), numel(P.Participants))), :);
 Format.Alpha.Participants = .3;
 
 % basic colors for simple plots

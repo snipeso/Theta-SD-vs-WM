@@ -23,6 +23,8 @@ topoplot(t_values, Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
 h = colorbar;
 ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 12)
 set(gca, 'FontName', Format.FontName, 'FontSize', 12)
+xlim([-.55 .55])
+ylim([-.55 .6])
 
 set(gca, 'FontName', Format.FontName)
 colormap(Format.Colormap.Divergent)
