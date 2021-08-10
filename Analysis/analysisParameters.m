@@ -101,21 +101,24 @@ Bands.Alpha = [8 12];
 Bands.Beta = [15 25];
 Bands.Gamma = [25 35];
 
+Format.Labels.Bands = [1 4 8 15 25 35 40];
+
 Channels = struct();
 Channels.Sample = [11, 129, 52, 70, 96];
 Channels.Sample_Titles = {'Fz', 'Cz', 'P3', 'O1', 'T6'};
 
 Channels.Peaks.Frontspot = [11 12 5 6]; % frontal midline
+Channels.Peaks.Extrafront = [18 16 10 15];
 Channels.Peaks.LeftWing = [44 43 38]; % fronto-temporal left
 % Channels.Peaks.RightWing = [114 120 121]; % fronto-temporal right
 Channels.Peaks.BackSpot = [71 76 75]; % occipital-central midline
-Channels.Peaks.LeftTail = [57 58 65]; % occipital-temporal left
+Channels.Peaks.LeftTail = [57 58 65 64]; % occipital-temporal left
 % Channels.Peaks.RightTail = [90 96 100];
 Channels.Peaks.LeftDip = [41 40 35 34]; % center left
 % Channels.Peaks.RightDip = [103 109 110 116];
 
 
-Channels.Frontspot = [2:6, 9:13, 15, 16, 18:20, 23, 24, 26:29, 111, 112, 117, 118, 123, 124];
+Channels.Frontspot = [22 15 9 23 18 16 10 3 24 19 11 4 124 20 12 5 118 13 6 112];
 
 P.Format = Format;
 P.Channels = Channels;
