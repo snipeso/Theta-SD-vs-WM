@@ -39,7 +39,6 @@ zData = zScoreData(AllData, 'last');
 bData = bandData(zData, Freqs, Bands, 'last');
 bAllData = bandData(AllData, Freqs, Bands, 'last');
 
-%% plot topographies by task
 BandLabels = fieldnames(Bands);
 CLabel = 'A.U.';
 FreqRes = Freqs(2)-Freqs(1);
@@ -48,6 +47,9 @@ CLims = [ -5 5;
     -12 12;
     -20 20;
     -20 20];
+
+
+%% plot topographies by task
 
 
 for Indx_T = 1:numel(AllTasks)
@@ -105,8 +107,9 @@ end
 %% plot representative topoplot with labels
 % SD theta LAT, and SR theta game
 
-% game theta SD1
+
 for Indx_B = 1:numel(BandLabels)
+    % game theta SD1
     figure
     Data = nanmean(squeeze(bData(:, 2, 5, :, Indx_B)), 1);
     gridTopo(Data, Chanlocs, true)
@@ -128,21 +131,66 @@ for Indx_B = 1:numel(BandLabels)
     
     % save
     saveFig(strjoin({TitleTag, 'exampleGrid', 'LAT', BandLabels{Indx_B}, 'SD2'}, '_'), Results, Format)
+end
+
+
+
+%% plot representative topoplots with bubbles
+
+Type = {'2D', '3D'};
+Size = [100 150];
+CLims = [ -5 5;
+    -12 12;
+    -12 12;
+    -20 20;
+    -20 20];
+Labels = [true false];
+
+for Indx_B = 1:numel(BandLabels)
+    % game theta SD1
+    figure('units','normalized','outerposition',[0 0 .5 .5])
+    Data = nanmean(squeeze(bData(:, 2, 5, :, Indx_B)), 1);
+    for Indx = 1:2
+        subplot(1, 2, Indx)
+        bubbleTopo(Data, Chanlocs, Size(Indx), Type{Indx}, Labels(Indx), Format)
+        caxis( CLims(Indx_B, :))
+        title(['SD ', BandLabels{Indx_B}, ' Game'])
+        colormap(Format.Colormap.Divergent)
+        colorbar
+    end
     
+    % save
+    saveFig(strjoin({TitleTag, 'exampleBubble', 'Game' , BandLabels{Indx_B}, 'SD1'}, '_'), Results, Format)
+    
+    
+    % lat theta SD2
+    figure('units','normalized','outerposition',[0 0 .5 .5])
+    Data = nanmean(squeeze(bData(:, 3, 2, :, Indx_B)), 1);
+    for Indx = 1:2
+        subplot(1, 2, Indx)
+        bubbleTopo(Data, Chanlocs, Size(Indx), Type{Indx}, Labels(Indx), Format)
+        caxis( CLims(Indx_B, :))
+        title(['SD ', BandLabels{Indx_B}, ' LAT'])
+        colormap(Format.Colormap.Divergent)
+        colorbar
+    end
+    
+    % save
+    saveFig(strjoin({TitleTag, 'exampleBubble', 'LAT', BandLabels{Indx_B}, 'SD2'}, '_'), Results, Format)
 end
 
 
 %% identify theta peak location in hotspot
 
 Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks));
-Hotspot = labels2indexes(Channels.Hotspot, Chanlocs);
+Hotspot = labels2indexes(Channels.Frontspot, Chanlocs);
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions.Labels)
         for Indx_T = 1:numel(AllTasks)
             Data = squeeze(bData(Indx_P, Indx_S, Indx_T, Hotspot, 2));
             [~, I] = max(Data);
-            Peaks(Indx_P, Indx_S, Indx_T) = Channels.Hotspot(I);
+            Peaks(Indx_P, Indx_S, Indx_T) = Channels.Frontspot(I);
         end
     end
 end
@@ -157,9 +205,10 @@ for Indx_S = 1:numel(Sessions.Labels)
         Table = tabulate(Peaks(:, Indx_S, Indx_T));
         Data = zeros(numel(Chanlocs), 1);
         Data(1:size(Table, 1)) = Table(:, 2);
-        gridTopo(Data, Chanlocs, false)
-        colormap(Format.Colormap.Linear)
-        title([AllTasks{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', 14)
+        bubbleTopo(Data(Hotspot), Chanlocs(Hotspot), 200, '3D', true, Format)
+        colorbar
+        colormap(flip(Format.Colormap.Linear))
+        title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', 14)
         Indx = Indx+1;
     end
 end
