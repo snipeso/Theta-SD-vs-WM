@@ -17,7 +17,7 @@ switch fDim
             Band = dsearchn(Freqs', Band');
             
             switch numel(Dims)
-                case 2
+                case 2 % e.g. ch x freq
                     D = Data(:, Band(1):Band(2));
                     D = nansum(D, 2).*FreqRes;
                     bData( :, Indx_B) = D;

@@ -23,7 +23,7 @@ Tasks = { 'Fixation', 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music', 'MW
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-WelchWindow = 10;
+WelchWindow = 8;
 Freqs = 0.5:(1/WelchWindow):40;
 
 for Indx_T = 1:numel(Tasks)
@@ -33,7 +33,7 @@ for Indx_T = 1:numel(Tasks)
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', Task);
-    Destination = fullfile(Paths.Data, 'EEG', 'Unlocked', Task); % TODO: put in 'Unlocked'
+    Destination = fullfile(Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow)], Task); % TODO: put in 'Unlocked'
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -63,7 +63,7 @@ for Indx_T = 1:numel(Tasks)
         %%% Set as nan all noise
         
         % remove nonEEG channels
-        [Channels, Points] = size(EEG.data);
+        [TotCh, Points] = size(EEG.data);
         fs = EEG.srate;
         Chanlocs = EEG.chanlocs;
         
@@ -89,12 +89,15 @@ for Indx_T = 1:numel(Tasks)
         
         
         %%% get power
-        [Power, ~] = pwelch(EEG.data', fs*WelchWindow,  (fs*WelchWindow)/2, Freqs, fs);
+        nfft = 2^nextpow2(WelchWindow*fs);
+        noverlap = round(nfft*.75);
+        window = hanning(nfft);
+        [Power, Freqs] = pwelch(EEG.data', window, noverlap, nfft, fs);
         Power = Power';
-        
+        Freqs = Freqs';
         
         % plot it
-        PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Format)
+        PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Channels, replace(Filename_Core, '_', ' '), Format)
         
         
         % save

@@ -79,37 +79,40 @@ saveFig(strjoin({TitleTag, 'Channel', 'Sessions'}, '_'), Results, Format)
 for Indx_Ch =  1:numel(ChLabels)
     figure('units','normalized','outerposition',[0 0 .5 .25])
     for Indx_S = 1:numel(Sessions.Labels)
-         Data = squeeze(chData(:, Indx_S, :, Indx_Ch, :));
-         
-       subplot(1, numel(Sessions.Labels), Indx_S)
+        Data = squeeze(chData(:, Indx_S, :, Indx_Ch, :));
+        
+        subplot(1, numel(Sessions.Labels), Indx_S)
         plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, Format.Colors.AllTasks, Format)
         title(strjoin({ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, ' '))
     end
     setLims(1, numel(Sessions.Labels), 'y');
-
+    
     saveFig(strjoin({TitleTag, 'Channel', 'Tasks', ChLabels{Indx_Ch}}, '_'), Results, Format)
-
+    
 end
 
 
-%% plot all participants' spectrums ch x session, one fig per task
+%% plot all participants' spectrums session x task, one fig per ch
 
+LineWidth = 2;
 
 for Indx_Ch =  1:numel(ChLabels)
-    figure('units','normalized','outerposition',[0 0 1 .6])
     for Indx_T = 1:numel(AllTasks)
-    for Indx_S = 1:numel(Sessions.Labels)
-         Data = squeeze(chData(:, Indx_S, Indx_T, Indx_Ch, :));
-         
-       subplot(1, numel(Sessions.Labels), Indx_S)
-        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, Format.Colors.AllTasks, Format)
-        title(strjoin({ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, ' '))
+       figure('units','normalized','outerposition',[0 0 .24 1])
+        for Indx_S = 1:numel(Sessions.Labels)
+            
+            Data = squeeze(chData(:, Indx_S, Indx_T, Indx_Ch, :));
+            
+            subplot(numel(Sessions.Labels), 1, Indx_S)
+            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, LineWidth, Format)
+            title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
+        end
+        setLims(numel(Sessions.Labels), 1, 'y');
+    
+    saveFig(strjoin({TitleTag, 'Channel', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+    
     end
-    end
-    setLims(1, numel(Sessions.Labels), 'y');
-
-    saveFig(strjoin({TitleTag, 'Channel', 'Tasks', 'AllP', ChLabels{Indx_Ch}}, '_'), Results, Format)
-
+    
 end
 
 

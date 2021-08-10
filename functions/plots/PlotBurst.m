@@ -4,12 +4,14 @@ function Title = PlotBurst(EEG, Start, Stop, ProtoChannel, Bands, Format)
 
 fs = EEG.srate;
 Data = EEG.data(:, round(Start*fs):round(Stop*fs));
+Points = size(Data,2);
+
 ProtoChannelIndx = labels2indexes(ProtoChannel, EEG.chanlocs);
 Window =  Stop-Start;
 BandLabels = fieldnames(Bands);
 
 % plot EEG data butterfly plot
-t = linspace(0, Window,  size(Data,2));
+t = linspace(0, Window,  Points);
 MidY = mean( Data(ProtoChannelIndx, :));
 Range = max(MidY-min(Data(:)), max(Data(:))-MidY);
 
@@ -27,20 +29,24 @@ set(gca, 'FontName', Format.FontName, 'FontSize', 14)
 % ax1.YAxis.Visible = 'off';
 
 % plot power bands
-Freqs = 1:1/Window:40;
-[FFT, ~] = pwelch(Data', [], [], Freqs, fs);
-bData = bandData(FFT', Freqs, Bands, 'last');
+
+[FFT, Freqs] = pwelch(Data', hanning(Points), 0, Points, fs);
+
+bData = bandData(FFT', Freqs', Bands, 'last');
 Subplots = [5 6 9 10];
 
 for Indx_B = 1:numel(Subplots)
     subplot(3, 4, Subplots(Indx_B))
     topoplot(bData(:, Indx_B), EEG.chanlocs, 'style', 'map', 'headrad', 'rim', ...
-        'whitebk', 'on', 'maplimits', 'minmax', 'gridscale', Format.TopoRes, 'emarker2', {[ProtoChannelIndx],'.',[.5 .5 .5]});
+        'whitebk', 'on', 'maplimits', 'minmax', 'gridscale', Format.TopoRes, ...
+         'electrodes', 'on', 'emarker2', {[ProtoChannelIndx],'.',[.7 .7 .7], 20});
     colorbar
     title(BandLabels{Indx_B}, 'FontName', Format.FontName,  'FontSize', 14)
 end
 
 colormap(Format.Colormap.Linear)
+
+
 % plot frequencies
 subplot(3, 4, [7 8 11 12])
 hold on
@@ -49,6 +55,8 @@ plot(Freqs, FFT(:, ProtoChannelIndx), 'Color', Format.Colors.Red, 'LineWidth', 3
 xlim([1 35])
 xlabel('Frequency (Hz)')
 ylabel('Power')
+set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', Format.Labels.Bands, ...
+    'FontName', Format.FontName)
 Title = strjoin({num2str(Start), num2str(Window), num2str(ProtoChannel)}, '_');
 set(gca, 'FontName', Format.FontName , 'FontSize', 14)
 

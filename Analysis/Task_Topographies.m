@@ -104,37 +104,6 @@ end
 
 
 
-%% plot representative topoplot with labels
-% SD theta LAT, and SR theta game
-
-
-for Indx_B = 1:numel(BandLabels)
-    % game theta SD1
-    figure
-    Data = nanmean(squeeze(bData(:, 2, 5, :, Indx_B)), 1);
-    gridTopo(Data, Chanlocs, true)
-    caxis( CLims(Indx_B, :))
-    title(['SD ', BandLabels{Indx_B}, ' Game'])
-    colormap(Format.Colormap.Divergent)
-    
-    % save
-    saveFig(strjoin({TitleTag, 'exampleGrid', 'Game' , BandLabels{Indx_B}, 'SD1'}, '_'), Results, Format)
-    
-    
-    % lat theta SD2
-    figure
-    Data = nanmean(squeeze(bData(:, 3, 2, :, Indx_B)), 1);
-    gridTopo(Data, Chanlocs, true)
-    caxis( CLims(Indx_B, :))
-    title(['SD ', BandLabels{Indx_B}, ' LAT'])
-    colormap(Format.Colormap.Divergent)
-    
-    % save
-    saveFig(strjoin({TitleTag, 'exampleGrid', 'LAT', BandLabels{Indx_B}, 'SD2'}, '_'), Results, Format)
-end
-
-
-
 %% plot representative topoplots with bubbles
 
 Type = {'2D', '3D'};
