@@ -28,7 +28,7 @@ Bands = P.Bands;
 Format = P.Format;
 Sessions = P.Sessions;
 
-WelchWindow = 10;
+WelchWindow = 8;
 TitleTag = strjoin({'Task', 'Topos', 'vs' 'Fixation', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
 
 Results = fullfile(Paths.Results, 'Task_vs_Rest_Topographies');
@@ -39,7 +39,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-[AllData, Freqs, Chanlocs] = loadAllPower(P);
+Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow)]);
+[AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath);
 
 % z-score it
 zData = zScoreData(AllData, 'last');

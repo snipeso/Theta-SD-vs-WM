@@ -1,8 +1,7 @@
-function [AllData, Freqs, Chanlocs] = loadAllPower(P)
+function [AllData, Freqs, Chanlocs] = loadAllPower(P, Source)
 % load all power from main tasks.
 % Results in variable "AllData": P x S x T x Ch x F; and Chanlocs and Freqs
 
-Filepath =  fullfile(P.Paths.Data, 'EEG', 'Unlocked');
 
 AllData = nan(numel(P.Participants), numel(P.Sessions.LAT), numel(P.AllTasks));
 for Indx_P = 1:numel(P.Participants)
@@ -12,7 +11,7 @@ for Indx_P = 1:numel(P.Participants)
             Task = P.AllTasks{Indx_T};
             
             Filename = strjoin({P.Participants{Indx_P},Task, P.Sessions.(Task){Indx_S}, 'Welch.mat'}, '_');
-            Path = fullfile(Filepath, Task, Filename);
+            Path = fullfile(Source, Task, Filename);
             
             if ~exist(Path, 'file')
                 warning(['Missing ', Filename])

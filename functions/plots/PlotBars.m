@@ -1,4 +1,4 @@
-function PlotBars(Data, xLabels, Colors, Format, Orientation, Stats)
+function Stats = PlotBars(Data, xLabels, Colors, Format, Orientation, Stats)
 % Matrix is a P x whatever matrix. This plots the averages across the
 % whatever dimention, and SEM error bars if requested. 
 
@@ -23,7 +23,9 @@ switch nDims
            drawBars(nanmean(Data)', xLabels, Colors, Format, Orientation, [SEM', SEM'])
            
            % plot pairwise comparison of bars
-           plotPairwise(Data, [], [], true)
+         Stats = Pairwise(Data, true);
+         plotPairwiseStars(Stats, 1:Dims(2), Format.Colors.SigStar)
+
            
         end
         

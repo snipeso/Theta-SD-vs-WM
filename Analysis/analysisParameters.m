@@ -87,6 +87,8 @@ Format.Colors.Tasks.Oddball = [222, 122, 184]/255;
 Format.Colors.Tasks.Fixation = [172, 86, 224]/255;
 Format.Colors.Tasks.Standing = [99, 88, 226]/255;
 
+Format.Colors.SigStar = [0 0 0];
+
 Format.Colors.AllTasks = nan(numel(P.AllTasks), 3);
 for Indx_T = 1:numel(P.AllTasks)
     Format.Colors.AllTasks(Indx_T, :) = Format.Colors.Tasks.(P.AllTasks{Indx_T});

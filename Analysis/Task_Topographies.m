@@ -19,7 +19,7 @@ Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
 
-WelchWindow = 10;
+WelchWindow = 8;
 TitleTag = strjoin({'Task', 'Topos', 'Welch', num2str(WelchWindow), 'zScored'}, '_');
 
 Results = fullfile(Paths.Results, 'Task_Topographies');
@@ -30,7 +30,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-[AllData, Freqs, Chanlocs] = loadAllPower(P);
+Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow)]);
+[AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath);
 
 % z-score it
 zData = zScoreData(AllData, 'last');
@@ -235,7 +236,7 @@ for Indx_B = 1:numel(BandLabels)
         for Indx_S = 1:numel(Sessions.Labels)
             Indexes = strcmp(SessionLabels(1, :), Sessions.Labels{Indx_S});
             R_temp  = squeeze(R(Indx_P, Indexes, Indexes));
-            R_temp(tril(logical(R_temp))) = nan; % set to nan the diagonal and below, since it repeats
+            R_temp(logical(tril(ones(size(R_temp))))) = nan; % set to nan the diagonal and below, since it repeats
             DataS(Indx_P, Indx_S) = nanmean(R_temp(:));
         end
         
@@ -243,7 +244,7 @@ for Indx_B = 1:numel(BandLabels)
         for Indx_T = 1:numel(AllTasks)
             Indexes = strcmp(SessionLabels(2, :), AllTasks{Indx_T});
             R_temp  = squeeze(R(Indx_P, Indexes, Indexes));
-            R_temp(tril(logical(R_temp))) = nan; % set to nan the diagonal and below, since it repeats
+            R_temp(logical(tril(ones(size(R_temp))))) = nan; % set to nan the diagonal and below, since it repeats
             DataT(Indx_P, Indx_T) = nanmean(R_temp(:));
         end
     end
@@ -253,22 +254,22 @@ for Indx_B = 1:numel(BandLabels)
     
     % plot average corr for each session
     subplot(1, 3, 1)
-    PlotBars(DataS, Sessions.Labels, [0 0 0; .4 .4 .4; .8 .8 .8], Format, 'vertical', true)
+    PlotBars(DataS, Sessions.Labels, [0 0 0; .4 .4 .4; .8 .8 .8], Format, 'vertical', true);
     title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Sessions'}, ' '))
     
     % plot average corr for each task
     subplot(1, 3, 2)
-    PlotBars(DataT, TaskLabels, Format.Colors.AllTasks, Format, 'vertical', true)
+    PlotBars(DataT, TaskLabels, Format.Colors.AllTasks, Format, 'vertical', true);
     title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Tasks'}, ' '))
     
     % plot average corr for sessions vs tasks
     Data = [nanmean(DataS, 2),  nanmean(DataT, 2)];
     subplot(1, 3, 3)
-    PlotBars(Data, {'Sessions', 'Tasks'}, [.5 .5 .5; Format.Colors.Dark1], Format, 'vertical', true)
+    PlotBars(Data, {'Sessions', 'Tasks'}, [.5 .5 .5; Format.Colors.Dark1], Format, 'vertical', true);
     title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Tasks'}, ' '))
     
     
-    setLims(1, 3, 'y')
+    setLims(1, 3, 'y');
     
     saveFig(strjoin({TitleTag, 'TopoCorrAverages', BandLabels{Indx_B}}, '_'), Results, Format)
 end

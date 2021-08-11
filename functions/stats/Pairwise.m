@@ -1,6 +1,7 @@
-function [pValues, CI, tValues, df] = Pairwise(Data, Corrected)
+function Stats = Pairwise(Data, Corrected)
 % Data is a P x w/e matrix, and here t-tests are returned. If "Corrected"
-% is specified, conducts FDR correction on the pValues.
+% is specified, conducts FDR correction on the p values. pvalues, tvalues
+% and df are saved as S x S matrix
 
 Dims = size(Data);
 
@@ -39,3 +40,9 @@ switch nDims
     otherwise
         disp('dont know what to do with these dimentions')
 end
+
+
+Stats.p = pValues;
+Stats.CI = CI;
+Stats.t = tValues;
+Stats.df = df;
