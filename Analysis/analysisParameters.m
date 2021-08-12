@@ -108,12 +108,12 @@ Channels.Sample_Titles = {'Fz', 'Cz', 'P3', 'O1', 'T6'};
 
 Channels.Peaks.Frontspot = [11 12 5 6]; % frontal midline
 Channels.Peaks.Extrafront = [18 16 10 15];
-Channels.Peaks.LeftWing = [44 43 38]; % fronto-temporal left
-% Channels.Peaks.RightWing = [114 120 121]; % fronto-temporal right
-Channels.Peaks.BackSpot = [71 76 75]; % occipital-central midline
-Channels.Peaks.LeftTail = [57 58 65 64]; % occipital-temporal left
-% Channels.Peaks.RightTail = [90 96 100];
-Channels.Peaks.LeftDip = [41 40 35 34]; % center left
+Channels.Peaks.LeftWing = [44 43 38 39]; % fronto-temporal left
+% Channels.Peaks.RightWing = [114 120 121 115]; % fronto-temporal right
+Channels.Peaks.BackSpot = [71 76 75 70 83]; % occipital-central midline
+Channels.Peaks.LeftTail = [58 50 64 65 66]; % occipital-temporal left
+% Channels.Peaks.RightTail = [96 101 95 90 84];
+% Channels.Peaks.LeftDip = [41 40 35 34]; % center left
 % Channels.Peaks.RightDip = [103 109 110 116];
 
 

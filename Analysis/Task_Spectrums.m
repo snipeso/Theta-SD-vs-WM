@@ -86,10 +86,10 @@ for Indx_Ch = 1:numel(ChLabels)
     end
 end
 
-setLims(numel(ChLabels), numel(AllTasks), 'y')
+setLims(numel(ChLabels), numel(AllTasks), 'y');
 
 % save
-saveFig(strjoin({TitleTag, 'Channel', 'Sessions'}, '_'), Results, Format)
+saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Results, Format)
 
 %% plot all tasks, split by session, one fig for each ch
 
@@ -109,51 +109,25 @@ for Indx_Ch =  1:numel(ChLabels)
     
 end
 
-
-%% plot all participants' spectrums session x task, one fig per ch
-
-LineWidth = 2;
-
-for Indx_Ch =  1:numel(ChLabels)
-    for Indx_T = 1:numel(AllTasks)
-        figure('units','normalized','outerposition',[0 0 .24 1])
-        for Indx_S = 1:numel(Sessions.Labels)
-            
-            Data = squeeze(chData(:, Indx_S, Indx_T, Indx_Ch, :));
-            
-            subplot(numel(Sessions.Labels), 1, Indx_S)
-            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, LineWidth, Format)
-            title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
-        end
-        setLims(numel(Sessions.Labels), 1, 'y');
+%% plot difference spectrums, one per channel
+ figure('units','normalized','outerposition',[0 0 1 .6])
+ Indx = 1;
+ for Indx_S = 2:3
+    for Indx_Ch = 1:numel(ChLabels) 
+        SD = squeeze(chData(:, Indx_S, :, Indx_Ch, :));
+        BL =  squeeze(chData(:, 1, :, Indx_Ch, :));
+        Data = SD - BL;
         
-        saveFig(strjoin({TitleTag, 'Channel', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
-        close
-    end
-end
-
-%% plot all participants' spectrums session x task, one fig per ch NOT Z SCORED
-
-LineWidth = 2;
-
-for Indx_Ch =  1:numel(ChLabels)
-    for Indx_T = 1:numel(AllTasks)
-        figure('units','normalized','outerposition',[0 0 .24 1])
-        for Indx_S = 1:numel(Sessions.Labels)
-            
-            Data = squeeze(chDataRaw(:, Indx_S, Indx_T, Indx_Ch, :));
-            
-            subplot(numel(Sessions.Labels), 1, Indx_S)
-            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, LineWidth, Format)
-            title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
-            xlim([1 25])
-        end
-        setLims(numel(Sessions.Labels), 1, 'y');
+        subplot(2, numel(ChLabels), Indx)
+          plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, Format.Colors.AllTasks, Format)
+        title(strjoin({ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, ' '))
         
-        saveFig(strjoin({TitleTag, 'Channel', 'AllP', 'RAW', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
-        close
+        Indx = Indx+1;
     end
-end
+ end
+  setLims(2,  numel(ChLabels), 'y');
+ saveFig(strjoin({TitleTag, 'DiffSpectrums'}, '_'), Results, Format)
+
 
 
 %% for each task, get peak frequency for every session, and every change with SD for ALL channels
@@ -337,7 +311,7 @@ for Indx_Ch = 1:numel(ChLabels)
     title(strjoin({'SD-BL', ChLabels{Indx_Ch}}, ' '))
     
     
-    saveFig(strjoin({TitleTag, 'PeakFreq', 'Tasks', AllTasks{Indx_Ch}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, 'PeakFreq', 'Tasks', ChLabels{Indx_Ch}}, '_'), Results, Format)
 end
 
 
@@ -380,3 +354,61 @@ saveFig(strjoin({TitleTag, 'PeakFreq', 'All'}, '_'), Results, Format)
 
 
 
+%% plot all participants' spectrums session x task, one fig per ch
+
+LineWidth = 2;
+
+for Indx_Ch =  1:numel(ChLabels)
+    for Indx_T = 1:numel(AllTasks)
+        figure('units','normalized','outerposition',[0 0 .24 1])
+        for Indx_S = 1:numel(Sessions.Labels)
+            
+            Data = squeeze(chData(:, Indx_S, Indx_T, Indx_Ch, :));
+            
+            subplot(numel(Sessions.Labels), 1, Indx_S)
+            % TODO: plot peaks! so can inspect where peak came from
+            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, LineWidth, Format)
+            title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
+              xlim([1 25])
+        end
+        setLims(numel(Sessions.Labels), 1, 'y');
+        
+        saveFig(strjoin({TitleTag, 'Channel', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+        close
+    end
+end
+
+%% plot all participants' spectrums session x task, one fig per ch NOT Z SCORED
+
+LineWidth = 2;
+
+for Indx_Ch =  1:numel(ChLabels)
+    for Indx_T = 1:numel(AllTasks)
+        figure('units','normalized','outerposition',[0 0 .24 1])
+        for Indx_S = 1:numel(Sessions.Labels)
+            
+            Data = squeeze(chDataRaw(:, Indx_S, Indx_T, Indx_Ch, :));
+            
+            subplot(numel(Sessions.Labels), 1, Indx_S)
+            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, LineWidth, Format)
+            title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
+            xlim([1 25])
+        end
+        setLims(numel(Sessions.Labels), 1, 'y');
+        
+        saveFig(strjoin({TitleTag, 'Channel', 'AllP', 'RAW', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+        close
+    end
+end
+
+
+
+
+%% TODO: 1 way anova SDvBL peak freq x task (apply to plotting loop?)
+
+
+
+
+
+%% for each channel, plot scatterbox plot for every task at each session, to show amplitude magnitudes
+% zscored and raw

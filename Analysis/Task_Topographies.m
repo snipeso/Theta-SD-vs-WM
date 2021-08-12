@@ -43,7 +43,7 @@ bAllData = bandData(AllData, Freqs, Bands, 'last');
 BandLabels = fieldnames(Bands);
 CLabel = 'A.U.';
 FreqRes = Freqs(2)-Freqs(1);
-CLims = [ -5 5;
+CLims = [ -10 10;
     -12 12;
     -12 12;
     -20 20;
@@ -72,35 +72,33 @@ for Indx_T = 1:numel(AllTasks)
     end
     
     % save
-    saveFig(strjoin({TitleTag,  'All', 'Bands', AllTasks{Indx_T}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag,  'All', 'Sessions', AllTasks{Indx_T}}, '_'), Results, Format)
 end
 
 
 
 %% plot topographies by band
 
-for Indx_B = 1:numel(BandLabels)
-    figure('units','normalized','outerposition',[0 0 .3 1])
+ for Indx_S = 1:numel(Sessions.Labels)
+
+    figure('units','normalized','outerposition',[0 0 1 1])
     Indx = 1;
-    
-    for Indx_T = 1:numel(AllTasks)
-        for Indx_S = 1:numel(Sessions.Labels)
-            
+    for Indx_B = 1:numel(BandLabels)
+    for Indx_T = 1:numel(AllTasks)   
             % get data
             Data = nanmean(squeeze(bData(:, Indx_S, Indx_T, :, Indx_B)), 1);
             
             % plot topoplot
-            subplot(numel(AllTasks), numel(Sessions.Labels), Indx)
+            subplot(numel(BandLabels), numel(AllTasks), Indx)
             plotTopo(Data, Chanlocs, CLims(Indx_B, :), CLabel, 'Divergent', Format)
-            title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}], 'FontSize', 14)
-            
+            title(strjoin({TaskLabels{Indx_T}, BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, ' '), 'FontSize', 14)
+           
             Indx = Indx+1;
         end
     end
-    
-    
+
     % save
-    saveFig(strjoin({TitleTag, 'All', 'Tasks', BandLabels{Indx_B}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, 'All', 'Bands',  Sessions.Labels{Indx_S}}, '_'), Results, Format)
 end
 
 
@@ -108,7 +106,7 @@ end
 %% plot representative topoplots with bubbles
 
 Type = {'2D', '3D'};
-Size = [100 150];
+Size = [120 150];
 CLims = [ -5 5;
     -12 12;
     -12 12;
@@ -116,17 +114,22 @@ CLims = [ -5 5;
     -20 20];
 Labels = [true false];
 
+
 for Indx_B = 1:numel(BandLabels)
     % game theta SD1
-    figure('units','normalized','outerposition',[0 0 .5 .5])
+    figure('units','normalized','outerposition',[0 0 .5 .4], 'Color', 'w')
     Data = nanmean(squeeze(bData(:, 2, 5, :, Indx_B)), 1);
+    Max = max(abs(Data));
     for Indx = 1:2
         subplot(1, 2, Indx)
         bubbleTopo(Data, Chanlocs, Size(Indx), Type{Indx}, Labels(Indx), Format)
-        caxis( CLims(Indx_B, :))
+        caxis([-Max Max])
         title(['SD ', BandLabels{Indx_B}, ' Game'])
         colormap(Format.Colormap.Divergent)
-        colorbar
+h = colorbar;
+ylabel(h, 'z-score', 'FontName', Format.FontName, 'FontSize', 14)
+
+        set(gca, 'FontSize', 14)
     end
     
     % save
@@ -134,15 +137,19 @@ for Indx_B = 1:numel(BandLabels)
     
     
     % lat theta SD2
-    figure('units','normalized','outerposition',[0 0 .5 .5])
+    figure('units','normalized','outerposition',[0 0 .5 .4], 'Color', 'w')
     Data = nanmean(squeeze(bData(:, 3, 2, :, Indx_B)), 1);
+     Max = max(abs(Data));
     for Indx = 1:2
         subplot(1, 2, Indx)
         bubbleTopo(Data, Chanlocs, Size(Indx), Type{Indx}, Labels(Indx), Format)
-        caxis( CLims(Indx_B, :))
+         caxis([-Max Max])
         title(['SD ', BandLabels{Indx_B}, ' LAT'])
         colormap(Format.Colormap.Divergent)
-        colorbar
+        h = colorbar;
+        ylabel(h, 'z-score', 'FontName', Format.FontName, 'FontSize', 14)
+
+        set(gca, 'FontSize', 14)
     end
     
     % save
@@ -310,7 +317,7 @@ Tasks = find(ismember(AllTasks, Tasks));
 for Indx_P = 1:numel(Participants)
     Band = 2;
     Data = squeeze(bAllData(Indx_P, :, :, :, Band));
-    CLims = quantile(Data(:), [ .01 1]);
+    CLimsQ = quantile(Data(:), [ .01 1]);
     
     figure('units','normalized','outerposition',[0 0 .3 .4])
     Indx = 1;
@@ -320,7 +327,7 @@ for Indx_P = 1:numel(Participants)
             Data = squeeze(bAllData(Indx_P, Indx_S, Indx_T, :, Band));
             
             subplot(numel(Sessions.Labels), numel(Tasks), Indx)
-            plotTopo(Data, Chanlocs, CLims, CLabel, 'Linear', Format)
+            plotTopo(Data, Chanlocs, CLimsQ, CLabel, 'Linear', Format)
             title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' '))
             
             Indx = Indx+1;
