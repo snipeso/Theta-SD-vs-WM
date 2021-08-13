@@ -19,12 +19,18 @@ switch fDim
             switch numel(Dims)
                 case 2 % e.g. ch x freq
                     D = Data(:, Band(1):Band(2));
-                    D = nansum(D, 2).*FreqRes;
+                    if ~all(isnan(D))
+                        D = nansum(D, 2).*FreqRes;
+                    end
                     bData( :, Indx_B) = D;
                 case 5
                     for Indx_P = 1:size(Data, 1)
                         D = Data(Indx_P, :, :, :, Band(1):Band(2));
-                        D = nansum(D, 5).*FreqRes;
+                        
+%                         D = nansum(D, 5).*FreqRes; % problem with z-values?
+                      
+                        D = nanmean(D, numel(Dims));
+                        
                         bData(Indx_P, :, :, :, Indx_B) = D;
                     end
                 otherwise

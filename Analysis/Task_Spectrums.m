@@ -29,12 +29,13 @@ if ~exist(Results, 'dir')
     mkdir(Results)
 end
 
+ChLabels = fieldnames(Channels.Peaks);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
 Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow)]);
-[AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath);
+[AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 
 % z-score it
@@ -60,8 +61,6 @@ chDataRaw = meanChData(AllData, Chanlocs, Channels.Peaks, 4);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
-
-ChLabels = fieldnames(Channels.Peaks);
 
 %% Plot map of clusters
 

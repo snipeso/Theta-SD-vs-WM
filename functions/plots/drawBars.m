@@ -1,4 +1,4 @@
-function drawBars(Data, xLabels, Colors, Format, Orientation, Errors)
+function drawBars(Data, xLabels, Colors, Orientation, Errors, Format)
 % function that just plots the bars and error bars. Basic averages and SEM
 % are provided by PlotBars().
 % 1 Dim: Data is n x 1. Errors is n x 2. Errors are relative to Data.

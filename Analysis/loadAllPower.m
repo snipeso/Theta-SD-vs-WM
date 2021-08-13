@@ -1,14 +1,14 @@
-function [AllData, Freqs, Chanlocs] = loadAllPower(P, Source)
+function [AllData, Freqs, Chanlocs] = loadAllPower(P, Source, Tasks)
 % load all power from main tasks.
 % Results in variable "AllData": P x S x T x Ch x F; and Chanlocs and Freqs
 
 
-AllData = nan(numel(P.Participants), numel(P.Sessions.LAT), numel(P.AllTasks));
+AllData = nan(numel(P.Participants), numel(P.Sessions.Labels), numel(Tasks));
 for Indx_P = 1:numel(P.Participants)
-    for Indx_S = 1:numel(P.Sessions.LAT)
+    for Indx_S = 1:numel(P.Sessions.Labels)
         
-        for Indx_T = 1:numel(P.AllTasks)
-            Task = P.AllTasks{Indx_T};
+        for Indx_T = 1:numel(Tasks)
+            Task = Tasks{Indx_T};
             
             Filename = strjoin({P.Participants{Indx_P},Task, P.Sessions.(Task){Indx_S}, 'Welch.mat'}, '_');
             Path = fullfile(Source, Task, Filename);

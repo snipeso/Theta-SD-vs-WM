@@ -117,7 +117,10 @@ Channels.Peaks.LeftTail = [58 50 64 65 66]; % occipital-temporal left
 % Channels.Peaks.RightDip = [103 109 110 116];
 
 
-Channels.Frontspot = [22 15 9 23 18 16 10 3 24 19 11 4 124 20 12 5 118 13 6 112];
+% channels selected independently of data to represent frontal and
+% posterior EEG
+Channels.preROI.Frontspot = [22 15 9 23 18 16 10 3 24 19 11 4 124 20 12 5 118 13 6 112];
+Channels.preROI.Backspot = [66 71 76 84 65 70 75 83 90 69 74 82 89];
 
 P.Format = Format;
 P.Channels = Channels;
@@ -138,3 +141,15 @@ Sessions.Oddball = {'BaselinePost', 'Main3', 'Main7'};
 Sessions.Labels = {'BL', 'SR', 'SD'};
 
 P.Sessions = Sessions;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+StatsP = struct();
+
+StatsP.ANOVA.ES = 'eta2';
+StatsP.ANOVA.ES_lims = [0 1];
+StatsP.ANOVA.nBoot = 5000;
+StatsP.ANOVA.pValue = 'pValueGG';
+StatsP.Alpha = .05;
+
+P.StatsP = StatsP;

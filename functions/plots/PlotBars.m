@@ -20,7 +20,7 @@ switch nDims
             SEM = nanstd(Data)/sqrt(Dims(1));
             
             % plot bars
-           drawBars(nanmean(Data)', xLabels, Colors, Format, Orientation, [SEM', SEM'])
+           drawBars(nanmean(Data)', xLabels, Colors, Orientation, [SEM', SEM'], Format)
            
            % plot pairwise comparison of bars
          Stats = Pairwise(Data, true);
