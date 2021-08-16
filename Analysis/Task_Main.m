@@ -60,7 +60,8 @@ chData = meanChData(zData, Chanlocs, Channels.(ROI), 4);
 % average frequencies into bands
 bData = bandData(chData, Freqs, Bands, 'last');
 
-% somehow, data is not NaNed for p19 PVT, so something went wrong
+chRawData = meanChData(AllData, Chanlocs, Channels.(ROI), 4);
+bRawData = bandData(chRawData, Freqs, Bands, 'last');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot & analyze data
@@ -89,9 +90,6 @@ for Indx_Ch = 1:numel(ChLabels)
         title(strjoin({ ChLabels{Indx_Ch}, BandLabels{Indx_B}}, ' '))
         saveFig(strjoin({TitleTag, 'TaskChanges', ChLabels{Indx_Ch}, BandLabels{Indx_B}}, '_'), Results, Format)
         
-        % plot scatterbox plot of raw and z-scored data to show amplitudes
-        
-        
         % 2 way repeated measures anova with factors Session and Task
         Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
         
@@ -101,7 +99,7 @@ for Indx_Ch = 1:numel(ChLabels)
         figure('units','normalized','outerposition',[0 0 .2 .3])
         plotANOVA2way(Stats, FactorLabels, StatsP, Format)
         title(Title)
-        %         saveFig(strjoin({TitleTag, 'eta2', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+        saveFig(strjoin({TitleTag, 'eta2', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
         
         % if interaction:
         
@@ -111,3 +109,69 @@ for Indx_Ch = 1:numel(ChLabels)
         
     end
 end
+
+
+%% plot raw data boxplots
+
+for Indx_Ch = 1:numel(ChLabels)
+    for Indx_B = 1:numel(BandLabels)
+        
+        All = bRawData(:, :, :, Indx_Ch, Indx_B);
+        YLims = [min(All(:)), max(All(:))];
+        Diff =  diff(YLims);
+        YLims(2) =Diff*.5 + YLims(2);
+        YLims(1) = YLims(1)-Diff*.05;
+
+        figure('units','normalized','outerposition',[0 0 .6 .5])
+        for Indx_S = 1:numel(Sessions.Labels)
+            Data = squeeze(bRawData(:, Indx_S, :, Indx_Ch, Indx_B));
+            
+            subplot(1, numel(Sessions.Labels), Indx_S)
+            Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
+                Format.Colors.AllTasks(1:numel(AllTasks), :), YLims, Format);
+            ylabel('Power (miV)')
+            title(strjoin({Sessions.Labels{Indx_S}, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'Raw Data'}, ' '))
+            
+        end
+        
+        saveFig(strjoin({TitleTag, 'scatter', 'raw', ...
+            BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+    end
+end
+
+
+
+
+
+%% plot z-scored data boxplots
+
+
+for Indx_Ch = 1:numel(ChLabels)
+    for Indx_B = 1:numel(BandLabels)
+        
+        All = bData(:, :, :, Indx_Ch, Indx_B);
+        YLims = [min(All(:)), max(All(:))];
+        Diff =  diff(YLims);
+        YLims(2) =Diff*.5 + YLims(2);
+        YLims(1) = YLims(1)-Diff*.05;
+
+        figure('units','normalized','outerposition',[0 0 .6 .5])
+        for Indx_S = 1:numel(Sessions.Labels)
+            Data = squeeze(bData(:, Indx_S, :, Indx_Ch, Indx_B));
+            
+            subplot(1, numel(Sessions.Labels), Indx_S)
+            Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
+                Format.Colors.AllTasks(1:numel(AllTasks), :), YLims, Format);
+            ylabel('Power (z score)')
+            title(strjoin({Sessions.Labels{Indx_S}, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'zData'}, ' '))
+            
+        end
+        
+        saveFig(strjoin({TitleTag, 'scatter', 'zscore', ...
+            BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+    end
+end
+
+
+
+

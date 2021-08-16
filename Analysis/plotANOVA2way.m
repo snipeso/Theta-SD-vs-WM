@@ -25,17 +25,7 @@ P = P([3, 5, 7]);
 Symbol = cell([1 3]);
 
 for Indx = 1:3
-   if P(Indx) < .1 && P(Indx) > .05
-       Symbol{Indx} = '.';
-   elseif P(Indx) <= .05 && P(Indx) > .01
-       Symbol{Indx} = '*';
-   elseif P(Indx) <= .01 && P(Indx) > .001
-       Symbol{Indx} = '**';
-   elseif P(Indx) <= .001
-       Symbol{Indx} = '***';
-   else
-          Symbol{Indx} = '';
-   end
+   Symbol{Indx} = getSigSymbol(P(Indx));
 end
 
 

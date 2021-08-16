@@ -1,4 +1,4 @@
-function Stats = Pairwise(Data, Corrected)
+function Stats = Pairwise(Data, StatsP)
 % Data is a P x w/e matrix, and here t-tests are returned. If "Corrected"
 % is specified, conducts FDR correction on the p values. pvalues, tvalues
 % and df are saved as S x S matrix
@@ -29,10 +29,28 @@ switch nDims
         end
         
         % correct for multiple comparisons
-        if exist('Corrected', 'var') && Corrected
-            [~, sig] = fdr(pValues, .05);
-            pValues(not(sig)) = nan; % TEMP
-            warning('temp stat!')
+        if exist('StatsP', 'var')
+            % get vector of diamond matrix so can replace things properly
+            Indexes = 1:Dims(2)^2;
+            Indexes = reshape(Indexes, Dims(2), []);
+            pValues_long = pValues(:);
+            Indexes_long = Indexes(:);
+            Nans = isnan(pValues_long); % there is probably a more elegant way to do this
+            pValues_long(Nans) = [];
+            Indexes_long(Nans) = [];
+            
+            % identify still significant values
+            [~, sig] = fdr(pValues_long, StatsP.Alpha);
+            h = nan(Dims(2));
+            h(Indexes_long) = sig;
+            Stats.sig = h;
+          
+            % identify trending values
+           [~, sig] = fdr(pValues_long, StatsP.Trend);
+            h = nan(Dims(2));
+            h(Indexes_long) = sig;
+            Stats.trend = h;
+            
         end
         
         
