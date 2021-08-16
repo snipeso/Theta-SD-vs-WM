@@ -113,7 +113,7 @@ Channels.Peaks.LeftWing = [44 43 38 39]; % fronto-temporal left
 Channels.Peaks.BackSpot = [71 76 75 70 83]; % occipital-central midline
 Channels.Peaks.LeftTail = [58 50 64 65 66]; % occipital-temporal left
 % Channels.Peaks.RightTail = [96 101 95 90 84];
-% Channels.Peaks.LeftDip = [41 40 35 34]; % center left
+Channels.Peaks.LeftDip = [36 42 35 41 47 40 44]; % center left
 % Channels.Peaks.RightDip = [103 109 110 116];
 
 
@@ -121,6 +121,12 @@ Channels.Peaks.LeftTail = [58 50 64 65 66]; % occipital-temporal left
 % posterior EEG
 Channels.preROI.Frontspot = [22 15 9 23 18 16 10 3 24 19 11 4 124 20 12 5 118 13 6 112];
 Channels.preROI.Backspot = [66 71 76 84 65 70 75 83 90 69 74 82 89];
+
+% get all the other channels so neither main spots, or edge channels
+EdgeChannels = [17 128 43 48 63 68 73 81 88 94 99 120 119 125];
+ExcludedChannels = [49 56 107 113 126 127];
+AllCh = 1:129;
+Channels.preROI.EE = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels])));
 
 P.Format = Format;
 P.Channels = Channels;

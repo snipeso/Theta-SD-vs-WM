@@ -411,3 +411,10 @@ end
 
 %% for each channel, plot scatterbox plot for every task at each session, to show amplitude magnitudes
 % zscored and raw
+
+
+%% plot individual difference spectrums for each task, seperate fig for each channel
+% see if that super peaky theta in game is consistent or not
+
+
+%% quantify and plot FWHM of theta peaks for different tasks, just to have numbers to backup the observation
