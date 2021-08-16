@@ -119,14 +119,16 @@ Channels.Peaks.LeftDip = [36 42 35 41 47 40 44]; % center left
 
 % channels selected independently of data to represent frontal and
 % posterior EEG
-Channels.preROI.Frontspot = [22 15 9 23 18 16 10 3 24 19 11 4 124 20 12 5 118 13 6 112];
-Channels.preROI.Backspot = [66 71 76 84 65 70 75 83 90 69 74 82 89];
+Frontspot = [22 15 9 23 18 16 10 3 24 19 11 4 124 20 12 5 118 13 6 112];
+Backspot = [66 71 76 84 65 70 75 83 90 69 74 82 89];
 
 % get all the other channels so neither main spots, or edge channels
 EdgeChannels = [17 128 43 48 63 68 73 81 88 94 99 120 119 125];
 ExcludedChannels = [49 56 107 113 126 127];
 AllCh = 1:129;
-Channels.preROI.EE = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels])));
+Channels.preROI.EE = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
+Channels.preROI.Frontspot = Frontspot;
+Channels.preROI.Backspot = Backspot;
 
 P.Format = Format;
 P.Channels = Channels;
@@ -157,5 +159,6 @@ StatsP.ANOVA.ES_lims = [0 1];
 StatsP.ANOVA.nBoot = 5000;
 StatsP.ANOVA.pValue = 'pValueGG';
 StatsP.Alpha = .05;
+StatsP.Trend = .1;
 
 P.StatsP = StatsP;

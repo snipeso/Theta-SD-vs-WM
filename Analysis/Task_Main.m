@@ -73,15 +73,21 @@ saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
 
 
 %%
-
+Indx_BL = 1;
+YLim = [-.8 1.8];
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)
         
         Data = squeeze(bData(:, :, :, Indx_Ch, Indx_B));
         
         % plot spaghetti-o plot of tasks x sessions for each ch and each band
-        
-        
+        figure('units','normalized','outerposition',[0 0 .18 .45])
+        Stats = plotSpaghettiOs(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
+            Format.Colors.AllTasks, StatsP, Format);
+        ylim(YLim)
+        ylabel('Power (z-scored)')
+        title(strjoin({ ChLabels{Indx_Ch}, BandLabels{Indx_B}}, ' '))
+        saveFig(strjoin({TitleTag, 'TaskChanges', ChLabels{Indx_Ch}, BandLabels{Indx_B}}, '_'), Results, Format)
         
         % plot scatterbox plot of raw and z-scored data to show amplitudes
         
@@ -95,7 +101,7 @@ for Indx_Ch = 1:numel(ChLabels)
         figure('units','normalized','outerposition',[0 0 .2 .3])
         plotANOVA2way(Stats, FactorLabels, StatsP, Format)
         title(Title)
-%         saveFig(strjoin({TitleTag, 'eta2', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+        %         saveFig(strjoin({TitleTag, 'eta2', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
         
         % if interaction:
         
