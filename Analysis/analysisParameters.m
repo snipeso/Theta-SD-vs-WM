@@ -53,20 +53,14 @@ Format = struct();
 
 Format.FontName = 'Tw Cen MT'; % use something else for papers
 Format.TopoRes = 300;
+Format.Steps.Topo = 20;
 
+Format.Colormap.Linear = flip(colorcet('L17'));
+Format.Colormap.Monochrome = colorcet('L1');
+Format.Colormap.Divergent = colorcet('D1');
+Format.Colormap.Rainbow = unirainbow;
 
-Linear = flip(colorcet('L17'));
-Format.Colormap.Linear = reduxColormap(Linear, 20);
-
-Monochrome = colorcet('L1');
-Format.Colormap.Monochrome = reduxColormap(Monochrome, 20);
-
-Divergent = colorcet('D1');
-Format.Colormap.Divergent = reduxColormap(Divergent, 20);
-
-Rainbow = unirainbow;
-Format.Colormap.Rainbow = Rainbow;
-Format.Colors.Participants = reduxColormap(Rainbow, numel(P.Participants));
+Format.Colors.Participants = reduxColormap(Format.Colormap.Rainbow, numel(P.Participants));
 
 Format.Alpha.Participants = .3;
 
@@ -126,9 +120,10 @@ Backspot = [66 71 76 84 65 70 75 83 90 69 74 82 89];
 EdgeChannels = [17 128 43 48 63 68 73 81 88 94 99 120 119 125];
 ExcludedChannels = [49 56 107 113 126 127];
 AllCh = 1:129;
-Channels.preROI.EE = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
 Channels.preROI.Frontspot = Frontspot;
 Channels.preROI.Backspot = Backspot;
+Channels.preROI.EE = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
+
 
 P.Format = Format;
 P.Channels = Channels;

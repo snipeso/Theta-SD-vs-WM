@@ -27,7 +27,8 @@ xlim([-.55 .55])
 ylim([-.55 .6])
 
 set(gca, 'FontName', Format.FontName)
-colormap(Format.Colormap.Divergent)
+
+colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Topo))
 
 % TODO: seperately plot markers if significiant for p<.05, and for cluster
 % correction

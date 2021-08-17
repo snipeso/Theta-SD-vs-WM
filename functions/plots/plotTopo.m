@@ -16,4 +16,6 @@ h = colorbar;
 ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 12)
 
 Colormap = Format.Colormap.(Colormap);
+Colormap = reduxColormap(Colormap, Format.Steps.Topo);
+
 colormap(Colormap)

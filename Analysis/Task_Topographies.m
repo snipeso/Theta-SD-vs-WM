@@ -43,15 +43,16 @@ bAllData = bandData(AllData, Freqs, Bands, 'last');
 BandLabels = fieldnames(Bands);
 CLabel = 'A.U.';
 FreqRes = Freqs(2)-Freqs(1);
-CLims = [ -10 10;
-    -12 12;
-    -12 12;
-    -20 20;
-    -20 20];
+
 
 
 %% plot topographies by task
 
+CLims = [ -5 5;
+    -12 12;
+    -12 12;
+    -20 20;
+    -20 20];
 
 for Indx_T = 1:numel(AllTasks)
     figure('units','normalized','outerposition',[0 0 .5 1])

@@ -45,6 +45,8 @@ set(findall(gca, 'type', 'text'), 'visible', 'on')
 Dims = size(Color);
 
 if Dims(2) ~=3 % if not a color triplet
-    colormap(Format.Colormap.Linear)
+    Colormap = Format.Colormap.Linear;
+    Colormap = reduxColormap(Colormap, Format.Steps.Topo);
+    colormap(Colormap)
     colorbar
 end
