@@ -70,7 +70,7 @@ for Indx = 1:nGroups % go from most to least significant
     
     for x = X
         % plot minor posts
-        plot([x, x], [YHeight-Increase*.3, YHeight], ...
+        plot([x, x], [YHeight-Increase*.2, YHeight], ...
             'LineWidth', LW, 'Color', C)
         
         % plot stars
@@ -90,8 +90,8 @@ for Indx = 1:nGroups % go from most to least significant
     
 end
 
-if YHeight+Increase > OldYLims(2)
-    ylim([OldYLims(1), YHeight+Increase])
+if YHeight+Increase/4> OldYLims(2)
+    ylim([OldYLims(1), YHeight+Increase/4])
 else
     ylim(OldYLims)
 end

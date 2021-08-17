@@ -418,3 +418,6 @@ end
 
 
 %% quantify and plot FWHM of theta peaks for different tasks, just to have numbers to backup the observation
+
+
+%% TODO: plot each participant spectrum, with line indicating peaks for each, for each task (raw values)
