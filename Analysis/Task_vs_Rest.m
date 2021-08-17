@@ -27,6 +27,7 @@ TaskLabels = P.TaskLabels;
 Bands = P.Bands;
 Format = P.Format;
 Sessions = P.Sessions;
+StatsP = P.StatsP;
 
 WelchWindow = 8;
 TitleTag = strjoin({'Task', 'Topos', 'vs' 'Fixation', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
@@ -80,7 +81,7 @@ for Indx_B = 1:numel(BandLabels)
             Data2 = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
             
             subplot(2, 3, Indx_S)
-            plotTopoDiff(Data, Data2, Chanlocs, CLims_Diff, Format);
+            plotTopoDiff(Data, Data2, Chanlocs, CLims_Diff, StatsP, Format);
             title(strjoin({Sessions.Labels{Indx_S}, 'vs BL', TaskLabels{Indx_T}, BandLabels{Indx_B}}, ' '), ...
                 'FontSize', 14)
         end
@@ -95,7 +96,7 @@ for Indx_B = 1:numel(BandLabels)
             Data2 = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
             
             subplot(2, 3, Indx_S+3)
-            plotTopoDiff(Data1, Data2, Chanlocs, CLims_Diff, Format);
+            plotTopoDiff(Data1, Data2, Chanlocs, CLims_Diff, StatsP, Format);
             title(strjoin({Sessions.Labels{Indx_S}, TaskLabels{Indx_T}, 'vs', Sessions.Labels{Indx_S}, 'Rest'}, ' '), ...
                 'FontSize', 14)
         end

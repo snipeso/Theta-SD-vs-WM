@@ -111,6 +111,14 @@ Channels.Peaks.LeftDip = [31 54 30 37 53 36 42]; % center left
 % Channels.Peaks.RightDip = [103 109 110 116];
 
 
+Channels.Standard.Fz = [11];
+Channels.Standard.Cz = [129];
+Channels.Standard.O = [70 83];
+Channels.Standard.P = [58 52 92 96];
+Channels.Standard.C = [36 104];
+Channels.Standard.T = [45 108];
+
+
 % channels selected independently of data to represent frontal and
 % posterior EEG
 Frontspot = [22 15 9 23 18 16 10 3 24 19 11 4 124 20 12 5 118 13 6 112];

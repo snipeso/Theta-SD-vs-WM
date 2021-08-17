@@ -1,12 +1,18 @@
-function [p, Sig] = plotTopoDiff(Data1, Data2, Chanlocs, CLims, Format)
+function Stats = plotTopoDiff(Data1, Data2, Chanlocs, CLims, StatsP, Format)
 % Plot t values of difference between two conditions (Data2 - Data1)
 % Each matrix needs the same number of dimentions; participant x ch
 
 % get t values
-[~, p, ~, stats] = ttest((Data2 - Data1));
-[~, Sig] = fdr(p, .05);
-% Sig = p< 0.01;
+[~, p, CI, stats] = ttest((Data2 - Data1));
+[~, Sig] = fdr(p, StatsP.Alpha);
 t_values = stats.tstat';
+
+Stats.t = t_values(:);
+Stats.p = p(:);
+Stats.sig = Sig(:);
+Stats.df = stats.df(:);
+Stats.CI = CI';
+
 
 CLabel = 't values';
 Indexes = 1:numel(Chanlocs);
