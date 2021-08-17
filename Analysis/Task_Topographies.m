@@ -18,6 +18,7 @@ Bands = P.Bands;
 Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
+StatsP = P.StatsP;
 
 WelchWindow = 8;
 TitleTag = strjoin({'Task', 'Topos', 'Welch', num2str(WelchWindow), 'zScored'}, '_');
@@ -48,15 +49,14 @@ FreqRes = Freqs(2)-Freqs(1);
 
 %% plot topographies by task
 
-CLims = [ -5 5;
-    -12 12;
-    -12 12;
-    -20 20;
-    -20 20];
-
 for Indx_T = 1:numel(AllTasks)
     figure('units','normalized','outerposition',[0 0 .5 1])
     Indx = 1;
+    
+    MEAN =  nanmean(bData(:, :, Indx_T, :, :), 1);
+    Max = max(abs(MEAN(:)));
+    CLims = [-Max Max];
+    
     for Indx_B = 1:numel(BandLabels)
         for Indx_S = 1:numel(Sessions.Labels)
             
@@ -65,7 +65,7 @@ for Indx_T = 1:numel(AllTasks)
             
             % plot topoplot
             subplot(numel(BandLabels), numel(Sessions.Labels), Indx)
-            plotTopo(Data, Chanlocs, CLims(Indx_B, :), CLabel, 'Divergent', Format)
+            plotTopo(Data, Chanlocs, CLims, CLabel, 'Divergent', Format)
             title([Sessions.Labels{Indx_S}, ' ', BandLabels{Indx_B}, ' ', TaskLabels{Indx_T}],  'FontSize', 20)
             
             Indx = Indx+1;
@@ -80,24 +80,30 @@ end
 
 %% plot topographies by band
 
- for Indx_S = 1:numel(Sessions.Labels)
-
+for Indx_S = 1:numel(Sessions.Labels)
+    
     figure('units','normalized','outerposition',[0 0 1 1])
     Indx = 1;
+    
+      MEAN =  nanmean(bData(:, Indx_S, :, :, :), 1);
+    Max = max(abs(MEAN(:)));
+    CLims = [-Max Max];
+    
+    
     for Indx_B = 1:numel(BandLabels)
-    for Indx_T = 1:numel(AllTasks)   
+        for Indx_T = 1:numel(AllTasks)
             % get data
             Data = nanmean(squeeze(bData(:, Indx_S, Indx_T, :, Indx_B)), 1);
             
             % plot topoplot
             subplot(numel(BandLabels), numel(AllTasks), Indx)
-            plotTopo(Data, Chanlocs, CLims(Indx_B, :), CLabel, 'Divergent', Format)
+            plotTopo(Data, Chanlocs, CLims, CLabel, 'Divergent', Format)
             title(strjoin({TaskLabels{Indx_T}, BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, ' '), 'FontSize', 14)
-           
+            
             Indx = Indx+1;
         end
     end
-
+    
     % save
     saveFig(strjoin({TitleTag, 'All', 'Bands',  Sessions.Labels{Indx_S}}, '_'), Results, Format)
 end
@@ -108,11 +114,6 @@ end
 
 Type = {'2D', '3D'};
 Size = [120 150];
-CLims = [ -5 5;
-    -12 12;
-    -12 12;
-    -20 20;
-    -20 20];
 Labels = [true false];
 
 
@@ -127,9 +128,9 @@ for Indx_B = 1:numel(BandLabels)
         caxis([-Max Max])
         title(['SD ', BandLabels{Indx_B}, ' Game'])
         colormap(Format.Colormap.Divergent)
-h = colorbar;
-ylabel(h, 'z-score', 'FontName', Format.FontName, 'FontSize', 14)
-
+        h = colorbar;
+        ylabel(h, 'z-score', 'FontName', Format.FontName, 'FontSize', 14)
+        
         set(gca, 'FontSize', 14)
     end
     
@@ -140,16 +141,16 @@ ylabel(h, 'z-score', 'FontName', Format.FontName, 'FontSize', 14)
     % lat theta SD2
     figure('units','normalized','outerposition',[0 0 .5 .4], 'Color', 'w')
     Data = nanmean(squeeze(bData(:, 3, 2, :, Indx_B)), 1);
-     Max = max(abs(Data));
+    Max = max(abs(Data));
     for Indx = 1:2
         subplot(1, 2, Indx)
         bubbleTopo(Data, Chanlocs, Size(Indx), Type{Indx}, Labels(Indx), Format)
-         caxis([-Max Max])
+        caxis([-Max Max])
         title(['SD ', BandLabels{Indx_B}, ' LAT'])
         colormap(Format.Colormap.Divergent)
         h = colorbar;
         ylabel(h, 'z-score', 'FontName', Format.FontName, 'FontSize', 14)
-
+        
         set(gca, 'FontSize', 14)
     end
     
@@ -161,18 +162,19 @@ end
 %% identify theta peak location in hotspot
 
 Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks));
-Hotspot = labels2indexes(Channels.Frontspot, Chanlocs);
+Hotspot = labels2indexes(Channels.preROI.Frontspot, Chanlocs);
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions.Labels)
         for Indx_T = 1:numel(AllTasks)
             Data = squeeze(bData(Indx_P, Indx_S, Indx_T, Hotspot, 2));
             [~, I] = max(Data);
-            Peaks(Indx_P, Indx_S, Indx_T) = Channels.Frontspot(I);
+            Peaks(Indx_P, Indx_S, Indx_T) = Channels.preROI.Frontspot(I);
         end
     end
 end
 
+%%
 
 % plot peak topographies
 figure('units','normalized','outerposition',[0 0 1 .6])
@@ -183,14 +185,15 @@ for Indx_S = 1:numel(Sessions.Labels)
         Table = tabulate(Peaks(:, Indx_S, Indx_T));
         Data = zeros(numel(Chanlocs), 1);
         Data(1:size(Table, 1)) = Table(:, 2);
-        bubbleTopo(Data(Hotspot), Chanlocs(Hotspot), 200, '3D', true, Format)
+        bubbleTopo(Data(Hotspot), Chanlocs(Hotspot), 200, '2D', true, Format)
         colorbar
-        colormap(flip(Format.Colormap.Linear))
+        colormap(reduxColormap(flip(Format.Colormap.Linear), 17))
+        caxis([-1 16])
         title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', 14)
         Indx = Indx+1;
     end
 end
-setLims(numel(Sessions.Labels), numel(AllTasks), 'c')
+setLims(numel(Sessions.Labels), numel(AllTasks), 'c');
 
 % save
 saveFig(strjoin({TitleTag, 'PeakLoc'}, '_'), Results, Format)
@@ -221,10 +224,6 @@ for Indx_B = 1:numel(BandLabels)
         R(Indx_P, :, :) = corrcoef(AllTopos);
     end
     
-    
-    
-    
-    
     % plot matrix of averages of correlations
     figure
     Data = squeeze(nanmean(R, 1));
@@ -250,7 +249,7 @@ for Indx_B = 1:numel(BandLabels)
         
         % tasks
         for Indx_T = 1:numel(AllTasks)
-            Indexes = strcmp(SessionLabels(2, :), AllTasks{Indx_T});
+            Indexes = strcmp(SessionLabels(2, :), TaskLabels{Indx_T});
             R_temp  = squeeze(R(Indx_P, Indexes, Indexes));
             R_temp(logical(tril(ones(size(R_temp))))) = nan; % set to nan the diagonal and below, since it repeats
             DataT(Indx_P, Indx_T) = nanmean(R_temp(:));
@@ -262,18 +261,18 @@ for Indx_B = 1:numel(BandLabels)
     
     % plot average corr for each session
     subplot(1, 3, 1)
-    PlotBars(DataS, Sessions.Labels, [0 0 0; .4 .4 .4; .8 .8 .8], Format, 'vertical', true);
+    plotBars(DataS, Sessions.Labels, [0 0 0; .4 .4 .4; .8 .8 .8], Format, 'vertical', StatsP);
     title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Sessions'}, ' '))
     
     % plot average corr for each task
     subplot(1, 3, 2)
-    PlotBars(DataT, TaskLabels, Format.Colors.AllTasks, Format, 'vertical', true);
+    plotBars(DataT, TaskLabels, Format.Colors.AllTasks, Format, 'vertical',StatsP);
     title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Tasks'}, ' '))
     
     % plot average corr for sessions vs tasks
     Data = [nanmean(DataS, 2),  nanmean(DataT, 2)];
     subplot(1, 3, 3)
-    PlotBars(Data, {'Sessions', 'Tasks'}, [.5 .5 .5; Format.Colors.Dark1], Format, 'vertical', true);
+    plotBars(Data, {'Sessions', 'Tasks'}, [.5 .5 .5; Format.Colors.Dark1], Format, 'vertical', StatsP);
     title(strjoin({'Average' 'Corr', BandLabels{Indx_B}, ' Across' 'Tasks'}, ' '))
     
     
@@ -320,7 +319,7 @@ for Indx_P = 1:numel(Participants)
     Data = squeeze(bAllData(Indx_P, :, :, :, Band));
     CLimsQ = quantile(Data(:), [ .01 1]);
     
-    figure('units','normalized','outerposition',[0 0 .3 .4])
+    figure('units','normalized','outerposition',[0 0 .41 .625])
     Indx = 1;
     for Indx_S = 1:numel(Sessions.Labels)
         for Indx_T = Tasks
@@ -330,7 +329,7 @@ for Indx_P = 1:numel(Participants)
             subplot(numel(Sessions.Labels), numel(Tasks), Indx)
             plotTopo(Data, Chanlocs, CLimsQ, CLabel, 'Linear', Format)
             title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' '))
-            
+            set(gca, 'FontSize', 16)
             Indx = Indx+1;
         end
     end

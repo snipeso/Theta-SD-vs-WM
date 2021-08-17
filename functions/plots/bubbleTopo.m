@@ -22,6 +22,8 @@ switch Type
         axis square
         xlim([min(x) max(x)])
         ylim([min(y) max(y)])
+        padAxis('x')
+        padAxis('y')
     case '3D'
         X = [Chanlocs.X];
         Y = [Chanlocs.Y];

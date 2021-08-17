@@ -37,7 +37,8 @@ for Indx = 1:nbars
             x = Indx; % nothing fancy, just where bar midpoint is.
             errorbar(x, Data(Indx),  Errors(Indx, 1),  Errors(Indx,2), ...
                 'k', 'linestyle', 'none', 'LineWidth', 1.5);
-            
+            xlim([.5 numel(xLabels)+.5]);
+            xticks(1:numel(xLabels))
             xticklabels(xLabels)
             
             %     case 2
