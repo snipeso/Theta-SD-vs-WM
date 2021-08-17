@@ -18,8 +18,10 @@ Bands = P.Bands;
 Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
+StatsP = P.StatsP;
 
 PeakRange = [3 15];
+SmoothFactor = 1; % in Hz, range to smooth over
 
 WelchWindow = 8;
 TitleTag = strjoin({'Task', 'Spectrums', 'Welch', num2str(WelchWindow), 'zScored'}, '_');
@@ -41,23 +43,13 @@ Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow)]);
 % z-score it
 zData = zScoreData(AllData, 'last');
 
-% smooth spectrums % TODO move to function
-sData = nan(size(AllData));
-for Indx_P = 1:numel(Participants)
-    for Indx_S = 1:numel(Sessions.Labels)
-        for Indx_T = 1:numel(AllTasks)
-            for Indx_Ch = 1:numel(Chanlocs)
-                sData(Indx_P, Indx_S, Indx_T, Indx_Ch, :) = ...
-                    smoothFreqs(zData(Indx_P, Indx_S, Indx_T, Indx_Ch, :), Freqs);
-            end
-        end
-    end
-end
-
+% smooth spectrums
+sData = smoothFreqs(zData, Freqs, 'last', SmoothFactor);
+sDataRaw = smoothFreqs(AllData, Freqs, 'last', SmoothFactor);
 
 % average across channels
 chData = meanChData(sData, Chanlocs, Channels.Peaks, 4);
-chDataRaw = meanChData(AllData, Chanlocs, Channels.Peaks, 4);
+chDataRaw = meanChData(sDataRaw, Chanlocs, Channels.Peaks, 4);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
@@ -109,23 +101,23 @@ for Indx_Ch =  1:numel(ChLabels)
 end
 
 %% plot difference spectrums, one per channel
- figure('units','normalized','outerposition',[0 0 1 .6])
- Indx = 1;
- for Indx_S = 2:3
-    for Indx_Ch = 1:numel(ChLabels) 
+figure('units','normalized','outerposition',[0 0 1 .6])
+Indx = 1;
+for Indx_S = 2:3
+    for Indx_Ch = 1:numel(ChLabels)
         SD = squeeze(chData(:, Indx_S, :, Indx_Ch, :));
         BL =  squeeze(chData(:, 1, :, Indx_Ch, :));
         Data = SD - BL;
         
         subplot(2, numel(ChLabels), Indx)
-          plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, Format.Colors.AllTasks, Format)
+        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, Format.Colors.AllTasks, Format)
         title(strjoin({ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, ' '))
         
         Indx = Indx+1;
     end
- end
-  setLims(2,  numel(ChLabels), 'y');
- saveFig(strjoin({TitleTag, 'DiffSpectrums'}, '_'), Results, Format)
+end
+setLims(2,  numel(ChLabels), 'y');
+saveFig(strjoin({TitleTag, 'DiffSpectrums'}, '_'), Results, Format)
 
 
 
@@ -135,10 +127,7 @@ disp('Gathering peaks, this is slow')
 
 Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(Chanlocs));
 DiffPeaks = Peaks;
-chPeaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(ChLabels));
-DiffchPeaks = chPeaks;
-
-BL_Task = find(strcmp(AllTasks, 'Fixation'));
+BL_Task = strcmp(AllTasks, 'Fixation');
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions.Labels)
@@ -148,7 +137,7 @@ for Indx_P = 1:numel(Participants)
             [Peaks(Indx_P, Indx_S, Indx_T, :), ~] = findPeaks(Data, PeakRange, Freqs, false);
             
             if Indx_S == 1 % if session 1, use baseline Rest
-                BL =  squeeze(zData(Indx_P, Indx_S, BL_Task, :, :));
+                BL = squeeze(zData(Indx_P, Indx_S, BL_Task, :, :));
             else % otherwise, compare to task baseline
                 BL = squeeze(zData(Indx_P, 1, Indx_T, :, :));
             end
@@ -163,8 +152,8 @@ clc
 %% plot mean peak frequencies for each ch and each task/session
 
 BubbleSize = 50;
-PeakPlotRange = [3 13];
-Colormap = reduxColormap(Format.Colormap.Rainbow, numel(3:15));
+PeakPlotRange = [4 13];
+Colormap = reduxColormap(Format.Colormap.Rainbow, numel(PeakPlotRange(1)+1:PeakPlotRange(2)));
 
 for Indx_T = 1:numel(AllTasks)
     figure('units','normalized','outerposition',[0 0 .5 .5])
@@ -201,7 +190,7 @@ end
 chPeaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(ChLabels));
 DiffchPeaks = chPeaks;
 
-BL_Task = find(strcmp(AllTasks, 'Fixation'));
+BL_Task = strcmp(AllTasks, 'Fixation');
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions.Labels)
@@ -221,6 +210,34 @@ for Indx_P = 1:numel(Participants)
     end
 end
 
+
+%%% Do the same as above for raw data
+
+
+chPeaksRAW = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(ChLabels));
+DiffchPeaksRAW = chPeaksRAW;
+
+BL_Task = find(strcmp(AllTasks, 'Fixation'));
+
+for Indx_P = 1:numel(Participants)
+    for Indx_S = 1:numel(Sessions.Labels)
+        
+        for Indx_T = 1:numel(AllTasks)
+            Data = squeeze(chDataRaw(Indx_P, Indx_S, Indx_T, :, :));
+            [chPeaksRAW(Indx_P, Indx_S, Indx_T, :), ~] = findPeaks(Data, PeakRange, Freqs, false);
+            
+            if Indx_S == 1 % if session 1, use baseline Rest
+                BL =  squeeze(chDataRaw(Indx_P, Indx_S, BL_Task, :, :));
+            else % otherwise, compare to task baseline
+                BL = squeeze(chDataRaw(Indx_P, 1, Indx_T, :, :));
+            end
+            
+            DiffchPeaksRAW(Indx_P, Indx_S, Indx_T, :) = findPeaks(Data-BL, PeakRange, Freqs, false);
+        end
+    end
+end
+
+
 %% Plot theta peak pairwise compared to each channel at BL, SD2 and SD2-BL
 % see if channel differences are maintained with SD
 
@@ -231,7 +248,7 @@ for Indx_T = 1:numel(AllTasks)
     subplot(3, 1, 1)
     Data = squeeze(chPeaks(:, 1, Indx_T, :));
     Stats = plotConfettiSpaghetti(Data, ChLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, 'fdr', Format);
+        Format.Colors.Participants, StatsP, Format);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'BL', TaskLabels{Indx_T}}, ' '))
     
@@ -239,7 +256,7 @@ for Indx_T = 1:numel(AllTasks)
     subplot(3, 1, 2)
     Data = squeeze(chPeaks(:, 3, Indx_T, :));
     Stats = plotConfettiSpaghetti(Data, ChLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, 'fdr', Format);
+        Format.Colors.Participants, StatsP, Format);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'SD', TaskLabels{Indx_T}}, ' '))
     
@@ -247,7 +264,7 @@ for Indx_T = 1:numel(AllTasks)
     subplot(3, 1, 3)
     Data = squeeze(DiffchPeaks(:, 3, Indx_T, :));
     Stats = plotConfettiSpaghetti(Data, ChLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, 'fdr', Format);
+        Format.Colors.Participants, StatsP, Format);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'SD-BL', TaskLabels{Indx_T}}, ' '))
     
@@ -267,7 +284,7 @@ for Indx_Ch = 1:numel(ChLabels)
         subplot(1, numel(AllTasks), Indx_T)
         Data = cat(2, squeeze(chPeaks(:, [1 3], Indx_T, Indx_Ch)),  squeeze(DiffchPeaks(:, 3, Indx_T, Indx_Ch)));
         Stats = plotConfettiSpaghetti(Data, {'BL', 'SD', 'SD-BL'}, PeakRange(1):3:PeakRange(2), PeakRange,...
-            Format.Colors.Participants, 'raw', Format);
+            Format.Colors.Participants, StatsP, Format);
         ylabel('Peak Frequency (Hz)')
         title(strjoin({TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, ' '))
     end
@@ -288,7 +305,7 @@ for Indx_Ch = 1:numel(ChLabels)
     subplot(3, 1, 1)
     Data = squeeze(chPeaks(:, 1, :, Indx_Ch));
     Stats = plotConfettiSpaghetti(Data, TaskLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, 'fdr', Format);
+        Format.Colors.Participants, StatsP, Format);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'BL', ChLabels{Indx_Ch}}, ' '))
     
@@ -296,7 +313,7 @@ for Indx_Ch = 1:numel(ChLabels)
     subplot(3, 1, 2)
     Data = squeeze(chPeaks(:, 3, :, Indx_Ch));
     Stats = plotConfettiSpaghetti(Data, TaskLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, 'fdr', Format);
+        Format.Colors.Participants, StatsP, Format);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'SD', ChLabels{Indx_Ch}}, ' '))
     
@@ -305,7 +322,7 @@ for Indx_Ch = 1:numel(ChLabels)
     subplot(3, 1, 3)
     Data = squeeze(DiffchPeaks(:, 3, :, Indx_Ch));
     Stats = plotConfettiSpaghetti(Data, TaskLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, 'fdr', Format);
+        Format.Colors.Participants, StatsP, Format);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'SD-BL', ChLabels{Indx_Ch}}, ' '))
     
@@ -329,7 +346,7 @@ BLSD = reshape(BLSD, numel(Participants), []);
 
 Data = cat(2, BL, SD, BLSD);
 
-Stats = Pairwise(Data, false);
+Stats = Pairwise(Data);
 
 Labels = {};
 for Indx_Ch = 1:numel(ChLabels)
@@ -366,13 +383,15 @@ for Indx_Ch =  1:numel(ChLabels)
             
             subplot(numel(Sessions.Labels), 1, Indx_S)
             % TODO: plot peaks! so can inspect where peak came from
-            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, LineWidth, Format)
+            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
+                Format.Alpha.Participants, LineWidth, Format)
             title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
-              xlim([1 25])
+            xlim([1 25])
         end
         setLims(numel(Sessions.Labels), 1, 'y');
         
         saveFig(strjoin({TitleTag, 'Channel', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+        pause(.5)
         close
     end
 end
@@ -389,13 +408,15 @@ for Indx_Ch =  1:numel(ChLabels)
             Data = squeeze(chDataRaw(:, Indx_S, Indx_T, Indx_Ch, :));
             
             subplot(numel(Sessions.Labels), 1, Indx_S)
-            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, LineWidth, Format)
+            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
+                Format.Alpha.Participants, LineWidth, Format)
             title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
             xlim([1 25])
         end
         setLims(numel(Sessions.Labels), 1, 'y');
         
         saveFig(strjoin({TitleTag, 'Channel', 'AllP', 'RAW', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+        pause(.5)
         close
     end
 end
@@ -404,8 +425,7 @@ end
 
 
 %% TODO: 1 way anova SDvBL peak freq x task (apply to plotting loop?)
-
-
+% or 2 way anova with task and channel?
 
 
 
@@ -416,8 +436,67 @@ end
 %% plot individual difference spectrums for each task, seperate fig for each channel
 % see if that super peaky theta in game is consistent or not
 
+close all
+Colors = [Format.Colors.Dark1; Format.Colors.Red;   Format.Colors.Light1; 0.67 0.67 0.67];
+LW = 2;
+Alpha = 1;
 
-%% quantify and plot FWHM of theta peaks for different tasks, just to have numbers to backup the observation
+for Indx_Ch = 1:numel(ChLabels)
+    for Indx_T = 1:numel(TaskLabels)
+        figure('units','normalized','outerposition',[0 0 1 1])
+        for Indx_P = 1:numel(Participants)
+            
+            Spectrum = squeeze(chData(Indx_P, :, Indx_T, Indx_Ch, :));
+            Diff = diff(Spectrum([1, 3], :));
+            Spectrum = cat(1, Spectrum, Diff);
+            
+            Peaks = squeeze(chPeaks(Indx_P, :, Indx_T, Indx_Ch));
+            PeaksDiff = squeeze(DiffchPeaks(Indx_P, end, Indx_T, Indx_Ch));
+            Peaks = cat(1, Peaks', PeaksDiff);
+            
+            subplot(4, 5, Indx_P)
+            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD', 'SD-BL'}, Colors, Alpha, LW, Format)
+            title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '))
+            xlim(PeakRange)
+            set(gca, 'FontSize', 13)
+        end
+         setLims(4, 5, 'y');
+        saveFig(strjoin({TitleTag, 'PeaksSpectrums', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+    end
+end
 
 
-%% TODO: plot each participant spectrum, with line indicating peaks for each, for each task (raw values)
+close all
+%% Plot inficial differences in spectrum with raw data
+Colors = [Format.Colors.Dark1; Format.Colors.Red;  Format.Colors.Light1; 0.67 0.67 0.67];
+LW = 2;
+Alpha = 1;
+
+for Indx_Ch = 1:numel(ChLabels)
+    for Indx_T = 1:numel(TaskLabels)
+        figure('units','normalized','outerposition',[0 0 1 1])
+        for Indx_P = 1:numel(Participants)
+            
+            Spectrum = squeeze(chDataRaw(Indx_P, :, Indx_T, Indx_Ch, :));
+            Diff = diff(Spectrum([1, 3], :));
+            Spectrum = cat(1, Spectrum, Diff);
+            
+            Peaks = squeeze(chPeaksRAW(Indx_P, :, Indx_T, Indx_Ch));
+            PeaksDiff = squeeze(DiffchPeaksRAW(Indx_P, end, Indx_T, Indx_Ch));
+            Peaks = cat(1, Peaks', PeaksDiff);
+            
+            subplot(4, 5, Indx_P)
+            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD', 'SD-BL'}, Colors, Alpha, LW, Format)
+            title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '))
+            xlim(PeakRange)
+            
+            F_Indx = dsearchn(Freqs', PeakRange');
+            Shown = Spectrum(:, F_Indx(1):F_Indx(2));
+            ylim([min(Shown(:)) max(Shown(:))])
+            padAxis('y')
+            set(gca, 'FontSize', 13)
+        end
+        saveFig(strjoin({TitleTag, 'PeaksSpectrums', 'AllP', 'RAW', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+    end
+end
+

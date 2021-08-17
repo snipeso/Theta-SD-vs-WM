@@ -3,8 +3,8 @@ function PlotChannelMap(Chanlocs, ChannelStruct, Colors, Format)
 
 Labels = fieldnames(ChannelStruct);
 
-figure('units','normalized','outerposition',[0 0 .5 .5])
-subplot(1, 2, 1)
+figure('units','normalized','outerposition',[0 0 .75 .45])
+subplot(1, 3, 1)
 
 PlotColors = ones(numel(Chanlocs), 3)*.9;
 for Indx_Cl = 1:numel(Labels)
@@ -19,5 +19,10 @@ end
 bubbleTopo(PlotColors, Chanlocs, 130, '2D', true, Format)
 
 
-subplot(1, 2, 2)
+subplot(1, 3, 2)
 bubbleTopo(PlotColors, Chanlocs, 200, '3D', true, Format)
+
+
+subplot(1, 3, 3)
+bubbleTopo(PlotColors, Chanlocs, 200, '3D', true, Format)
+view(180, 0)

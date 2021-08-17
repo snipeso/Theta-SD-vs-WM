@@ -65,7 +65,7 @@ Format.Colors.Participants = reduxColormap(Format.Colormap.Rainbow, numel(P.Part
 Format.Alpha.Participants = .3;
 
 % basic colors for simple plots
-Format.Colors.Dark1 = [99 88 226]/255; % fixation purple
+Format.Colors.Dark1 = [99, 88, 226]/255; % Standing purle
 Format.Colors.Red = [228, 104, 90]/255; % M2S red
 Format.Colors.Light1 = [244, 204, 32]/255; % PVT yellow
 
@@ -107,7 +107,7 @@ Channels.Peaks.LeftWing = [44 43 38 39]; % fronto-temporal left
 Channels.Peaks.BackSpot = [71 76 75 70 83]; % occipital-central midline
 Channels.Peaks.LeftTail = [58 50 64 65 66]; % occipital-temporal left
 % Channels.Peaks.RightTail = [96 101 95 90 84];
-Channels.Peaks.LeftDip = [36 42 35 41 47 40 44]; % center left
+Channels.Peaks.LeftDip = [31 54 30 37 53 36 42]; % center left
 % Channels.Peaks.RightDip = [103 109 110 116];
 
 

@@ -1,4 +1,4 @@
-function plotSpectrum(Data, Freqs, LineLabels, Colors, LineWidth, Format)
+function plotSpectrum(Data, Freqs, LineLabels, Colors, Alpha, LineWidth, Format)
 % plot spectrums, but without any statistics. Data is n x Freq
 
 Dims = size(Data);
@@ -6,7 +6,7 @@ Dims = size(Data);
 
 hold on
 for Indx = 1:Dims(1)
-    plot(Freqs, Data(Indx, :), 'LineWidth', LineWidth, 'Color', [Colors(Indx, :), .5])
+    plot(Freqs, Data(Indx, :), 'LineWidth', LineWidth, 'Color', [Colors(Indx, :), Alpha])
     
 end
 

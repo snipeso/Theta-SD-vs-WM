@@ -1,4 +1,4 @@
-function Stats = plotConfettiSpaghetti(Data, XLabels, YLabels, YLims, Colors, Stats, Format)
+function Stats = plotConfettiSpaghetti(Data, XLabels, YLabels, YLims, Colors, StatsP, Format)
 % PlotConfettiSpaghetti()
 % plots a speghetti plot showing participant data in color and a black
 % average. Data is a P x S matrix. If you want to specify YLabels, you
@@ -7,6 +7,17 @@ function Stats = plotConfettiSpaghetti(Data, XLabels, YLabels, YLims, Colors, St
 Dims = size(Data);
 
 XPoints = 1:Dims(2);
+
+
+% plot each participant
+hold on
+for Indx_P = 1:Dims(1)
+    plot(XPoints, Data(Indx_P, :),  'LineWidth', .7, 'Color', [Colors(Indx_P, :), Format.Alpha.Participants])
+    
+    scatter(XPoints, Data(Indx_P, :), 50, ...
+        'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha',  Format.Alpha.Participants, ...
+        'MarkerEdgeAlpha',  Format.Alpha.Participants, 'MarkerEdgeColor', Colors(Indx_P, :))
+end
 
 % set x axis
 xlim([.5, Dims(2)+.5])
@@ -23,18 +34,10 @@ if~isempty(YLims)
         yticks(linspace(YLims(1), YLims(2), numel(YLabels)))
         yticklabels(YLabels)
     end
+else
+    YLims = ylim;
 end
 
-
-% plot each participant
-hold on
-for Indx_P = 1:Dims(1)
-    plot(XPoints, Data(Indx_P, :),  'LineWidth', .7, 'Color', [Colors(Indx_P, :), Format.Alpha.Participants])
-    
-    scatter(XPoints, Data(Indx_P, :), 50, ...
-        'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha',  Format.Alpha.Participants, ...
-        'MarkerEdgeAlpha',  Format.Alpha.Participants, 'MarkerEdgeColor', Colors(Indx_P, :))
-end
 
 
 % plot mean
@@ -44,16 +47,9 @@ if TotGroups == Dims(1) % if there's one color per participant, so no special gr
     plot(nanmean(Data, 1), 'o-', 'LineWidth', 2.5, 'Color', 'k',  'MarkerFaceColor', 'k')
     
     % conduct stats
-    switch Stats
-        case 'raw'
-            Stats = Pairwise(Data, false);
-            plotPairwiseStars(Stats, XPoints, Format.Colors.SigStar)
-        case 'fdr'
-            Stats = Pairwise(Data, true);
-            plotPairwiseStars(Stats, XPoints, Format.Colors.SigStar)
-            
-        otherwise
-            disp('no stats for confettiSpaghetti')
+    if ~isempty(StatsP)
+            Stats = Pairwise(Data, StatsP);
+            plotHangmanStars(Stats, XPoints, YLims, Format.Colors.SigStar, Format)
     end
     
 else
