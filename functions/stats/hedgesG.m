@@ -11,7 +11,7 @@ for Indx1 = 1:Dims(2)
     for Indx2 = 1:Dims(3)
         D1 = squeeze(Data1(:, Indx1, Indx2));
         D2 = squeeze(Data2(:, Indx1, Indx2));
-        stats = mes(D2, D1, 'hedgesg', 'isDep', 1, 'nBoot', StatsP.ANOVA.nBoot);
+        stats = mes(D2, D1, StatsP.Paired.ES, 'isDep', 1, 'nBoot', StatsP.ANOVA.nBoot);
         gValues(Indx1, Indx2) = stats.hedgesg;
         CI(Indx1, Indx2, :) = stats.hedgesgCi;
     end

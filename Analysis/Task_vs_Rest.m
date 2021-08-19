@@ -105,3 +105,35 @@ for Indx_B = 1:numel(BandLabels)
         saveFig(strjoin({TitleTag, 'Diffs', TaskLabels{Indx_T}, BandLabels{Indx_B}}, '_'), Results, Format)
     end
 end
+
+
+
+%% plot bargraph of widespreadness of effects across channels
+
+Edges = [-50, 0, .5, 1, 1.5, 2, 50];
+Labels = {'g < 0', '0 < g < .5', '.5 < g < 1', '1 < g < 1.5', '1.5 < g < 2', 'g > 2'};
+Colors = reduxColormap(Format.Colormap.Divergent, (numel(Edges)-1)*2);
+Mid = ceil(size(Colors, 1)/2);
+Colors = Colors(Mid:end, :);
+
+
+for Indx_B = 1:numel(BandLabels)
+    figure('units','normalized','outerposition',[0 0 .5 .35])
+    for Indx_S = 2:3
+        Data1 = squeeze(bData(:, 1, :, :, Indx_B));
+        Data2 = squeeze(bData(:, Indx_S, :, :, Indx_B));
+        Stats = hedgesG(Data1, Data2, StatsP);
+        
+        
+        subplot(1, 2, Indx_S-1)
+        plotPieBars(Stats.hedgesg, Edges, TaskLabels, Colors, Format)
+        title(strjoin({Sessions.Labels{Indx_S} 'vs BL', BandLabels{Indx_B}, 'Hedges G Frequencies'}, ' '))
+    end
+    
+    % save
+    saveFig(strjoin({TitleTag, 'Widespreadness', BandLabels{Indx_B}}, '_'), Results, Format)
+    
+end
+
+PlotColorLegend(Colors, Labels, Format)
+saveFig(strjoin({TitleTag, 'Widespreadness', 'Legend'}, '_'), Results, Format)

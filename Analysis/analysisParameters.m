@@ -163,5 +163,9 @@ StatsP.ANOVA.nBoot = 5000;
 StatsP.ANOVA.pValue = 'pValueGG';
 StatsP.Alpha = .05;
 StatsP.Trend = .1;
+StatsP.Paired.ES = 'hedgesg';
+
 
 P.StatsP = StatsP;
+
+

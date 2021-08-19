@@ -26,12 +26,13 @@ SmoothFactor = 1; % in Hz, range to smooth over
 WelchWindow = 8;
 TitleTag = strjoin({'Task', 'Spectrums', 'Welch', num2str(WelchWindow), 'zScored'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_Spectrums');
+Results = fullfile(Paths.Results, 'Task_Spectrums_StandardLocs');
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
+ChannelStruct =  Channels.Standard; % normally, "Peaks"
 
-ChLabels = fieldnames(Channels.Peaks);
+ChLabels = fieldnames(ChannelStruct);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
@@ -48,15 +49,15 @@ sData = smoothFreqs(zData, Freqs, 'last', SmoothFactor);
 sDataRaw = smoothFreqs(AllData, Freqs, 'last', SmoothFactor);
 
 % average across channels
-chData = meanChData(sData, Chanlocs, Channels.Peaks, 4);
-chDataRaw = meanChData(sDataRaw, Chanlocs, Channels.Peaks, 4);
+chData = meanChData(sData, Chanlocs, ChannelStruct, 4);
+chDataRaw = meanChData(sDataRaw, Chanlocs, ChannelStruct, 4);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 
 %% Plot map of clusters
 
-PlotChannelMap(Chanlocs, Channels.Peaks, Format.Colors.AllTasks, Format)
+PlotChannelMap(Chanlocs, ChannelStruct, Format.Colors.AllTasks, Format)
 saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
 
 
