@@ -28,7 +28,7 @@ end
 DataRange = get(gca, 'YLim');
 
 YHeight = DataRange(2);
-Increase = diff(DataRange)*.15;
+Increase = diff(DataRange)*.08;
 
 hold on
 for Indx = 1:nGroups % go from most to least significant
@@ -70,7 +70,7 @@ for Indx = 1:nGroups % go from most to least significant
     
     for x = X
         % plot minor posts
-        plot([x, x], [YHeight-Increase*.2, YHeight], ...
+        plot([x, x], [YHeight-Increase*.15, YHeight], ...
             'LineWidth', LW, 'Color', C)
         
         % plot stars

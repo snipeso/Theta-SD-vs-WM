@@ -28,16 +28,19 @@ Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
 
-AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
-TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
-Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
+% AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
+% TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
+% Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
+
+AllTasks = P.AllTasks;
+TaskLabels = P.TaskLabels;
 
 PeakRange = [3 15];
 
 WelchWindow = 8;
 TitleTag = strjoin({'Task', 'ANOVA', num2str(WelchWindow), 'zScored'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_ANOVA');
+Results = fullfile(Paths.Results, 'Task_ANOVA_restcheck');
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -110,7 +113,7 @@ for Indx_Ch = 1:numel(ChLabels)
             
             figure('units','normalized','outerposition',[0 0 .2 .6])
             
-            % plot effect size lines 
+            % plot effect size lines
             hold on
             for E = Effects
                 plot([E, E], [.5, numel(TaskLabels)+.5], 'Color', [.9 .9 .9], 'HandleVisibility', 'off')
@@ -187,6 +190,47 @@ for Indx_Ch = 1:numel(ChLabels)
             BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
     end
 end
+
+
+
+%% plot z data for BL tasks (sorted) next to z data for SD2-BL changes
+
+for Indx_Ch = 1:numel(ChLabels)
+    for Indx_B = 1:numel(BandLabels)
+        figure('units','normalized','outerposition',[0 0 .5 .5])
+        
+        % plot baseline tasks
+        Data = squeeze(bData(:, 1, :, Indx_Ch, Indx_B));
+        MEANS = nanmean(Data);
+        [~, Order] = sort(MEANS, 'descend');
+        
+        subplot(1, 2, 1)
+        Stats = plotScatterBox(Data(:, Order), TaskLabels(Order), StatsP, ...
+            Format.Colors.AllTasks(Order, :), [], Format);
+        ylabel('Power (z score)')
+        title(strjoin({'BL Tasks', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '))
+        set(gca, 'FontSize', 15)
+
+        
+        % plot changes with SD
+        Data2 = squeeze(bData(:, 3, :, Indx_Ch, Indx_B));
+        Diff = Data2-Data;
+         MEANS = nanmean(Diff);
+        [~, Order] = sort(MEANS, 'descend');
+        
+        subplot(1, 2, 2)
+        Stats = plotScatterBox(Diff(:, Order), TaskLabels(Order), StatsP, ...
+            Format.Colors.AllTasks(Order, :), [], Format);
+        ylabel('Power Difference (z score)')
+        title(strjoin({'SD-BL', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '))
+        set(gca, 'FontSize', 15)
+
+        
+        saveFig(strjoin({TitleTag, 'scatter', 'BL vs SD change', ...
+            BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+    end
+end
+
 
 
 %% plot task averages across sessions showcasing changes with SD
