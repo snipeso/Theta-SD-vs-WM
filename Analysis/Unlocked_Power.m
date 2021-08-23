@@ -19,13 +19,21 @@ Channels = P.Channels;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Refresh = false;
-Tasks = { 'Fixation', 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music', 'MWT', 'Standing', 'Oddball'};
+Tasks = { 'Fixation', 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'};
+Duration = 5; % in minutes
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 WelchWindow = 8;
 Freqs = 0.5:(1/WelchWindow):40;
+
+if isempty(Duration)
+    Tag = num2str(WelchWindow);
+else
+    Tag = [ num2str(WelchWindow), '_' num2str(Duration)];
+end
+
 
 for Indx_T = 1:numel(Tasks)
     
@@ -34,7 +42,7 @@ for Indx_T = 1:numel(Tasks)
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', Task);
-    Destination = fullfile(Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow)], Task); % TODO: put in 'Unlocked'
+    Destination = fullfile(Paths.Data, 'EEG', ['Unlocked_' Tag], Task); % TODO: put in 'Unlocked'
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -79,13 +87,18 @@ for Indx_T = 1:numel(Tasks)
             disp('not removing edge data...')
         end
         
-        % set to nan all cut data
+        % remove all data marked as noise or nan
         Cuts_Filepath = fullfile(Source_Cuts, [Filename_Core, '_Cuts.mat']);
         
-        try
         EEG = rmNoise(EEG, Cuts_Filepath);
-        catch
-            continue
+        
+        % if only want a certain amount of data, cut
+        if ~isempty(Duration)
+            if Duration*60*fs >= size(EEG.data, 2)
+                warning([EEG.filename, ' has only ', num2str(round(size(EEG.data, 2)/fs)/60), ' minutes'])
+            else
+                EEG = pop_select(EEG, 'time', [0 Duration*60]);
+            end
         end
         
         
