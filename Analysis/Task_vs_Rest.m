@@ -28,6 +28,7 @@ Bands = P.Bands;
 Format = P.Format;
 Sessions = P.Sessions;
 StatsP = P.StatsP;
+Channels = P.Channels;
 
 WelchWindow = 8;
 TitleTag = strjoin({'Task', 'Topos', 'vs' 'Fixation', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
@@ -143,17 +144,18 @@ saveFig(strjoin({TitleTag, 'Widespreadness', 'Legend'}, '_'), Results, Format)
 %% plot 10-20 channels for every task difference
 
 Ch = Channels.Standard_10_20_All;
-Indx_BL = find(Ch == 129);
-Ch = labels2indexes(Ch);
+Indx_BL = find(strcmpi(Channels.Standard_10_20_Titles, 'Cz'));
+Ch = labels2indexes(Ch, Chanlocs);
 
 for Indx_B = 1:numel(BandLabels)
     
     Data1 = squeeze(bData(:, 1, :, Ch, Indx_B));
     Data2 = squeeze(bData(:, 3, :, Ch, Indx_B));
     Data = Data2-Data1;
+    Data = permute(Data, [1 3 2]);
     
     % plot spaghetti-o plot of tasks x sessions for each ch and each band
-    figure('units','normalized','outerposition',[0 0 .18 .45])
+    figure('units','normalized','outerposition',[0 0 1 .45])
     Stats = plotSpaghettiOs(Data, Indx_BL, Channels.Standard_10_20_Titles, TaskLabels, ...
         Format.Colors.AllTasks, StatsP, Format);
     ylabel('Power Diff (z-scored)')
