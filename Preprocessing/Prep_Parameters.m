@@ -83,4 +83,10 @@ Parameters.ERP.lp = 40; % low pass filter
 Parameters.ERP.hp = 0.1; % high pass filter
 Parameters.ERP.hp_stopband = 0.05; % high pass filter gradual roll-off
 
+Parameters.Microsleep.fs = 200; % new sampling rate
+Parameters.Microsleep.lp = 70; % low pass filter
+Parameters.Microsleep.hp = 0.3; % high pass filter
+Parameters.Microsleep.hp_stopband = 0.1; % high pass filter gradual roll-off
+
+
 % Trigger_Padding = 1; % amount of time in seconds to keep around start and stop triggers
