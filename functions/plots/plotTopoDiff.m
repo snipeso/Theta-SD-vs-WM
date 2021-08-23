@@ -12,9 +12,16 @@ Stats.p = p(:);
 Stats.sig = Sig(:);
 Stats.df = stats.df(:);
 Stats.CI = CI';
+Diff = Data2-Data1;
+Stats.diff_mean = nanmean(Diff, 1);
+Stats.diff_std = nanstd(Diff, 0, 1);
 
 
-CLabel = 't values';
+stats = mes(Data2, Data1, StatsP.Paired.ES, 'isDep', 1);
+Stats.(StatsP.Paired.ES) = stats.(StatsP.Paired.ES);
+
+
+CLabel = StatsP.Paired.ES;
 Indexes = 1:numel(Chanlocs);
 
 
@@ -23,9 +30,10 @@ if isempty(CLims)
     CLims = [-Max Max];
 end
 
-topoplot(t_values, Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
+topoplot(stats.(StatsP.Paired.ES), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
     'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
    'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 3, .01});
+
 h = colorbar;
 ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 12)
 set(gca, 'FontName', Format.FontName, 'FontSize', 12)
@@ -35,6 +43,3 @@ ylim([-.55 .6])
 set(gca, 'FontName', Format.FontName)
 
 colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Topo))
-
-% TODO: seperately plot markers if significiant for p<.05, and for cluster
-% correction

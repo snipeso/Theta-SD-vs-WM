@@ -61,11 +61,16 @@ CLims_BL = [ -10 10;
     -10 10;
     -20 20;
     -20 20];
-CLims_Diff = [-10 10];
+% CLims_Diff = [-10 10];
+CLims_Diff = [-2 2];
 
 %% Plot all topo changes together
 
+Ch = Channels.Standard_10_20_All;
+Ch = labels2indexes(Ch, Chanlocs);
+
 for Indx_B = 1:numel(BandLabels)
+    HedgesG = nan(numel(AllTasks), numel(Chanlocs));
     for Indx_T = 1:numel(AllTasks)
         figure('units','normalized','outerposition',[0 0 .5 .5])
         
@@ -82,9 +87,10 @@ for Indx_B = 1:numel(BandLabels)
             Data2 = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
             
             subplot(2, 3, Indx_S)
-            plotTopoDiff(Data, Data2, Chanlocs, CLims_Diff, StatsP, Format);
+            Stats = plotTopoDiff(Data, Data2, Chanlocs, CLims_Diff, StatsP, Format);
             title(strjoin({Sessions.Labels{Indx_S}, 'vs BL', TaskLabels{Indx_T}, BandLabels{Indx_B}}, ' '), ...
                 'FontSize', 14)
+            HedgesG(Indx_T, :) = Stats.(StatsP.Paired.ES);
         end
         
         % plot change from Fix
@@ -105,14 +111,26 @@ for Indx_B = 1:numel(BandLabels)
         % save
         saveFig(strjoin({TitleTag, 'Diffs', TaskLabels{Indx_T}, BandLabels{Indx_B}}, '_'), Results, Format)
     end
+    
+    figure('units','normalized','outerposition',[0 0 1 .45])
+    hold on
+    for Indx_T = 1:numel(AllTasks)
+        plot(1:numel(Ch), HedgesG(Indx_T, Ch), 'Color', Format.Colors.AllTasks(Indx_T, :), 'LineWidth', 2)
+    end
+    xticks(1:numel(Ch))
+    xticklabels(Channels.Standard_10_20_Titles)
+    title(strjoin({ BandLabels{Indx_B}, StatsP.Paired.ES}, ' '))
+    set(gca, 'FontName', Format.FontName, 'FontSize', 18,  'YGrid', 'on', 'YTick', StatsP.Paired.Benchmarks)
+    ylabel(StatsP.Paired.ES)
+    saveFig(strjoin({TitleTag, '10-20', 'AllTasks', 'Hedgesg', BandLabels{Indx_B}}, '_'), Results, Format)
 end
 
 
 
 %% plot bargraph of widespreadness of effects across channels
 
-Edges = [-50, 0, .5, 1, 1.5, 2, 50];
-Labels = {'g < 0', '0 < g < .5', '.5 < g < 1', '1 < g < 1.5', '1.5 < g < 2', 'g > 2'};
+Edges = [-50, StatsP.Paired.Benchmarks, 50];
+Labels = {'g < 0', '0 < g < .5', '.5 < g < 1', '1 < g < 1.5', '1.5 < g < 2', 'g > 2'}; % TODO: automate from "benchmarks"
 Colors = reduxColormap(Format.Colormap.Divergent, (numel(Edges)-1)*2);
 Mid = ceil(size(Colors, 1)/2);
 Colors = Colors(Mid:end, :);
@@ -160,7 +178,7 @@ for Indx_B = 1:numel(BandLabels)
         Format.Colors.AllTasks, StatsP, Format);
     ylabel('Power Diff (z-scored)')
     title(strjoin({BandLabels{Indx_B}, 'Difference'}, ' '))
-    saveFig(strjoin({TitleTag, '10-20', 'AllTasks', BandLabels{Indx_B}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, '10-20', 'AllTasks', 'Diff', BandLabels{Indx_B}}, '_'), Results, Format)
     
 end
 

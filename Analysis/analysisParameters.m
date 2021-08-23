@@ -191,7 +191,7 @@ StatsP.ANOVA.pValue = 'pValueGG';
 StatsP.Alpha = .05;
 StatsP.Trend = .1;
 StatsP.Paired.ES = 'hedgesg';
-
+StatsP.Paired.Benchmarks = [0, .5, 1, 1.5, 2];
 
 P.StatsP = StatsP;
 

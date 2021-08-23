@@ -21,6 +21,7 @@ Channels = P.Channels;
 Refresh = false;
 Tasks = { 'Fixation', 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music', 'MWT', 'Standing', 'Oddball'};
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 WelchWindow = 8;
