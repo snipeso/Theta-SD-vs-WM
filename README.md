@@ -8,6 +8,9 @@ This repository contains the complete analysis used for paper XXX.
 ## Setup
 1. Download EEGLAB
     - in the "pop_loadset" function, disable line 117:  fprintf('pop_loadset(): loading file %s ...\n', filename); so that you can't see which file is being loaded during the randomized file cleaning
+2. Make sure to have the required MATLAB toolboxes: 
+    - Text Analytics Toolbox
+    - Statistics And Analytics Toolbox
 
 ### External scripts
 

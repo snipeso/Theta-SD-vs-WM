@@ -111,12 +111,39 @@ Channels.Peaks.LeftDip = [31 54 30 37 53 36 42]; % center left
 % Channels.Peaks.RightDip = [103 109 110 116];
 
 
-Channels.Standard.Fz = [11];
-Channels.Standard.Cz = [129];
+Channels.Standard.Fz = 11;
+Channels.Standard.Cz = 129;
 Channels.Standard.O = [70 83];
 Channels.Standard.P = [58 52 92 96];
 Channels.Standard.C = [36 104];
 Channels.Standard.T = [45 108];
+
+Channels.Standard_10_20.Fz = 11;
+Channels.Standard_10_20.Fp1 = 22;
+Channels.Standard_10_20.Fp2 = 9;
+Channels.Standard_10_20.F3 = 24;
+Channels.Standard_10_20.F4 = 124;
+Channels.Standard_10_20.F7 = 33;
+Channels.Standard_10_20.F8 = 122;
+Channels.Standard_10_20.Cz = 129;
+Channels.Standard_10_20.C3 = 36;
+Channels.Standard_10_20.C4 = 104;
+Channels.Standard_10_20.T7 = 45;
+Channels.Standard_10_20.T8 = 108;
+Channels.Standard_10_20.Pz = 62;
+Channels.Standard_10_20.P3 = 52;
+Channels.Standard_10_20.P4 = 92;
+Channels.Standard_10_20.P7 = 58;
+Channels.Standard_10_20.P8 = 96;
+Channels.Standard_10_20.Oz = 75;
+Channels.Standard_10_20.O1 = 70;
+Channels.Standard_10_20.O2 = 83;
+
+Channels.Standard_10_20_Titles = fieldnames(Channels.Standard_10_20);
+Channels.Standard_10_20_All = [];
+for Indx = 1:numel(Channels.Standard_10_20_Titles)
+   Channels.Standard_10_20_All = cat(2, Channels.Standard_10_20_All, Channels.Standard_10_20.(Channels.Standard_10_20_Titles{Indx}));
+end
 
 
 % channels selected independently of data to represent frontal and

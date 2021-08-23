@@ -137,3 +137,29 @@ end
 
 PlotColorLegend(Colors, Labels, Format)
 saveFig(strjoin({TitleTag, 'Widespreadness', 'Legend'}, '_'), Results, Format)
+
+
+
+%% plot 10-20 channels for every task difference
+
+Ch = Channels.Standard_10_20_All;
+Indx_BL = find(Ch == 129);
+Ch = labels2indexes(Ch);
+
+for Indx_B = 1:numel(BandLabels)
+    
+    Data1 = squeeze(bData(:, 1, :, Ch, Indx_B));
+    Data2 = squeeze(bData(:, 3, :, Ch, Indx_B));
+    Data = Data2-Data1;
+    
+    % plot spaghetti-o plot of tasks x sessions for each ch and each band
+    figure('units','normalized','outerposition',[0 0 .18 .45])
+    Stats = plotSpaghettiOs(Data, Indx_BL, Channels.Standard_10_20_Titles, TaskLabels, ...
+        Format.Colors.AllTasks, StatsP, Format);
+    ylabel('Power Diff (z-scored)')
+    title(strjoin({BandLabels{Indx_B}, 'Difference'}, ' '))
+    saveFig(strjoin({TitleTag, '10-20', 'AllTasks', BandLabels{Indx_B}}, '_'), Results, Format)
+    
+end
+
+
