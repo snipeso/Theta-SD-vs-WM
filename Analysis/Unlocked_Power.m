@@ -30,9 +30,9 @@ EEG_Triggers.End = 'S  2';
 
 Freqs = 0.5:(1/WelchWindow):40;
 
-Tag = [ 'w',num2str(WelchWindow), 's_d' num2str(Duration),'m'];
+Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 
-    
+
 for Indx_T = 1:numel(Tasks)
     
     Task = Tasks{Indx_T};
@@ -64,8 +64,7 @@ for Indx_T = 1:numel(Tasks)
         
         % load EEG
         EEG = pop_loadset('filename', File, 'filepath', Source);
-        
-        
+        size(EEG.data)
         
         %%% Set as nan all noise
         
@@ -75,32 +74,28 @@ for Indx_T = 1:numel(Tasks)
         Chanlocs = EEG.chanlocs;
         
         % remove beginning
-        try % some files have this, others not; quicker than checking for all the triggers
-            disp('removing edge data...')
-            
-            % remove start and stop
+        if any(strcmpi({EEG.event.type}, EEG_Triggers.Start))
             StartPoint = EEG.event(strcmpi({EEG.event.type}, EEG_Triggers.Start)).latency;
             EEG.data(:, 1:round(StartPoint)) = nan; %this gets removed in rmNoise, which removes anything that's a nan
-        catch
-            warning('not removing edge data...')
+        else
+            warning('not removing beginning data...')
         end
         
         % remove ending
-                try % some files have this, others not; quicker than checking for all the triggers
-            disp('removing edge data...')
-            
-            % remove start and stop
+        if any(strcmpi({EEG.event.type},  EEG_Triggers.End))
             EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
             EEG.data(:, round(EndPoint):end) = nan; %this gets removed in rmNoise, which removes anything that's a nan
-        catch
-            warning('not removing edge data...')
+        else
+            warning('not removing end data...')
         end
         
-        % remove all data marked as noise or nan
+        % remove all data marked as noise in cuts
         Cuts_Filepath = fullfile(Source_Cuts, [Filename_Core, '_Cuts.mat']);
-        
         EEG = rmNoise(EEG, Cuts_Filepath);
-        
+
+        % remove all data changed to NaN (beginnings and ends
+        EEG = rmNaN(EEG);
+
         % if only want a certain amount of data, cut
         if ~isempty(Duration)
             if Duration*60*fs >= size(EEG.data, 2)
@@ -109,7 +104,6 @@ for Indx_T = 1:numel(Tasks)
                 EEG = pop_select(EEG, 'time', [0 Duration*60]);
             end
         end
-        
         
         %%% get power
         nfft = 2^nextpow2(WelchWindow*fs);
