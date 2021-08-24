@@ -20,21 +20,19 @@ Channels = P.Channels;
 
 Refresh = false;
 Tasks = { 'Fixation', 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'};
-Duration = 5; % in minutes
+Duration = 4; % in minutes
+WelchWindow = 8;
 
+EEG_Triggers.Start = 'S  1';
+EEG_Triggers.End = 'S  2';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-WelchWindow = 8;
 Freqs = 0.5:(1/WelchWindow):40;
 
-if isempty(Duration)
-    Tag = num2str(WelchWindow);
-else
-    Tag = [ num2str(WelchWindow), '_' num2str(Duration)];
-end
+Tag = [ 'w',num2str(WelchWindow), 's_d' num2str(Duration),'m'];
 
-
+    
 for Indx_T = 1:numel(Tasks)
     
     Task = Tasks{Indx_T};
@@ -76,15 +74,26 @@ for Indx_T = 1:numel(Tasks)
         fs = EEG.srate;
         Chanlocs = EEG.chanlocs;
         
+        % remove beginning
         try % some files have this, others not; quicker than checking for all the triggers
             disp('removing edge data...')
             
             % remove start and stop
             StartPoint = EEG.event(strcmpi({EEG.event.type}, EEG_Triggers.Start)).latency;
-            EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
-            EEG.data(:, [1:round(StartPoint),  round(EndPoint):end]) = nan; %this gets removed in rmNoise, which removes anything that's a nan
+            EEG.data(:, 1:round(StartPoint)) = nan; %this gets removed in rmNoise, which removes anything that's a nan
         catch
-            disp('not removing edge data...')
+            warning('not removing edge data...')
+        end
+        
+        % remove ending
+                try % some files have this, others not; quicker than checking for all the triggers
+            disp('removing edge data...')
+            
+            % remove start and stop
+            EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
+            EEG.data(:, round(EndPoint):end) = nan; %this gets removed in rmNoise, which removes anything that's a nan
+        catch
+            warning('not removing edge data...')
         end
         
         % remove all data marked as noise or nan

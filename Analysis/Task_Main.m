@@ -28,19 +28,20 @@ Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
 
-% AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
-% TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
-% Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
-
-AllTasks = P.AllTasks;
-TaskLabels = P.TaskLabels;
+AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
+TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
+Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
+% 
+% AllTasks = P.AllTasks;
+% TaskLabels = P.TaskLabels;
 
 PeakRange = [3 15];
+Duration = 5;
 
 WelchWindow = 8;
-TitleTag = strjoin({'Task', 'ANOVA', num2str(WelchWindow), 'zScored'}, '_');
+TitleTag = strjoin({'Task', 'ANOVA', num2str(WelchWindow), num2str(Duration), 'zScored'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_ANOVA_restcheck');
+Results = fullfile(Paths.Results, 'Task_ANOVA_5minCheck');
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -53,7 +54,7 @@ FactorLabels = {'Session', 'Task'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow)]);
+Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow), '_',num2str(Duration)]);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % z-score it

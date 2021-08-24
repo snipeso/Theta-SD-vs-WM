@@ -33,15 +33,15 @@ Channels = P.Channels;
 WelchWindow = 8;
 TitleTag = strjoin({'Task', 'Topos', 'vs' 'Fixation', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_vs_Rest_Topographies');
+Results = fullfile(Paths.Results, 'Task_vs_Rest_Topographies_5mincheck');
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
-
-Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow)]);
+Duration = 5;
+Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow),'_', num2str(Duration)]);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % z-score it
