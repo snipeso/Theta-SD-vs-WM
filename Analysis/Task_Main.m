@@ -36,12 +36,14 @@ Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
 % TaskLabels = P.TaskLabels;
 
 PeakRange = [3 15];
-Duration = 5;
+Duration = 4;
 
 WelchWindow = 8;
-TitleTag = strjoin({'Task', 'ANOVA', num2str(WelchWindow), num2str(Duration), 'zScored'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_ANOVA_5minCheck');
+Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
+TitleTag = strjoin({'Task', 'ANOVA'}, '_');
+
+Results = fullfile(Paths.Results, ['Task_ANOVA_', Tag]);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -54,7 +56,7 @@ FactorLabels = {'Session', 'Task'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow), '_',num2str(Duration)]);
+Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' Tag]);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % z-score it
