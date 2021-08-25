@@ -23,21 +23,25 @@ StatsP = P.StatsP;
 PeakRange = [3 15];
 SmoothFactor = 1; % in Hz, range to smooth over
 
+Duration = 4;
 WelchWindow = 8;
+ChannelLabels = 'preROI';  % normally, "Peaks"
+
+Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'Spectrums', 'Welch', num2str(WelchWindow), 'zScored'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_Spectrums_StandardLocs');
+Results = fullfile(Paths.Results, 'Task_Spectrums', Tag, ChannelLabels);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
-ChannelStruct =  Channels.Standard; % normally, "Peaks"
+ChannelStruct =  Channels.(ChannelLabels);
 
 ChLabels = fieldnames(ChannelStruct);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' num2str(WelchWindow)]);
+Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' Tag]);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 
@@ -63,7 +67,6 @@ saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
 
 %% Plot spectrums as task x ch coloring all channels
 
-Colors = [Format.Colors.Dark1; Format.Colors.Red; Format.Colors.Light1];
 
 figure('units','normalized','outerposition',[0 0 1 1])
 Indx = 1;
@@ -72,7 +75,7 @@ for Indx_Ch = 1:numel(ChLabels)
         Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
         
         subplot( numel(ChLabels), numel(AllTasks), Indx)
-        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, Colors, Format)
+        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, Format.Colors.Sessions, Format)
         title(strjoin({ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '))
         Indx = Indx+1;
     end
@@ -96,7 +99,7 @@ for Indx_Ch =  1:numel(ChLabels)
         title(strjoin({ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, ' '))
     end
     setLims(1, numel(Sessions.Labels), 'y');
-    
+    padAxis
     saveFig(strjoin({TitleTag, 'Channel', 'Tasks', ChLabels{Indx_Ch}}, '_'), Results, Format)
     
 end
