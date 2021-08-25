@@ -6,7 +6,7 @@ N = numel(Labels);
 
 W = 4;
 H = .75;
- figure('units','normalized','outerposition',[0 0 .1 .5])
+ figure('units','normalized','outerposition',[0 0 .1 .6])
 hold on
 for Indx = 1:N
 rectangle('Position',[1 Indx W H],'Curvature',0.2, ...

@@ -20,6 +20,9 @@ end
 
 
 NewLims = [min(Lims(:, 1)), max(Lims(:, 2))];
+Range = diff(NewLims);
+Padding =  Range*.05;
+NewLims = [NewLims(1)-Padding, NewLims(2)+Padding];
 
 
 for Indx_Sp = 1:Tot
