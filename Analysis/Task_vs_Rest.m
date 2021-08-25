@@ -66,7 +66,7 @@ Ch = Channels.Standard_10_20_All;
 Ch = labels2indexes(Ch, Chanlocs);
 
 for Indx_B = 1:numel(BandLabels)
-    HedgesG = nan(numel(AllTasks), numel(Chanlocs));
+    HedgesG_SD = nan(numel(AllTasks), numel(Chanlocs));
     for Indx_T = 1:numel(AllTasks)
         figure('units','normalized','outerposition',[0 0 .5 .5])
         
@@ -88,7 +88,7 @@ for Indx_B = 1:numel(BandLabels)
             Stats = plotTopoDiff(Data, Data2, Chanlocs, CLims_Diff, StatsP, Format);
             title(strjoin({Sessions.Labels{Indx_S}, 'vs BL', TaskLabels{Indx_T}, BandLabels{Indx_B}}, ' '), ...
                 'FontSize', 14)
-            HedgesG(Indx_T, :) = Stats.(StatsP.Paired.ES);
+            HedgesG_SD(Indx_T, :) = Stats.(StatsP.Paired.ES);
         end
         
         % plot change from Fix
@@ -113,7 +113,7 @@ for Indx_B = 1:numel(BandLabels)
     figure('units','normalized','outerposition',[0 0 1 .45])
     hold on
     for Indx_T = 1:numel(AllTasks)
-        plot(1:numel(Ch), HedgesG(Indx_T, Ch), 'Color', Format.Colors.AllTasks(Indx_T, :), 'LineWidth', 2)
+        plot(1:numel(Ch), HedgesG_SD(Indx_T, Ch), 'Color', Format.Colors.AllTasks(Indx_T, :), 'LineWidth', 2)
     end
     xticks(1:numel(Ch))
     xticklabels(Channels.Standard_10_20_Titles)
@@ -125,13 +125,23 @@ end
 
 
 
-%% plot bargraph of widespreadness of effects across channels
+%% plot bargraph of widespreadness of SD effects
 
 Edges = [-50, StatsP.Paired.Benchmarks, 50];
-Labels = {'g < 0', '0 < g < .5', '.5 < g < 1', '1 < g < 1.5', '1.5 < g < 2', 'g > 2'}; % TODO: automate from "benchmarks"
-Colors = reduxColormap(Format.Colormap.Divergent, (numel(Edges)-1)*2);
-Mid = ceil(size(Colors, 1)/2);
-Colors = Colors(Mid:end, :);
+nLabels = numel(StatsP.Paired.Benchmarks);
+Labels = {};
+for Indx_L = 1:nLabels+1
+    if Indx_L == 1
+        L = ['g < ', num2str(StatsP.Paired.Benchmarks(Indx_L))];
+    elseif Indx_L ==  nLabels + 1
+        L = ['g > ', num2str(StatsP.Paired.Benchmarks(Indx_L-1))];
+    else
+           L = [num2str(StatsP.Paired.Benchmarks(Indx_L-1)), ' < g < ', num2str(StatsP.Paired.Benchmarks(Indx_L))];
+    end
+    
+    Labels = cat(2, Labels, L);
+end
+Colors = reduxColormap(Format.Colormap.Divergent, nLabels+1);
 
 
 for Indx_B = 1:numel(BandLabels)
@@ -141,20 +151,39 @@ for Indx_B = 1:numel(BandLabels)
         Data2 = squeeze(bData(:, Indx_S, :, :, Indx_B));
         Stats = hedgesG(Data1, Data2, StatsP);
         
-        
         subplot(1, 2, Indx_S-1)
         plotPieBars(Stats.hedgesg, Edges, TaskLabels, Colors, Format)
         title(strjoin({Sessions.Labels{Indx_S} 'vs BL', BandLabels{Indx_B}, 'Hedges G Frequencies'}, ' '))
     end
     
     % save
-    saveFig(strjoin({TitleTag, 'Widespreadness', BandLabels{Indx_B}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, 'Widespreadness', 'SD', BandLabels{Indx_B}}, '_'), Results, Format)
     
 end
 
 PlotColorLegend(Colors, Labels, Format)
 saveFig(strjoin({TitleTag, 'Widespreadness', 'Legend'}, '_'), Results, Format)
 
+%% plot bargraph of widespreadness of task effects
+
+for Indx_B = 1:numel(BandLabels)
+   figure('units','normalized','outerposition',[0 0 .785 .35])
+    for Indx_S = 1:numel(Sessions.Labels)
+        Data1 = bData(:, Indx_S, end, :, Indx_B);
+        Data2 = squeeze(bData(:, Indx_S, 1:numel(AllTasks)-1, :, Indx_B));
+        
+        Data1 = squeeze(repmat(Data1, [1,1,  numel(AllTasks)-1, 1]));
+        Stats = hedgesG(Data1, Data2, StatsP);
+        
+        subplot(1, numel(Sessions.Labels), Indx_S)
+        plotPieBars(Stats.hedgesg, Edges, TaskLabels(1:end-1), Colors, Format)
+        title(strjoin({Sessions.Labels{Indx_S} 'Task vs BL', BandLabels{Indx_B}, 'Hedges G Frequencies'}, ' '))
+    end
+    
+    % save
+    saveFig(strjoin({TitleTag, 'Widespreadness', 'Task', BandLabels{Indx_B}}, '_'), Results, Format)
+    
+end
 
 
 %% plot 10-20 channels for every task difference
