@@ -10,11 +10,14 @@ PlotColors = ones(numel(Chanlocs), 3)*.9;
 for Indx_Cl = 1:numel(Labels)
     
     Color = Colors(Indx_Cl, :);
-        Ch = ChannelStruct.(Labels{Indx_Cl});
-      for Indx_Ch = 1:numel(Ch)
-          Indx = labels2indexes(Ch(Indx_Ch), Chanlocs);
-          PlotColors(Indx, :) = Color;
-      end
+    Ch = ChannelStruct.(Labels{Indx_Cl});
+    for Indx_Ch = 1:numel(Ch)
+        Indx = labels2indexes(Ch(Indx_Ch), Chanlocs);
+        if isempty(Indx)
+            continue
+        end
+        PlotColors(Indx, :) = Color;
+    end
 end
 bubbleTopo(PlotColors, Chanlocs, 130, '2D', true, Format)
 

@@ -48,7 +48,6 @@ if ~exist(Results, 'dir')
     mkdir(Results)
 end
 
-
 ChLabels = fieldnames(Channels.(ROI));
 BandLabels = fieldnames(Bands);
 FactorLabels = {'Session', 'Task'};
@@ -77,7 +76,7 @@ bRawData = bandData(chRawData, Freqs, Bands, 'last');
 
 %% plot map of channels
 
-Colors = [Format.Colors.Red; Format.Colors.Light1; Format.Colors.Dark1];
+Colors = reduxColormap(Format.Colormap.Rainbow, numel(ChLabels));
 PlotChannelMap(Chanlocs, Channels.(ROI), Colors, Format)
 saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
 
@@ -133,36 +132,36 @@ end
 
 %% plot raw data boxplots, showcasing task differences
 
-for Indx_Ch = 1:numel(ChLabels)
-    for Indx_B = 1:numel(BandLabels)
-        
-        %         All = bRawData(:, :, :, Indx_Ch, Indx_B);
-        %         YLims = [min(All(:)), max(All(:))];
-        %         Diff =  diff(YLims);
-        %         YLims(2) =Diff*.5 + YLims(2);
-        %         YLims(1) = YLims(1)-Diff*.05;
-        YLims = [];
-        
-        figure('units','normalized','outerposition',[0 0 .6 .5])
-        for Indx_S = 1:numel(Sessions.Labels)
-            Data = squeeze(bRawData(:, Indx_S, :, Indx_Ch, Indx_B));
-            
-            subplot(1, numel(Sessions.Labels), Indx_S)
-            Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
-                Format.Colors.AllTasks, YLims, Format);
-            ylabel('Power (miV)')
-            title(strjoin({Sessions.Labels{Indx_S}, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'Raw Data'}, ' '))
-            
-        end
-        
-        saveFig(strjoin({TitleTag, 'scatter', 'raw', ...
-            BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
-    end
-end
-
-
-
-
+% for Indx_Ch = 1:numel(ChLabels)
+%     for Indx_B = 1:numel(BandLabels)
+%         
+%         %         All = bRawData(:, :, :, Indx_Ch, Indx_B);
+%         %         YLims = [min(All(:)), max(All(:))];
+%         %         Diff =  diff(YLims);
+%         %         YLims(2) =Diff*.5 + YLims(2);
+%         %         YLims(1) = YLims(1)-Diff*.05;
+%         YLims = [];
+%         
+%         figure('units','normalized','outerposition',[0 0 .6 .5])
+%         for Indx_S = 1:numel(Sessions.Labels)
+%             Data = squeeze(bRawData(:, Indx_S, :, Indx_Ch, Indx_B));
+%             
+%             subplot(1, numel(Sessions.Labels), Indx_S)
+%             Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
+%                 Format.Colors.AllTasks, YLims, Format);
+%             ylabel('Power (miV)')
+%             title(strjoin({Sessions.Labels{Indx_S}, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'Raw Data'}, ' '))
+%             
+%         end
+%         
+%         saveFig(strjoin({TitleTag, 'scatter', 'raw', ...
+%             BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+%     end
+% end
+% 
+% 
+% 
+% 
 
 %% plot z-scored data boxplots showcasing task differences
 
@@ -252,7 +251,9 @@ for Indx_Ch = 1:numel(ChLabels)
             Format.Colors.AllTasks, StatsP, Format);
         ylim(YLim)
         ylabel('Power (z-scored)')
+      
         title(strjoin({ ChLabels{Indx_Ch}, BandLabels{Indx_B}}, ' '))
+       
         saveFig(strjoin({TitleTag, 'SD', 'Means', ChLabels{Indx_Ch}, BandLabels{Indx_B}}, '_'), Results, Format)
         
     end

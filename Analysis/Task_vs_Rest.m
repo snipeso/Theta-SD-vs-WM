@@ -35,7 +35,7 @@ WelchWindow = 8;
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'Topos', 'vs' 'Fixation', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_vs_Rest_Topographies_', Tag);
+Results = fullfile(Paths.Results, ['Task_vs_Rest_Topographies_', Tag]);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -58,12 +58,6 @@ bData = bandData(zData, Freqs, Bands, 'last');
 
 BandLabels = fieldnames(Bands);
 BL_CLabel = 'A.U.';
-CLims_BL = [ -10 10;
-    -10 10;
-    -10 10;
-    -20 20;
-    -20 20];
-% CLims_Diff = [-10 10];
 CLims_Diff = [-2 2];
 
 %% Plot all topo changes together
@@ -78,9 +72,11 @@ for Indx_B = 1:numel(BandLabels)
         
         % plot baseline topography
         Data = squeeze(bData(:, 1, Indx_T, :, Indx_B));
+        BL = nanmean(Data, 1);
+        Max = max(abs(BL));
         
         subplot(2, 3, 1)
-        plotTopo(nanmean(Data, 1), Chanlocs, CLims_BL(Indx_B, :), BL_CLabel, 'Divergent', Format)
+        plotTopo(BL, Chanlocs, [-Max Max], BL_CLabel, 'Divergent', Format)
         title(strjoin({'BL', TaskLabels{Indx_T}, BandLabels{Indx_B}}, ' '), ...
             'FontSize', 14)
         
