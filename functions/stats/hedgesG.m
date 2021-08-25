@@ -18,4 +18,4 @@ for Indx1 = 1:Dims(2)
 end
 
 Stats.hedgesg = gValues;
-Stats.hedgesCI = CI;
+Stats.hedgesgCI = CI;

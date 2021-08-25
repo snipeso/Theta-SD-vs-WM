@@ -1,15 +1,15 @@
-function plotUFO(Data, CI, YLabels, CLabels, Colors, Format)
+function plotUFO(Data, CI, XLabels, CLabels, Colors, Orientation, Format)
 % Data is a m x n matrix, CI is an m x n x 2. Colors is m x 3 or n x 3.
 % this plots means and confidence intervals stacked vertically.
 
 Dims = size(Data);
 
-YMajorPoints = flip(1:Dims(1))';
+XMajorPoints = flip(1:Dims(1))';
 
-YScatter = linspace(-.5, .5, Dims(2)+2);
-YScatter([1, end]) = [];
+XScatter = linspace(-.5, .5, Dims(2)+2);
+XScatter([1, end]) = [];
 
-YMinorPoints = YMajorPoints + YScatter;
+XMinorPoints = XMajorPoints + XScatter;
 
 if Dims(2) > 3
     Paleness = linspace(.2, 1, Dims(2));
@@ -30,28 +30,33 @@ for Indx_N = 1:Dims(2)
     
     
     for Indx_M = 1:Dims(1)
-        Y = YMinorPoints(Indx_M, Indx_N);
+        X = XMinorPoints(Indx_M, Indx_N);
         
-        plot(squeeze(CI(Indx_M, Indx_N, :)), [Y, Y], 'Color', Color(Indx_M, :), 'LineWidth', 5, 'HandleVisibility', 'off')
+        plot([X, X], squeeze(CI(Indx_M, Indx_N, :)), 'Color', Color(Indx_M, :), 'LineWidth', 5, 'HandleVisibility', 'off')
         
     end
     
-    scatter(Data(:, Indx_N), YMinorPoints(:, Indx_N), 300, Color, 'filled')
-    
-    
+    scatter( XMinorPoints(:, Indx_N), Data(:, Indx_N), 300, Color, 'filled')
 end
 
 
 set(gca, 'FontName', Format.FontName, 'FontSize', 14)
 
-ylim([.5 Dims(1)+.5])
-yticks(flip(YMajorPoints))
-yticklabels(flip(YLabels))
+xlim([.5 Dims(1)+.5])
+xticks(flip(XMajorPoints))
+xticklabels(flip(XLabels))
 Ax = gca;
-Ax.YAxis.FontSize = 18;
+Ax.XAxis.FontSize = 18;
 
-xlim([min(CI(:)),  max(CI(:))])
+ylim([min(CI(:)),  max(CI(:))])
 padAxis('x')
+padAxis('y')
 
 
 legend(CLabels)
+
+if strcmpi(Orientation, 'vertical')
+    % view([-90 90])
+    view([0 90])
+end
+

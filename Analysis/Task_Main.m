@@ -35,15 +35,13 @@ Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
 % AllTasks = P.AllTasks;
 % TaskLabels = P.TaskLabels;
 
-PeakRange = [3 15];
 Duration = 4;
-
 WelchWindow = 8;
 
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'ANOVA'}, '_');
 
-Results = fullfile(Paths.Results, ['Task_ANOVA_', Tag]);
+Results = fullfile(Paths.Results, 'Task_ANOVA', Tag);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -121,7 +119,8 @@ for Indx_Ch = 1:numel(ChLabels)
                 plot([E, E], [.5, numel(TaskLabels)+.5], 'Color', [.9 .9 .9], 'HandleVisibility', 'off')
             end
             
-            plotUFO(StatsH.hedgesg, StatsH.hedgesCI, TaskLabels, {'SR-BL', 'SD-BL'}, Format.Colors.AllTasks, Format)
+            plotUFO(StatsH.hedgesg, StatsH.hedgesCI, TaskLabels, {'SR-BL', 'SD-BL'}, ...
+                Format.Colors.AllTasks, 'vertical', Format)
             title(strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'Hedges g'}, ' '))
             xlabel('Hedges g')
             saveFig(strjoin({TitleTag, 'hedgesg', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)

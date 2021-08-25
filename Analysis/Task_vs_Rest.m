@@ -57,7 +57,7 @@ bData = bandData(zData, Freqs, Bands, 'last');
 %%% Plot data
 
 BandLabels = fieldnames(Bands);
-BL_CLabel = 'A.U.';
+BL_CLabel = 'z-score';
 CLims_Diff = [-2 2];
 
 %% Plot all topo changes together
@@ -136,7 +136,7 @@ for Indx_L = 1:nLabels+1
     elseif Indx_L ==  nLabels + 1
         L = ['g > ', num2str(StatsP.Paired.Benchmarks(Indx_L-1))];
     else
-           L = [num2str(StatsP.Paired.Benchmarks(Indx_L-1)), ' < g < ', num2str(StatsP.Paired.Benchmarks(Indx_L))];
+        L = [num2str(StatsP.Paired.Benchmarks(Indx_L-1)), ' < g < ', num2str(StatsP.Paired.Benchmarks(Indx_L))];
     end
     
     Labels = cat(2, Labels, L);
@@ -167,7 +167,7 @@ saveFig(strjoin({TitleTag, 'Widespreadness', 'Legend'}, '_'), Results, Format)
 %% plot bargraph of widespreadness of task effects
 
 for Indx_B = 1:numel(BandLabels)
-   figure('units','normalized','outerposition',[0 0 .785 .35])
+    figure('units','normalized','outerposition',[0 0 .785 .35])
     for Indx_S = 1:numel(Sessions.Labels)
         Data1 = bData(:, Indx_S, end, :, Indx_B);
         Data2 = squeeze(bData(:, Indx_S, 1:numel(AllTasks)-1, :, Indx_B));
@@ -208,5 +208,77 @@ for Indx_B = 1:numel(BandLabels)
     saveFig(strjoin({TitleTag, '10-20', 'AllTasks', 'Diff', BandLabels{Indx_B}}, '_'), Results, Format)
     
 end
+
+
+%% SSSC Poster
+
+ThetaIndx = strcmpi(BandLabels, 'theta');
+
+Fix = squeeze(bData(:, 1, end, :, ThetaIndx));
+
+figure('units','normalized','outerposition',[0 0 1 .5])
+tiledlayout(2,numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
+for Indx_T = 1:numel(AllTasks)
+    
+    % theta at baseline, minmax colorbars
+    Data = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
+    
+    Max = max(abs(nanmean(Data,1)));
+     nexttile
+    plotTopo(nanmean(Data,1), Chanlocs, [-Max Max], BL_CLabel, 'Divergent', Format)
+    title(TaskLabels{Indx_T}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 30)
+    
+
+    
+end
+    
+for Indx_T = 1:numel(AllTasks)-1
+ 
+      Data = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
+      
+    % change from fixation
+     nexttile
+    plotTopoDiff(Fix, Data, Chanlocs, CLims_Diff, StatsP, Format);
+    title([TaskLabels{Indx_T}, ' vs Rest'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 20)
+    
+end
+
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_Task'}, '_'), Results, Format)
+
+
+
+%%
+figure('units','normalized','outerposition',[0 0 1 .5])
+tiledlayout(2,numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
+for Indx_T = 1:numel(AllTasks)
+    BL = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
+    
+    % Sleep restriction vs baseline
+    SR = squeeze(bData(:, 2, Indx_T, :, ThetaIndx));
+    
+    nexttile
+    plotTopoDiff(BL, SR, Chanlocs, CLims_Diff, StatsP, Format);
+    title([TaskLabels{Indx_T}, ' SR vs BL'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 30)
+    
+end
+
+for Indx_T = 1:numel(AllTasks)
+    BL = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
+    
+    % Sleep deprivation vs baseline
+    SD = squeeze(bData(:, 3, Indx_T, :, ThetaIndx));
+    
+    nexttile
+    plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
+    title([TaskLabels{Indx_T}, ' SD vs BL'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 30)
+    
+end
+
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_SD'}, '_'), Results, Format)
+
+
+
+
+
 
 
