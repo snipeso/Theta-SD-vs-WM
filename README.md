@@ -16,6 +16,9 @@ This repository contains the complete analysis used for paper XXX.
 
 - For EEG: EEGLAB: https://sccn.ucsd.edu/eeglab/downloadtoolbox.php. I used version 2019_1
 - For Questionnaires: EWOQ analysis: https://github.com/snipeso/EWOQ_Analysis 
+    - clone repository
+    - run Main_LSM.m (after adjusting for data source location)
+    - move .csv files with relevant questionnaire names from .Raw/CSVs to folder ./Final/Questionnaires (create if it doesn't exist)
 
 ### Data
 As of now, the data is in the hands of the Kinderspital Zurich and Sophia Snipes. Eventually this will be made open source.
