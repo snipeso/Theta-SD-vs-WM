@@ -119,7 +119,7 @@ for Indx_Ch = 1:numel(ChLabels)
                 plot([E, E], [.5, numel(TaskLabels)+.5], 'Color', [.9 .9 .9], 'HandleVisibility', 'off')
             end
             
-            plotUFO(StatsH.hedgesg, StatsH.hedgesCI, TaskLabels, {'SR-BL', 'SD-BL'}, ...
+            plotUFO(StatsH.hedgesg, StatsH.hedgesgCI, TaskLabels, {'SR-BL', 'SD-BL'}, ...
                 Format.Colors.AllTasks, 'vertical', Format)
             title(strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'Hedges g'}, ' '))
             xlabel('Hedges g')

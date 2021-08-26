@@ -56,7 +56,6 @@ padAxis('y')
 legend(CLabels)
 
 if strcmpi(Orientation, 'vertical')
-    % view([-90 90])
-    view([0 90])
+    view([90 90])
 end
 
