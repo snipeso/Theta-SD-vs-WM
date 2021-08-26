@@ -190,15 +190,15 @@ P.Sessions = Sessions;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Durations
 
-Durations.Match2Sample =  [1 2 4 6 8, 10, 12, 15, 20, 25];
-Durations.LAT =  [1 2 4 6 8, 10];
-Durations.PVT =  [1 2 4 6 8];
-Durations.SpFT =  [1 2 4 6];
-Durations.Game =  [1 2 4 6 8];
-Durations.Music =  [1 2 4];
-Durations.Fixation =  [1 2 4 6];
-Durations.Standing =  [1 2 4 6];
-Durations.Oddball =  [1 2 4 6];
+Durations.Match2Sample =  [-2, 1 2 4 6 8, 10, 12, 15, 20, 25];
+Durations.LAT =  [-2, 1 2 4 6 8, 10];
+Durations.PVT =  [-2, 1 2 4 6 8];
+Durations.SpFT =  [-2, 1 2 4 6];
+Durations.Game =  [-2, 1 2 4 6 8];
+Durations.Music =  [-2, 1 2 4];
+Durations.Fixation =  [-2, 1 2 4 6];
+Durations.Standing =  [-2, 1 2 4 6];
+Durations.Oddball =  [-2, 1 2 4 6];
 Durations.MWT = [40];
 
 P.Durations = Durations;

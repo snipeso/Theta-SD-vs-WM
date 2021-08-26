@@ -33,6 +33,16 @@ switch fDim
                         
                         bData(Indx_P, :, :, :, Indx_B) = D;
                     end
+                case 6
+                     for Indx_P = 1:size(Data, 1)
+                        D = Data(Indx_P, :, :, :, :, Band(1):Band(2));
+                        
+%                         D = nansum(D, 5).*FreqRes; % problem with z-values?
+                      
+                        D = nanmean(D, numel(Dims));
+                        
+                        bData(Indx_P, :, :, :, :, Indx_B) = D;
+                    end
                 otherwise
                     disp('unknown number of dimentions')
             end

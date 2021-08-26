@@ -22,7 +22,6 @@ StatsP = P.StatsP;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 
-Duration = 4;
 WelchWindow = 8;
 
 TitleTag = strjoin({'Task', 'ES'}, '_');
@@ -34,7 +33,6 @@ end
 
 ChLabels = fieldnames(Channels.(ROI));
 BandLabels = fieldnames(Bands);
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
