@@ -8,6 +8,10 @@ end
 % find all paths
 [Subfolders, Datasets] = AllFolderPaths(DatasetPaths, 'PXX', false, {'CSVs', 'Lazy', 'P00'});
 
+if isempty(Datasets) || isempty(Subfolders)
+    error('Did not find any data during task import')
+end
+
 % get only paths related to task
 Subfolders(~contains(Subfolders, Task)) = [];
 Subfolders(~contains(Subfolders, 'Behavior')) = [];
@@ -83,4 +87,4 @@ end
 
 
 % save
-save(fullfile(Destination, [Task, 'AllAnswers.mat']), 'AllAnswers')
+save(fullfile(Destination, [Task, '_AllAnswers.mat']), 'AllAnswers')
