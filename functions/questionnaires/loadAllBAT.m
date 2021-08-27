@@ -20,10 +20,12 @@ Titles = {'KSS';
 % set up structures
 Answers = struct();
 Labels = struct();
+Blank = nan(numel(Participants), numel(Sessions.(Tasks{1})), numel(Tasks)); 
 for Indx_Q = 1:numel(qIDs)
-   Answers.(Titles{Indx_Q}) = nan(numel(Participants), numel(Sessions.Labels), numel(Tasks)); 
+   Answers.(Titles{Indx_Q}) = Blank;
 end
 
+Answers.Slept = Blank;
 
 for Indx_T = 1:numel(Tasks)
    CSV = readtable(fullfile(Filepath, [Tasks{Indx_T}, '_All.csv'])); 
@@ -48,6 +50,13 @@ for Indx_T = 1:numel(Tasks)
         
         Answers.(Titles{Indx_Q})(:, :, Indx_T) = Data;
     end
+    
+    % special case for question on sleep
+     [Data, L] = table2matrix(CSV, Participants, Sessions.(Tasks{Indx_T}), 'BAT_7', 'numAnswer');
+      
+     Answers.Slept(:, :, Indx_T) = Data;
+     Labels.Slept = L;
+    
 end
 
 
