@@ -68,20 +68,24 @@ saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
 %% Plot spectrums as task x ch coloring all channels
 
 
-figure('units','normalized','outerposition',[0 0 1 1])
-Indx = 1;
+figure('units','normalized','outerposition',[0 0 .76 .8])
+tiledlayout( numel(ChLabels),numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
         Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
         
-        subplot( numel(ChLabels), numel(AllTasks), Indx)
-        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, Format.Colors.Sessions, Format)
-        title(strjoin({ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '))
-        Indx = Indx+1;
+        nexttile
+        plotSpectrumDiff(Data, Freqs, 1, [], Format.Colors.Sessions, Format)
+        set(gca, 'FontSize', 14)
+        legend off
+        ylabel ''
+        xlabel ''
+        title(strjoin({ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', 20, 'Color', Format.Colors.AllTasks(Indx_T, :))
+        
     end
 end
-
-setLims(numel(ChLabels), numel(AllTasks), 'y');
+legend(Sessions.Labels)
+setLimsTiles(numel(ChLabels)*numel(AllTasks), 'y');
 
 % save
 saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Results, Format)
@@ -464,7 +468,7 @@ for Indx_Ch = 1:numel(ChLabels)
             xlim(PeakRange)
             set(gca, 'FontSize', 13)
         end
-         setLims(4, 5, 'y');
+        setLims(4, 5, 'y');
         saveFig(strjoin({TitleTag, 'PeaksSpectrums', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
     end
 end

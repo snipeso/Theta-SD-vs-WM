@@ -35,7 +35,7 @@ WelchWindow = 8;
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'Topos', 'vs' 'Fixation', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
 
-Results = fullfile(Paths.Results, ['Task_vs_Rest_Topographies_', Tag]);
+Results = fullfile(Paths.Results, 'Task_vs_Rest_Topographies', Tag);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
