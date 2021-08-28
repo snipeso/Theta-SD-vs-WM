@@ -74,8 +74,8 @@ bRawData = bandData(chRawData, Freqs, Bands, 'last');
 
 %% plot map of channels
 
-Colors = reduxColormap(Format.Colormap.Rainbow, numel(ChLabels));
-PlotChannelMap(Chanlocs, Channels.(ROI), Colors, Format)
+
+PlotChannelMap(Chanlocs, Channels.(ROI), Format.Colors.(ROI), Format)
 saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
 
 
@@ -259,4 +259,28 @@ for Indx_Ch = 1:numel(ChLabels)
 end
 
 
+%% plot pairwise comparison for each channel for each task
 
+for Indx_Ch = 1:numel(ChLabels)
+    for Indx_B = 1:numel(BandLabels)
+        
+         figure('units','normalized','outerposition',[0 0 1 .5])
+        for Indx_T = 1:numel(AllTasks)
+        
+        Data = squeeze(bData(:, :, Indx_T, Indx_Ch, Indx_B));
+        
+       subplot(1, numel(AllTasks), Indx_T)
+     
+       Stats = plotConfettiSpaghetti(Data,  Sessions.Labels, [], [], ...
+           Format.Colors.Participants, StatsP, Format );
+      
+        ylabel('Power (z-scored)')
+      
+        title(strjoin({TaskLabels{Indx_T}, ChLabels{Indx_Ch}, BandLabels{Indx_B}}, ' '))
+       
+        end
+        setLims(1, numel(AllTasks), 'y');
+        saveFig(strjoin({TitleTag, 'TaskChange', ChLabels{Indx_Ch}, BandLabels{Indx_B}}, '_'), Results, Format)
+        
+    end
+end
