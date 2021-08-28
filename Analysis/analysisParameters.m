@@ -163,6 +163,11 @@ Channels.preROI.Frontspot = Frontspot;
 Channels.preROI.Backspot = Backspot;
 Channels.preROI.EE = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
 
+Format.Colors.preROI = [ .5 .5 .5;
+    [228, 104, 90; % red
+    99, 88, 226; % blue
+    244, 204, 32;
+]/ 255];
 
 Channels.Remove = [48 119];
 
