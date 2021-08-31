@@ -31,7 +31,7 @@ StatsP = P.StatsP;
 AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
 TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
-% 
+%
 % AllTasks = P.AllTasks;
 % TaskLabels = P.TaskLabels;
 
@@ -136,34 +136,34 @@ end
 
 % for Indx_Ch = 1:numel(ChLabels)
 %     for Indx_B = 1:numel(BandLabels)
-%         
+%
 %         %         All = bRawData(:, :, :, Indx_Ch, Indx_B);
 %         %         YLims = [min(All(:)), max(All(:))];
 %         %         Diff =  diff(YLims);
 %         %         YLims(2) =Diff*.5 + YLims(2);
 %         %         YLims(1) = YLims(1)-Diff*.05;
 %         YLims = [];
-%         
+%
 %         figure('units','normalized','outerposition',[0 0 .6 .5])
 %         for Indx_S = 1:numel(Sessions.Labels)
 %             Data = squeeze(bRawData(:, Indx_S, :, Indx_Ch, Indx_B));
-%             
+%
 %             subplot(1, numel(Sessions.Labels), Indx_S)
 %             Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
 %                 Format.Colors.AllTasks, YLims, Format);
 %             ylabel('Power (miV)')
 %             title(strjoin({Sessions.Labels{Indx_S}, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'Raw Data'}, ' '))
-%             
+%
 %         end
-%         
+%
 %         saveFig(strjoin({TitleTag, 'scatter', 'raw', ...
 %             BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
 %     end
 % end
-% 
-% 
-% 
-% 
+%
+%
+%
+%
 
 %% plot z-scored data boxplots showcasing task differences
 
@@ -201,36 +201,36 @@ end
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)
-        figure('units','normalized','outerposition',[0 0 .5 .5])
+        figure('units','normalized','outerposition',[0 0 .35 .6])
         
         % plot baseline tasks
         Data = squeeze(bData(:, 1, :, Indx_Ch, Indx_B));
         MEANS = nanmean(Data);
         [~, Order] = sort(MEANS, 'descend');
         
-        subplot(1, 2, 1)
+        
         Stats = plotScatterBox(Data(:, Order), TaskLabels(Order), StatsP, ...
             Format.Colors.AllTasks(Order, :), [], Format);
         ylabel('Power (z score)')
-        title(strjoin({'BL Tasks', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '))
-        set(gca, 'FontSize', 15)
-
+        title(strjoin({'BL Tasks', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
+        
+        saveFig(strjoin({TitleTag, 'scatter', 'BL_Tasks_Pairwise', ...
+            BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+        
         
         % plot changes with SD
         Data2 = squeeze(bData(:, 3, :, Indx_Ch, Indx_B));
         Diff = Data2-Data;
-         MEANS = nanmean(Diff);
+        MEANS = nanmean(Diff);
         [~, Order] = sort(MEANS, 'descend');
-        
-        subplot(1, 2, 2)
+        figure('units','normalized','outerposition',[0 0 .35 .6])
         Stats = plotScatterBox(Diff(:, Order), TaskLabels(Order), StatsP, ...
             Format.Colors.AllTasks(Order, :), [], Format);
         ylabel('Power Difference (z score)')
-        title(strjoin({'SD-BL', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '))
-        set(gca, 'FontSize', 15)
-
+        title(strjoin({'SD-BL', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
         
-        saveFig(strjoin({TitleTag, 'scatter', 'BL vs SD change', ...
+        
+        saveFig(strjoin({TitleTag, 'scatter', 'SD_Pairwise', ...
             BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
     end
 end
@@ -248,14 +248,14 @@ for Indx_Ch = 1:numel(ChLabels)
         Data = squeeze(bData(:, :, :, Indx_Ch, Indx_B));
         
         % plot spaghetti-o plot of tasks x sessions for each ch and each band
-        figure('units','normalized','outerposition',[0 0 .18 .45])
+        figure('units','normalized','outerposition',[0 0 .2 .7])
         Stats = plotSpaghettiOs(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
             Format.Colors.AllTasks, StatsP, Format);
         ylim(YLim)
         ylabel('Power (z-scored)')
-      
-        title(strjoin({ ChLabels{Indx_Ch}, BandLabels{Indx_B}}, ' '))
-       
+        
+        title(strjoin({ ChLabels{Indx_Ch}, BandLabels{Indx_B}}, ' '), 'FontSize', Format.TitleSize)
+        legend off
         saveFig(strjoin({TitleTag, 'SD', 'Means', ChLabels{Indx_Ch}, BandLabels{Indx_B}}, '_'), Results, Format)
         
     end
@@ -267,20 +267,20 @@ end
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)
         
-         figure('units','normalized','outerposition',[0 0 1 .5])
+        figure('units','normalized','outerposition',[0 0 1 .5])
         for Indx_T = 1:numel(AllTasks)
-        
-        Data = squeeze(bData(:, :, Indx_T, Indx_Ch, Indx_B));
-        
-       subplot(1, numel(AllTasks), Indx_T)
-     
-       Stats = plotConfettiSpaghetti(Data,  Sessions.Labels, [], [], ...
-           Format.Colors.Participants, StatsP, Format );
-      
-        ylabel('Power (z-scored)')
-      
-        title(strjoin({TaskLabels{Indx_T}, ChLabels{Indx_Ch}, BandLabels{Indx_B}}, ' '))
-       
+            
+            Data = squeeze(bData(:, :, Indx_T, Indx_Ch, Indx_B));
+            
+            subplot(1, numel(AllTasks), Indx_T)
+            
+            Stats = plotConfettiSpaghetti(Data,  Sessions.Labels, [], [], ...
+                Format.Colors.Participants, StatsP, Format );
+            
+            ylabel('Power (z-scored)')
+            
+            title(strjoin({TaskLabels{Indx_T}, ChLabels{Indx_Ch}, BandLabels{Indx_B}}, ' '))
+            
         end
         setLims(1, numel(AllTasks), 'y');
         saveFig(strjoin({TitleTag, 'TaskChange', ChLabels{Indx_Ch}, BandLabels{Indx_B}}, '_'), Results, Format)

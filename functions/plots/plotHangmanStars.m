@@ -28,7 +28,7 @@ end
 DataRange = get(gca, 'YLim');
 
 YHeight = DataRange(2);
-Increase = diff(DataRange)*.08;
+Increase = diff(DataRange)*.1;
 
 hold on
 for Indx = 1:nGroups % go from most to least significant
@@ -61,23 +61,23 @@ for Indx = 1:nGroups % go from most to least significant
     YHeight = YHeight+Increase;
     
     % plot main horizontal bar
-    plot(X, YHeight*ones(size(X)), 'LineWidth', LW, 'Color', C)
+    plot(X, YHeight*ones(size(X)),    '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
     
     % plot main post
     plot([XPoints(G_Indx), XPoints(G_Indx)], [YHeight-Increase*.75, YHeight], ...
-        'LineWidth', LW, 'Color', C)
+        '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
     
     
     for x = X
         % plot minor posts
-        plot([x, x], [YHeight-Increase*.15, YHeight], ...
-            'LineWidth', LW, 'Color', C)
+        plot([x, x], [YHeight-Increase*.2, YHeight], ...
+               '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
         
         % plot stars
         P = pValues_mirror(x, G_Indx);
         Symbol = getSigSymbol(P);
         if ~isempty(Symbol)
-            text(x, YHeight-Increase*.5, Symbol, 'HorizontalAlignment', 'center', 'Color', C)
+            text(x, YHeight-Increase*.5, Symbol, 'HorizontalAlignment', 'center', 'Color', C, 'FontSize', Format.FontSize)
         end
     end
     

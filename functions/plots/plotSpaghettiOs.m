@@ -4,8 +4,6 @@ function Stats = plotSpaghettiOs(Data, Indx_BL, XLabels, CLabels, Colors, StatsP
 % the change from BL_Indx is significant, corrected for multiple testing.
 % Colors is a n x 3 matrix.
 
-LW = 3;
-
 Dims = size(Data);
 
 % get all p-values TODO: move to separate function
@@ -43,7 +41,7 @@ for Indx_T = 1:Dims(3)
     
     % plot mean per n
     Mean = squeeze(nanmean(Data(:, :, Indx_T), 1));
-    h = plot(Mean, 'Color', C,  'LineWidth', LW);
+    h = plot(Mean, 'Color', C,  'LineWidth', Format.LW);
     set(get(get(h,'Annotation'),'LegendInformation'),'IconDisplayStyle','on'); % indicate this goes in the legend
     
     % plot significance marker if present
@@ -67,15 +65,15 @@ for Indx_T = 1:Dims(3)
             MF = 'none';
             ME = 'none';
         end
-        h= plot(Indx_S, Mean(Indx_S), 'o', ...
-            'MarkerEdgeColor', ME, 'MarkerFaceColor', MF,  'LineWidth', LW);
+        h= plot(Indx_S, Mean(Indx_S), 'o', 'MarkerSize', 20,...
+            'MarkerEdgeColor', ME, 'MarkerFaceColor', MF,  'LineWidth', Format.LW);
         set(get(get(h,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
         
     end
 end
 
 
-set(gca, 'FontName', Format.FontName, 'FontSize', 14)
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 xlim([.75, Dims(2)+.25])
 xticks(1:Dims(2))
 xticklabels(XLabels)

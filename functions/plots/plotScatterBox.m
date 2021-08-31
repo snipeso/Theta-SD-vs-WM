@@ -23,11 +23,12 @@ end
 %%% plot boxplots
 hold on
 boxplot(Data, 'BoxStyle', 'outline', 'Colors', BoxColor, 'Symbol', '')
+% boxplot(Data, 'BoxStyle', 'filled', 'Widths', .5, 'Colors', BoxColor, 'Symbol', '')
 
 
 %%% plot scatter of participants
 for Indx_T = 1:Dims(2)
-    scatter(ones(Dims(1), 1)*Indx_T, Data(:, Indx_T), 50, ScatterColor, 'filled',...
+    scatter(ones(Dims(1), 1)*Indx_T, Data(:, Indx_T), 200, ScatterColor, 'filled',...
         'MarkerFaceAlpha', Format.Alpha.Participants)
 end
 
@@ -42,7 +43,9 @@ plotHangmanStars(Stats, 1:Dims(2), YLims, BoxColor, Format)
 
 
 xticklabels(XLabels)
-set(gca, 'FontName', Format.FontName, 'FontSize', 12)
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+axis square
+box off
 
 set(findobj(gca,'LineStyle','--'),'LineStyle','-') % make whiskers solid line
-set(findobj(gca,'LineStyle','-'),'LineWidth',2) % make all lines quite thick
+set(findobj(gca,'LineStyle','-'),'LineWidth',Format.LW) % make all lines quite thick

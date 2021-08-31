@@ -30,8 +30,8 @@ end
 
 
 Max = Y(2) + .05;
-text(1:3, Max*ones(1, 3), Symbol,   'HorizontalAlignment', 'center', 'FontSize', 25)
-set(gca, 'FontSize', 25)
+text(1:3, Max*ones(1, 3), Symbol,   'HorizontalAlignment', 'center', 'FontSize', Format.FontSize)
+set(gca, 'FontSize', Format.FontSize)
 xticklabels(XLabel)
 ylabel(YLabel)
 

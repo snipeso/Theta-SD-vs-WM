@@ -53,8 +53,11 @@ P.Paths = Paths;
 Format = struct();
 
 Format.FontName = 'Tw Cen MT'; % use something else for papers
+Format.FontSize = 25;
+Format.TitleSize = 30;
 Format.TopoRes = 300;
 Format.Steps.Topo = 20;
+Format.LW = 5;
 
 Format.Colormap.Linear = flip(colorcet('L17'));
 Format.Colormap.Monochrome = colorcet('L1');

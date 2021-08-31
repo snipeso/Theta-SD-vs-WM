@@ -41,9 +41,9 @@ for Indx_F = 1:3
         'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 5, .01}); %
   
     h = colorbar;
-    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 20)
-    set(gca, 'FontName', Format.FontName, 'FontSize', 20)
-      title([Title, ' ', FactorLabels{Indx_F}, ' Effects'], 'FontSize', 30)
+    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+    set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+      title([Title, ' ', FactorLabels{Indx_F}, ' Effects'], 'FontSize', Format.TitleSize)
     xlim([-.55 .55])
     ylim([-.55 .6])
     
