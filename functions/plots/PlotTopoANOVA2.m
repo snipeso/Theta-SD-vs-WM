@@ -39,10 +39,11 @@ for Indx_F = 1:3
     topoplot(Eta2(:, Indx_F), Chanlocs, 'whitebk', 'on',  'maplimits', CLims(Indx_F, :), ...
         'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
         'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 5, .01}); %
-    title([Title, ' ', FactorLabels{Indx_F}])
+  
     h = colorbar;
-    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 15)
-    set(gca, 'FontName', Format.FontName, 'FontSize', 15)
+    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 20)
+    set(gca, 'FontName', Format.FontName, 'FontSize', 20)
+      title([Title, ' ', FactorLabels{Indx_F}, ' Effects'], 'FontSize', 30)
     xlim([-.55 .55])
     ylim([-.55 .6])
     

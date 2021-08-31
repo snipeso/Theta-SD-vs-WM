@@ -20,7 +20,7 @@ end
 if exist('Colors', 'var') && ~isempty(Colors)
     h.CData = Colors;
 else
-    h.CData = Format.Colors.Dark1;
+    h.CData = [.5 .5 .5];
 end
 
 % plot error bars if requested

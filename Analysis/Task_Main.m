@@ -10,7 +10,7 @@
 % Plots the scatter+whisker plot for individuals raw and z-scored to show
 % magnitude of theta.
 clear
-close all
+% close all
 clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,13 +90,16 @@ for Indx_Ch = 1:numel(ChLabels)
         
         % 2 way repeated measures anova with factors Session and Task
         Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
+        TitleStats = strjoin({'Stats_Main', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_');
+        saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
         
         % eta2 comparison for task and session to determine which has larger impact
-        Title = strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}, '2 way RANOVA Effect Sizes'}, ' ');
+        Title = strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'Effects'}, ' ');
         
         figure('units','normalized','outerposition',[0 0 .2 .3])
         plotANOVA2way(Stats, FactorLabels, StatsP, Format)
-        title(Title)
+        ylim([0 .7])
+        title(Title, 'FontSize', 30)
         saveFig(strjoin({TitleTag, 'eta2', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
         
         % if interaction, identify which task has the largest increase

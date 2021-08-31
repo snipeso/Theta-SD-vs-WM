@@ -159,9 +159,9 @@ EdgeChannels = [17 128 43 48 63 68 73 81 88 94 99 120 119 125];
 ExcludedChannels = [49 56 107 113 126 127];
 AllCh = 1:129;
 Channels.preROI.All = AllCh;
-Channels.preROI.Frontspot = Frontspot;
-Channels.preROI.Backspot = Backspot;
-Channels.preROI.EE = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
+Channels.preROI.Front = Frontspot;
+Channels.preROI.Back = Backspot;
+Channels.preROI.Elsewhere = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
 
 Format.Colors.preROI = [ .5 .5 .5;
     [228, 104, 90; % red

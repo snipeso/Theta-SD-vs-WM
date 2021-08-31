@@ -12,9 +12,9 @@ Y = [min(CI(:)), max(CI(:))];
 CI(:, 1) = Data - CI(:, 1);
 CI(:, 2) = CI(:, 2) - Data;
 
+XLabel = [FactorLabels, 'Interaction'];
+drawBars(Data, XLabel, [], 'vertical', CI, Format)
 
-drawBars(Data, [FactorLabels, 'Interaction'], [], 'vertical', CI, Format)
-ylabel(YLabel)
 ylim(StatsP.ANOVA.ES_lims)
 
 % plot stars 
@@ -30,5 +30,9 @@ end
 
 
 Max = Y(2) + .05;
-text(1:3, Max*ones(1, 3), Symbol,   'HorizontalAlignment', 'center')
-set(gca, 'FontSize', 14)
+text(1:3, Max*ones(1, 3), Symbol,   'HorizontalAlignment', 'center', 'FontSize', 25)
+set(gca, 'FontSize', 25)
+xticklabels(XLabel)
+ylabel(YLabel)
+
+box off

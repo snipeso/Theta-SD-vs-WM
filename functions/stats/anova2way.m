@@ -83,10 +83,10 @@ X = reshape(Data, [], 1);
 esm = StatsP.ANOVA.ES;
 nBoot = StatsP.ANOVA.nBoot;
 
-[EffectSizes, ~] = mes2way(X, group, esm, 'fName', FactorLabels, 'isDep', [1 1], 'nBoot', nBoot);
+[EffectSizes, Table] = mes2way(X, group, esm, 'fName', FactorLabels, 'isDep', [1 1], 'nBoot', nBoot);
 
 Stats.effects = EffectSizes;
-
+Stats.effects.table = Table;
 
 
 %%% show relevant tables
