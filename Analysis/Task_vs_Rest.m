@@ -213,43 +213,53 @@ end
 %% SSSC Poster
 
 ThetaIndx = strcmpi(BandLabels, 'theta');
-
 Fix = squeeze(bData(:, 1, end, :, ThetaIndx));
-
-figure('units','normalized','outerposition',[0 0 1 .5])
-tiledlayout(2,numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
+CLims = [-2 2];
+figure('units','normalized','outerposition',[0 0 1 .35])
+tiledlayout(1,numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_T = 1:numel(AllTasks)
     
     % theta at baseline, minmax colorbars
     Data = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
     
-    Max = max(abs(nanmean(Data,1)));
-     nexttile
-    plotTopo(nanmean(Data,1), Chanlocs, [-Max Max], BL_CLabel, 'Divergent', Format)
-    title(TaskLabels{Indx_T}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 30)
-    
-
-    
-end
-    
-for Indx_T = 1:numel(AllTasks)-1
- 
-      Data = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
-      
-    % change from fixation
-     nexttile
-    plotTopoDiff(Fix, Data, Chanlocs, CLims_Diff, StatsP, Format);
-    title([TaskLabels{Indx_T}, ' vs Rest'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 20)
-    
+    nexttile
+    plotTopo(nanmean(Data,1), Chanlocs, CLims, BL_CLabel, 'Divergent', Format)
+    colorbar off
+    title(TaskLabels{Indx_T}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
 end
 
-saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_Task'}, '_'), Results, Format)
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baselines'}, '_'), Results, Format)
 
+figure('units','normalized','outerposition',[0 0 .25 .35])
+plotColorbar(CLims, 'mean z-score power', Format)
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baselines_Colorbar'}, '_'), Results, Format)
 
 
 %%
-figure('units','normalized','outerposition',[0 0 1 .5])
-tiledlayout(2,numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
+figure('units','normalized','outerposition',[0 0 1 .35])
+tiledlayout(1,numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
+for Indx_T = 1:numel(AllTasks)-1
+    
+    Data = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
+    
+    % change from fixation
+    nexttile
+    plotTopoDiff(Fix, Data, Chanlocs, CLims_Diff, StatsP, Format);
+    title([TaskLabels{Indx_T}, ' vs Rest'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+    colorbar off
+end
+
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_v_Rest'}, '_'), Results, Format)
+
+figure('units','normalized','outerposition',[0 0 .25 .35])
+plotColorbar( CLims_Diff, 'hedges g', Format)
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Results, Format)
+
+
+%% Sd vs bl
+
+figure('units','normalized','outerposition',[0 0 1 .35])
+tiledlayout(1, numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_T = 1:numel(AllTasks)
     BL = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
     
@@ -258,10 +268,16 @@ for Indx_T = 1:numel(AllTasks)
     
     nexttile
     plotTopoDiff(BL, SR, Chanlocs, CLims_Diff, StatsP, Format);
-    title([TaskLabels{Indx_T}, ' SR vs BL'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 30)
+    title([TaskLabels{Indx_T}, ' SR vs BL'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
     
 end
 
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_SR'}, '_'), Results, Format)
+
+
+
+figure('units','normalized','outerposition',[0 0 1 .35])
+tiledlayout(1, numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_T = 1:numel(AllTasks)
     BL = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
     
@@ -270,7 +286,7 @@ for Indx_T = 1:numel(AllTasks)
     
     nexttile
     plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
-    title([TaskLabels{Indx_T}, ' SD vs BL'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 30)
+    title([TaskLabels{Indx_T}, ' SD vs BL'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
     
 end
 

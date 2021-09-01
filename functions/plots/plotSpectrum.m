@@ -12,7 +12,7 @@ end
 
 % plot thin lines marking the theta range
 set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', Format.Labels.Bands, ...
-    'FontName', Format.FontName)
+    'FontName', Format.FontName, 'FontSize', Format.FontSize)
 
 
 % y limits
@@ -25,6 +25,7 @@ ylim([Min Max])
 xlim(XLim)
 ylabel('Power')
 xlabel('Frequency (Hz)')
+
 
 if ~isempty(LineLabels)
     legend(LineLabels)

@@ -7,13 +7,15 @@ if numel(CLims) ~= 2
 end
 
 topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
-   'electrodes', 'on',  'maplimits', CLims, 'gridscale', Format.TopoRes);
+    'electrodes', 'on',  'maplimits', CLims, 'gridscale', Format.TopoRes);
 xlim([-.55 .55])
 ylim([-.55 .6])
-set(gca, 'FontName', Format.FontName, 'FontSize', 12)
+set(gca, 'FontName', Format.FontName)
 
-h = colorbar;
-ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 12)
+if ~isempty(CLabel)
+    h = colorbar;
+    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+end
 
 Colormap = Format.Colormap.(Colormap);
 Colormap = reduxColormap(Colormap, Format.Steps.Topo);

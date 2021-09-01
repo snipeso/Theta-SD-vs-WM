@@ -380,7 +380,6 @@ saveFig(strjoin({TitleTag, 'PeakFreq', 'All'}, '_'), Results, Format)
 
 %% plot all participants' spectrums session x task, one fig per ch
 
-LineWidth = 2;
 
 for Indx_Ch =  1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
@@ -392,7 +391,8 @@ for Indx_Ch =  1:numel(ChLabels)
             subplot(numel(Sessions.Labels), 1, Indx_S)
             % TODO: plot peaks! so can inspect where peak came from
             plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-                Format.Alpha.Participants, LineWidth, Format)
+                Format.Alpha.Participants, Format.LW, Format)
+            legend off
             title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
             xlim([1 25])
         end
@@ -406,8 +406,6 @@ end
 
 %% plot all participants' spectrums session x task, one fig per ch NOT Z SCORED
 
-LineWidth = 2;
-
 for Indx_Ch =  1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
         figure('units','normalized','outerposition',[0 0 .24 1])
@@ -417,8 +415,9 @@ for Indx_Ch =  1:numel(ChLabels)
             
             subplot(numel(Sessions.Labels), 1, Indx_S)
             plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-                Format.Alpha.Participants, LineWidth, Format)
-            title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
+                Format.Alpha.Participants, Format.LW, Format)
+            title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
+            legend off
             xlim([1 25])
         end
         setLims(numel(Sessions.Labels), 1, 'y');
@@ -446,7 +445,6 @@ end
 
 close all
 Colors = [Format.Colors.Dark1; Format.Colors.Red;   Format.Colors.Light1; 0.67 0.67 0.67];
-LW = 2;
 Alpha = 1;
 
 for Indx_Ch = 1:numel(ChLabels)
@@ -463,7 +461,7 @@ for Indx_Ch = 1:numel(ChLabels)
             Peaks = cat(1, Peaks', PeaksDiff);
             
             subplot(4, 5, Indx_P)
-            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD', 'SD-BL'}, Colors, Alpha, LW, Format)
+            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD', 'SD-BL'}, Colors, Alpha, Format.LW, Format)
             title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '))
             xlim(PeakRange)
             set(gca, 'FontSize', 13)

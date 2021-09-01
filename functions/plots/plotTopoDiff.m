@@ -32,11 +32,13 @@ end
 
 topoplot(stats.(StatsP.Paired.ES), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
     'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
-   'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 3, .01});
+   'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 5, .01});
 
-h = colorbar;
-ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 12)
-set(gca, 'FontName', Format.FontName, 'FontSize', 12)
+% 
+% h = colorbar;
+% ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+
+set(gca, 'FontName', Format.FontName)
 xlim([-.55 .55])
 ylim([-.55 .6])
 
