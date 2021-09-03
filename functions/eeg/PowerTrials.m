@@ -1,29 +1,34 @@
-function Power = PowerTrials(EEG, Freqs, Starts, Ends, Window)
+function [Power, Freqs] = PowerTrials(EEG, Starts, Ends, Window)
 % calculate welch power for trials
 
 Chanlocs = EEG.chanlocs;
 fs = EEG.srate;
 
-Power = nan(numel(Chanlocs), numel(Freqs), numel(Starts));
+% p welch parameters
+nfft = 2^nextpow2(Window*fs);
+noverlap = round(nfft*.75);
+window = hanning(nfft);
+
+nFreqs = nfft/2 + 1;
+Power = nan(numel(Chanlocs), nFreqs, numel(Starts));
 
 for Indx_S = 1:numel(Starts)
-    Data = EEG.data(:, round(Starts(Indx_S):Ends(Indx_S)));
+    Data = EEG.data(:, round(Starts(Indx_S):Ends(Indx_S)-1));
     
-    % remove epochs with >1/3 nan values
+    % remove data with nan
     nanPoints = isnan(Data(1, :));
-    if nnz(nanPoints) >  numel(nanPoints)/3
-        continue
-    end
-    
-    
     Data(:, nanPoints) = [];
-    
-    if size(Data, 2) < Window*fs
-        W = size(Data, 2);
+
+    if size(Data, 2) < nfft % skip if not enough data (less than welch window size
+        continue
     else
-        W = Window*fs;
+        
+        [FFT, Freqs] = pwelch(Data', window, noverlap, nfft, fs);
     end
-    [FFT, ~] = pwelch(Data', W, W/2, Freqs, fs);
-   
+    
     Power(:, :, Indx_S) = FFT';
 end
+
+Freqs = Freqs';
+
+
