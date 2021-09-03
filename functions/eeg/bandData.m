@@ -23,12 +23,16 @@ switch fDim
                         D = nansum(D, 2).*FreqRes;
                     end
                     bData( :, Indx_B) = D;
+                case 4
+                    for Indx_P = 1:size(Data, 1)
+                        D = Data(Indx_P, :, :, Band(1):Band(2));
+                        D = nanmean(D, numel(Dims));
+                        
+                        bData(Indx_P, :, :, Indx_B) = D;
+                    end
                 case 5
                     for Indx_P = 1:size(Data, 1)
                         D = Data(Indx_P, :, :, :, Band(1):Band(2));
-                        
-%                         D = nansum(D, 5).*FreqRes; % problem with z-values?
-                      
                         D = nanmean(D, numel(Dims));
                         
                         bData(Indx_P, :, :, :, Indx_B) = D;
@@ -36,9 +40,6 @@ switch fDim
                 case 6
                      for Indx_P = 1:size(Data, 1)
                         D = Data(Indx_P, :, :, :, :, Band(1):Band(2));
-                        
-%                         D = nansum(D, 5).*FreqRes; % problem with z-values?
-                      
                         D = nanmean(D, numel(Dims));
                         
                         bData(Indx_P, :, :, :, :, Indx_B) = D;

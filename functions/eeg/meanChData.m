@@ -15,7 +15,7 @@ for Indx_Ch = 1:numel(ChLabels)
     Ch = ChannelStruct.(ChLabels{Indx_Ch});
     Ch = labels2indexes(Ch, Chanlocs);
     switch ChDim
-        case 1 
+        case 1
             switch TotDims
                 case 2 % e.g. ch x freq
                     NewData(Indx_Ch, :) = nanmean(Data(Ch, :), ChDim);
@@ -23,15 +23,19 @@ for Indx_Ch = 1:numel(ChLabels)
                 otherwise
                     error("Don't know this dimention (total matrix size)")
             end
+        case 3
+            switch TotDims
+                case 4
+                    NewData(:, :, Indx_Ch, :) = nanmean(Data(:, :, Ch, :), ChDim);
+                otherwise
+                    error("Don't know this dimention (total matrix size)")
+            end
         case 4
-            
-            
             switch TotDims
                 case 5
                     NewData(:, :, :, Indx_Ch, :) = nanmean(Data(:, :, :, Ch, :), ChDim);
                 otherwise
                     error("Don't know this dimention (total matrix size)")
-                    
             end
         otherwise
             error("Don't know this dimention (channel dimention)")
