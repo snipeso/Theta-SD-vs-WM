@@ -53,9 +53,9 @@ for Indx_Q = 1:numel(Questions)
     % eta2 comparison for task and session to determine which has larger impact
     Title = strjoin({Questions{Indx_Q}, '2 way RANOVA Effect Sizes'}, ' ');
     
-    figure('units','normalized','outerposition',[0 0 .2 .3])
+    figure('units','normalized','outerposition',[0 0 .3 .4])
     plotANOVA2way(Stats, FactorLabels, StatsP, Format)
-    title(Title)
+    title(Title, 'FontSize', Format.TitleSize)
     saveFig(strjoin({TitleTag, 'eta2', Questions{Indx_Q}}, '_'), Results, Format)
     
     % if interaction, identify which task has the largest increase
@@ -80,7 +80,7 @@ for Indx_Q = 1:numel(Questions)
         
         plotUFO(StatsH.hedgesg, StatsH.hedgesgCI, TaskLabels, {'SR-BL', 'SD-BL'}, ...
             Format.Colors.AllTasks, 'vertical', Format)
-        title(strjoin({Questions{Indx_Q}, 'Hedges g'}, ' '))
+        title(strjoin({Questions{Indx_Q}, 'Hedges g'}, ' '), 'FontSize', Format.TitleSize)
         xlabel('Hedges g')
         
         saveFig(strjoin({TitleTag, 'hedgesg', Questions{Indx_Q} }, '_'), Results, Format)
@@ -105,7 +105,7 @@ for Indx_Q = 1:numel(Questions)
         yticklabels(L)
         Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
             Format.Colors.AllTasks, YLim, Format);
-        title(strjoin({Sessions.Labels{Indx_S}, Questions{Indx_Q}}, ' '))
+        title(strjoin({Sessions.Labels{Indx_S}, Questions{Indx_Q}}, ' '), 'FontSize', Format.TitleSize)
         
     end
     
@@ -133,7 +133,7 @@ for Indx_Q = 1:numel(Questions)
     Stats = plotSpaghettiOs(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
         Format.Colors.AllTasks, StatsP, Format);
     axis square
-    title(Questions{Indx_Q})
+    title(Questions{Indx_Q}, 'FontSize', Format.TitleSize)
     legend off
     
     saveFig(strjoin({TitleTag, 'SD', 'Means', Questions{Indx_Q}}, '_'), Results, Format)
