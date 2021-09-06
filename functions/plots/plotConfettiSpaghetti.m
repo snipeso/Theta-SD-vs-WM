@@ -8,17 +8,6 @@ Dims = size(Data);
 
 XPoints = 1:Dims(2);
 
-
-% plot each participant
-hold on
-for Indx_P = 1:Dims(1)
-    plot(XPoints, Data(Indx_P, :),  'LineWidth', .7, 'Color', [Colors(Indx_P, :), Format.Alpha.Participants])
-    
-    scatter(XPoints, Data(Indx_P, :), 50, ...
-        'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha',  Format.Alpha.Participants, ...
-        'MarkerEdgeAlpha',  Format.Alpha.Participants, 'MarkerEdgeColor', Colors(Indx_P, :))
-end
-
 % set x axis
 xlim([.5, Dims(2)+.5])
 xticks(1:Dims(2))
@@ -37,6 +26,18 @@ if~isempty(YLims)
 else
     YLims = ylim;
 end
+
+
+% plot each participant
+hold on
+for Indx_P = 1:Dims(1)
+    plot(XPoints, Data(Indx_P, :),  'LineWidth', .7, 'Color', [Colors(Indx_P, :), Format.Alpha.Participants])
+    
+    scatter(XPoints, Data(Indx_P, :), 50, ...
+        'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha',  Format.Alpha.Participants, ...
+        'MarkerEdgeAlpha',  Format.Alpha.Participants, 'MarkerEdgeColor', Colors(Indx_P, :))
+end
+
 
 
 
@@ -61,11 +62,11 @@ else
             'o-', 'LineWidth', 2.5, 'Color', Color,  'MarkerFaceColor', Color)
     end
     
-    % TODO: group stats
-    if Stats
-        Stats = groupStats();
-    end
+%     % TODO: group stats
+%     if Stats
+%         Stats = groupStats();
+%     end
 end
 
-set(gca, 'FontName', Format.FontName, 'FontSize', 14)
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 

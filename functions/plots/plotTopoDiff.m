@@ -5,6 +5,8 @@ function Stats = plotTopoDiff(Data1, Data2, Chanlocs, CLims, StatsP, Format)
 % get t values
 [~, p, CI, stats] = ttest((Data2 - Data1));
 [~, Sig] = fdr(p, StatsP.Alpha);
+% [Sig, p, CI, stats] = ttest((Data2 - Data1));
+
 t_values = stats.tstat';
 
 Stats.t = t_values(:);
@@ -13,12 +15,17 @@ Stats.sig = Sig(:);
 Stats.df = stats.df(:);
 Stats.CI = CI';
 Diff = Data2-Data1;
-Stats.diff_mean = nanmean(Diff, 1);
-Stats.diff_std = nanstd(Diff, 0, 1);
+Stats.mean_diff = nanmean(Diff, 1)';
+Stats.std_diff = nanstd(Diff, 0, 1)';
+
+Stats.mean1 = nanmean(Data1, 1)';
+Stats.std1 = nanstd(Data1, 0, 1)';
+Stats.mean2 = nanmean(Data2, 1)';
+Stats.std2 = nanstd(Data2, 0, 1)';
 
 
 stats = mes(Data2, Data1, StatsP.Paired.ES, 'isDep', 1);
-Stats.(StatsP.Paired.ES) = stats.(StatsP.Paired.ES);
+Stats.(StatsP.Paired.ES) = stats.(StatsP.Paired.ES)';
 
 
 CLabel = StatsP.Paired.ES;
@@ -32,9 +39,9 @@ end
 
 topoplot(stats.(StatsP.Paired.ES), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
     'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
-   'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 5, .01});
+    'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 5, .01});
 
-% 
+%
 % h = colorbar;
 % ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 

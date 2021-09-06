@@ -43,7 +43,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' Tag]);
+Filepath =  fullfile(Paths.Data, 'EEG', ['Unlocked_' Tag]);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % z-score it
@@ -272,7 +272,7 @@ for Indx_T = 1:numel(AllTasks)
     
 end
 
-saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_SR'}, '_'), Results, Format)
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_SR'}, '_'), Results, Format.TitleSize)
 
 
 

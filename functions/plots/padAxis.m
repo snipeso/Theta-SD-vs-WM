@@ -1,4 +1,4 @@
-function padAxis(Axis)
+function padAxis(Axis, Prcnt)
 
 switch Axis
     case 'x'
@@ -11,7 +11,11 @@ end
 
 Range = diff(Lims);
 
+if exist('Prcnt','var')
+Padding = Range*Prcnt;
+else
 Padding = Range*.05;
+end
 NewLims = [Lims(1)-Padding, Lims(2)+Padding];
 
 

@@ -34,7 +34,7 @@ FactorLabels = {'Session', 'Task'};
 Filepath = fullfile(P.Paths.Data, 'Questionnaires');
 [Answers, Labels] = loadAllBAT(Filepath, Participants, Sessions, AllTasks);
 
- Format.Colors.AllTasks =  Format.Colors.AllTasks(1:numel(AllTasks), :);
+Format.Colors.AllTasks =  Format.Colors.AllTasks(1:numel(AllTasks), :);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot & analyze data
@@ -94,23 +94,23 @@ end
 YLim = [0 1];
 
 for Indx_Q = 1:numel(Questions)
-  figure('units','normalized','outerposition',[0 0 1 .5])
-        for Indx_S = 1:numel(Sessions.Labels)
-            Data = squeeze(Answers.(Questions{Indx_Q})(:, Indx_S, :));
-            
-            subplot(1, numel(Sessions.Labels), Indx_S)
-              L = Labels.(Questions{Indx_Q});
+    figure('units','normalized','outerposition',[0 0 1 .5])
+    for Indx_S = 1:numel(Sessions.Labels)
+        Data = squeeze(Answers.(Questions{Indx_Q})(:, Indx_S, :));
+        
+        subplot(1, numel(Sessions.Labels), Indx_S)
+        L = Labels.(Questions{Indx_Q});
         ylim(YLim)
         yticks(linspace(0, 1, numel(L)))
         yticklabels(L)
-            Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
-                Format.Colors.AllTasks, YLim, Format);
-            title(strjoin({Sessions.Labels{Indx_S}, Questions{Indx_Q}}, ' '))
-            
-        end
+        Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
+            Format.Colors.AllTasks, YLim, Format);
+        title(strjoin({Sessions.Labels{Indx_S}, Questions{Indx_Q}}, ' '))
         
-        saveFig(strjoin({TitleTag, 'scatter', ...
-            Questions{Indx_Q}}, '_'), Results, Format)
+    end
+    
+    saveFig(strjoin({TitleTag, 'scatter', ...
+        Questions{Indx_Q}}, '_'), Results, Format)
 end
 
 
@@ -121,23 +121,23 @@ Indx_BL = 1;
 YLim = [0 1];
 
 for Indx_Q = 1:numel(Questions)
-        
-        Data = Answers.(Questions{Indx_Q});
-        
-        % plot spaghetti-o plot of tasks x sessions for each ch and each band
-        figure('units','normalized','outerposition',[0 0 .4 .45])
-        L = Labels.(Questions{Indx_Q});
-        ylim(YLim)
-        yticks(linspace(0, 1, numel(L)))
-        yticklabels(L)
-        Stats = plotSpaghettiOs(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
-            Format.Colors.AllTasks, StatsP, Format);
-      axis square
-        title(Questions{Indx_Q})
-        legend off
-       
-        saveFig(strjoin({TitleTag, 'SD', 'Means', Questions{Indx_Q}}, '_'), Results, Format)
-
+    
+    Data = Answers.(Questions{Indx_Q});
+    
+    % plot spaghetti-o plot of tasks x sessions for each ch and each band
+    figure('units','normalized','outerposition',[0 0 .4 .45])
+    L = Labels.(Questions{Indx_Q});
+    ylim(YLim)
+    yticks(linspace(0, 1, numel(L)))
+    yticklabels(L)
+    Stats = plotSpaghettiOs(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
+        Format.Colors.AllTasks, StatsP, Format);
+    axis square
+    title(Questions{Indx_Q})
+    legend off
+    
+    saveFig(strjoin({TitleTag, 'SD', 'Means', Questions{Indx_Q}}, '_'), Results, Format)
+    
 end
 
 
