@@ -15,6 +15,8 @@ if Dims(2) > 3
     Paleness = linspace(.2, 1, Dims(2));
 elseif Dims(2) > 1
     Paleness = linspace(.3, 1, Dims(2));
+else
+    Paleness = 1;
 end
 
 hold on
@@ -30,10 +32,13 @@ for Indx_N = 1:Dims(2)
     
     
     for Indx_M = 1:Dims(1)
+        if Dims(2)>1
         X = XMinorPoints(Indx_M, Indx_N);
-        
         plot([X, X], squeeze(CI(Indx_M, Indx_N, :)), 'Color', Color(Indx_M, :), 'LineWidth', 5, 'HandleVisibility', 'off')
-        
+        else
+            X = XMajorPoints(Indx_M);
+             plot([X, X], squeeze(CI(Indx_M, :)), 'Color', Color(Indx_M, :), 'LineWidth', 5, 'HandleVisibility', 'off')
+        end
     end
     
     scatter( XMinorPoints(:, Indx_N), Data(:, Indx_N), 300, Color, 'filled')
@@ -52,8 +57,9 @@ ylim([min(CI(:)),  max(CI(:))])
 padAxis('x')
 padAxis('y')
 
-
+if ~isempty(CLabels)
 legend(CLabels)
+end
 
 if strcmpi(Orientation, 'vertical')
     view([90 90])

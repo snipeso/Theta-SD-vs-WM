@@ -15,17 +15,6 @@ if ~isempty(XLabels)
     xticklabels(XLabels)
 end
 
-% set y axis
-if~isempty(YLims)
-    ylim(YLims)
-    
-    if ~isempty(YLabels)
-        yticks(linspace(YLims(1), YLims(2), numel(YLabels)))
-        yticklabels(YLabels)
-    end
-else
-    YLims = ylim;
-end
 
 
 % plot each participant
@@ -39,13 +28,25 @@ for Indx_P = 1:Dims(1)
 end
 
 
+% set y axis
+if~isempty(YLims)
+    ylim(YLims)
+    
+    if ~isempty(YLabels)
+        yticks(linspace(YLims(1), YLims(2), numel(YLabels)))
+        yticklabels(YLabels)
+    end
+else
+    YLims = ylim;
+end
+
 
 
 % plot mean
 [ColorGroups, ~, Groups] = unique(Colors, 'rows');
 TotGroups = size(ColorGroups, 1);
 if TotGroups == Dims(1) % if there's one color per participant, so no special groups
-    plot(nanmean(Data, 1), 'o-', 'LineWidth', 2.5, 'Color', 'k',  'MarkerFaceColor', 'k')
+    plot(nanmean(Data, 1), 'o-', 'LineWidth', Format.LW, 'Color', 'k',  'MarkerFaceColor', 'k')
     
     % conduct stats
     if ~isempty(StatsP)

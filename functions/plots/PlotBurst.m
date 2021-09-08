@@ -15,6 +15,8 @@ t = linspace(0, Window,  Points);
 MidY = mean( Data(ProtoChannelIndx, :));
 Range = max(MidY-min(Data(:)), max(Data(:))-MidY);
 
+
+
 figure('units','normalized','outerposition',[0 0 .5 .6])
 subplot(3, 4, [1:4])
 hold on

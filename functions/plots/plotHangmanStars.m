@@ -61,7 +61,7 @@ for Indx = 1:nGroups % go from most to least significant
     YHeight = YHeight+Increase;
     
     % plot main horizontal bar
-    plot(X, YHeight*ones(size(X)),    '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
+    plot(X, YHeight*ones(size(X)),  '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
     
     % plot main post
     plot([XPoints(G_Indx), XPoints(G_Indx)], [YHeight-Increase*.75, YHeight], ...
