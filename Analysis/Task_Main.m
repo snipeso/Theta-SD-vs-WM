@@ -30,18 +30,22 @@ StatsP = P.StatsP;
 
 AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
 TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
+TASKTYPE = '';
+
+AllTasks = P.AllTasks;
+TaskLabels = P.TaskLabels;
+TASKTYPE = 'AllT';
+
 Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
-%
-% AllTasks = P.AllTasks;
-% TaskLabels = P.TaskLabels;
+
 
 Duration = 4;
 WelchWindow = 8;
 
-Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
+Tag = ['window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'ANOVA'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_ANOVA', Tag);
+Results = fullfile(Paths.Results, 'Task_ANOVA', [ TASKTYPE, Tag]);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -167,6 +171,10 @@ end
 
 %% plot z-scored data boxplots showcasing task differences
 
+Format.TitleSize = 20;
+Format.FontSize = 14;
+Format.LW = 2.5;
+Format.ScatterSize = 50;
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)
@@ -178,11 +186,13 @@ for Indx_Ch = 1:numel(ChLabels)
         %         YLims(1) = YLims(1)-Diff*.05;
         YLims = [];
         
-        figure('units','normalized','outerposition',[0 0 .6 .5])
+        figure('units','normalized','outerposition',[0 0 1 .5])
+           tiledlayout(1, 3, 'Padding', 'none', 'TileSpacing', 'compact');
         for Indx_S = 1:numel(Sessions.Labels)
             Data = squeeze(bData(:, Indx_S, :, Indx_Ch, Indx_B));
             
-            subplot(1, numel(Sessions.Labels), Indx_S)
+%             subplot(1, numel(Sessions.Labels), Indx_S)
+nexttile
             Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
                 Format.Colors.AllTasks, YLims, Format);
             ylabel('Power (z score)')
@@ -198,6 +208,11 @@ end
 
 
 %% plot z data for BL tasks (sorted) next to z data for SD2-BL changes
+
+Format.TitleSize = 20;
+Format.FontSize = 14;
+Format.LW = 2.5;
+Format.ScatterSize = 50;
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)

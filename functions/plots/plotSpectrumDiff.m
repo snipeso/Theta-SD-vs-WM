@@ -3,6 +3,13 @@ function plotSpectrumDiff(Data, Freqs, BL_Indx, LineLabels, Colors, Format)
 % different from specified BL_Indx. It also marks where the theta range is.
 % Data is a P x S x Freq matrix.
 
+XLims = [1 35];
+
+XIndx = dsearchn(Freqs', XLims');
+
+Data = Data(:, :, XIndx(1):XIndx(2));
+Freqs = Freqs(XIndx(1):XIndx(2));
+
 % y limits
 Means = squeeze(nanmean(Data, 1));
 Min = min(Means(:));
@@ -18,6 +25,6 @@ set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', Format.Labels.Bands)
 plotLineDiff(Data, Freqs, BL_Indx, LineLabels, StatWidth, Colors, Format)
 
 ylim([Min Max])
-xlim([1, 30])
-ylabel('Power')
+xlim(XLims)
+ylabel(Format.Labels.zPower)
 xlabel('Frequency (Hz)')

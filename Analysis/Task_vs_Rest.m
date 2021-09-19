@@ -214,25 +214,29 @@ end
 
 ThetaIndx = strcmpi(BandLabels, 'theta');
 Fix = squeeze(bData(:, 1, end, :, ThetaIndx));
-CLims = [-2 2];
+CLims = [-3 3];
+
+for Indx_S = 1:numel(Sessions.Labels)
 figure('units','normalized','outerposition',[0 0 1 .35])
 tiledlayout(1,numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_T = 1:numel(AllTasks)
     
     % theta at baseline, minmax colorbars
-    Data = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
+    Data = squeeze(bData(:, Indx_S, Indx_T, :, ThetaIndx));
     
     nexttile
     plotTopo(nanmean(Data,1), Chanlocs, CLims, BL_CLabel, 'Divergent', Format)
     colorbar off
-    title(TaskLabels{Indx_T}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+    title([TaskLabels{Indx_T} ' ' Sessions.Labels{Indx_S}], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
 end
 
-saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baselines'}, '_'), Results, Format)
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta', Sessions.Labels{Indx_S}}, '_'), Results, Format)
+
+end
 
 figure('units','normalized','outerposition',[0 0 .25 .35])
 plotColorbar(CLims, 'mean z-score power', Format)
-saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baselines_Colorbar'}, '_'), Results, Format)
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Raw_Colorbar'}, '_'), Results, Format)
 
 
 %%
@@ -294,6 +298,40 @@ saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_SD'}, '_'), Results, Format)
 
 
 
+
+%% Compare BL, Task to Fix, and sdtheta (just theta
+ThetaIndx = strcmpi(BandLabels, 'theta');
+CLims = [-2 2];
+Fix = squeeze(bData(:, 1, end, :, ThetaIndx));
+
+for Indx_T = 1:numel(AllTasks)-1
+    
+figure('units','normalized','outerposition',[0 0 .4 .35])
+tiledlayout(1, 3, 'Padding', 'none', 'TileSpacing', 'compact');
+    BL = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
+    
+    % just BL
+    nexttile
+    plotTopo(nanmean(BL,1), Chanlocs, CLims, BL_CLabel, 'Divergent', Format)
+    colorbar off
+    title(TaskLabels{Indx_T}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', Format.TitleSize)
+    
+    
+    % fmTheta
+        nexttile
+    plotTopoDiff(Fix, BL, Chanlocs, CLims_Diff, StatsP, Format);
+    title([TaskLabels{Indx_T}, ' vs Rest'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', Format.TitleSize)
+     colorbar off
+     
+    % sdTheta
+    SD = squeeze(bData(:, 3, Indx_T, :, ThetaIndx));
+    
+    nexttile
+    plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
+    title([TaskLabels{Indx_T}, ' SD vs BL'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', Format.TitleSize)
+     colorbar off
+saveFig(strjoin({ TitleTag, 'Theta_Spot', AllTasks{Indx_T}}, '_'), Results, Format)
+end
 
 
 

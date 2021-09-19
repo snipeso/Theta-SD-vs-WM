@@ -92,13 +92,19 @@ end
 %% plot z data for BL tasks (sorted) next to z data for SD2-BL changes
 
 YLim = [0 1];
+Format.TitleSize = 20;
+Format.FontSize = 14;
+Format.LW = 2.5;
+Format.ScatterSize = 50;
 
-for Indx_Q = 1:numel(Questions)
+for Indx_Q = 1:numel(Questions)-1
     figure('units','normalized','outerposition',[0 0 1 .5])
+    tiledlayout(1, 3, 'Padding', 'none', 'TileSpacing', 'compact');
     for Indx_S = 1:numel(Sessions.Labels)
         Data = squeeze(Answers.(Questions{Indx_Q})(:, Indx_S, :));
         
-        subplot(1, numel(Sessions.Labels), Indx_S)
+%         subplot(1, numel(Sessions.Labels), Indx_S)
+nexttile
         L = Labels.(Questions{Indx_Q});
         ylim(YLim)
         yticks(linspace(0, 1, numel(L)))

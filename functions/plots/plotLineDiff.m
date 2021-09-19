@@ -10,12 +10,15 @@ Dims = size(Data);
 MeanDataP = squeeze(nanmean(Data, 1));
 hold on
 for Indx_S = 1:Dims(2)
-    plot(X, MeanDataP(Indx_S, :), ':', 'Color', Colors(Indx_S, :), 'LineWidth', 1)
+    plot(X, MeanDataP(Indx_S, :), ':', 'Color', Colors(Indx_S, :), 'LineWidth', Format.LW/2)
+
 end
 
 % conduct stats
 
 Edges = X(1):StatWidth:X(end);
+Edges(1) =  X(1);
+Edges(end) = X(end);
 Bins = discretize(X, Edges);
 Midpoints = diff(Edges)+Edges(1:end-1);
 MeanDataX = nan([Dims(1:2), numel(Edges)-1]);
@@ -37,10 +40,10 @@ for Indx_S = 1:Dims(2)
     
     SigData = nan(1, numel(Midpoints));
     SigData(sig) = squeeze(nanmean(MeanDataX(:, Indx_S, sig), 1));
-    plot(Midpoints, SigData, 'LineWidth', 3, 'Color', Colors(Indx_S, :), 'HandleVisibility','off')
+    plot(Midpoints, SigData, 'LineWidth', Format.LW, 'Color', Colors(Indx_S, :), 'HandleVisibility','off')
 end
 
-set(gca, 'FontName', Format.FontName)
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 
 if ~isempty(LineLabels)
     legend(LineLabels)

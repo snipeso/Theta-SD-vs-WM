@@ -9,7 +9,7 @@ Bands = P.Bands;
 Format = P.Format;
 
 
-Filename = 'P01_Game_Session2_Clean.set';
+Filename = 'P10_Game_Session2_Clean.set';
 
 Levels = split(Filename, '_');
 Task = Levels{2};

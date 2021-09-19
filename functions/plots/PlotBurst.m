@@ -16,8 +16,8 @@ MidY = mean( Data(ProtoChannelIndx, :));
 Range = max(MidY-min(Data(:)), max(Data(:))-MidY);
 
 
-
-figure('units','normalized','outerposition',[0 0 .5 .6])
+figure('units','normalized','outerposition',[0 0 1 1])
+% figure('units','normalized','outerposition',[0 0 .5 .6])
 subplot(3, 4, [1:4])
 hold on
 plot(t, Data', 'Color', [.8 .8 .8 .5])
@@ -46,7 +46,7 @@ for Indx_B = 1:numel(Subplots)
     title(BandLabels{Indx_B}, 'FontName', Format.FontName,  'FontSize', 14)
 end
 
-colormap(Format.Colormap.Linear)
+colormap(reduxColormap(Format.Colormap.Linear, Format.Steps.Topo/2))
 
 
 % plot frequencies

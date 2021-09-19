@@ -39,7 +39,7 @@ end
 
 topoplot(stats.(StatsP.Paired.ES), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
     'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
-    'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 5, .01});
+    'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .01});
 
 %
 % h = colorbar;

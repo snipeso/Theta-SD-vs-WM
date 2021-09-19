@@ -1,7 +1,7 @@
 function sData = smoothFreqs(Data, Freqs, FreqDim, SmoothSpan)
 % smoothFreqs(Data, Freqs, FreqDim, SmoothSpan)
-% function for smoothing data by "smoothSpan". 
-% horrible mess, to fix once I figure out how 
+% function for smoothing data by "smoothSpan".
+% horrible mess, to fix once I figure out how
 
 Dims = size(Data);
 
@@ -9,6 +9,15 @@ sData = nan(Dims);
 switch FreqDim
     case 'last'
         switch numel(Dims)
+            case 4
+                for Indx_P = 1:Dims(1)
+                    for Indx_S = 1:Dims(2)
+                        for Indx_Ch = 1:Dims(3)
+                            sData(Indx_P, Indx_S, Indx_Ch, :) = smoothF(Data(Indx_P, Indx_S, Indx_Ch, :), Freqs, SmoothSpan);
+                        end
+                    end
+                end
+                
             case 5
                 for Indx_P = 1:Dims(1)
                     for Indx_S = 1:Dims(2)

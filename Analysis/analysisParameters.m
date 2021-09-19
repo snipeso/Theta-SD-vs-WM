@@ -58,6 +58,8 @@ Format.TitleSize = 30;
 Format.TopoRes = 300;
 Format.Steps.Topo = 20;
 Format.LW = 5;
+Format.Topo.Sig = 3;
+Format.ScatterSize = 200; % TODO: seperate features for small or big screen
 
 Format.Colormap.Linear = flip(colorcet('L17'));
 Format.Colormap.Monochrome = colorcet('L1');
@@ -131,7 +133,7 @@ Channels.Standard_10_20.F3 = 24;
 Channels.Standard_10_20.F4 = 124;
 Channels.Standard_10_20.F7 = 33;
 Channels.Standard_10_20.F8 = 122;
-Channels.Standard_10_20.Cz = 129;
+% Channels.Standard_10_20.Cz = 129; % TEMP
 Channels.Standard_10_20.C3 = 36;
 Channels.Standard_10_20.C4 = 104;
 Channels.Standard_10_20.T7 = 45;

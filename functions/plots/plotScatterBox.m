@@ -28,7 +28,7 @@ boxplot(Data, 'BoxStyle', 'outline', 'Colors', BoxColor, 'Symbol', '')
 
 %%% plot scatter of participants
 for Indx_T = 1:Dims(2)
-    scatter(ones(Dims(1), 1)*Indx_T, Data(:, Indx_T), 200, ScatterColor, 'filled',...
+    scatter(ones(Dims(1), 1)*Indx_T, Data(:, Indx_T), Format.ScatterSize, ScatterColor, 'filled',...
         'MarkerFaceAlpha', Format.Alpha.Participants)
 end
 
