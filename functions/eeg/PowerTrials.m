@@ -19,8 +19,14 @@ for Indx_S = 1:numel(Starts)
     nanPoints = isnan(Data(1, :));
     Data(:, nanPoints) = [];
 
-    if size(Data, 2) < nfft % skip if not enough data (less than welch window size
+    if size(Data, 2) < nfft*.75 % if a lot less than nfft, skip
         continue
+    elseif size(Data, 2) < nfft % zero pad if there's just a little missing data
+        Pad = floor(nfft-size(Data, 2));
+        pData = zeros(size(Data, 1), nfft);
+        pData(:, Pad:size(Data, 2)+Pad-1) = Data;  
+        
+         [FFT, Freqs] = pwelch(pData', window, noverlap, nfft, fs);
     else
         
         [FFT, Freqs] = pwelch(Data', window, noverlap, nfft, fs);

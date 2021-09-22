@@ -16,20 +16,12 @@ Refresh = false;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Task = 'Match2Sample';
-WelchWindow = 4;
-Freqs = 0.5:(1/WelchWindow):40;
+WelchWindow = 2;
 
 % triggers
-Trigger.Baseline.Trigger = 'S  3';
-Trigger.Baseline.Window = [-2 0];
-
-Trigger.Encoding.Trigger = 'S  3';
-Trigger.Encoding.Window = [0 2];
-
-Trigger.Retention.Trigger = 'S 10';
-Trigger.Retention.Window = [0 2]; % could be as long as 4s
-
-% todo:probe
+Stim_Trig = {'S  3'};
+Retention_Trig = {'S 10'};
+Probe_Trig = { 'S 11',  'S 12'}; % match and not match probe
 
 Levels = 3;
 Blocks = 4;
@@ -40,7 +32,7 @@ TotTrials = 10*Blocks*Levels;
 Source = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', Task);
 Source_Tables = fullfile(Paths.Data, 'Behavior');
-Destination = fullfile(Paths.Data, 'EEG', ['Locked_', num2str(WelchWindow)], Task);
+Destination = fullfile(Paths.Data, 'EEG', 'Locked', Task, ['w', num2str(WelchWindow)]);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
@@ -48,7 +40,6 @@ end
 
 
 % get trial information
-% get response times
 Answers_Path = fullfile(Source_Tables, [Task, '_AllAnswers.mat']);
 if  ~Refresh &&  exist(Answers_Path, 'file')
     load(Answers_Path, 'Answers')
@@ -95,39 +86,62 @@ for Indx_F = 1:numel(Files)
     
     %%% get power
     
-    % epoch times
+    % epoch trials
     AllTriggerTypes = {EEG.event.type};
     AllTriggerTimes =  [EEG.event.latency];
-    EndBaselines =  AllTriggerTimes(strcmp(AllTriggerTypes, Trigger.Baseline.Trigger));
-    StartRetentions =  AllTriggerTimes(strcmp(AllTriggerTypes, Trigger.Retention.Trigger));
-    StartBaselines = EndBaselines - round(WelchWindow*fs);
-    EndRetentions = StartRetentions + round(WelchWindow*fs);
+    
+    nfft = 2^nextpow2(WelchWindow*fs);
+    
+    EndBaselines =  AllTriggerTimes(ismember(AllTriggerTypes, Stim_Trig));
+    StartBaselines = EndBaselines - nfft;
+    
+    StartRetentions =  AllTriggerTimes(ismember(AllTriggerTypes, Retention_Trig));
+    MidRetentions = StartRetentions + nfft;
+    EndRetentions = MidRetentions +  nfft;
+    
+    ProbeIndx = find(ismember(AllTriggerTypes, Probe_Trig));
+    StartProbes =  AllTriggerTimes(ProbeIndx);
+    EndProbes = StartProbes + nfft;
     
     
-    if TotTrials ~= numel(EndBaselines) || TotTrials ~= numel(StartRetentions)
+    if TotTrials ~= numel(EndBaselines) || TotTrials ~= numel(StartRetentions) || TotTrials ~= numel(StartProbes)
         warning(['Something went wrong with triggers for ', EEG_Filename])
         continue
     end
     
-    Retention = PowerTrials(EEG, Freqs, StartRetentions, EndRetentions, WelchWindow);
-    Baseline = PowerTrials(EEG, Freqs, StartBaselines, EndBaselines, WelchWindow);
-    Encoding = PowerTrials(EEG, Freqs, EndBaselines, StartRetentions, WelchWindow);
+    Baseline = PowerTrials(EEG, StartBaselines, EndBaselines, WelchWindow);
+    Encoding = PowerTrials(EEG, EndBaselines, StartRetentions, WelchWindow);
+    Retention1 = PowerTrials(EEG, StartRetentions, MidRetentions, WelchWindow);
+    Retention2 = PowerTrials(EEG, MidRetentions, EndRetentions, WelchWindow);
+    [Probe, Freqs] = PowerTrials(EEG, StartProbes, EndProbes, WelchWindow);
     
+    Power = cat(4, Baseline, Encoding, Retention1, Retention2, Probe);
+    Power = permute(Power, [3, 4, 1, 2]); % data saved as trial x epoch x ch x freq
     
-    % TODO: run for probe
-    
+
     % get trial information
     Info = split(Filename_Core, '_');
     Trials = Answers(strcmp(Answers.Participant, Info{1})& ...
         strcmp(Answers.Session, Info{3}), :);
     
     if size(Trials, 1) ~= numel(EndBaselines) || size(Trials, 1) ~= numel(StartRetentions)
-        warning(['Something went wrong with triggers for ', EEG_Filename])
+        warning(['Something went wrong with trials for ', EEG_Filename])
         continue
     end
     
+    % get reaction times from triggers
+    RTs = nan(TotTrials, 1);
+    for Indx_T = 1:TotTrials
+        if Trials.missed(Indx_T)
+            continue
+        else 
+            RTs(Indx_T) = abs(diff(AllTriggerTimes([ProbeIndx(Indx_T), ProbeIndx(Indx_T)+1]))/fs);
+        end
+    end
+    Trials.RT = RTs;
+    
     
     % save
-    save(fullfile(Destination, Filename), 'Baseline', 'Encoding', 'Retention',  'Freqs', 'Chanlocs', 'Trials')
+    save(fullfile(Destination, Filename), 'Power', 'Freqs', 'Chanlocs', 'Trials')
     disp(['*************finished ',Filename '*************'])
 end
