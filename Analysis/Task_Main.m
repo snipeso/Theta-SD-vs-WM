@@ -16,7 +16,7 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
 
-ROI = 'preROI';
+ROI = 'Standard';
 
 P = analysisParameters();
 
@@ -32,9 +32,9 @@ AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
 TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 TASKTYPE = '';
 
-AllTasks = P.AllTasks;
-TaskLabels = P.TaskLabels;
-TASKTYPE = 'AllT';
+% AllTasks = P.AllTasks;
+% TaskLabels = P.TaskLabels;
+% TASKTYPE = 'AllT';
 
 Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
 
@@ -45,7 +45,7 @@ WelchWindow = 8;
 Tag = ['window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'ANOVA'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_ANOVA', [ TASKTYPE, Tag]);
+Results = fullfile(Paths.Results, 'Task_ANOVA', strjoin({TASKTYPE, Tag}, '_'), ROI);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -76,7 +76,7 @@ bRawData = bandData(chRawData, Freqs, Bands, 'last');
 %%% Plot & analyze data
 
 
-%% plot map of channels
+% plot map of channels
 
 
 PlotChannelMap(Chanlocs, Channels.(ROI), Format.Colors.(ROI), Format)
@@ -208,11 +208,11 @@ end
 
 
 %% plot z data for BL tasks (sorted) next to z data for SD2-BL changes
-
-Format.TitleSize = 20;
-Format.FontSize = 14;
-Format.LW = 2.5;
-Format.ScatterSize = 50;
+% 
+% Format.TitleSize = 20;
+% Format.FontSize = 14;
+% Format.LW = 2.5;
+% Format.ScatterSize = 50;
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)

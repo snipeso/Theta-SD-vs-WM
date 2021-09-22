@@ -21,7 +21,7 @@ P.TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music', 'Rest'};
 
 Core = 'F:\Data\';
 Paths.Preprocessed = fullfile(Core, 'Preprocessed'); % where the preprocessed data gets saved (split by task)
-Paths.Datasets = 'F:\LSM\Data\Raw'; 
+Paths.Datasets = 'G:\LSM\Data\Raw'; 
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
 Paths.Results = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and tables end up
 
@@ -103,6 +103,7 @@ Bands.Beta = [15 25];
 Bands.Gamma = [25 35];
 
 Format.Labels.Bands = [1 4 8 15 25 35 40];
+Format.Labels.zPower = 'Power (z-scored)';
 
 Channels = struct();
 Channels.Sample = [11, 129, 52, 70, 96];
@@ -119,12 +120,18 @@ Channels.Peaks.LeftDip = [31 54 30 37 53 36 42]; % center left
 % Channels.Peaks.RightDip = [103 109 110 116];
 
 
-Channels.Standard.Fz = 11;
-Channels.Standard.Cz = 129;
+Channels.Standard.F = [11, 6, 5, 12];
 Channels.Standard.O = [70 83];
 Channels.Standard.P = [58 52 92 96];
-Channels.Standard.C = [36 104];
+Channels.Standard.C = [36 104 129];
 Channels.Standard.T = [45 108];
+Format.Colors.Standard = [
+    [44, 190, 107]/255; % green
+ [228, 104, 90]/255; % red
+[244, 204, 32]/255; % yellow
+[22, 144, 167]/255; % blue
+[99, 88, 226]/255; % pink
+];
 
 Channels.Standard_10_20.Fz = 11;
 Channels.Standard_10_20.Fp1 = 22;

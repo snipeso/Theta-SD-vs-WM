@@ -25,7 +25,7 @@ WelchWindow = 8;
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'Topos', 'Welch', num2str(WelchWindow), 'zScored'}, '_');
 
-Results = fullfile(Paths.Results, ['Task_Topographies_', Tag]);
+Results = fullfile(Paths.Results, 'Task_Topographies', Tag);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -331,7 +331,7 @@ for Indx_P = 1:numel(Participants)
             subplot(numel(Sessions.Labels), numel(Tasks), Indx)
             plotTopo(Data, Chanlocs, CLimsQ, CLabel, 'Linear', Format)
             title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' '))
-            set(gca, 'FontSize', 16)
+            set(gca, 'FontSize', Format.TitleSize)
             Indx = Indx+1;
         end
     end
@@ -340,3 +340,20 @@ for Indx_P = 1:numel(Participants)
 end
 
 
+%% plot theta for everyone together
+
+Band = 2;
+Session_indx = 3;
+for Indx_T  = 1:numel(AllTasks)
+
+     figure('units','normalized','outerposition',[0 0 .7 1])
+     tiledlayout(4,5, 'Padding', 'none', 'TileSpacing', 'compact');
+    for Indx_P = 1:numel(Participants)
+         Data = squeeze(bAllData(Indx_P, Session_indx, Indx_T, :, Band));
+         nexttile
+     plotTopo(Data, Chanlocs, [], CLabel, 'Linear', Format)
+          title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}}, ' '),  'FontSize', Format.TitleSize)
+    end
+
+     saveFig(strjoin({TitleTag, 'AllP', 'Theta', AllTasks{Indx_T} }, '_'), Results, Format)
+end

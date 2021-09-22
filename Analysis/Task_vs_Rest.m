@@ -240,6 +240,13 @@ saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Raw_Colorbar'}, '_'), Results, Forma
 
 
 %%
+
+
+ThetaIndx = strcmpi(BandLabels, 'theta');
+Fix = squeeze(bData(:, 1, end, :, ThetaIndx));
+CLims = [-3 3];
+
+
 figure('units','normalized','outerposition',[0 0 1 .35])
 tiledlayout(1,numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_T = 1:numel(AllTasks)-1
@@ -262,17 +269,20 @@ saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Re
 
 %% Sd vs bl
 
-figure('units','normalized','outerposition',[0 0 1 .35])
+
+for Indx_B = 1:numel(BandLabels)
+
+figure('units','normalized','outerposition',[0 0 1 .45])
 tiledlayout(1, numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_T = 1:numel(AllTasks)
-    BL = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
+    BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
     
     % Sleep restriction vs baseline
-    SR = squeeze(bData(:, 2, Indx_T, :, ThetaIndx));
+    SR = squeeze(bData(:, 2, Indx_T, :, Indx_B));
     
     nexttile
     plotTopoDiff(BL, SR, Chanlocs, CLims_Diff, StatsP, Format);
-    title([TaskLabels{Indx_T}, ' SR vs BL'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+    title({[TaskLabels{Indx_T}, ' SR vs BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
     
 end
 
@@ -280,24 +290,26 @@ saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_SR'}, '_'), Results, Format.TitleSiz
 
 
 
-figure('units','normalized','outerposition',[0 0 1 .35])
+figure('units','normalized','outerposition',[0 0 1 .45])
 tiledlayout(1, numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_T = 1:numel(AllTasks)
-    BL = squeeze(bData(:, 1, Indx_T, :, ThetaIndx));
+    BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
     
     % Sleep deprivation vs baseline
-    SD = squeeze(bData(:, 3, Indx_T, :, ThetaIndx));
+    SD = squeeze(bData(:, 3, Indx_T, :, Indx_B));
     
     nexttile
     plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
-    title([TaskLabels{Indx_T}, ' SD vs BL'], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+    title({[TaskLabels{Indx_T}, ' SD vs BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
     
 end
 
-saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_SD'}, '_'), Results, Format)
+saveFig(strjoin({ 'SSSSC', TitleTag, BandLabels{Indx_B}, 'SD'}, '_'), Results, Format)
 
-
-
+end
+figure('units','normalized','outerposition',[0 0 .25 .35])
+plotColorbar( CLims_Diff, 'hedges g', Format)
+saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Results, Format)
 
 %% Compare BL, Task to Fix, and sdtheta (just theta
 ThetaIndx = strcmpi(BandLabels, 'theta');

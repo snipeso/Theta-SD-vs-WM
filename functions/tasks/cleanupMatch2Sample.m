@@ -12,7 +12,8 @@ Answers.trial = cell2mat(Answers.trial);
 Answers.startTime = cell2mat(Answers.startTime);
 Answers.level = cell2mat(Answers.level);
 
-
-Answers.response = strcmp(AllAnswers.responseTrigger, 'CorrectAnswer');
+Answers.response = string(AllAnswers.response);
+Answers.probe = cell2mat(AllAnswers.shouldMatch);
+Answers.correct = strcmp(AllAnswers.responseTrigger, 'CorrectAnswer');
 Answers.missed = ~isnan([AllAnswers.missed{1:end}])';
 

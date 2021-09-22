@@ -10,11 +10,11 @@ topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
     'electrodes', 'on',  'maplimits', CLims, 'gridscale', Format.TopoRes);
 xlim([-.55 .55])
 ylim([-.55 .6])
-set(gca, 'FontName', Format.FontName)
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize-5)
 
 if ~isempty(CLabel)
     h = colorbar;
-    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize-5)
 end
 
 Colormap = Format.Colormap.(Colormap);

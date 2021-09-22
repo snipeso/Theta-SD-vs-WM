@@ -450,6 +450,8 @@ Alpha = 1;
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(TaskLabels)
         figure('units','normalized','outerposition',[0 0 1 1])
+        
+    tiledlayout(4, 5, 'Padding', 'none', 'TileSpacing', 'compact');
         for Indx_P = 1:numel(Participants)
             
             Spectrum = squeeze(chData(Indx_P, :, Indx_T, Indx_Ch, :));
@@ -460,47 +462,44 @@ for Indx_Ch = 1:numel(ChLabels)
             PeaksDiff = squeeze(DiffchPeaks(Indx_P, end, Indx_T, Indx_Ch));
             Peaks = cat(1, Peaks', PeaksDiff);
             
-            subplot(4, 5, Indx_P)
-            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD', 'SD-BL'}, Colors, Alpha, Format.LW, Format)
+            nexttile
+            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD', 'SD-BL'}, Colors, Alpha, Format)
             title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '))
             xlim(PeakRange)
             set(gca, 'FontSize', 13)
         end
-        setLims(4, 5, 'y');
+        setLimsTiles(4, 5, 'y');
         saveFig(strjoin({TitleTag, 'PeaksSpectrums', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
     end
 end
 
 
 close all
-%% Plot inficial differences in spectrum with raw data
+%% Plot individual differences in spectrum with raw data
 Colors = [Format.Colors.Dark1; Format.Colors.Red;  Format.Colors.Light1; 0.67 0.67 0.67];
-LW = 2;
+
 Alpha = 1;
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(TaskLabels)
-        figure('units','normalized','outerposition',[0 0 1 1])
+        figure('units','normalized','outerposition',[0 0 1 1])      
+    tiledlayout(4, 5, 'Padding', 'none', 'TileSpacing', 'compact');
         for Indx_P = 1:numel(Participants)
             
             Spectrum = squeeze(chDataRaw(Indx_P, :, Indx_T, Indx_Ch, :));
-            Diff = diff(Spectrum([1, 3], :));
-            Spectrum = cat(1, Spectrum, Diff);
-            
+
             Peaks = squeeze(chPeaksRAW(Indx_P, :, Indx_T, Indx_Ch));
-            PeaksDiff = squeeze(DiffchPeaksRAW(Indx_P, end, Indx_T, Indx_Ch));
-            Peaks = cat(1, Peaks', PeaksDiff);
-            
-            subplot(4, 5, Indx_P)
-            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD', 'SD-BL'}, Colors, Alpha, LW, Format)
-            title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '))
+          
+            nexttile
+            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD'}, Colors, Alpha, Format)
+            title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', Format.TitleSize)
             xlim(PeakRange)
             
             F_Indx = dsearchn(Freqs', PeakRange');
             Shown = Spectrum(:, F_Indx(1):F_Indx(2));
             ylim([min(Shown(:)) max(Shown(:))])
             padAxis('y')
-            set(gca, 'FontSize', 13)
+            set(gca, 'FontSize', 20)
         end
         saveFig(strjoin({TitleTag, 'PeaksSpectrums', 'AllP', 'RAW', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
     end
