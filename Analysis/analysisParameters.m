@@ -104,6 +104,7 @@ Bands.Gamma = [25 35];
 
 Format.Labels.Bands = [1 4 8 15 25 35 40];
 Format.Labels.zPower = 'Power (z-scored)';
+Format.Labels.Epochs = {'Baseline', 'Encoding', 'Retention1', 'Retention2', 'Probe'};
 
 Channels = struct();
 Channels.Sample = [11, 129, 52, 70, 96];
