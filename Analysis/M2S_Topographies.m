@@ -54,7 +54,7 @@ bData = bandData(zData, Freqs, Bands, 'last');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 BandLabels = fieldnames(Bands);
-CLims_Diff = [-1.8 1.8];
+CLims_Diff = [-1.7 1.7];
 [nParticipants, nSessions, nTrials, nEpochs, nCh, nFreqs] = size(AllData);
 
 Epochs = Format.Labels.Epochs;
@@ -88,10 +88,9 @@ figure('units','normalized','outerposition',[0 0 .25 .35])
 plotColorbar( CLims_Diff, 'hedges g', Format)
 saveFig(strjoin({TitleTag, 'Diff_Colorbar'}, '_'), Results, Format)
 
+close all
 
 %% plot SD - BL for each epoch
-
-
 
 for Indx_S = 2:nSessions
     for Indx_B = 1:numel(BandLabels)
@@ -112,4 +111,39 @@ for Indx_S = 2:nSessions
         end
         saveFig(strjoin({ TitleTag, 'SDEffect', BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, '_'), Results, Format)
     end
+end
+close all
+
+
+%% for N3 trials, plot correct vs incorrect topos
+
+Levels = [1 3 6];
+
+
+for Indx_S = 1:nSessions
+    for Indx_B = 1:numel(BandLabels)
+        for Indx_L = 1:3
+        figure('units','normalized','outerposition',[0 0 .75 .35])
+        %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
+        
+        for Indx_E = 1:nEpochs
+            Data = squeeze(bData(:, Indx_S, :, Indx_E, :, Indx_B));
+            
+            T = squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L) & squeeze(AllTrials.correct(:, Indx_S, :)) == 1;
+            Correct = averageTrials(Data, T);
+            
+             T = squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L) & squeeze(AllTrials.correct(:, Indx_S, :)) == 0;
+            Incorrect = averageTrials(Data, T);
+            
+            %             nexttile
+            subplot(1, 5, Indx_E)
+            plotTopoDiff(Correct, Incorrect, Chanlocs, CLims_Diff, StatsP, Format);
+            title(Epochs{Indx_E}, 'FontSize', Format.TitleSize)
+            colorbar off
+            
+        end
+        saveFig(strjoin({ TitleTag, 'CorrectvsIncorrect', ['N', num2str(Levels(Indx_L))], BandLabels{Indx_B}, Sessions.Labels{Indx_S}, }, '_'), Results, Format)
+        end
+    end
+    close all
 end
