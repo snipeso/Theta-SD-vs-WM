@@ -28,7 +28,7 @@ Channels = P.Channels;
 
 Window = 2;
 Task = 'Match2Sample';
-Tag = ['w', num2str(Window) '_laterBL'];
+Tag = ['w', num2str(Window)];
 Tag = ['w', num2str(Window)];
 
 TitleTag = strjoin({'M2S', Tag, 'Topos'}, '_');
@@ -65,29 +65,25 @@ Levels = [1 3 6];
 
 for Indx_S = 1:nSessions
     for Indx_B = 1:numel(BandLabels)
-      
+        
         figure('units','normalized','outerposition',[0 0 .75 .6])
         %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         Indx = 1;
-          for Indx_L = 2:numel(Levels)
-        for Indx_E = 1:nEpochs
-            Data = squeeze(bData(:, Indx_S, :, Indx_E, :, Indx_B));
-            
-            N1 = averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) == 1);
-            N3 = averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L));
-            
-            L = squeeze(AllTrials.level(:, Indx_S, :));
-            N1 = averageTrials(Data, L(:, randi(size(L, 2), size(L, 2), 1), :) == 1);
-            N3 = averageTrials(Data, L(:, randi(size(L, 2), size(L, 2), 1), :) == Levels(Indx_L));
-            
-            %             nexttile
-            subplot(2, 5, Indx)
-            plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Format);
-            title([Epochs{Indx_E}, ' N', num2str(Levels(Indx_L))], 'FontSize', Format.TitleSize)
-            colorbar off
-           Indx = Indx+1; 
+        for Indx_L = 2:numel(Levels)
+            for Indx_E = 1:nEpochs
+                Data = squeeze(bData(:, Indx_S, :, Indx_E, :, Indx_B));
+                
+                N1 = averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) == 1);
+                N3 = averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L));
+                
+                %             nexttile
+                subplot(2, 5, Indx)
+                plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Format);
+                title([Epochs{Indx_E}, ' N', num2str(Levels(Indx_L))], 'FontSize', Format.TitleSize)
+                colorbar off
+                Indx = Indx+1;
+            end
         end
-          end
         saveFig(strjoin({ TitleTag, 'N3vN1', BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, '_'), Results, Format)
     end
 end
