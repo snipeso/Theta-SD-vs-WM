@@ -77,13 +77,16 @@ for Indx_F = 1:numel(Files)
     %%% Set as nan all noise
     [Channels, Points] = size(EEG.data);
     fs = EEG.srate;
-    Chanlocs = EEG.chanlocs;
+
     
     % set to nan all cut data
     Cuts_Filepath = fullfile(Source_Cuts, [Filename_Core, '_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
     
-    
+      % remove nonEEG channels
+        EEG = pop_select(EEG, 'nochannel', labels2indexes(P.Channels.Remove, EEG.chanlocs));
+      
+        Chanlocs = EEG.chanlocs;
     %%% get power
     
     % epoch trials
@@ -92,8 +95,11 @@ for Indx_F = 1:numel(Files)
     
     nfft = 2^nextpow2(WelchWindow*fs);
     
-    EndBaselines =  AllTriggerTimes(ismember(AllTriggerTypes, Stim_Trig));
-    StartBaselines = EndBaselines - nfft;
+    EndPre =  AllTriggerTimes(ismember(AllTriggerTypes, Stim_Trig))-1*fs; % IMPORTANT: there's a 1 s cue period prior to stim, so BL excludes this
+    StartPre = EndPre - nfft;
+    
+    StartEncoding = AllTriggerTimes(ismember(AllTriggerTypes, Stim_Trig))-.1*fs; % this little shift is so that the end encoding isn't partially in the retention, but rather with the cue
+    EndEncoding = StartEncoding + nfft;
     
     StartRetentions =  AllTriggerTimes(ismember(AllTriggerTypes, Retention_Trig));
     MidRetentions = StartRetentions + nfft;
@@ -104,18 +110,19 @@ for Indx_F = 1:numel(Files)
     EndProbes = StartProbes + nfft;
     
     
-    if TotTrials ~= numel(EndBaselines) || TotTrials ~= numel(StartRetentions) || TotTrials ~= numel(StartProbes)
+    if TotTrials ~= numel(EndPre) || TotTrials ~= numel(StartRetentions) || TotTrials ~= numel(StartProbes)
         warning(['Something went wrong with triggers for ', EEG_Filename])
         continue
     end
     
-    Baseline = PowerTrials(EEG, StartBaselines, EndBaselines, WelchWindow);
-    Encoding = PowerTrials(EEG, EndBaselines, StartRetentions, WelchWindow);
+    Pre = PowerTrials(EEG, StartPre, EndPre, WelchWindow);
+    Encoding = PowerTrials(EEG, StartEncoding, StartRetentions, WelchWindow);
     Retention1 = PowerTrials(EEG, StartRetentions, MidRetentions, WelchWindow);
     Retention2 = PowerTrials(EEG, MidRetentions, EndRetentions, WelchWindow);
     [Probe, Freqs] = PowerTrials(EEG, StartProbes, EndProbes, WelchWindow);
+    Post = PowerTrials(EEG, EndProbes, EndProbes+nfft, WelchWindow); % this is just a quality check to see if the different trial sizes have aftereffects; it should be identical to pre, since its the same data
     
-    Power = cat(4, Baseline, Encoding, Retention1, Retention2, Probe);
+    Power = cat(4, Pre, Encoding, Retention1, Retention2, Probe, Post);
     Power = permute(Power, [3, 4, 1, 2]); % data saved as trial x epoch x ch x freq
     
 
@@ -124,7 +131,7 @@ for Indx_F = 1:numel(Files)
     Trials = Answers(strcmp(Answers.Participant, Info{1})& ...
         strcmp(Answers.Session, Info{3}), :);
     
-    if size(Trials, 1) ~= numel(EndBaselines) || size(Trials, 1) ~= numel(StartRetentions)
+    if size(Trials, 1) ~= numel(EndPre) || size(Trials, 1) ~= numel(StartRetentions)
         warning(['Something went wrong with trials for ', EEG_Filename])
         continue
     end

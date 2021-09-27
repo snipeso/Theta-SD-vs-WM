@@ -4,5 +4,5 @@ h = colorbar;
  h.TickLength = 0;
 caxis(CLims)
 axis off
-colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Topo))
+colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Topo*2))
 set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
