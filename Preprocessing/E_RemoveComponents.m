@@ -19,7 +19,7 @@ Filename = [];
 Refresh = false; % redo already done files
 
 %%% emergency code if I need to fix a specific file
-Filename = 'P02_Game_Session2_ICA_Components.set';
+Filename = 'P19_Match2Sample_Baseline_ICA_Components.set';
 FN = split(Filename, '_');
 Task = FN{2};
 Refresh = true;

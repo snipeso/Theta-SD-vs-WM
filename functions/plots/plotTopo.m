@@ -1,4 +1,5 @@
 function plotTopo(Data, Chanlocs, CLims, CLabel, Colormap, Format)
+% plotTopo(Data, Chanlocs, CLims, CLabel, Colormap, Format)
 % Data is a Ch x 1 matrix. If CLims is empty, uses "minmax". Colormap is
 % string.
 

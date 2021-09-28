@@ -66,7 +66,7 @@ Levels = [1 3 6];
 for Indx_S = 1:nSessions
     for Indx_B = 1:numel(BandLabels)
         
-        figure('units','normalized','outerposition',[0 0 .75 .6])
+        figure('units','normalized','outerposition',[0 0 1 .6])
         %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         Indx = 1;
         for Indx_L = 2:numel(Levels)
@@ -76,8 +76,8 @@ for Indx_S = 1:nSessions
                 N1 = averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) == 1);
                 N3 = averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L));
                 
-                %             nexttile
-                subplot(2, 5, Indx)
+                % nexttile
+                subplot(2, nEpochs, Indx)
                 plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Format);
                 title([Epochs{Indx_E}, ' N', num2str(Levels(Indx_L))], 'FontSize', Format.TitleSize)
                 colorbar off
@@ -100,7 +100,7 @@ close all
 
 for Indx_S = 2:nSessions
     for Indx_B = 1:numel(BandLabels)
-        figure('units','normalized','outerposition',[0 0 .75 .35])
+        figure('units','normalized','outerposition',[0 0 1 .35])
         %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         
         for Indx_E = 1:nEpochs
@@ -109,7 +109,7 @@ for Indx_S = 2:nSessions
             SD = squeeze(nanmean(bData(:, Indx_S, :, Indx_E, :, Indx_B), 3));
             
             %             nexttile
-            subplot(1, 5, Indx_E)
+            subplot(1, nEpochs, Indx_E)
             plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
             title(Epochs{Indx_E}, 'FontSize', Format.TitleSize)
             colorbar off
@@ -127,10 +127,10 @@ close all
 
 for Indx_S = 1:nSessions
     for Indx_B = 1:numel(BandLabels)
-        for Indx_L = 1:3
-            figure('units','normalized','outerposition',[0 0 .75 .35])
+          figure('units','normalized','outerposition',[0 0 1 .7])
+          Indx = 1;
             %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
-            
+        for Indx_L = 1:3
             for Indx_E = 1:nEpochs
                 Data = squeeze(bData(:, Indx_S, :, Indx_E, :, Indx_B));
                 
@@ -141,14 +141,15 @@ for Indx_S = 1:nSessions
                 Incorrect = averageTrials(Data, T);
                 
                 %             nexttile
-                subplot(1, 5, Indx_E)
+                subplot(numel(Levels), nEpochs, Indx)
                 plotTopoDiff(Correct, Incorrect, Chanlocs, CLims_Diff, StatsP, Format);
-                title(Epochs{Indx_E}, 'FontSize', Format.TitleSize)
+                title([Epochs{Indx_E}, ' N', num2str(Levels(Indx_L)) ], 'FontSize', Format.TitleSize)
                 colorbar off
-                
+                Indx = Indx+1;
             end
-            saveFig(strjoin({ TitleTag, 'CorrectvsIncorrect', ['N', num2str(Levels(Indx_L))], BandLabels{Indx_B}, Sessions.Labels{Indx_S}, }, '_'), Results, Format)
+          
         end
+          saveFig(strjoin({ TitleTag, 'CorrectvsIncorrect', BandLabels{Indx_B}, Sessions.Labels{Indx_S}, }, '_'), Results, Format)
     end
     close all
 end
@@ -172,7 +173,7 @@ for Indx_S = 1:nSessions
                 L = averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L));
                 
                 %             nexttile
-                subplot(3, 4, Indx)
+                subplot(3, nEpochs-1, Indx)
                 plotTopoDiff(BL, L, Chanlocs, CLims_Diff, StatsP, Format);
                 title([Epochs{Indx_E}, ' N', num2str(Levels(Indx_L))], 'FontSize', Format.TitleSize)
                 colorbar off

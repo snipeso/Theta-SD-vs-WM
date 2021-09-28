@@ -13,7 +13,7 @@ Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
 Paths.Datasets ='D:\LSM\Data\Raw'; % where the raw data is saved (split by participant)
 % Paths.Preprocessed = 'D:\Data\Preprocessed';
-Paths.Preprocessed = 'D:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
+Paths.Preprocessed = 'F:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
 
 
 % add location of subfunctions
