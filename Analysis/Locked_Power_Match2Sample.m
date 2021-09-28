@@ -115,14 +115,12 @@ for Indx_F = 1:numel(Files)
         continue
     end
     
-    Pre = PowerTrials(EEG, StartPre, EndPre, WelchWindow);
     Encoding = PowerTrials(EEG, StartEncoding, StartRetentions, WelchWindow);
     Retention1 = PowerTrials(EEG, StartRetentions, MidRetentions, WelchWindow);
     Retention2 = PowerTrials(EEG, MidRetentions, EndRetentions, WelchWindow);
     [Probe, Freqs] = PowerTrials(EEG, StartProbes, EndProbes, WelchWindow);
-    Post = PowerTrials(EEG, EndProbes, EndProbes+nfft, WelchWindow); % this is just a quality check to see if the different trial sizes have aftereffects; it should be identical to pre, since its the same data
     
-    Power = cat(4, Pre, Encoding, Retention1, Retention2, Probe, Post);
+    Power = cat(4, Encoding, Retention1, Retention2, Probe);
     Power = permute(Power, [3, 4, 1, 2]); % data saved as trial x epoch x ch x freq
     
 

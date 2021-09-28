@@ -1,7 +1,8 @@
 %%% run this after M2S topographies
 
 Pres = nan(nParticipants, nSessions, 3, 4);
-
+Pres6 = zeros(nParticipants, nSessions, nTrials);
+Pres1 = Pres6;
 
 for Indx_P = 1:nParticipants
     for Indx_S = 1:nSessions
@@ -16,6 +17,12 @@ for Indx_P = 1:nParticipants
             P = Data(Indx);
             T = tabulate(P);
             Pres(Indx_P, Indx_S, Indx_L, 1:3) = T([1 3 6], 2);
+            
+            if Indx_L == 1
+                Pres1(Indx_P, Indx_S, Indx) = 1;
+            elseif Indx_L == 3
+                   Pres6(Indx_P, Indx_S, Indx) = 1;
+            end
         end
     end
 end
@@ -47,12 +54,34 @@ setLims(1, 3, 'c')
 
 
 %% post-trial check
-
+figure
 for Indx_S = 1:3
-     Data = squeeze(bData(:, Indx_S, :, end, :, 4));
+     Data = squeeze(bData(:, Indx_S, :, end-1, :, 4));
                 
 N13 =  averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) ~= 6);
 N6 =  averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) == 6);
-figure
+subplot(1, 3, Indx_S)
 plotTopoDiff(N13, N6, Chanlocs, CLims_Diff, StatsP, Format);
+title(Sessions.Labels{Indx_S})
 end
+
+
+%% pre-trial check
+Indx_S = 3;
+  Data = squeeze(bData(:, Indx_S, :, end-1, :, 4));
+
+  figure
+  N1 = averageTrials(Data, squeeze(Pres1(:, Indx_S, :)));
+  N6 =  averageTrials(Data,  squeeze(Pres6(:, Indx_S, :)));
+  plotTopoDiff(N1, N6, Chanlocs, CLims_Diff, StatsP, Format);
+  
+ 
+ %% 
+  Indx_S = 3;
+    Data = squeeze(bData(:, Indx_S, :, 1, :, 4));
+
+  figure
+  N1 = averageTrials(Data, squeeze(AllTrials.level(:, Indx_S, :)) == 1);
+  N6 =  averageTrials(Data,  squeeze(AllTrials.level(:, Indx_S, :)) == 6);
+  plotTopoDiff(N1, N6, Chanlocs, CLims_Diff, StatsP, Format);
+  
