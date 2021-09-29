@@ -45,13 +45,13 @@ for Indx_N = 1:Dims(2)
 end
 
 
-set(gca, 'FontName', Format.FontName, 'FontSize', 14)
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 
 xlim([.5 Dims(1)+.5])
 xticks(flip(XMajorPoints))
 xticklabels(flip(XLabels))
 Ax = gca;
-Ax.XAxis.FontSize = 18;
+Ax.XAxis.FontSize = Format.FontSize;
 
 ylim([min(CI(:)),  max(CI(:))])
 padAxis('x')

@@ -10,7 +10,7 @@
 % Plots the scatter+whisker plot for individuals raw and z-scored to show
 % magnitude of theta.
 clear
-% close all
+close all
 clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

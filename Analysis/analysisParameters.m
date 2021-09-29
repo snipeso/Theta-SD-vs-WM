@@ -87,6 +87,8 @@ Format.Colors.Tasks.Oddball = [222, 122, 184]/255;
 Format.Colors.Tasks.Fixation = [172, 86, 224]/255;
 Format.Colors.Tasks.Standing = [99, 88, 226]/255;
 
+Format.Colors.Levels = reduxColormap(Format.Colormap.Linear, 4);
+
 Format.Colors.SigStar = [0 0 0];
 
 Format.Colors.Sessions =  [Format.Colors.Dark1; Format.Colors.Red; Format.Colors.Tasks.LAT];

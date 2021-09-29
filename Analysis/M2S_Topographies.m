@@ -29,7 +29,6 @@ Channels = P.Channels;
 Window = 2;
 Task = 'Match2Sample';
 Tag = ['w', num2str(Window)];
-Tag = ['w', num2str(Window)];
 
 TitleTag = strjoin({'M2S', Tag, 'Topos'}, '_');
 
@@ -66,7 +65,7 @@ Levels = [1 3 6];
 for Indx_S = 1:nSessions
     for Indx_B = 1:numel(BandLabels)
         
-        figure('units','normalized','outerposition',[0 0 1 .6])
+        figure('units','normalized','outerposition',[0 0 .66 .6])
         %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         Indx = 1;
         for Indx_L = 2:numel(Levels)
@@ -86,6 +85,7 @@ for Indx_S = 1:nSessions
         end
         saveFig(strjoin({ TitleTag, 'N3vN1', BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, '_'), Results, Format)
     end
+    close all
 end
 
 
@@ -93,14 +93,13 @@ figure('units','normalized','outerposition',[0 0 .25 .35])
 plotColorbar( CLims_Diff, 'hedges g', Format)
 saveFig(strjoin({TitleTag, 'Diff_Colorbar'}, '_'), Results, Format)
 
-close all
 
 %% plot SD - BL for each epoch
 
 
 for Indx_S = 2:nSessions
     for Indx_B = 1:numel(BandLabels)
-        figure('units','normalized','outerposition',[0 0 1 .35])
+        figure('units','normalized','outerposition',[0 0 .66 .35])
         %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         
         for Indx_E = 1:nEpochs
@@ -117,8 +116,9 @@ for Indx_S = 2:nSessions
         end
         saveFig(strjoin({ TitleTag, 'SDEffect', BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, '_'), Results, Format)
     end
+    close all
 end
-close all
+
 
 
 %% for N3 trials, plot correct vs incorrect topos
@@ -127,7 +127,7 @@ close all
 
 for Indx_S = 1:nSessions
     for Indx_B = 1:numel(BandLabels)
-          figure('units','normalized','outerposition',[0 0 1 .7])
+          figure('units','normalized','outerposition',[0 0 .66 .7])
           Indx = 1;
             %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         for Indx_L = 1:3

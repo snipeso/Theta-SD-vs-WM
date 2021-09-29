@@ -3,7 +3,11 @@ function newData = averageTrials(Data, Trials)
 % Trials is P x T 1s and 0s
 Dims = size(Data);
 Dims(2) = [];
-newData = nan(Dims);
+if numel(Dims) == 1
+    newData = nan(Dims, 1);
+else
+    newData = nan(Dims);
+end
 
 
 for Indx_P = 1:Dims(1)
