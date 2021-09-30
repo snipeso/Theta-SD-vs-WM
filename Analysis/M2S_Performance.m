@@ -219,11 +219,39 @@ for Indx_B = 1:numel(BandLabels)
         for Indx_Ch = 1:numel(chLabels)
             Power = squeeze(nanmean(bData(:, :, :, Indx_E, Indx_Ch, Indx_B), 3));
             Performance = sum(AllTrials.correct, 3)/120;
-             figure('units','normalized','outerposition',[0 0 .2 .4])
+            
+            % apply to just level 3
+            %             Power = squeeze(bData(:, :, :, Indx_E, Indx_Ch, Indx_B));
+            %             Power =  splitLevels(Power, AllTrials.level, 'mean');
+            %             Power = squeeze(Power(:, :, 2)); % take just N3
+            %             Performance =  splitLevels(AllTrials.correct, AllTrials.level, 'ratio');
+            %             Performance = squeeze(Performance(:, :, 2));
+            
+            figure('units','normalized','outerposition',[0 0 .2 .4])
             Stats = plotSticksAndStones(Power, Performance, {BandLabels{Indx_B}, '% Correct'}, Sessions.Labels, Format.Colors.Sessions, Format);
             legend off
-             title(strjoin({chLabels{Indx_Ch}, Epochs{Indx_E}}, ' '), 'FontSize', Format.TitleSize)
-                 saveFig(strjoin({TitleTag, 'Corr', BandLabels{Indx_B}, chLabels{Indx_Ch}, Epochs{Indx_E}}, '_'), Results, Format)
+            title(strjoin({chLabels{Indx_Ch}, Epochs{Indx_E}}, ' '), 'FontSize', Format.TitleSize)
+            saveFig(strjoin({TitleTag, 'Corr', BandLabels{Indx_B}, chLabels{Indx_Ch}, Epochs{Indx_E}}, '_'), Results, Format)
         end
     end
 end
+
+
+%% plot N3vN1 diff with SDvBL theta
+
+Indx_B = 2; Indx_E = 2; Indx_Ch = 2;
+fmTheta = squeeze(bData(:, :, :, Indx_E, Indx_Ch, Indx_B));
+fmTheta =  splitLevels(fmTheta, AllTrials.level, 'mean');
+fmTheta = squeeze(fmTheta(:, 1, 2))-squeeze(fmTheta(:, 1, 1));
+
+sdTheta = squeeze(nanmean(bData(:, :, :, Indx_E, Indx_Ch, Indx_B), 3));
+sdTheta = sdTheta(:, 3)- sdTheta(:, 1);
+
+%%
+figure('units','normalized','outerposition',[0 0 .2 .4])
+Stats = plotSticksAndStones(sdTheta, fmTheta, {'sdTheta', 'fmTheta'}, [], Format.Colors.Dark1, Format);
+title(strjoin({'r =', num2str(Stats.r, '%0.2f'), 'p =', num2str(Stats.pvalue, '%.2f') }, ' '))
+legend off
+saveFig(strjoin({TitleTag, 'fmThetaxsdTheta', BandLabels{Indx_B}, chLabels{Indx_Ch}, Epochs{Indx_E}}, '_'), Results, Format)
+
+
