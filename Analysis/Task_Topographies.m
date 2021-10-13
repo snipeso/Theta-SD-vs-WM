@@ -49,6 +49,58 @@ FreqRes = Freqs(2)-Freqs(1);
 
 
 
+%% plot bubble plots of single subject, all sessions, to illustrate z-scoring
+
+P = 13;
+F = dsearchn(Freqs', 6.5);
+
+% raw data
+figure('units','normalized','outerposition',[0 0 .2 1])
+tiledlayout( numel(AllTasks), 2, 'Padding', 'none', 'TileSpacing', 'compact');
+for Indx_T = 1:numel(AllTasks)
+    for Indx_S = [1 3]
+        Data = squeeze(AllData(P, Indx_S, Indx_T, :, F));
+        nexttile
+        bubbleTopo(Data, Chanlocs, 40, '2D', false, Format)
+        colormap(reduxColormap(Format.Colormap.Linear, 17))
+        colorbar off
+        title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', 16)
+    end
+end
+Lims = setLimsTiles(numel(AllTasks)*2, 'c');
+
+saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'Raw'}, '_'), Results, Format)
+
+
+figure('units','normalized','outerposition',[0 0 .25 .7])
+plotColorbar(Lims, 'Power', Format)
+ colormap(reduxColormap(Format.Colormap.Linear, 17))
+saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'Raw', 'Colorbar'}, '_'), Results, Format)
+
+% z-score data
+figure('units','normalized','outerposition',[0 0 .2 1])
+tiledlayout( numel(AllTasks), 2, 'Padding', 'none', 'TileSpacing', 'compact');
+for Indx_T = 1:numel(AllTasks)
+    for Indx_S = [1 3]
+        Data = squeeze(zData(P, Indx_S, Indx_T, :, F));
+        nexttile
+        bubbleTopo(Data, Chanlocs, 40, '2D', false, Format)
+        colormap(reduxColormap(Format.Colormap.Divergent, 17))
+        colorbar off
+        title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', 16)
+    end
+end
+Lims = setLimsTiles(numel(AllTasks)*2, 'c', true);
+
+saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'Zscore'}, '_'), Results, Format)
+
+
+figure('units','normalized','outerposition',[0 0 .25 .7])
+plotColorbar(Lims, 'Z-scored Power', Format)
+ colormap(reduxColormap(Format.Colormap.Divergent, 17))
+saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'Zscore', 'Colorbar'}, '_'), Results, Format)
+
+
 %% plot topographies by task
 
 for Indx_T = 1:numel(AllTasks)
@@ -87,7 +139,7 @@ for Indx_S = 1:numel(Sessions.Labels)
     figure('units','normalized','outerposition',[0 0 1 1])
     Indx = 1;
     
-      MEAN =  nanmean(bData(:, Indx_S, :, :, :), 1);
+    MEAN =  nanmean(bData(:, Indx_S, :, :, :), 1);
     Max = max(abs(MEAN(:)));
     CLims = [-Max Max];
     
@@ -345,15 +397,15 @@ end
 Band = 2;
 Session_indx = 3;
 for Indx_T  = 1:numel(AllTasks)
-
-     figure('units','normalized','outerposition',[0 0 .7 1])
-     tiledlayout(4,5, 'Padding', 'none', 'TileSpacing', 'compact');
+    
+    figure('units','normalized','outerposition',[0 0 .7 1])
+    tiledlayout(4,5, 'Padding', 'none', 'TileSpacing', 'compact');
     for Indx_P = 1:numel(Participants)
-         Data = squeeze(bAllData(Indx_P, Session_indx, Indx_T, :, Band));
-         nexttile
-     plotTopo(Data, Chanlocs, [], CLabel, 'Linear', Format)
-          title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}}, ' '),  'FontSize', Format.TitleSize)
+        Data = squeeze(bAllData(Indx_P, Session_indx, Indx_T, :, Band));
+        nexttile
+        plotTopo(Data, Chanlocs, [], CLabel, 'Linear', Format)
+        title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}}, ' '),  'FontSize', Format.TitleSize)
     end
-
-     saveFig(strjoin({TitleTag, 'AllP', 'Theta', AllTasks{Indx_T} }, '_'), Results, Format)
+    
+    saveFig(strjoin({TitleTag, 'AllP', 'Theta', AllTasks{Indx_T} }, '_'), Results, Format)
 end
