@@ -235,6 +235,7 @@ StatsP.Alpha = .05;
 StatsP.Trend = .1;
 StatsP.Paired.ES = 'hedgesg';
 StatsP.Paired.Benchmarks = -2:.5:2;
+StatsP.FreqBin = 1; % # of frequencies to bool in spectrums stats
 
 P.StatsP = StatsP;
 

@@ -1,4 +1,4 @@
-function plotLineDiff(Data, X, BL_Indx, LineLabels, StatWidth, Colors, Format)
+function Stats = plotLineDiff(Data, X, BL_Indx, LineLabels, StatWidth, Colors, Format, StatsP)
 % plots generic line plot, highlighting sections that are significantly
 % different from a specified baseline.
 % Data is a P x S x n matrix. with BL_Indx referring to S. n is the same
@@ -28,6 +28,12 @@ for Indx_P = 1:Dims(1)
     end
 end
 
+Stats = struct();
+Stats.pvalues = nan(Dims(2),  numel(Edges)-1);
+Stats.sig = Stats.pvalues;
+Stats.df = Stats.pvalues;
+Stats.tvalues =  Stats.pvalues;
+
 DataBL = squeeze(MeanDataX(:, BL_Indx, :));
 for Indx_S = 1:Dims(2)
     if Indx_S == BL_Indx
@@ -36,11 +42,27 @@ for Indx_S = 1:Dims(2)
     
     Data1 = squeeze(MeanDataX(:, Indx_S, :));
     [~, p, ~, stats] = ttest(Data1, DataBL);
-    [~, sig] = fdr(p, .05);
+    [~, sig] = fdr(p, StatsP.Alpha);
     
-    SigData = nan(1, numel(Midpoints));
-    SigData(sig) = squeeze(nanmean(MeanDataX(:, Indx_S, sig), 1));
-    plot(Midpoints, SigData, 'LineWidth', Format.LW, 'Color', Colors(Indx_S, :), 'HandleVisibility','off')
+    Stats.pvalues(Indx_S, :) = p;
+    Stats.sig(Indx_S, :) = sig;
+    Stats.df(Indx_S, :) = stats.df;
+    Stats.tvalues(Indx_S, :, :)= stats.tstat;
+    
+    [Starts, Ends] = data2windows(sig);
+    Starts = dsearchn(X', Midpoints(Starts)');
+    Ends = dsearchn(X', Midpoints(Ends)');
+    
+    SigData = nan(1, numel(X));
+    for Indx_St = 1:numel(Starts)
+       SigData(Starts(Indx_St):Ends(Indx_St)) = MeanDataP(Indx_S, Starts(Indx_St):Ends(Indx_St));
+        
+    end
+    
+scatter(X, SigData, 25, Colors(Indx_S, :), 'filled', ...
+         'HandleVisibility','off')    
+    plot(X, SigData, 'LineWidth', Format.LW, 'Color', Colors(Indx_S, :), ...
+         'HandleVisibility','off')
 end
 
 set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)

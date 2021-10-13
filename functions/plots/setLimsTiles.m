@@ -1,5 +1,8 @@
-function NewLims = setLimsTiles(Tot, Axis)
-% function to set all tiles to the same values
+function NewLims = setLimsTiles(Tot, Axis, Divergent)
+% NewLims = setLimsTiles(Tot, Axis, Divergent)
+% function to set all tiles to the same values. Axis can be 'x', 'y', or 'c'
+% Divergent is an optional boolean that if true, makes the min-max centered
+% around 0;
 
 Lims = nan(Tot, 2);
 
@@ -16,7 +19,13 @@ for Indx_Sp = 1:Tot
     end
 end
 
+
 NewLims = [min(Lims(:, 1)), max(Lims(:, 2))];
+
+if exist('Divergent', 'var') && Divergent
+    Lim = max(abs(NewLims));
+    NewLims = [-Lim, Lim];
+end
 Range = diff(NewLims);
 Padding =  Range*.05;
 NewLims = [NewLims(1)-Padding, NewLims(2)+Padding];

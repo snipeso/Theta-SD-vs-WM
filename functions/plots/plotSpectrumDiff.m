@@ -1,4 +1,4 @@
-function plotSpectrumDiff(Data, Freqs, BL_Indx, LineLabels, Colors, Format)
+function Stats = plotSpectrumDiff(Data, Freqs, BL_Indx, LineLabels, Colors, Format, StatsP)
 % plots changes in power spectrum, highlighting significant frequencies
 % different from specified BL_Indx. It also marks where the theta range is.
 % Data is a P x S x Freq matrix.
@@ -16,13 +16,14 @@ Min = min(Means(:));
 Max = max(Means(:));
 
 % stats unit
-StatWidth = 0.25; % size of freuqency bin
+StatWidth = StatsP.FreqBin; % # frequencies to pool
+StatWidth = dsearchn(Freqs'-Freqs(1), StatWidth);
 
 % plot thin lines marking the theta range
 
 set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', Format.Labels.Bands)
 
-plotLineDiff(Data, Freqs, BL_Indx, LineLabels, StatWidth, Colors, Format)
+Stats = plotLineDiff(Data, Freqs, BL_Indx, LineLabels, StatWidth, Colors, Format, StatsP);
 
 ylim([Min Max])
 xlim(XLims)

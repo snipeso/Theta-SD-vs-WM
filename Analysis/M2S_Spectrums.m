@@ -75,7 +75,7 @@ for Indx_E = 1:numel(Epochs)
             Data = squeeze(spData(:, Indx_S, :, Indx_E, Indx_Ch, :));
             
             nexttile
-            plotSpectrumDiff(Data, Freqs, 1, [], Format.Colors.Levels, Format)
+            plotSpectrumDiff(Data, Freqs, 1, [], Format.Colors.Levels, Format, StatsP);
             set(gca,'FontSize', 14)
             legend off
             title(strjoin({Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}, Epochs{Indx_E}}, ' '), 'FontSize', Format.TitleSize)
@@ -91,6 +91,29 @@ end
 
 %% plot sdtheta: spectrum all trials at BL, SR and SD
 
+figure('units','normalized','outerposition',[0 0 .76 1])
+tiledlayout( numel(Epochs), numel(ChLabels), 'Padding', 'none', 'TileSpacing', 'compact');
+for Indx_Ch = 1:numel(ChLabels)
+    for Indx_E = 1:numel(Epochs)
+        
+        Data = squeeze(nanmean(chData(:, :, :, Indx_E, Indx_Ch, :), 3));
+        
+        nexttile
+        plotSpectrumDiff(Data, Freqs, 1, [], Format.Colors.Sessions, Format, StatsP);
+        set(gca,'FontSize', 14)
+        legend off
+        title(strjoin({ChLabels{Indx_Ch}, Epochs{Indx_E}}, ' '), 'FontSize', Format.TitleSize)
+        
+    end
+   
+    
+    
+end
+
+ legend(Sessions.Labels)
+    setLimsTiles(numel(ChLabels)*numel(Epochs), 'y');
+% save
+saveFig(strjoin({TitleTag, 'SessionxEpoch'}, '_'), Results, Format)
 
 %% plot fmTheta: N3 vs N1 at BL, SR and SD
 
