@@ -50,6 +50,8 @@ chData = meanChData(zData, Chanlocs, Channels.(ROI), 5);
 bData = bandData(chData, Freqs, Bands, 'last');
 
 
+% split levels
+tData = trialData(bData, AllTrials.level);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,4 +157,47 @@ ylabel("Hedge's G")
 set(gca, 'YGrid', 'on')
 title('fmTheta vs sdTheta effect sizes')
 saveFig(strjoin({TitleTag, 'theta', 'hedgesg'}, '_'), Results, Format)
+
+
+
+%% plot g-matrix of all epochs and all sessions to show what is significantly different from what else
+
+Labels = {'N1', 'N3', 'N6'};
+
+for Indx_Ch = 1:numel(chLabels)
+    
+    for Indx_B = 1:numel(BandLabels)
+        for Indx_S = 1:numel(Sessions.Labels)
+            % gather matrix
+            
+            Data = squeeze(tData(:, Indx_S, :, :, Indx_Ch, Indx_B));
+
+            Data = reshape(Data, numel(Participants), []);
+            
+            Stats = hedgesG(Data, StatsP);
+            G = Stats.hedgesg;
+            Stats = Pairwise(Data, StatsP);
+            G(Stats.p > StatsP.Alpha) = nan;
+            G(isnan(G)) = 0;
+            
+            % plot matrix
+            figure('units','normalized','outerposition',[0 0 .35, .65])
+            plotStatsMatrix(G, repmat(Labels, 1, numel(Epochs)), Epochs, numel(Labels), StatsP.Paired.ES, Format)
+            title(strjoin({Sessions.Labels{Indx_S}, chLabels{Indx_Ch}, BandLabels{Indx_B}, 'Hedges G'}, ' '), 'FontSize', Format.TitleSize)
+            
+            saveFig(strjoin({TitleTag, 'gMatrix', Sessions.Labels{Indx_S}, chLabels{Indx_Ch}, BandLabels{Indx_B}, 'hedgesg'}, '_'), Results, Format)
+            
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
 
