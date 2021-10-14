@@ -9,13 +9,19 @@ P.Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', ...
 
 P.Sessions = {'Baseline', 'Session1', 'Session2'};
 
-% Paths.Datasets = 'G:\LSM\Data\Raw'; 
-Paths.Datasets = 'F:\Data\Raw\';
+Paths.Datasets = 'G:\LSM\Data\Raw'; 
+% Paths.Datasets = 'F:\Data\Raw\';
 Core = 'F:\Data\';
 
 Paths.Preprocessed = fullfile(Core, 'Preprocessed'); % where the preprocessed data gets saved (split by task)
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
 Paths.Scoring = 'C:\Users\colas\Desktop\';
+
+% get path where these scripts were saved
+Paths.Analysis = mfilename('fullpath');
+Paths.Analysis = fullfile(extractBefore(Paths.Analysis, 'SpfT_Scoring'));
+
+addpath(fullfile(Paths.Analysis, 'functions','tasks'))
 
 P.Paths = Paths;
 
