@@ -20,7 +20,7 @@
 
 ### What counts as a mistake?
 - Starting a word, stopping, then starting again
-- repeating the word twice
+- repeating the word twice (if they start over from the beginning, just count one mistake)
 - not finishing a word
 - switched phonemes (e.g. she shold shea sells)
 - skipped words

@@ -83,7 +83,7 @@ writetable(AllData, fullfile(Destination, 'All_Paths.csv'))
 % save anonymized file
 for Indx_F = 1:NFiles
     Old = fullfile(AllData.Path(Indx_F), AllData.Filename(Indx_F));
-    Core = ['SpFT_',num2str(AllData.ID(Indx_F), '%03.f')];
+    Core = ['SpFT_',num2str(AllData.ID(Indx_F), '%04.f')];
     New = fullfile(Destination, [Core, '.wav']);
     
     copyfile(Old, New)
