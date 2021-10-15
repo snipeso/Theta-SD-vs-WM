@@ -57,7 +57,7 @@ CLims_Diff = [-2 2];
 
 %% z-score SD effect
 
-figure('units','normalized','outerposition',[0 0 .5 .5])
+figure('units','normalized','outerposition',[0 0 1 1])
 tiledlayout(2,numel(BandLabels), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_S = 2:3
     for Indx_B = 1:numel(BandLabels)
@@ -78,3 +78,20 @@ end
 
 %% raw SD effect
 
+figure('units','normalized','outerposition',[0 0 1 1])
+tiledlayout(2,numel(BandLabels), 'Padding', 'none', 'TileSpacing', 'compact');
+for Indx_S = 2:3
+    for Indx_B = 1:numel(BandLabels)
+        
+        BL = squeeze(bData(:, 1, :, :, Indx_B));
+        
+        % Sleep deprivation vs baseline
+        SD = squeeze(bData(:, Indx_S, :, :, Indx_B));
+        
+        nexttile
+        plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
+        title(strjoin({BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, ' '), 'FontSize', Format.FontSize)
+    end
+    
+end
+ saveFig(strjoin({ TitleTag, 'raw'}, '_'), Results, Format)
