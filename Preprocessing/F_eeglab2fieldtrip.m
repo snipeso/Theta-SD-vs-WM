@@ -7,16 +7,19 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'Fixation';
+Task = 'PVT';
 Refresh = false;
 
 Data_Type = 'Power';
 
-Source_Folder = 'Elena'; % 'Deblinked'
 Destination_Folder = 'SourceLocalization';
 Cuts_Folder = 'New_Cuts';
 
-Window = 4; % epoch window in seconds
+Window = 8; % epoch window in seconds
+
+EEG_Triggers.Start = 'S  1';
+EEG_Triggers.End = 'S  2';
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -29,14 +32,11 @@ if ~exist(Destination, 'dir')
     mkdir(Destination)
 end
 
-
-
 Files = deblank(cellstr(ls(Source)));
 Files(~contains(Files, '.set')) = [];
 
-% randomize files list
+% randomize files list [???]
 nFiles = numel(Files);
-
 
 for Indx_F = 1:nFiles
     
@@ -54,18 +54,28 @@ for Indx_F = 1:nFiles
     [Channels, Points] = size(EEG.data);
     fs = EEG.srate;
     
-    try % lazy programming; if all the events needed to specify stop and start are present, use
-        % remove start and stop
-        StartPoint = EEG.event(strcmpi({EEG.event.type}, EEG_Triggers.Start)).latency;
-        EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
-        EEG.data(:, [1:round(StartPoint),  round(EndPoint):end]) = nan;
-    end
-    
+   % remove beginning
+        if any(strcmpi({EEG.event.type}, EEG_Triggers.Start))
+            StartPoint = EEG.event(strcmpi({EEG.event.type}, EEG_Triggers.Start)).latency;
+            EEG.data(:, 1:round(StartPoint)) = nan; %this gets removed in rmNoise, which removes anything that's a nan
+        else
+            warning('not removing beginning data...')
+        end
+        
+        % remove ending
+        if any(strcmpi({EEG.event.type},  EEG_Triggers.End))
+            EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
+            EEG.data(:, round(EndPoint):end) = nan; %this gets removed in rmNoise, which removes anything that's a nan
+        else
+            warning('not removing end data...')
+        end
     
     % set to nan all cut data
     Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(Filename, '_Clean'), '_Cuts.mat']);
-    EEG = nanNoise(EEG, Cuts_Filepath);
+     EEG = rmNoise(EEG, Cuts_Filepath);
     
+      EEG = rmNaN(EEG);
+      
     % remove non-elena channels
     RmCh = find(ismember({EEG.chanlocs.labels}, [string(EEG_Channels.notSourceLoc), "CZ"]));
     EEG = pop_select(EEG, 'nochannel', RmCh);
@@ -86,21 +96,8 @@ for Indx_F = 1:nFiles
     
     EEG = pop_epoch(EEG, {'Epoch_Start'}, [0 Window]);
     
-    
-    % remove epochs with noises
-    hasNan = [];
-    for Indx_S = 1:size(EEG.data, 3)
-        Data = EEG.data(:, :, Indx_S);
-        if any(isnan(Data(:)))
-            hasNan = [hasNan, Indx_S];
-        end
-    end
-    
-    EEG = pop_select(EEG, 'notrial', hasNan);
-    
     Data = eeglab2fieldtrip(EEG, 'raw', 'none');
-    
-    
+
     save(fullfile(Destination, NewFilename), 'Data', '-v7.3');
-    
+
 end
