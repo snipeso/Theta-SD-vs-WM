@@ -9,6 +9,10 @@
 *.svg
 *.loc
   
+
+# exceptions
+!All_Sentences.csv
+
 # Windows default autosave extension
 *.asv
 
