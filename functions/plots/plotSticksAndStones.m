@@ -35,7 +35,9 @@ end
 
 set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 axis square
+if~isempty(Legend)
 legend(Legend)
+end
 xlim([min(Data1(:)), max(Data1(:))])
 ylim([min(Data2(:)), max(Data2(:))])
 xlabel(AxisLabels{1})
