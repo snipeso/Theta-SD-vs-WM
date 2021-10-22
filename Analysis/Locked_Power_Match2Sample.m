@@ -77,16 +77,16 @@ for Indx_F = 1:numel(Files)
     %%% Set as nan all noise
     [Channels, Points] = size(EEG.data);
     fs = EEG.srate;
-
+    
     
     % set to nan all cut data
     Cuts_Filepath = fullfile(Source_Cuts, [Filename_Core, '_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
     
-      % remove nonEEG channels
-        EEG = pop_select(EEG, 'nochannel', labels2indexes(P.Channels.Remove, EEG.chanlocs));
-      
-        Chanlocs = EEG.chanlocs;
+    % remove nonEEG channels
+    EEG = pop_select(EEG, 'nochannel', labels2indexes(P.Channels.Remove, EEG.chanlocs));
+    
+    Chanlocs = EEG.chanlocs;
     %%% get power
     
     % epoch trials
@@ -123,7 +123,7 @@ for Indx_F = 1:numel(Files)
     Power = cat(4, Encoding, Retention1, Retention2, Probe);
     Power = permute(Power, [3, 4, 1, 2]); % data saved as trial x epoch x ch x freq
     
-
+    
     % get trial information
     Info = split(Filename_Core, '_');
     Trials = Answers(strcmp(Answers.Participant, Info{1})& ...
@@ -139,7 +139,7 @@ for Indx_F = 1:numel(Files)
     for Indx_T = 1:TotTrials
         if Trials.missed(Indx_T)
             continue
-        else 
+        else
             RTs(Indx_T) = abs(diff(AllTriggerTimes([ProbeIndx(Indx_T), ProbeIndx(Indx_T)+1]))/fs);
         end
     end
