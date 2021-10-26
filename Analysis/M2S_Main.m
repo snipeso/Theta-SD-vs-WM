@@ -23,12 +23,18 @@ ROI = 'preROI';
 Window = 2;
 Task = 'Match2Sample';
 Tag = ['w', num2str(Window)];
+BandLabels = fieldnames(Bands);
+ChLabels = fieldnames(Channels.(ROI));
 
-Results = fullfile(Paths.Results, 'M2S_ANOVA', Tag, ROI);
-if ~exist(Results, 'dir')
-    mkdir(Results)
+
+Main_Results = fullfile(Paths.Results, 'M2S_ANOVA',  ROI);
+if ~exist(Main_Results, 'dir')
+    for Indx_B = 1:numel(BandLabels)
+        for Indx_Ch = 1:numel(ChLabels)
+        mkdir(fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch}))
+        end
+    end
 end
-
 
 TitleTag = strjoin({'M2S', Tag, 'Main'}, '_');
 
@@ -54,8 +60,7 @@ tData = trialData(bData, AllTrials.level);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
-BandLabels = fieldnames(Bands);
-chLabels = fieldnames(Channels.(ROI));
+
 CLims_Diff = [-1.7 1.7];
 [nParticipants, nSessions, nTrials, nEpochs, nCh, nFreqs] = size(AllData);
 
@@ -70,7 +75,9 @@ FactorLabels = {'Session', 'Trial'};
 YLims = [-.2 .6];
 
 for Indx_B = 1:numel(BandLabels)
-    for Indx_Ch = 1:numel(chLabels)
+    for Indx_Ch = 1:numel(ChLabels)
+         Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
+       
         for Indx_E = 1:numel(Epochs)
             Data = squeeze(bData(:, :, :, Indx_E, Indx_Ch, Indx_B));
             Data = splitLevels(Data, AllTrials.level, 'mean');
@@ -80,14 +87,14 @@ for Indx_B = 1:numel(BandLabels)
             subplot(4, 1, 1)
             plotANOVA2way(Stats, FactorLabels, StatsP, Format)
             ylim([0 1])
-            title(strjoin({BandLabels{Indx_B}, chLabels{Indx_Ch}, Epochs{Indx_E}}, ' '), 'FontSize', Format.TitleSize)
+            title(strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}, Epochs{Indx_E}}, ' '), 'FontSize', Format.TitleSize)
             
             subplot(4, 1, 2:4)
             Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, string(Levels), ...
                 Format.Colors.Levels, StatsP, Format);
             ylim(YLims)
             
-            saveFig(strjoin({TitleTag, 'ANOVA', 'TrialType', BandLabels{Indx_B}, chLabels{Indx_Ch}, Epochs{Indx_E}}, '_'), Results, Format)
+            saveFig(strjoin({TitleTag, 'ANOVA', 'TrialType', BandLabels{Indx_B}, ChLabels{Indx_Ch}, Epochs{Indx_E}}, '_'), Results, Format)
         end
     end
 end
@@ -98,22 +105,26 @@ close all
 
 FactorLabels = {'Session', 'Epoch'};
 for Indx_B = 1:numel(BandLabels)
-    for Indx_Ch = 1:numel(chLabels)
+    for Indx_Ch = 1:numel(ChLabels)
         Data = squeeze(nanmean(bData(:, :, :, :, Indx_Ch, Indx_B), 3));
+          Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
         
         Stats = anova2way(Data, FactorLabels, Sessions.Labels, Epochs, StatsP);
         figure('units','normalized','outerposition',[0 0 .2 1])
         subplot(4, 1, 1)
         plotANOVA2way(Stats, FactorLabels, StatsP, Format)
         ylim([0 1])
-        title(strjoin({BandLabels{Indx_B}, chLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
+        title(strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
+        
+         TitleStats = strjoin({'Stats_Main', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_');
+        saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
         
         subplot(4, 1, 2:4)
         Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Epochs, ...
             reduxColormap(Format.Colormap.Rainbow, numel(Epochs)+1), StatsP, Format);
         ylim(YLims)
         
-        saveFig(strjoin({TitleTag, 'ANOVA', 'Epochs', BandLabels{Indx_B}, chLabels{Indx_Ch}}, '_'), Results, Format)
+        saveFig(strjoin({TitleTag, 'ANOVA', 'Epochs', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
     end
 end
 close all
@@ -162,9 +173,10 @@ saveFig(strjoin({TitleTag, 'theta', 'hedgesg'}, '_'), Results, Format)
 
 Labels = {'N1', 'N3', 'N6'};
 
-for Indx_Ch = 1:numel(chLabels)
+for Indx_Ch = 1:numel(ChLabels)
     
     for Indx_B = 1:numel(BandLabels)
+          Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
         for Indx_S = 1:numel(Sessions.Labels)
             % gather matrix
             
@@ -181,9 +193,9 @@ for Indx_Ch = 1:numel(chLabels)
             % plot matrix
             figure('units','normalized','outerposition',[0 0 .35, .65])
             plotStatsMatrix(G, repmat(Labels, 1, numel(Epochs)), Epochs, numel(Labels), StatsP.Paired.ES, Format)
-            title(strjoin({Sessions.Labels{Indx_S}, chLabels{Indx_Ch}, BandLabels{Indx_B}, 'Hedges G'}, ' '), 'FontSize', Format.TitleSize)
+            title(strjoin({Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}, BandLabels{Indx_B}, 'Hedges G'}, ' '), 'FontSize', Format.TitleSize)
             
-            saveFig(strjoin({TitleTag, 'gMatrix', Sessions.Labels{Indx_S}, chLabels{Indx_Ch}, BandLabels{Indx_B}, 'hedgesg'}, '_'), Results, Format)
+            saveFig(strjoin({TitleTag, 'gMatrix', Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}, BandLabels{Indx_B}, 'hedgesg'}, '_'), Results, Format)
             
         end
     end

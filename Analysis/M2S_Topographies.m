@@ -31,12 +31,16 @@ Task = 'Match2Sample';
 Tag = ['w', num2str(Window)];
 
 TitleTag = strjoin({'M2S', Tag, 'Topos'}, '_');
+BandLabels = fieldnames(Bands);
 
-Results = fullfile(Paths.Results, 'M2S_Topographies', Tag);
-if ~exist(Results, 'dir')
-    mkdir(Results)
+Main_Results = fullfile(Paths.Results, 'M2S_Topographies', Tag);
+if ~exist(Main_Results, 'dir')
+    for Indx_B = 1:numel(BandLabels)
+     
+        mkdir(fullfile(Main_Results, BandLabels{Indx_B}))
+
+    end
 end
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
@@ -53,7 +57,7 @@ bData = bandData(zData, Freqs, Bands, 'last');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
-BandLabels = fieldnames(Bands);
+
 CLims_Diff = [-1.7 1.7];
 [nParticipants, nSessions, nTrials, nEpochs, nCh, nFreqs] = size(AllData);
 
@@ -64,7 +68,9 @@ Levels = [1 3 6];
 
 for Indx_S = 1:nSessions
     for Indx_B = 1:numel(BandLabels)
+         Results = fullfile(Main_Results, BandLabels{Indx_B});
         
+         
         figure('units','normalized','outerposition',[0 0 .66 .6])
         %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         Indx = 1;
@@ -91,7 +97,7 @@ end
 
 figure('units','normalized','outerposition',[0 0 .25 .35])
 plotColorbar( CLims_Diff, 'hedges g', Format)
-saveFig(strjoin({TitleTag, 'Diff_Colorbar'}, '_'), Results, Format)
+saveFig(strjoin({TitleTag, 'Diff_Colorbar'}, '_'), Main_Results, Format)
 
 
 %% plot SD - BL for each epoch
@@ -99,6 +105,8 @@ saveFig(strjoin({TitleTag, 'Diff_Colorbar'}, '_'), Results, Format)
 
 for Indx_S = 2:nSessions
     for Indx_B = 1:numel(BandLabels)
+         Results = fullfile(Main_Results, BandLabels{Indx_B});
+        
         figure('units','normalized','outerposition',[0 0 .66 .35])
         %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         
@@ -127,6 +135,8 @@ end
 
 for Indx_S = 1:nSessions
     for Indx_B = 1:numel(BandLabels)
+         Results = fullfile(Main_Results, BandLabels{Indx_B});
+        
           figure('units','normalized','outerposition',[0 0 .66 .7])
           Indx = 1;
             %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');

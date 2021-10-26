@@ -50,7 +50,6 @@ TitleTag = strjoin({'Task', 'ANOVA'}, '_');
 
 Main_Results = fullfile(Paths.Results, 'Task_ANOVA', strjoin({TASKTYPE, Tag}, '_'), ROI);
 if ~exist(Main_Results, 'dir')
-    
     for Indx_B = 1:numel(BandLabels)
         for Indx_Ch = 1:numel(ChLabels)
         mkdir(fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch}))

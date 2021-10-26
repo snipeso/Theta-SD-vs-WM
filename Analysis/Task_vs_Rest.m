@@ -269,6 +269,7 @@ saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Re
 
 %% Sd vs bl
 
+CLims = [-1 2.5];
 
 for Indx_B = 1:numel(BandLabels)
     
@@ -280,7 +281,7 @@ for Indx_B = 1:numel(BandLabels)
 
         
         nexttile
-        plotTopo(nanmean(BL, 1), Chanlocs, CLims, Format.Labels.zPower, 'Divergent', Format);
+        plotTopo(nanmean(BL, 1), Chanlocs, CLims, Format.Labels.zPower, 'Linear', Format);
         
     colorbar off
     
