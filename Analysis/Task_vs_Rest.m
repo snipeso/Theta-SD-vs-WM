@@ -33,9 +33,9 @@ Channels = P.Channels;
 Duration = 4;
 WelchWindow = 8;
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
-TitleTag = strjoin({'Task', 'Topos', 'vs' 'Fixation', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
+TitleTag = strjoin({'Task', 'Topos', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_vs_Rest_Topographies', Tag);
+Results = fullfile(Paths.Results, 'Task_Topographies', Tag);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -272,6 +272,25 @@ saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Re
 
 for Indx_B = 1:numel(BandLabels)
     
+    % just baseline
+        figure('units','normalized','outerposition',[0 0 1 .45])
+    tiledlayout(1, numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
+    for Indx_T = 1:numel(AllTasks)
+        BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
+
+        
+        nexttile
+        plotTopo(nanmean(BL, 1), Chanlocs, CLims, Format.Labels.zPower, 'Divergent', Format);
+        
+    colorbar off
+    
+        title({[TaskLabels{Indx_T}, ' BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+        
+    end
+    
+    saveFig(strjoin({TitleTag, BandLabels{Indx_B}, 'BL'}, '_'), Results, Format.TitleSize)
+    
+    
     figure('units','normalized','outerposition',[0 0 1 .45])
     tiledlayout(1, numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
     for Indx_T = 1:numel(AllTasks)
@@ -286,7 +305,7 @@ for Indx_B = 1:numel(BandLabels)
         
     end
     
-    saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_SR'}, '_'), Results, Format.TitleSize)
+    saveFig(strjoin({TitleTag,  BandLabels{Indx_B}, 'SR'}, '_'), Results, Format.TitleSize)
     
     
     
@@ -304,12 +323,20 @@ for Indx_B = 1:numel(BandLabels)
         
     end
     
-    saveFig(strjoin({ 'SSSSC', TitleTag, BandLabels{Indx_B}, 'SD'}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, BandLabels{Indx_B}, 'SD'}, '_'), Results, Format)
     
 end
 figure('units','normalized','outerposition',[0 0 .25 .35])
 plotColorbar( CLims_Diff, 'hedges g', Format)
-saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Results, Format)
+saveFig(strjoin({ TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Results, Format)
+
+figure('units','normalized','outerposition',[0 0 .25 .35])
+plotColorbar( CLims, Format.Labels.zPower, Format)
+saveFig(strjoin({ TitleTag, 'Theta_Baseline_Colorbar'}, '_'), Results, Format)
+
+
+
+
 
 %% Compare BL, Task to Fix, and sdtheta (just theta
 ThetaIndx = strcmpi(BandLabels, 'theta');
