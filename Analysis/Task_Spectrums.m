@@ -41,7 +41,7 @@ ChLabels = fieldnames(ChannelStruct);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' Tag]);
+Filepath =  fullfile(P.Paths.Data, 'EEG', 'Unlocked', Tag);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 
@@ -75,7 +75,7 @@ for Indx_Ch = 1:numel(ChLabels)
         Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
         
         nexttile
-        plotSpectrumDiff(Data, Freqs, 1, [], Format.Colors.Sessions, Format)
+        plotSpectrumDiff(Data, Freqs, 1, [], Format.Colors.Sessions, Format, StatsP);
         set(gca, 'FontSize', 14)
         legend off
         ylabel ''

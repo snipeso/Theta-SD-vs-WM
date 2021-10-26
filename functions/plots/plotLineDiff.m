@@ -11,7 +11,7 @@ MeanDataP = squeeze(nanmean(Data, 1));
 hold on
 for Indx_S = 1:Dims(2)
     plot(X, MeanDataP(Indx_S, :), ':', 'Color', Colors(Indx_S, :), 'LineWidth', Format.LW/2)
-
+    
 end
 
 % conduct stats
@@ -55,14 +55,14 @@ for Indx_S = 1:Dims(2)
     
     SigData = nan(1, numel(X));
     for Indx_St = 1:numel(Starts)
-       SigData(Starts(Indx_St):Ends(Indx_St)) = MeanDataP(Indx_S, Starts(Indx_St):Ends(Indx_St));
+        SigData(Starts(Indx_St):Ends(Indx_St)) = MeanDataP(Indx_S, Starts(Indx_St):Ends(Indx_St));
         
     end
     
-scatter(X, SigData, 25, Colors(Indx_S, :), 'filled', ...
-         'HandleVisibility','off')    
+    scatter(X, SigData, 25, Colors(Indx_S, :), 'filled', ...
+        'HandleVisibility','off')
     plot(X, SigData, 'LineWidth', Format.LW, 'Color', Colors(Indx_S, :), ...
-         'HandleVisibility','off')
+        'HandleVisibility','off')
 end
 
 set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)

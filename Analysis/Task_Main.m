@@ -16,7 +16,7 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
 
-ROI = 'Standard';
+ROI = 'preROI';
 
 P = analysisParameters();
 
@@ -30,7 +30,7 @@ StatsP = P.StatsP;
 
 AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
 TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
-TASKTYPE = '';
+TASKTYPE = 'Main';
 
 % AllTasks = P.AllTasks;
 % TaskLabels = P.TaskLabels;
@@ -38,6 +38,9 @@ TASKTYPE = '';
 
 Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
 
+ChLabels = fieldnames(Channels.(ROI));
+BandLabels = fieldnames(Bands);
+FactorLabels = {'Session', 'Task'};
 
 Duration = 4;
 WelchWindow = 8;
@@ -45,19 +48,21 @@ WelchWindow = 8;
 Tag = ['window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'ANOVA'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_ANOVA', strjoin({TASKTYPE, Tag}, '_'), ROI);
-if ~exist(Results, 'dir')
-    mkdir(Results)
+Main_Results = fullfile(Paths.Results, 'Task_ANOVA', strjoin({TASKTYPE, Tag}, '_'), ROI);
+if ~exist(Main_Results, 'dir')
+    
+    for Indx_B = 1:numel(BandLabels)
+        for Indx_Ch = 1:numel(ChLabels)
+        mkdir(fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch}))
+        end
+    end
 end
 
-ChLabels = fieldnames(Channels.(ROI));
-BandLabels = fieldnames(Bands);
-FactorLabels = {'Session', 'Task'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_' Tag]);
+Filepath =  fullfile(P.Paths.Data, 'EEG', 'Unlocked', Tag);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % z-score it
@@ -80,7 +85,7 @@ bRawData = bandData(chRawData, Freqs, Bands, 'last');
 
 
 PlotChannelMap(Chanlocs, Channels.(ROI), Format.Colors.(ROI), Format)
-saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
+saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Main_Results, Format)
 
 
 %% run main ANOVA
@@ -91,6 +96,7 @@ for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)
         
         Data = squeeze(bData(:, :, :, Indx_Ch, Indx_B));
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
         
         % 2 way repeated measures anova with factors Session and Task
         Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
@@ -118,18 +124,22 @@ for Indx_Ch = 1:numel(ChLabels)
             SD = permute(Data(:, 2:3, :), [1 3 2]);
             StatsH = hedgesG(BL, SD, StatsP);
             
+            % Order values based on SD hedge's G
+            [~, Order] = sort(mean(StatsH.hedgesg, 2));
+            
             figure('units','normalized','outerposition',[0 0 .2 .6])
             
             % plot effect size lines
             hold on
             for E = Effects
-                plot([E, E], [.5, numel(TaskLabels)+.5], 'Color', [.9 .9 .9], 'HandleVisibility', 'off')
+                plot( [0, numel(TaskLabels)+1],[E, E], 'Color', [.9 .9 .9], 'HandleVisibility', 'off')
             end
             
-            plotUFO(StatsH.hedgesg, StatsH.hedgesgCI, TaskLabels, {'SR-BL', 'SD-BL'}, ...
-                Format.Colors.AllTasks, 'vertical', Format)
+            plotUFO(StatsH.hedgesg(Order, :), StatsH.hedgesgCI(Order, :, :), TaskLabels(Order), {'SR-BL', 'SD-BL'}, ...
+                Format.Colors.AllTasks(Order, :), 'vertical', Format)
             title(strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'Hedges g'}, ' '))
-            xlabel('Hedges g')
+            ylabel('Hedges g')
+            axis tight
             saveFig(strjoin({TitleTag, 'hedgesg', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
         end
     end
@@ -140,7 +150,7 @@ end
 
 % for Indx_Ch = 1:numel(ChLabels)
 %     for Indx_B = 1:numel(BandLabels)
-%
+% Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
 %         %         All = bRawData(:, :, :, Indx_Ch, Indx_B);
 %         %         YLims = [min(All(:)), max(All(:))];
 %         %         Diff =  diff(YLims);
@@ -185,18 +195,20 @@ for Indx_Ch = 1:numel(ChLabels)
         %         YLims(2) =Diff*.5 + YLims(2);
         %         YLims(1) = YLims(1)-Diff*.05;
         YLims = [];
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
         
         figure('units','normalized','outerposition',[0 0 1 .5])
-           tiledlayout(1, 3, 'Padding', 'none', 'TileSpacing', 'compact');
+        tiledlayout(1, 3, 'Padding', 'none', 'TileSpacing', 'compact');
         for Indx_S = 1:numel(Sessions.Labels)
             Data = squeeze(bData(:, Indx_S, :, Indx_Ch, Indx_B));
             
-%             subplot(1, numel(Sessions.Labels), Indx_S)
-nexttile
+            %             subplot(1, numel(Sessions.Labels), Indx_S)
+            nexttile
             Stats = plotScatterBox(Data, TaskLabels, StatsP, ...
                 Format.Colors.AllTasks, YLims, Format);
             ylabel('Power (z score)')
             title(strjoin({Sessions.Labels{Indx_S}, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'zData'}, ' '))
+            
             
         end
         
@@ -208,7 +220,7 @@ end
 
 
 %% plot z data for BL tasks (sorted) next to z data for SD2-BL changes
-% 
+%
 % Format.TitleSize = 20;
 % Format.FontSize = 14;
 % Format.LW = 2.5;
@@ -216,6 +228,8 @@ end
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
+        
         figure('units','normalized','outerposition',[0 0 .35 .6])
         
         % plot baseline tasks
@@ -224,13 +238,17 @@ for Indx_Ch = 1:numel(ChLabels)
         [~, Order] = sort(MEANS, 'descend');
         
         
-        Stats = plotScatterBox(Data(:, Order), TaskLabels(Order), StatsP, ...
+        plotScatterBox(Data(:, Order), TaskLabels(Order), StatsP, ...
             Format.Colors.AllTasks(Order, :), [], Format);
         ylabel('Power (z score)')
         title(strjoin({'BL Tasks', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
         
         saveFig(strjoin({TitleTag, 'scatter', 'BL_Tasks_Pairwise', ...
             BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+         
+        Stats = Pairwise(Data, StatsP);
+        TitleStats = strjoin({'Stats_Main', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'BL'}, '_'); 
+        saveStats(Stats, 'Pairwise', Results, TitleStats, StatsP)
         
         
         % plot changes with SD
@@ -239,7 +257,7 @@ for Indx_Ch = 1:numel(ChLabels)
         MEANS = nanmean(Diff);
         [~, Order] = sort(MEANS, 'descend');
         figure('units','normalized','outerposition',[0 0 .35 .6])
-        Stats = plotScatterBox(Diff(:, Order), TaskLabels(Order), StatsP, ...
+        plotScatterBox(Diff(:, Order), TaskLabels(Order), StatsP, ...
             Format.Colors.AllTasks(Order, :), [], Format);
         ylabel('Power Difference (z score)')
         title(strjoin({'SD-BL', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
@@ -247,6 +265,9 @@ for Indx_Ch = 1:numel(ChLabels)
         
         saveFig(strjoin({TitleTag, 'scatter', 'SD_Pairwise', ...
             BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+        Stats = Pairwise(Diff, StatsP); 
+        TitleStats = strjoin({'Stats_Main', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'SD-BL'}, '_'); 
+        saveStats(Stats, 'Pairwise', Results, TitleStats, StatsP)
     end
 end
 
@@ -261,6 +282,7 @@ for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)
         
         Data = squeeze(bData(:, :, :, Indx_Ch, Indx_B));
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
         
         % plot spaghetti-o plot of tasks x sessions for each ch and each band
         figure('units','normalized','outerposition',[0 0 .2 .7])
@@ -281,6 +303,7 @@ end
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
         
         figure('units','normalized','outerposition',[0 0 1 .5])
         for Indx_T = 1:numel(AllTasks)

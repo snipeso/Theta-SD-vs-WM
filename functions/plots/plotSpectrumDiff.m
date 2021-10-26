@@ -17,7 +17,7 @@ Max = max(Means(:));
 
 % stats unit
 StatWidth = StatsP.FreqBin; % # frequencies to pool
-StatWidth = dsearchn(Freqs'-Freqs(1), StatWidth);
+% StatWidth = dsearchn(Freqs'-Freqs(1), StatWidth);
 
 % plot thin lines marking the theta range
 

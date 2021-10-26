@@ -19,7 +19,8 @@ Durations = P.Durations;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Refresh = false;
-Tasks = {'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music',  'Fixation'};
+% Tasks = {'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music',  'Fixation'};
+Tasks = {'SpFT'};
 WelchWindow = 8;
 
 EEG_Triggers.Start = 'S  1';
@@ -83,7 +84,7 @@ for Indx_T = 1:numel(Tasks)
         for D = Durations.(Task) % loop through different file durations
             
             Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(D),'m'];
-            Destination = fullfile(Paths.Data, 'EEG', ['Unlocked_' Tag], Task);
+            Destination = fullfile(Paths.Data, 'EEG', 'Unlocked', Tag, Task);
             if ~exist(Destination, 'dir')
                 mkdir(Destination)
             end

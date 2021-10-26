@@ -56,7 +56,7 @@ Format.FontName = 'Tw Cen MT'; % use something else for papers
 Format.FontSize = 25;
 Format.TitleSize = 30;
 Format.TopoRes = 300;
-Format.Steps.Topo = 20;
+Format.Steps.Topo = 15;
 Format.LW = 5;
 Format.Topo.Sig = 3;
 Format.ScatterSize = 200; % TODO: seperate features for small or big screen
@@ -210,17 +210,30 @@ P.Sessions = Sessions;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Durations
+% 
+% Durations.Match2Sample =  [-2, 1 2 4 6 8, 10, 12, 15, 20, 25];
+% Durations.LAT =  [-2, 1 2 4 6 8, 10];
+% Durations.PVT =  [-2, 1 2 4 6 8];
+% Durations.SpFT =  [-2, 1 2 4 6];
+% Durations.Game =  [-2, 1 2 4 6 8];
+% Durations.Music =  [-2, 1 2 4];
+% Durations.Fixation =  [-2, 1 2 4 6];
+% Durations.Standing =  [-2, 1 2 4 6];
+% Durations.Oddball =  [-2, 1 2 4 6];
+% Durations.MWT = [40];
 
-Durations.Match2Sample =  [-2, 1 2 4 6 8, 10, 12, 15, 20, 25];
-Durations.LAT =  [-2, 1 2 4 6 8, 10];
-Durations.PVT =  [-2, 1 2 4 6 8];
-Durations.SpFT =  [-2, 1 2 4 6];
-Durations.Game =  [-2, 1 2 4 6 8];
-Durations.Music =  [-2, 1 2 4];
-Durations.Fixation =  [-2, 1 2 4 6];
-Durations.Standing =  [-2, 1 2 4 6];
-Durations.Oddball =  [-2, 1 2 4 6];
-Durations.MWT = [40];
+
+Durations.Match2Sample =  [4];
+Durations.LAT =  [4];
+Durations.PVT =  [4];
+Durations.SpFT =  [4];
+Durations.Game =  [4];
+Durations.Music =  [4];
+Durations.Fixation =  [4];
+Durations.Standing =  [4];
+Durations.Oddball =  [4];
+Durations.MWT = [4];
+
 
 P.Durations = Durations;
 
