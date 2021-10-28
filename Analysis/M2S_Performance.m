@@ -10,8 +10,6 @@ clc
 %%% Parameters
 
 
-
-
 P = analysisParameters();
 
 Paths = P.Paths;
@@ -68,6 +66,10 @@ FactorLabels = {'Session', 'Trial'};
 Data = splitLevels(AllTrials.correct, AllTrials.level, 'ratio');
 
 Stats = anova2way(Data, FactorLabels, Sessions.Labels, string(Levels), StatsP);
+
+ TitleStats = strjoin({'Stats', TitleTag, 'SessionxLevel', '%correct'}, '_');
+        saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
+        
 figure('units','normalized','outerposition',[0 0 .3 .4])
 plotANOVA2way(Stats, FactorLabels, StatsP, Format)
 ylim([0 1])
@@ -95,6 +97,10 @@ FactorLabels = {'Session', 'Trial'};
 Data = splitLevels(AllTrials.RT, AllTrials.level, 'mean');
 
 Stats = anova2way(Data, FactorLabels, Sessions.Labels, string(Levels), StatsP);
+
+TitleStats = strjoin({'Stats', TitleTag, 'SessionxLevel', 'RT'}, '_');
+        saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
+        
 figure('units','normalized','outerposition',[0 0 .3 .4])
 plotANOVA2way(Stats, FactorLabels, StatsP, Format)
 ylim([0 1])
@@ -110,8 +116,6 @@ ylabel('RT (s)')
 
 title(strjoin({'RT'}, ' '), 'FontSize', Format.TitleSize)
 saveFig(strjoin({TitleTag,  'Means', 'RT',}, '_'), Results, Format)
-
-close all
 
 
 

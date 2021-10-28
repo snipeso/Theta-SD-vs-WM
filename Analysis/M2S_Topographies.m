@@ -36,9 +36,9 @@ BandLabels = fieldnames(Bands);
 Main_Results = fullfile(Paths.Results, 'M2S_Topographies', Tag);
 if ~exist(Main_Results, 'dir')
     for Indx_B = 1:numel(BandLabels)
-     
+        
         mkdir(fullfile(Main_Results, BandLabels{Indx_B}))
-
+        
     end
 end
 
@@ -68,9 +68,9 @@ Levels = [1 3 6];
 
 for Indx_S = 1:nSessions
     for Indx_B = 1:numel(BandLabels)
-         Results = fullfile(Main_Results, BandLabels{Indx_B});
+        Results = fullfile(Main_Results, BandLabels{Indx_B});
         
-         
+        
         figure('units','normalized','outerposition',[0 0 .66 .6])
         %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         Indx = 1;
@@ -84,12 +84,12 @@ for Indx_S = 1:nSessions
                 % nexttile
                 subplot(2, nEpochs, Indx)
                 plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Format);
-                title([Epochs{Indx_E}, ' N', num2str(Levels(Indx_L))], 'FontSize', Format.TitleSize)
+                title([Epochs{Indx_E}, ' L', num2str(Levels(Indx_L))], 'FontSize', Format.TitleSize)
                 colorbar off
                 Indx = Indx+1;
             end
         end
-        saveFig(strjoin({ TitleTag, 'N3vN1', BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, '_'), Results, Format)
+        saveFig(strjoin({ TitleTag, 'classic', BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, '_'), Results, Format)
     end
     close all
 end
@@ -100,33 +100,61 @@ plotColorbar( CLims_Diff, 'hedges g', Format)
 saveFig(strjoin({TitleTag, 'Diff_Colorbar'}, '_'), Main_Results, Format)
 
 
-%% plot SD - BL for each epoch
+%% plot SD - BL for each level
 
 
 for Indx_S = 2:nSessions
     for Indx_B = 1:numel(BandLabels)
-         Results = fullfile(Main_Results, BandLabels{Indx_B});
+        Results = fullfile(Main_Results, BandLabels{Indx_B});
         
-        figure('units','normalized','outerposition',[0 0 .66 .35])
-        %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
-        
-        for Indx_E = 1:nEpochs
+        for Indx_L = 1:3
+            figure('units','normalized','outerposition',[0 0 .66 .35])
+            %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
             
-            BL = squeeze(nanmean(bData(:, 1, :, Indx_E, :, Indx_B), 3));
-            SD = squeeze(nanmean(bData(:, Indx_S, :, Indx_E, :, Indx_B), 3));
-            
-            %             nexttile
-            subplot(1, nEpochs, Indx_E)
-            plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
-            title(Epochs{Indx_E}, 'FontSize', Format.TitleSize)
-            colorbar off
-            
+            for Indx_E = 1:nEpochs
+                BL = squeeze(bData(:, 1, :, Indx_E, :, Indx_B));
+                SD = squeeze(bData(:, Indx_S, :, Indx_E, :, Indx_B));
+                
+                L_BL = averageTrials(BL, squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L));
+                L_SD = averageTrials(SD, squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L));
+                
+                %             nexttile
+                subplot(1, nEpochs, Indx_E)
+                plotTopoDiff(L_BL, L_SD, Chanlocs, CLims_Diff, StatsP, Format);
+                title(strjoin({Epochs{Indx_E}, Sessions.Labels{Indx_S}, ['L', num2str(Levels(Indx_L))]}, ' '), 'FontSize', Format.TitleSize)
+                colorbar off
+                
+            end
+            saveFig(strjoin({ TitleTag, 'SDEffect_xLevel', BandLabels{Indx_B}, Sessions.Labels{Indx_S}, num2str(Levels(Indx_L))}, '_'), Results, Format)
         end
-        saveFig(strjoin({ TitleTag, 'SDEffect', BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, '_'), Results, Format)
     end
     close all
 end
 
+%% plot SD - BL for every epoch
+
+
+for Indx_B = 1:numel(BandLabels)
+    Results = fullfile(Main_Results, BandLabels{Indx_B});
+    
+    figure('units','normalized','outerposition',[0 0 .66 .35])
+    %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
+    
+    for Indx_E = 1:nEpochs
+        
+        BL = squeeze(nanmean(bData(:, 1, :, Indx_E, :, Indx_B), 3));
+        SD = squeeze(nanmean(bData(:, Indx_S, :, Indx_E, :, Indx_B), 3));
+        
+        %             nexttile
+        subplot(1, nEpochs, Indx_E)
+        plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
+        title(Epochs{Indx_E}, 'FontSize', Format.TitleSize)
+        colorbar off
+        
+    end
+    saveFig(strjoin({ TitleTag, 'SDEffect', BandLabels{Indx_B}, Sessions.Labels{Indx_S}}, '_'), Results, Format)
+end
+close all
 
 
 %% for N3 trials, plot correct vs incorrect topos
@@ -135,11 +163,11 @@ end
 
 for Indx_S = 1:nSessions
     for Indx_B = 1:numel(BandLabels)
-         Results = fullfile(Main_Results, BandLabels{Indx_B});
+        Results = fullfile(Main_Results, BandLabels{Indx_B});
         
-          figure('units','normalized','outerposition',[0 0 .66 .7])
-          Indx = 1;
-            %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
+        figure('units','normalized','outerposition',[0 0 .66 .7])
+        Indx = 1;
+        %         tiledlayout(1, nEpochs, 'Padding', 'none', 'TileSpacing', 'compact');
         for Indx_L = 1:3
             for Indx_E = 1:nEpochs
                 Data = squeeze(bData(:, Indx_S, :, Indx_E, :, Indx_B));
@@ -157,9 +185,9 @@ for Indx_S = 1:nSessions
                 colorbar off
                 Indx = Indx+1;
             end
-          
+            
         end
-          saveFig(strjoin({ TitleTag, 'CorrectvsIncorrect', BandLabels{Indx_B}, Sessions.Labels{Indx_S}, }, '_'), Results, Format)
+        saveFig(strjoin({ TitleTag, 'CorrectvsIncorrect', BandLabels{Indx_B}, Sessions.Labels{Indx_S}, }, '_'), Results, Format)
     end
     close all
 end

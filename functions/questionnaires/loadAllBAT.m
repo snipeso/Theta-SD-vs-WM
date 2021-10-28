@@ -45,7 +45,13 @@ for Indx_T = 1:numel(Tasks)
         [Data, L] = table2matrix(CSV, Participants, Sessions.(Tasks{Indx_T}), qID, 'numAnswer');
         
         if Indx_T == 1 % just once
-           Labels.(Titles{Indx_Q}) = L; 
+            
+            % deal with problem labels for "interesting"
+            if strcmp(Titles{Indx_Q}, 'Interesting')
+           Labels.(Titles{Indx_Q}) = {'Boring', 'Neutral', 'Fun/Interesting'};
+            else
+           Labels.(Titles{Indx_Q}) = L;
+            end
         end
         
         Answers.(Titles{Indx_Q})(:, :, Indx_T) = Data;

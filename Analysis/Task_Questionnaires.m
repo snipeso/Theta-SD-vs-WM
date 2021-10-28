@@ -20,10 +20,7 @@ StatsP = P.StatsP;
 
 TitleTag = strjoin({'Task', 'Questionnaires'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_Questionnaires');
-if ~exist(Results, 'dir')
-    mkdir(Results)
-end
+
 
 FactorLabels = {'Session', 'Task'};
 
@@ -41,15 +38,25 @@ Format.Colors.AllTasks =  Format.Colors.AllTasks(1:numel(AllTasks), :);
 
 Questions = fieldnames(Answers);
 
+Main_Results = fullfile(Paths.Results, 'Task_Questionnaires');
+if ~exist(Main_Results, 'dir')
+    for Indx_Q = 1:numel(Questions)
+    mkdir(fullfile(Main_Results, Questions{Indx_Q}))
+    end
+end
+
 %% ANOVA
 Effects = -3:.5:3;
 
-for Indx_Q = 1:numel(Questions)
+for Indx_Q = 1:numel(Questions)-1
     Data = Answers.(Questions{Indx_Q});
+    Results = fullfile(Main_Results, Questions{Indx_Q});
     
     % 2 way repeated measures anova with factors Session and Task
     Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
-    
+     TitleStats = strjoin({'Stats', TitleTag,  Questions{Indx_Q} }, '_');
+        saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
+        
     % eta2 comparison for task and session to determine which has larger impact
     Title = strjoin({Questions{Indx_Q}, '2 way RANOVA Effect Sizes'}, ' ');
     
@@ -98,6 +105,7 @@ Format.LW = 2.5;
 Format.ScatterSize = 50;
 
 for Indx_Q = 1:numel(Questions)-1
+        Results = fullfile(Main_Results, Questions{Indx_Q});
     figure('units','normalized','outerposition',[0 0 1 .5])
     tiledlayout(1, 3, 'Padding', 'none', 'TileSpacing', 'compact');
     for Indx_S = 1:numel(Sessions.Labels)
@@ -126,8 +134,8 @@ end
 Indx_BL = 1;
 YLim = [0 1];
 
-for Indx_Q = 1:numel(Questions)
-    
+for Indx_Q = 1:numel(Questions)-1
+        Results = fullfile(Main_Results, Questions{Indx_Q});
     Data = Answers.(Questions{Indx_Q});
     
     % plot spaghetti-o plot of tasks x sessions for each ch and each band

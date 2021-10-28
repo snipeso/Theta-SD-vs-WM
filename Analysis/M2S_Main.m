@@ -31,7 +31,7 @@ Main_Results = fullfile(Paths.Results, 'M2S_ANOVA',  ROI);
 if ~exist(Main_Results, 'dir')
     for Indx_B = 1:numel(BandLabels)
         for Indx_Ch = 1:numel(ChLabels)
-        mkdir(fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch}))
+            mkdir(fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch}))
         end
     end
 end
@@ -67,22 +67,26 @@ CLims_Diff = [-1.7 1.7];
 Epochs = Format.Labels.Epochs;
 Levels = [1 3 6];
 
+YLims = [-.2 .6];
 
 %% Bands ANOVA for SD vs memory load
 
 FactorLabels = {'Session', 'Trial'};
 
-YLims = [-.2 .6];
 
 for Indx_B = 1:numel(BandLabels)
     for Indx_Ch = 1:numel(ChLabels)
-         Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
-       
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
+        
         for Indx_E = 1:numel(Epochs)
             Data = squeeze(bData(:, :, :, Indx_E, Indx_Ch, Indx_B));
             Data = splitLevels(Data, AllTrials.level, 'mean');
             
             Stats = anova2way(Data, FactorLabels, Sessions.Labels, string(Levels), StatsP);
+            
+            TitleStats = strjoin({'Stats_Main_Level', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}, Epochs{Indx_E}}, '_');
+            saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
+            
             figure('units','normalized','outerposition',[0 0 .2 1])
             subplot(4, 1, 1)
             plotANOVA2way(Stats, FactorLabels, StatsP, Format)
@@ -107,7 +111,7 @@ FactorLabels = {'Session', 'Epoch'};
 for Indx_B = 1:numel(BandLabels)
     for Indx_Ch = 1:numel(ChLabels)
         Data = squeeze(nanmean(bData(:, :, :, :, Indx_Ch, Indx_B), 3));
-          Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
         
         Stats = anova2way(Data, FactorLabels, Sessions.Labels, Epochs, StatsP);
         figure('units','normalized','outerposition',[0 0 .2 1])
@@ -116,7 +120,7 @@ for Indx_B = 1:numel(BandLabels)
         ylim([0 1])
         title(strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
         
-         TitleStats = strjoin({'Stats_Main', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_');
+        TitleStats = strjoin({'Stats_Main_Epoch', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_');
         saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
         
         subplot(4, 1, 2:4)
@@ -176,12 +180,12 @@ Labels = {'N1', 'N3', 'N6'};
 for Indx_Ch = 1:numel(ChLabels)
     
     for Indx_B = 1:numel(BandLabels)
-          Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
         for Indx_S = 1:numel(Sessions.Labels)
             % gather matrix
             
             Data = squeeze(tData(:, Indx_S, :, :, Indx_Ch, Indx_B));
-
+            
             Data = reshape(Data, numel(Participants), []);
             
             Stats = hedgesG(Data, StatsP);

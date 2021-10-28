@@ -47,7 +47,7 @@ bData = bandData(zData, Freqs, Bands, 'last');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 BandLabels = fieldnames(Bands);
-CLims_Diff = [-1.7 1.7];
+CLims_Diff = [-2 2];
 
 Epochs = {'Read', 'Speak'};
 
