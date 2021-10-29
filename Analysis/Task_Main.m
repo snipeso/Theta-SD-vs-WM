@@ -80,8 +80,7 @@ bRawData = bandData(chRawData, Freqs, Bands, 'last');
 %%% Plot & analyze data
 
 
-% plot map of channels
-
+%% plot map of channels
 
 PlotChannelMap(Chanlocs, Channels.(ROI), Format.Colors.(ROI), Format)
 saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Main_Results, Format)

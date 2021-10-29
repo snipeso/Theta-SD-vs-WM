@@ -18,10 +18,11 @@ Durations = P.Durations;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = false;
+Refresh = true;
 % Tasks = {'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music',  'Fixation'};
 Tasks = {'SpFT'};
 WelchWindow = 8;
+Overlap = .75; % overlap of hanning windows for FFT
 
 EEG_Triggers.Start = 'S  1';
 EEG_Triggers.End = 'S  2';
@@ -112,7 +113,7 @@ for Indx_T = 1:numel(Tasks)
             Duration = size(EEGshort.data, 2)/EEGshort.srate;
             
             nfft = 2^nextpow2(WelchWindow*fs);
-            noverlap = round(nfft*.75);
+            noverlap = round(nfft*Overlap);
             window = hanning(nfft);
             [Power, Freqs] = pwelch(EEGshort.data', window, noverlap, nfft, fs);
             Power = Power';

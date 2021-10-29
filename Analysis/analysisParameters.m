@@ -173,12 +173,12 @@ Backspot = [66 71 76 84 65 70 75 83 90 69 74 82 89];
 EdgeChannels = [17 128 43 48 63 68 73 81 88 94 99 120 119 125];
 ExcludedChannels = [49 56 107 113 126 127];
 AllCh = 1:129;
-Channels.preROI.All = AllCh;
+% Channels.preROI.All = AllCh;
 Channels.preROI.Front = Frontspot;
 Channels.preROI.Back = Backspot;
 Channels.preROI.Elsewhere = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
 
-Format.Colors.preROI = [ .5 .5 .5;
+Format.Colors.preROI = [
     [228, 104, 90; % red
     99, 88, 226; % blue
     244, 204, 32;
@@ -190,6 +190,7 @@ Channels.Remove = [48 119];
 P.Format = Format;
 P.Channels = Channels;
 P.Bands = Bands;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Labels
