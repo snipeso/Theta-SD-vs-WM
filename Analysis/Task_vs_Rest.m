@@ -267,7 +267,7 @@ plotColorbar( CLims_Diff, 'hedges g', Format)
 saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Results, Format)
 
 
-%% Sd vs bl
+% Sd vs bl
 
 CLims = [-1 2.5];
 

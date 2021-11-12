@@ -7,7 +7,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'PVT';
+Task = 'Match2Sample';
 Refresh = false;
 
 Data_Type = 'Power';
