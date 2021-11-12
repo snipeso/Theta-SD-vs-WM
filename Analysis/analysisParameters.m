@@ -10,8 +10,8 @@ function P = analysisParameters()
 P.Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', ...
     'P09', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P19'};
 
-P.AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'Fixation'};
-P.TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music', 'Rest'};
+P.AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
+P.TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 % 
 % P.AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'Standing', 'Oddball', 'Fixation'};
 % P.TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music', 'EC', 'Oddball', 'EO'};
@@ -165,7 +165,7 @@ Channels.preROI.Front = Frontspot;
 Channels.preROI.Back = Backspot;
 Channels.preROI.Elsewhere = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
 
-Format.Colors.preROI = getColors(numel(fieldnames(preROI)));
+Format.Colors.preROI = getColors(numel(fieldnames(Channels.preROI)));
 
 Channels.Remove = [48 119];
 
