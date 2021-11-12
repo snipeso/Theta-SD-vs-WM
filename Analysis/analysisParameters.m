@@ -63,7 +63,7 @@ Format.ScatterSize = 200; % TODO: seperate features for small or big screen
 
 Format.Colormap.Linear = flip(colorcet('L17'));
 Format.Colormap.Monochrome = colorcet('L1');
-Format.Colormap.Divergent = colorcet('D1');
+Format.Colormap.Divergent = colorcet('D1A');
 Format.Colormap.Rainbow = unirainbow;
 
 Format.Colors.Participants = reduxColormap(Format.Colormap.Rainbow, numel(P.Participants));
