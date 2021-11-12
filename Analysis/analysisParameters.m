@@ -70,33 +70,20 @@ Format.Colors.Participants = reduxColormap(Format.Colormap.Rainbow, numel(P.Part
 
 Format.Alpha.Participants = .3;
 
-% basic colors for simple plots
-Format.Colors.Dark1 = [99, 88, 226]/255; % Standing purle
-Format.Colors.Red = [228, 104, 90]/255; % M2S red
-Format.Colors.Light1 = [244, 204, 32]/255; % PVT yellow
+Format.Colors.AllTasks = getColors(6, 'rainbow');
+for Indx_T = 1:numel(P.AllTasks)
+     Format.Colors.Tasks.(P.AllTasks{Indx_T}) = Format.Colors.AllTasks(Indx_T, :);
+end
 
-Format.Colors.Tasks.PVT = [244, 204, 32]/255;
-Format.Colors.Tasks.LAT = [246, 162, 75]/255;
-Format.Colors.Tasks.Match2Sample = [228, 104, 90]/255;
-
-Format.Colors.Tasks.SpFT = [185, 204, 38]/255;
-Format.Colors.Tasks.Game = [44, 190, 107]/255;
-Format.Colors.Tasks.Music = [22, 144, 167]/255;
-
-Format.Colors.Tasks.Oddball = [222, 122, 184]/255;
-Format.Colors.Tasks.Fixation = [172, 86, 224]/255;
-Format.Colors.Tasks.Standing = [99, 88, 226]/255;
-
-Format.Colors.Levels = reduxColormap(Format.Colormap.Linear, 4);
+Format.Colors.Levels = getColors([1 3], 'rainbow', 'red'); % M2S red
 
 Format.Colors.SigStar = [0 0 0];
 
-Format.Colors.Sessions =  [Format.Colors.Dark1; Format.Colors.Red; Format.Colors.Tasks.LAT];
+Format.Colors.Sessions = getColors(3);
 
-Format.Colors.AllTasks = nan(numel(P.AllTasks), 3);
-for Indx_T = 1:numel(P.AllTasks)
-    Format.Colors.AllTasks(Indx_T, :) = Format.Colors.Tasks.(P.AllTasks{Indx_T});
-end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Power/EEG information
 
 Bands.Delta = [1 4];
 Bands.Theta = [4 8];
@@ -178,14 +165,9 @@ Channels.preROI.Front = Frontspot;
 Channels.preROI.Back = Backspot;
 Channels.preROI.Elsewhere = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
 
-Format.Colors.preROI = [
-    [228, 104, 90; % red
-    99, 88, 226; % blue
-    244, 204, 32;
-]/ 255];
+Format.Colors.preROI = getColors(numel(fieldnames(preROI)));
 
 Channels.Remove = [48 119];
-
 
 P.Format = Format;
 P.Channels = Channels;
@@ -207,7 +189,6 @@ Sessions.Oddball = {'BaselinePost', 'Main3', 'Main7'};
 Sessions.Labels = {'BL', 'SR', 'SD'};
 
 P.Sessions = Sessions;
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Durations
