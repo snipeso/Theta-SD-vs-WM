@@ -14,12 +14,12 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks = {  'PVT'}; % which tasks to convert (for now)
+allTasks = {'Game'}; % which tasks to convert (for now)
 Filename = [];
-Refresh = false; % redo already done files
+Refresh = true; % redo already done files
 
-% %%% emergency code if I need to fix a specific file
-% Filename = 'P19_Match2Sample_Baseline_ICA_Components.set';
+% % %%% emergency code if I need to fix a specific file
+% Filename = 'P15_Music_Baseline_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;
@@ -96,6 +96,19 @@ for Indx_F = 1:nFiles % loop through files in source folder
         continue
     end
     
+    % TEMP FOR FIX:
+    m = matfile(fullfile(Source_Cuts, Filename_Cuts),'Writable',false);
+
+Content = whos(m);
+if ~ismember('badchans_postICA', {Content.name})
+    disp(['skip ', num2str(Filename_Core)])
+    continue
+end
+   
+if ismember('Fixed', {Content.name})
+    disp(['fixed ', num2str(Filename_Core)])
+    continue
+end
     
     %%% Get data ready
     % load data
