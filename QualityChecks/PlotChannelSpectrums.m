@@ -38,8 +38,9 @@ Format.Labels.Bands = log(Format.Labels.Bands);
 for Indx_P = 1:numel(Participants)
     figure('units','normalized','outerposition',[0 0 1 1])
     tiledlayout( numel(Sessions.Labels), numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
-    for Indx_T = 1:numel(AllTasks)
-        for Indx_S = 1:numel(Sessions.Labels)
+    for Indx_S = 1:numel(Sessions.Labels)
+        
+        for Indx_T = 1:numel(AllTasks)
             
             Filename = strjoin({Participants{Indx_P}, AllTasks{Indx_T}, ...
                 Sessions.( AllTasks{Indx_T}){Indx_S}, 'Welch.mat'}, '_');
@@ -49,7 +50,7 @@ for Indx_P = 1:numel(Participants)
             % load file
             if ~exist(Path, 'file')
                 nexttile
-                  title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' ') )
+                title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' ') )
                 continue
             end
             load(Path, 'Power', 'Freqs')
