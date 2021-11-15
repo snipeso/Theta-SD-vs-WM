@@ -43,11 +43,18 @@ for Indx_P = 1:numel(Participants)
         end
     
     if ~exist('badchans_postICA', 'var')
-        badchans_postICA = [];
+        badchans_postICA = []; 
     end
     
     
+OldChannels = 1:128;
+OldChannels(badchans) = [];
+
+Ch = find(ismember(OldChannels, badchans_postICA)); % get new location
     
+
+
+
     clear badchans badchans_postICA
     
     end

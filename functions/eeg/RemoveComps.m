@@ -170,10 +170,10 @@ end
 if strcmp(xEEG, 'y') || strcmp(xEEG, 'auto')
     
     % remove bad channels
-    badchans_postICA = []; %#ok<NASGU>
+    badchans_postICA = []; %#ok<NASGU>, just in case this variable is not present below
     load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA') % manually selected bad channels
     
-    NotEEGCh = find(ismember({NewEEG.chanlocs.labels}, string(EEG_Channels.notEEG))); % remove channels that you don't want in final dataset
+    NotEEGCh = labels2indexes([EEG_Channels.notEEG, badchans_postICA], NewEEG.chanlocs); % convert based on already removed channels
     
     NewEEG = pop_select(NewEEG, 'nochannel', [badchans_postICA, NotEEGCh]);
     

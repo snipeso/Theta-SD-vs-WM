@@ -1,5 +1,6 @@
 function rmCh_postICA(CutFilename, Ch)
-% function for C_Cuts in preprocessing to remove a channel
+% function for C_Cuts in preprocessing to remove a channel. Ch is saved as
+% the absolute label, not the index within the matrix.
 
 if any(Ch < 1) || any(Ch > 128)
     warning('not real channels!')
@@ -20,12 +21,6 @@ Ch = setdiff(Ch, badchans);
 if isempty(Ch)
     return
 end
-
-% identify new channel indices based on the bad channels already removed
-OldChannels = 1:128;
-OldChannels(badchans) = [];
-
-Ch = find(ismember(OldChannels, Ch));
 
 if ismember('badchans_postICA', {Content.name})
     Ch = [m.badchans_postICA, Ch];
