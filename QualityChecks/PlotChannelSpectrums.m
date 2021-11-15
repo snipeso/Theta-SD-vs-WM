@@ -47,6 +47,11 @@ for Indx_P = 1:numel(Participants)
                 Filename);
             
             % load file
+            if ~exist(Path, 'file')
+                nexttile
+                  title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' ') )
+                continue
+            end
             load(Path, 'Power', 'Freqs')
             
             % plot
@@ -61,6 +66,7 @@ for Indx_P = 1:numel(Participants)
             title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' ') )
         end
     end
+    setLimsTiles(numel(Sessions.Labels)*numel(AllTasks), 'y')
     saveFig(strjoin({TitleTag, Participants{Indx_P}}, '_'), Results, Format)
 end
 
