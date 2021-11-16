@@ -95,6 +95,8 @@ bubbleTopo(Data, StandardChanlocs, 200, '2D', {StandardChanlocs.labels}, Format)
 colormap(flip(Format.Colormap.Monochrome))
 saveFig(strjoin({TitleTag, 'allRecordings', 'Topo'}, '_'), Results, Format)
 
+Data = 100*(squeeze(sum(sum(sum(sum(AllCh==0, 3), 2),1), 4))./squeeze(sum(sum(sum(sum(~isnan(AllCh), 3), 2),1), 4)));
+disp(['Total channels removed: ', num2str(Data), '%'])
 
 %% removed channels split by session
 Data = 100*(squeeze(sum(sum(AllCh==0, 3),1))./squeeze(sum(sum(~isnan(AllCh)==1, 3),1)));
@@ -128,10 +130,15 @@ for Indx_S =1:numel(Sessions.Labels)
     colorbar off
     title([Sessions.Labels{Indx_S}], 'FontSize', Format.TitleSize)
 end
-setLimsTiles( numel(Sessions.Labels), 'c')
+setLimsTiles( numel(Sessions.Labels), 'c');
 
 saveFig(strjoin({TitleTag, 'Sessions', 'Topos'}, '_'), Results, Format)
 
+Data = 100*(squeeze(sum(sum(sum(AllCh==0, 3),1), 4))./squeeze(sum(sum(sum(~isnan(AllCh)==1, 3),1), 4)));
+
+for Indx_S = 1:numel(Sessions.Labels)
+disp([Sessions.Labels{Indx_S}, ' channels removed: ', num2str(Data(Indx_S)), '%'])  
+end
 
 %% removed channels split by task
 
@@ -166,10 +173,16 @@ for Indx_T =1:numel(AllTasks)
     colorbar off
     title([TaskLabels{Indx_T}], 'FontSize', Format.TitleSize)
 end
-setLimsTiles(numel(AllTasks), 'c')
+setLimsTiles(numel(AllTasks), 'c');
 
 saveFig(strjoin({TitleTag, 'Tasks', 'Topos'}, '_'), Results, Format)
 
+
+Data = 100*(squeeze(sum(sum(sum(AllCh==0, 2),1), 4))./squeeze(sum(sum(sum(~isnan(AllCh)==1, 2),1), 4)));
+
+for Indx_T = 1:numel(AllTasks)
+disp([TaskLabels{Indx_T}, ' channels removed: ', num2str(Data(Indx_T)), '%'])  
+end
 
 
 %% removed channels split by participant
@@ -209,8 +222,13 @@ for Indx_P =1:numel(Participants)
     colorbar off
     title([Participants{Indx_P}], 'FontSize', Format.TitleSize)
 end
-setLimsTiles(numel(Participants), 'c')
+setLimsTiles(numel(Participants), 'c');
 
 saveFig(strjoin({TitleTag, 'Participants', 'Topos'}, '_'), Results, Format)
 
+Data = 100*(squeeze(sum(sum(sum(AllCh==0, 2),3), 4))./squeeze(sum(sum(sum(~isnan(AllCh)==1, 2),3), 4)));
+
+for Indx_P = 1:numel(Participants)
+disp([Participants{Indx_P}, ' channels removed: ', num2str(Data(Indx_P)), '%'])  
+end
 

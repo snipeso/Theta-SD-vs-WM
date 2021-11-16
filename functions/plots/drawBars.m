@@ -26,6 +26,12 @@ end
 set(gca,'TickLength',[0 0])
 set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 
+if ~isempty(xLabels)
+    xlim([.5 numel(xLabels)+.5]);
+    xticks(1:numel(xLabels))
+    xticklabels(xLabels)
+end
+
 % plot error bars if requested
 if isempty(Errors)
     return
@@ -40,9 +46,6 @@ for Indx = 1:nbars
             x = Indx; % nothing fancy, just where bar midpoint is.
             errorbar(x, Data(Indx),  Errors(Indx, 1),  Errors(Indx,2), ...
                 'k', 'linestyle', 'none', 'LineWidth', 1.5);
-            xlim([.5 numel(xLabels)+.5]);
-            xticks(1:numel(xLabels))
-            xticklabels(xLabels)
             
             %     case 2
             %                         groupwidth = min(0.8, nbars/(nbars + 1.5));

@@ -1,4 +1,5 @@
 function Stats = plotSpaghettiOs(Data, Indx_BL, XLabels, CLabels, Colors, StatsP, Format)
+% Stats = plotSpaghettiOs(Data, Indx_BL, XLabels, CLabels, Colors, StatsP, Format)
 % Data is a P x m x n matrix, plotting a separate line for each n at m
 % points on the x axis. It plots a circle with a white dot in it whenever
 % the change from BL_Indx is significant, corrected for multiple testing.
