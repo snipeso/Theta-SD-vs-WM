@@ -11,7 +11,7 @@ m = matfile(CutFilename,'Writable',true);
 
 Content = whos(m);
 if ismember('badchans', {Content.name})
-   badchans = m.badchans;
+    badchans = m.badchans;
 else
     badchans = [];
 end
@@ -23,11 +23,11 @@ if isempty(Ch)
 end
 
 if ismember('badchans_postICA', {Content.name})
-      disp(['old postICA channels: ',  num2str(m.badchans_postICA)])
+    disp(['old postICA channels: ',  num2str(m.badchans_postICA)])
     Ch = [m.badchans_postICA, Ch];
 end
 
 m.badchans_postICA = Ch;
 m.Fixed = true;
 
-  disp(['new postICA channels: ',  num2str(m.badchans_postICA)])
+disp(['new postICA channels: ',  num2str(m.badchans_postICA)])

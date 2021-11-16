@@ -11,9 +11,9 @@ Content = whos(m);
 
 if ismember('badchans_postICA', {Content.name})
     disp(['old postICA channels: ',  num2str(m.badchans_postICA)])
-   m.badchans_postICA(ismember(m.badchans_postICA, Ch)) = [];
+    m.badchans_postICA(ismember(m.badchans_postICA, Ch)) = [];
 end
-    
+
 
 m.Fixed = true;
-  disp(['new postICA channels: ',  num2str(m.badchans_postICA)])
+disp(['new postICA channels: ',  num2str(m.badchans_postICA)])

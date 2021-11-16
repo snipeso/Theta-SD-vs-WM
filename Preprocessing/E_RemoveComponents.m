@@ -89,26 +89,12 @@ for Indx_F = 1:nFiles % loop through files in source folder
     
     % skip if file already exists or data doesn't exist yet
     if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
-%         disp(['***********', 'Already did ', Filename_Destination, '***********'])
         continue
     elseif ~exist(fullfile(Source_Data, Filename_Data), 'file')
         disp(['***********', 'No data for ', Filename_Destination, '***********'])
         continue
     end
     
-    % TEMP FOR FIX:
-    m = matfile(fullfile(Source_Cuts, Filename_Cuts),'Writable',false);
-
-Content = whos(m);
-if ~ismember('badchans_postICA', {Content.name})
-    disp(['skip ', num2str(Filename_Core)])
-    continue
-end
-   
-if ismember('Fixed', {Content.name})
-    disp(['fixed ', num2str(Filename_Core)])
-    continue
-end
     
     %%% Get data ready
     % load data

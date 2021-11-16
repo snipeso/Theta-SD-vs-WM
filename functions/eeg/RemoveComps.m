@@ -27,23 +27,22 @@ end
 
 
 %%% show components removed
-% TEMP
-% if CheckOutput
-%     
-%     % open interface for selecting components
-%     Pix = get(0,'screensize');
-%     
-%     % turn red all the bad components
-%     nComps = size(EEG.icaweights,1);
-%     Colors = repmat(StandardColor, nComps, 1);
-%     Colors(find(EEG.reject.gcompreject)) =  {[1, 0, 0]}; %#ok<FNDSB>
-%     
-%     % plot in time all the components
-%     tmpdata = eeg_getdatact(EEG, 'component', 1:nComps);
-%     eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 5, 'dispchans', 40, ...
-%         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
-%         'color',Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
-% end
+if CheckOutput
+    
+    % open interface for selecting components
+    Pix = get(0,'screensize');
+    
+    % turn red all the bad components
+    nComps = size(EEG.icaweights,1);
+    Colors = repmat(StandardColor, nComps, 1);
+    Colors(find(EEG.reject.gcompreject)) =  {[1, 0, 0]}; %#ok<FNDSB>
+    
+    % plot in time all the components
+    tmpdata = eeg_getdatact(EEG, 'component', 1:nComps);
+    eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 5, 'dispchans', 40, ...
+        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
+        'color',Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
+end
 
 %%% merge data with component structure
 NewEEG = EEG; % gets everything from IC structure
@@ -74,12 +73,11 @@ if CheckOutput
     % color in red channels to remove after ICA
     Colors = repmat(StandardColor, size(NewEEG.data, 1), 1);
     Colors(badchans_postICA) = {[1 0 0]};
-     Pix = get(0,'screensize');
-     
+    Pix = get(0,'screensize');
+    
     % plot pre and post data
-    % TEMP
-%     eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
-%         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],  'eloc_file', Data.chanlocs)
+    eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
+        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97],  'eloc_file', Data.chanlocs)
     eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], 'eloc_file', ...
         NewEEG.chanlocs,  'winrej',  TMPREJ, 'color', Colors)
@@ -87,8 +85,7 @@ if CheckOutput
     % plot standard power bands topography to detect final outliers in
     % clean parts of data
     [EEGTMP, ~] = eeg_eegrej(NewEEG, eegplot2event(TMPREJ, -1));
-    % TEMP
-%     EEGTMP = pop_select(EEGTMP, 'nochannel', badchans_postICA); % remove bad channels from topography
+    EEGTMP = pop_select(EEGTMP, 'nochannel', badchans_postICA); % remove bad channels from topography
     PlotSpectopo(EEGTMP, 1, EEGTMP.xmax);
     
     % plot data as image to spot outliers
@@ -107,18 +104,16 @@ if CheckOutput
     disp('Some missing comps, make a list of all the bad comps, and then press enter. Must be at least 2')
     disp('Its all terrible, type n and press enter')
     disp('__________________________________________________________________________________________')
-%     xComp = input('Is the COMPONENT selection ok? ');
-%     
-%     if isempty(xComp)
-%         xComp = y;
-%     end
-xComp = 'y'; % TEMP
+    xComp = input('Is the COMPONENT selection ok? ');
+    
+    if isempty(xComp)
+        xComp = y;
+    end
     
     if isnumeric(xComp) % if list of components
         
         % plot single component windows
         pop_prop(EEG, 0, xComp, gcbo, { 'freqrange', [1 40]});
-        
         
         % print IC weights to figure out what went wrong with classification
         %  classes: {'Brain'  'Muscle'  'Eye'  'Heart'  'Line Noise'  'Channel Noise'  'Other'}
@@ -178,28 +173,27 @@ end
 if strcmp(xEEG, 'y') || strcmp(xEEG, 'auto')
     
     % remove bad channels
-    % TEMP
-%     badchans_postICA = []; %#ok<NASGU>, just in case this variable is not present below
-%     load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA') % manually selected bad channels
-%     
-%     NotEEGCh = labels2indexes([EEG_Channels.notEEG, badchans_postICA], NewEEG.chanlocs); % convert based on already removed channels
-%     
-%     NewEEG = pop_select(NewEEG, 'nochannel', [badchans_postICA, NotEEGCh]);
-%     
-%     % interpolate channels
-%     FinalChanlocs = StandardChanlocs;
-%     FinalChanlocs(ismember({StandardChanlocs.labels}, string(EEG_Channels.notEEG))) = [];
-%     FinalChanlocs(end+1) = CZ;
-%     NewEEG = pop_interp(NewEEG, FinalChanlocs);
-%     
-%     % save new dataset
-%     pop_saveset(NewEEG, 'filename', Filename_Destination, ...
-%         'filepath', Destination, ...
-%         'check', 'on', ...
-%         'savemode', 'onefile', ...
-%         'version', '7.3');
-%     close all
-%     clc % TEMP
+    badchans_postICA = []; %#ok<NASGU>, just in case this variable is not present below
+    load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA') % manually selected bad channels
+    
+    NotEEGCh = labels2indexes([EEG_Channels.notEEG, badchans_postICA], NewEEG.chanlocs); % convert based on already removed channels
+    
+    NewEEG = pop_select(NewEEG, 'nochannel', [badchans_postICA, NotEEGCh]);
+    
+    % interpolate channels
+    FinalChanlocs = StandardChanlocs;
+    FinalChanlocs(ismember({StandardChanlocs.labels}, string(EEG_Channels.notEEG))) = [];
+    FinalChanlocs(end+1) = CZ;
+    NewEEG = pop_interp(NewEEG, FinalChanlocs);
+    
+    % save new dataset
+    pop_saveset(NewEEG, 'filename', Filename_Destination, ...
+        'filepath', Destination, ...
+        'check', 'on', ...
+        'savemode', 'onefile', ...
+        'version', '7.3');
+    close all
+    clc
     disp(['***********', 'Finished ', Filename_Destination, '***********'])
 end
 
@@ -221,13 +215,13 @@ switch xEEG
         delete(fullfile(Source_Comps, Filename_Comps))
         
         % restore "bad" channels to remove after ICA
-         badchans_postICA = []; %#ok<NASGU>
-    load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA')
-    BC = badchans_postICA;
+        badchans_postICA = []; %#ok<NASGU>
+        load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA')
+        BC = badchans_postICA;
         rsCh_postICA(fullfile(Source_Cuts, Filename_Cuts), badchans_postICA)
         
         disp(['***********', 'Deleting ', Filename_Destination, '***********'])
-%         close all TEMP
+        close all
         Break = true;
         
     otherwise % loop again
