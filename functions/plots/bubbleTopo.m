@@ -17,7 +17,12 @@ switch Type
         scatter(x, y, Size, Color, 'filled')
         if ~isempty(Labels)
             hold on
-            textscatter(x, y, {Chanlocs.labels}, 'ColorData', TextColor, 'FontName', Format.FontName)
+            if numel(Labels) == numel(Chanlocs)
+                  textscatter(x, y, Labels, 'ColorData', TextColor, 'FontName', Format.FontName, 'TextDensityPercentage', 100)
+            else
+                
+                textscatter(x, y, {Chanlocs.labels}, 'ColorData', TextColor, 'FontName', Format.FontName)
+            end
         end
         axis square
         xlim([min(x) max(x)])

@@ -169,6 +169,8 @@ Format.Colors.preROI = getColors(numel(fieldnames(Channels.preROI)));
 
 Channels.Remove = [48 119];
 
+Channels.Removed = [49 56 107 113 126 127];
+
 P.Format = Format;
 P.Channels = Channels;
 P.Bands = Bands;
