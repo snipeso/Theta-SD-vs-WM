@@ -15,7 +15,7 @@ switch Type
         [x, y] = pol2cart(Theta, Radius);
         
         scatter(x, y, Size, Color, 'filled')
-        if Labels
+        if ~isempty(Labels)
             hold on
             textscatter(x, y, {Chanlocs.labels}, 'ColorData', TextColor, 'FontName', Format.FontName)
         end

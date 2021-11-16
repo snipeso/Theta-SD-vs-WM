@@ -23,6 +23,9 @@ else
     h.CData = [.5 .5 .5];
 end
 
+set(gca,'TickLength',[0 0])
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+
 % plot error bars if requested
 if isempty(Errors)
     return
@@ -51,5 +54,3 @@ for Indx = 1:nbars
             disp('dont know these dims')
     end
 end
-
-set(gca, 'FontName', Format.FontName)
