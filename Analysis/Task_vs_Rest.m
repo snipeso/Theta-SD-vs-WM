@@ -42,7 +42,6 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
-
 Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
@@ -214,7 +213,7 @@ end
 
 ThetaIndx = strcmpi(BandLabels, 'theta');
 Fix = squeeze(bData(:, 1, end, :, ThetaIndx));
-CLims = [-3 3];
+CLims = [-1 3];
 
 for Indx_S = 1:numel(Sessions.Labels)
     figure('units','normalized','outerposition',[0 0 1 .35])
@@ -225,10 +224,11 @@ for Indx_S = 1:numel(Sessions.Labels)
         Data = squeeze(bData(:, Indx_S, Indx_T, :, ThetaIndx));
         
         nexttile
-        plotTopo(nanmean(Data,1), Chanlocs, CLims, BL_CLabel, 'Divergent', Format)
+        plotTopo(nanmean(Data,1), Chanlocs, CLims, BL_CLabel, 'Linear', Format)
         colorbar off
         title([TaskLabels{Indx_T} ' ' Sessions.Labels{Indx_S}], 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
     end
+    setLimsTiles(numel(AllTasks), 'c')
     
     saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta', Sessions.Labels{Indx_S}}, '_'), Results, Format)
     
@@ -236,6 +236,7 @@ end
 
 figure('units','normalized','outerposition',[0 0 .25 .35])
 plotColorbar(CLims, 'mean z-score power', Format)
+colormap(reduxColormap(Format.Colormap.Linear, Format.Steps.Topo*2))
 saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Raw_Colorbar'}, '_'), Results, Format)
 
 
@@ -267,24 +268,25 @@ plotColorbar( CLims_Diff, 'hedges g', Format)
 saveFig(strjoin({ 'SSSSC', TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Results, Format)
 
 
+%%
 % Sd vs bl
 
-CLims = [-1 2.5];
+CLims = [-1 3];
 
 for Indx_B = 1:numel(BandLabels)
     
     % just baseline
-        figure('units','normalized','outerposition',[0 0 1 .45])
+    figure('units','normalized','outerposition',[0 0 1 .45])
     tiledlayout(1, numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
     for Indx_T = 1:numel(AllTasks)
         BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
-
+        
         
         nexttile
         plotTopo(nanmean(BL, 1), Chanlocs, CLims, Format.Labels.zPower, 'Linear', Format);
         
-    colorbar off
-    
+        colorbar off
+        
         title({[TaskLabels{Indx_T}, ' BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
         
     end
@@ -306,7 +308,7 @@ for Indx_B = 1:numel(BandLabels)
         
     end
     
-    saveFig(strjoin({TitleTag,  BandLabels{Indx_B}, 'SR'}, '_'), Results, Format.TitleSize)
+    saveFig(strjoin({TitleTag,  BandLabels{Indx_B}, 'SRvBL'}, '_'), Results, Format.TitleSize)
     
     
     
@@ -324,15 +326,34 @@ for Indx_B = 1:numel(BandLabels)
         
     end
     
-    saveFig(strjoin({TitleTag, BandLabels{Indx_B}, 'SD'}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, BandLabels{Indx_B}, 'SDvBL'}, '_'), Results, Format)
     
+    
+    % plot SD vs SR
+    
+        figure('units','normalized','outerposition',[0 0 1 .45])
+    tiledlayout(1, numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
+    for Indx_T = 1:numel(AllTasks)
+        SR = squeeze(bData(:, 2, Indx_T, :, Indx_B));
+        
+        % Sleep deprivation vs baseline
+        SD = squeeze(bData(:, 3, Indx_T, :, Indx_B));
+        
+        nexttile
+        plotTopoDiff(SR, SD, Chanlocs, CLims_Diff, StatsP, Format);
+        title({[TaskLabels{Indx_T}, ' SD vs SR']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+    end
+    
+    saveFig(strjoin({TitleTag, BandLabels{Indx_B}, 'SDvSR'}, '_'), Results, Format)
 end
+
+
 figure('units','normalized','outerposition',[0 0 .25 .35])
-plotColorbar( CLims_Diff, 'hedges g', Format)
+plotColorbar('Divergent', CLims_Diff, 'hedges g', Format)
 saveFig(strjoin({ TitleTag, 'Theta_Baseline_v_Rest_Colorbar'}, '_'), Results, Format)
 
 figure('units','normalized','outerposition',[0 0 .25 .35])
-plotColorbar( CLims, Format.Labels.zPower, Format)
+plotColorbar('Linear', CLims, Format.Labels.zPower, Format)
 saveFig(strjoin({ TitleTag, 'Theta_Baseline_Colorbar'}, '_'), Results, Format)
 
 

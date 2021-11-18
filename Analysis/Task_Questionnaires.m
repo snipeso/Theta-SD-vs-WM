@@ -99,10 +99,6 @@ end
 %% plot z data for BL tasks (sorted) next to z data for SD2-BL changes
 
 YLim = [0 1];
-Format.TitleSize = 20;
-Format.FontSize = 14;
-Format.LW = 2.5;
-Format.ScatterSize = 50;
 
 for Indx_Q = 1:numel(Questions)-1
         Results = fullfile(Main_Results, Questions{Indx_Q});

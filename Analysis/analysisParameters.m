@@ -56,13 +56,15 @@ Format.FontName = 'Tw Cen MT'; % use something else for papers
 Format.FontSize = 25;
 Format.TitleSize = 30;
 Format.TopoRes = 300;
-Format.Steps.Topo = 15;
-Format.LW = 5;
-Format.Topo.Sig = 3;
+Format.Steps.Linear = 20;
+Format.Steps.Divergent = 30;
+Format.Steps.Monochrome = 20;
+Format.LW = 4;
+Format.Topo.Sig = 5; % marker size
 Format.ScatterSize = 200; % TODO: seperate features for small or big screen
 
 Format.Colormap.Linear = flip(colorcet('L17'));
-Format.Colormap.Monochrome = colorcet('L1');
+Format.Colormap.Monochrome = colorcet('L2');
 Format.Colormap.Divergent = colorcet('D1A');
 Format.Colormap.Rainbow = unirainbow;
 
@@ -79,7 +81,7 @@ Format.Colors.Levels = getColors([1 3], 'rainbow', 'red'); % M2S red
 
 Format.Colors.SigStar = [0 0 0];
 
-Format.Colors.Sessions = getColors(3);
+Format.Colors.Sessions = getColors([numel(P.AllTasks), 3], 'rainbow');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,6 +95,7 @@ Bands.Gamma = [25 35];
 
 Format.Labels.Bands = [1 4 8 15 25 35 40];
 Format.Labels.zPower = 'Power (z-scored)';
+Format.Labels.Frequency = 'Frequency (Hz)';
 Format.Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'};
 
 Channels = struct();
@@ -224,8 +227,9 @@ StatsP = struct();
 
 StatsP.ANOVA.ES = 'eta2';
 StatsP.ANOVA.ES_lims = [0 1];
-StatsP.ANOVA.nBoot = 5000;
+StatsP.ANOVA.nBoot = 2000;
 StatsP.ANOVA.pValue = 'pValueGG';
+StatsP.ttest.nBoot = 2000;
 StatsP.Alpha = .05;
 StatsP.Trend = .1;
 StatsP.Paired.ES = 'hedgesg';

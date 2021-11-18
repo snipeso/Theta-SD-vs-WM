@@ -67,28 +67,39 @@ saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
 
 %% Plot spectrums as task x ch coloring all channels
 
-
-figure('units','normalized','outerposition',[0 0 .76 .8])
-tiledlayout( numel(ChLabels),numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
+Log = true;
+figure('units','normalized','outerposition',[0 0 .8 .8])
+tiledlayout( numel(ChLabels),numel(AllTasks), 'Padding', 'compact', 'TileSpacing', 'normal');
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
         Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
         
         nexttile
-        plotSpectrumDiff(Data, Freqs, 1, [], Format.Colors.Sessions, Format, StatsP);
+        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Format, StatsP);
+        axis square
         set(gca, 'FontSize', 14)
-        legend off
-        ylabel ''
-        xlabel ''
-        title(strjoin({ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', 20, 'Color', Format.Colors.AllTasks(Indx_T, :))
+        if Indx_Ch > 1 || Indx_T > 1
+            legend off
+        end
+        if Indx_T ==1
+            ylabel(Format.Labels.zPower)
+        else
+            ylabel ''
+        end
+        if Indx_Ch == numel(ChLabels)
+            xlabel(Format.Labels.Frequency)
+        else
+            xlabel ''
+        end
+        title(strjoin({ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', 20, 'Color', 'k')
         
     end
 end
-legend(Sessions.Labels)
 setLimsTiles(numel(ChLabels)*numel(AllTasks), 'y');
 
 % save
 saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Results, Format)
+
 
 %% plot all tasks, split by session, one fig for each ch
 
@@ -451,7 +462,7 @@ for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(TaskLabels)
         figure('units','normalized','outerposition',[0 0 1 1])
         
-    tiledlayout(4, 5, 'Padding', 'none', 'TileSpacing', 'compact');
+        tiledlayout(4, 5, 'Padding', 'none', 'TileSpacing', 'compact');
         for Indx_P = 1:numel(Participants)
             
             Spectrum = squeeze(chData(Indx_P, :, Indx_T, Indx_Ch, :));
@@ -482,14 +493,14 @@ Alpha = 1;
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(TaskLabels)
-        figure('units','normalized','outerposition',[0 0 1 1])      
-    tiledlayout(4, 5, 'Padding', 'none', 'TileSpacing', 'compact');
+        figure('units','normalized','outerposition',[0 0 1 1])
+        tiledlayout(4, 5, 'Padding', 'none', 'TileSpacing', 'compact');
         for Indx_P = 1:numel(Participants)
             
             Spectrum = squeeze(chDataRaw(Indx_P, :, Indx_T, Indx_Ch, :));
-
+            
             Peaks = squeeze(chPeaksRAW(Indx_P, :, Indx_T, Indx_Ch));
-          
+            
             nexttile
             plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD'}, Colors, Alpha, Format)
             title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', Format.TitleSize)

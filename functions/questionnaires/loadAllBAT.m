@@ -2,8 +2,8 @@ function [Answers, Labels] = loadAllBAT(Filepath, Participants, Sessions, Tasks)
 % loads all the questionnaire data into a struct, with each field
 % representing a different question, and holding a P x S x T matrix
 
-qIDs = {'BAT_1', 'BAT_3_0', 'BAT_3', ...
-    'BAT_3_1', 'BAT_4', 'BAT_4_1', ...
+qIDs = {'BAT_1', 'BAT_3_s11', 'BAT_3_sl2', ...
+    'BAT_3.1', 'BAT_4', 'BAT_4.1', ...
     'BAT_5', 'BAT_8'};
 Titles = {'KSS';
     'Relaxing';
@@ -31,7 +31,7 @@ for Indx_T = 1:numel(Tasks)
     CSV = readtable(fullfile(Filepath, [Tasks{Indx_T}, '_All.csv']));
     
     % Fix qID problem
-    CSV.qID(strcmp(CSV.qLabels, 'Frustrating/Neutral/Relaxing')) = {'BAT_3_0'};
+    CSV.qID(strcmp(CSV.qLabels, 'Frustrating/Neutral/Relaxing')) = {'BAT_3_s11'};
     
     for Indx_Q = 1:numel(qIDs)
         

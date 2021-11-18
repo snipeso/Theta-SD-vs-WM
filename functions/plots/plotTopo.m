@@ -18,7 +18,5 @@ if ~isempty(CLabel)
     ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize-5)
 end
 
-Colormap = Format.Colormap.(Colormap);
-Colormap = reduxColormap(Colormap, Format.Steps.Topo);
-
+Colormap = reduxColormap(Format.Colormap.(Colormap), Format.Steps.(Colormap));
 colormap(Colormap)

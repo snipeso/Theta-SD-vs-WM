@@ -39,7 +39,7 @@ end
 
 topoplot(stats.(StatsP.Paired.ES), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
     'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
-    'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .01});
+    'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .05});
 
 %
 % h = colorbar;
@@ -51,4 +51,4 @@ ylim([-.55 .6])
 
 set(gca, 'FontName', Format.FontName)
 
-colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Topo*2))
+colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent))
