@@ -14,15 +14,15 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks = {'Game'}; % which tasks to convert (for now)
+allTasks = {'Game', 'SpFT', 'PVT', 'LAT', 'Music'}; % which tasks to convert (for now)
 Filename = [];
-Refresh = true; % redo already done files
+Refresh = false; % redo already done files
 
 % %%% emergency code if I need to fix a specific file
-Filename = 'P06_LAT_Session1Comp_ICA_Components.set';
-FN = split(Filename, '_');
-Task = FN{2};
-Refresh = true;
+% Filename = 'P06_LAT_Session1Comp_ICA_Components.set';
+% FN = split(Filename, '_');
+% Task = FN{2};
+% Refresh = true;
 
 CheckOutput = true; % manually verify if selection was good at the end
 

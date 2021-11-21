@@ -10,10 +10,10 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'Match2Sample'}; % select this if you only need to filter one folder
+% Tasks = {'Match2Sample'}; % select this if you only need to filter one folder
 Refresh = false;
 
-Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
+Source_Cuts_Folder = 'Cuts'; % 'Cuts'
 Destination_Folder = 'Components'; % 'Components'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
