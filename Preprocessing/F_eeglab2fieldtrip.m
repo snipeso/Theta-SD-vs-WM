@@ -13,7 +13,7 @@ Refresh = false;
 Data_Type = 'Power';
 
 Destination_Folder = 'SourceLocalization';
-Cuts_Folder = 'New_Cuts';
+Cuts_Folder = 'Cuts';
 
 Window = 8; % epoch window in seconds
 

@@ -24,6 +24,27 @@ Prep_Parameters
 
 % Filename = 'P06_Music_Session2_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
 
+Filename = [
+    "P02_Game_Session1_Cutting.set"
+    "P07_Game_Session1_Cutting.set"
+    "P03_PVT_BaselineComp_Cutting.set"
+    "P02_LAT_Session2Beam2_Cutting.set"
+    "P06_LAT_Session1Comp_Cutting.set"
+    "P10_LAT_BaselineBeam_Cutting.set"
+    "P16_LAT_BaselineComp_Cutting.set"
+    "P17_LAT_Session2Comp_Cutting.set"
+    "P02_SpFT_Session2_Cutting.set"
+    "P03_SpFT_Baseline_Cutting.set"
+    "P03_SpFT_Session2_Cutting.set"
+    "P07_SpFT_Session1_Cutting.set"
+    "P09_SpFT_Baseline_Cutting.set"
+    "P09_SpFT_Session2_Cutting.set"
+    "P13_SpFT_Session2_Cutting.set"
+    "P19_SpFT_Session2_Cutting.set"
+    "P06_Music_Session2_Cutting.set"
+    "P11_Music_Baseline_Cutting.set"
+];
+
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'Cuts'; % location where to save cuts
 ifExists = 'SET';
@@ -31,13 +52,23 @@ allTasks = { 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % comment o
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if exist('Filename', 'var') && ~isempty(Filename)
+if exist('Filename', 'var') && size(Filename, 1)==1
     FN = split(Filename, '_');
     Folder = FN{2};
     
     Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder, Folder);
     allTasks = Folder;
+    
+elseif exist('Filename', 'var') && size(Filename, 1)>1
+    Filename = char(Filename(randperm(size(Filename, 1), 1), :));
+     FN = split(Filename, '_');
+    Folder = FN{2};
+    
+    Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Folder);
+    Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder, Folder);
+    allTasks = Folder;
+    
 else
     Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder);

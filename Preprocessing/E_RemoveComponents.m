@@ -18,17 +18,17 @@ allTasks = {'Game'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = true; % redo already done files
 
-% % %%% emergency code if I need to fix a specific file
-% Filename = 'P15_Music_Baseline_ICA_Components.set';
-% FN = split(Filename, '_');
-% Task = FN{2};
-% Refresh = true;
+% %%% emergency code if I need to fix a specific file
+Filename = 'P06_LAT_Session1Comp_ICA_Components.set';
+FN = split(Filename, '_');
+Task = FN{2};
+Refresh = true;
 
 CheckOutput = true; % manually verify if selection was good at the end
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
-Source_Cuts_Folder = 'New_Cuts'; % 'Cuts'
+Source_Cuts_Folder = 'Cuts'; % 'Cuts'
 
 IC_Brain_Threshold = 0.1; % %confidence of automatic IC classifier in determining a brain artifact
 IC_Other_Threshold = 0.6; % %confidence of automatic IC classifier in determining a brain artifact
