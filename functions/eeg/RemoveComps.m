@@ -211,8 +211,14 @@ switch xEEG
         Break = false;
         
     case 'redo' % end
-        % completely deletes components file
+        % completely deletes components file & destination if exists
+        
         delete(fullfile(Source_Comps, Filename_Comps))
+        if exist(fullfile(Destination, Filename_Destination), 'file')
+            delete(fullfile(Destination, Filename_Destination))
+        else
+            A=1
+        end
         
         % restore "bad" channels to remove after ICA
         badchans_postICA = []; %#ok<NASGU>
