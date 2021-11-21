@@ -20,13 +20,14 @@ clc
 Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %
-Filename = 'P06_Music_Session2_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+%%% Parameters
 
+% Filename = 'P06_Music_Session2_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
-Destination_Folder = 'New_Cuts'; % location where to save cuts
-Old_Destination =  'Old_Cuts'; % 'Old_Cuts'
+Destination_Folder = 'Cuts'; % location where to save cuts
+ifExists = 'ICA';
+allTasks = { 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % comment out if you want all possible files
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -36,39 +37,16 @@ if exist('Filename', 'var') && ~isempty(Filename)
     
     Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder, Folder);
-    Randomize = false;
+    allTasks = Folder;
 else
     Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder);
-    Randomize = true;
     Filename = [];
 end
 
-EEG = loadEEGtoCut(Source, Destination, Filename, Randomize); % load file
+EEG = loadEEGtoCut(Source, Destination, Filename, allTasks, ifExists); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
 
-% if provided, get old TMPREJ and nan matrix (this is to use old cuts to avoid wasting too much time)
-if exist('Old_Destination', 'var')
-    OldCutFilepath = replace(EEG.CutFilepath, Destination_Folder, Old_Destination);
-    if exist(OldCutFilepath, 'file')
-        AlreadyDid = who(m);
-        if ~contains('TMPREJ', AlreadyDid)
-            load(OldCutFilepath, 'TMPREJ') % get selected timepoints to cut
-            
-            if exist('TMPREJ', 'var')
-                m.TMPREJ = TMPREJ;
-            end
-        end
-        
-        if ~contains('cutData', AlreadyDid)
-            load(OldCutFilepath, 'cutData') % get snippets to cut
-            
-            if exist('cutData', 'var')
-                m.cutData = cutData;
-            end
-        end
-    end
-end
 
 % remove already the channels that don't get used for the ICA anyway
 rmCh(EEG.CutFilepath, EEG_Channels.notEEG)
