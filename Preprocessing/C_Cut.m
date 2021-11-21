@@ -16,7 +16,7 @@
 %%% select a file from your chosen folder that hasn't been marked yet.
 clear
 clc
-% close all
+close all
 Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,7 +26,7 @@ Prep_Parameters
 
 Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'Cuts'; % location where to save cuts
-ifExists = 'ICA';
+ifExists = 'SET';
 allTasks = { 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % comment out if you want all possible files
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
