@@ -287,7 +287,7 @@ for Indx_B = 1:numel(BandLabels)
         
         colorbar off
         
-        title({[TaskLabels{Indx_T}, ' BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+        title({[TaskLabels{Indx_T}, ' BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', Format.TitleSize)
         
     end
     
@@ -304,7 +304,7 @@ for Indx_B = 1:numel(BandLabels)
         
         nexttile
         plotTopoDiff(BL, SR, Chanlocs, CLims_Diff, StatsP, Format);
-        title({[TaskLabels{Indx_T}, ' SR vs BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+        title({[TaskLabels{Indx_T}, ' SR vs BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', Format.TitleSize)
         
     end
     
@@ -322,7 +322,7 @@ for Indx_B = 1:numel(BandLabels)
         
         nexttile
         plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
-        title({[TaskLabels{Indx_T}, ' SD vs BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+        title({[TaskLabels{Indx_T}, ' SD vs BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', Format.TitleSize)
         
     end
     
@@ -341,7 +341,7 @@ for Indx_B = 1:numel(BandLabels)
         
         nexttile
         plotTopoDiff(SR, SD, Chanlocs, CLims_Diff, StatsP, Format);
-        title({[TaskLabels{Indx_T}, ' SD vs SR']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', 40)
+        title({[TaskLabels{Indx_T}, ' SD vs SR']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', Format.TitleSize)
     end
     
     saveFig(strjoin({TitleTag, BandLabels{Indx_B}, 'SDvSR'}, '_'), Results, Format)

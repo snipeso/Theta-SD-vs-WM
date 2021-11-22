@@ -19,7 +19,7 @@ P.TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Locations
 
-Core = 'F:\Data\';
+Core = 'D:\Data\';
 Paths.Preprocessed = fullfile(Core, 'Preprocessed'); % where the preprocessed data gets saved (split by task)
 Paths.Datasets = 'G:\LSM\Data\Raw'; 
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
@@ -27,7 +27,7 @@ Paths.Results = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and
 
 % get path where these scripts were saved
 Paths.Analysis = mfilename('fullpath');
-Paths.Analysis = fullfile(extractBefore(Paths.Analysis, 'Analysis'));
+Paths.Analysis = fullfile(extractBefore(Paths.Analysis, '\Analysis\'));
 
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis, 'functions','general'))
@@ -53,15 +53,29 @@ P.Paths = Paths;
 Format = struct();
 
 Format.FontName = 'Tw Cen MT'; % use something else for papers
+
+   Pix = get(0,'screensize');
+
+   if Pix(3) < 2000
+       Format.FontSize = 12;
+Format.TitleSize = 15;
+Format.TopoRes = 150;
+Format.LW = 2;
+Format.Topo.Sig = 2; % marker size
+Format.ScatterSize = 70; % TODO: seperate features for small or big screen
+
+   else
 Format.FontSize = 25;
 Format.TitleSize = 30;
 Format.TopoRes = 300;
-Format.Steps.Linear = 20;
-Format.Steps.Divergent = 30;
-Format.Steps.Monochrome = 20;
 Format.LW = 4;
 Format.Topo.Sig = 5; % marker size
 Format.ScatterSize = 200; % TODO: seperate features for small or big screen
+   end
+
+Format.Steps.Linear = 20;
+Format.Steps.Divergent = 30;
+Format.Steps.Monochrome = 20;
 
 Format.Colormap.Linear = flip(colorcet('L17'));
 Format.Colormap.Monochrome = colorcet('L2');
@@ -95,6 +109,7 @@ Bands.Gamma = [25 35];
 
 Format.Labels.Bands = [1 4 8 15 25 35 40];
 Format.Labels.zPower = 'Power (z-scored)';
+Format.Labels.Power = 'Amplitude';
 Format.Labels.Frequency = 'Frequency (Hz)';
 Format.Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'};
 

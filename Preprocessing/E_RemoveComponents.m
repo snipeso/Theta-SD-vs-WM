@@ -14,17 +14,17 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks = {'Game', 'SpFT', 'PVT', 'LAT'}; % which tasks to convert (for now)
+allTasks  = { 'PVT'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
 
 % %%% emergency code if I need to fix a specific file
-% Filename = 'P07_Game_Session1_ICA_Components.set';
+% Filename = 'P02_SpFT_Session2_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;
 
-CheckOutput = true; % manually verify if selection was good at the end
+CheckOutput = false; % manually verify if selection was good at the end
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'

@@ -11,8 +11,8 @@ ChLabels = fieldnames(Channels.Peaks);
 figure('units','normalized','outerposition',[0 0 .7 .5])
 subplot(2, numel(BandLabels), 1:numel(BandLabels))
 plotSpectrum(chData, Freqs, ChLabels, Format.Colors.AllTasks(1:numel(ChLabels), :), 1, 3, Format)
-set(gca, 'FontSize', 14)
-title(Title)
+set(gca, 'FontSize', Format.FontSize)
+title(Title, 'FontSize', Format.TitleSize)
 
 
 for Indx_B = 1:numel(BandLabels)
