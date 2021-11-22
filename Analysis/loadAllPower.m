@@ -9,6 +9,7 @@ for Indx_P = 1:numel(P.Participants)
         
         for Indx_T = 1:numel(Tasks)
             Task = Tasks{Indx_T};
+
             
             Filename = strjoin({P.Participants{Indx_P},Task, P.Sessions.(Task){Indx_S}, 'Welch.mat'}, '_');
             Path = fullfile(Source, Task, Filename);

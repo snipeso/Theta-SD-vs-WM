@@ -18,9 +18,8 @@ Durations = P.Durations;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = true;
-% Tasks = {'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music',  'Fixation'};
-Tasks = {'SpFT'};
+Refresh = false;
+Tasks = {'PVT'};
 WelchWindow = 8;
 Overlap = .75; % overlap of hanning windows for FFT
 
@@ -37,7 +36,7 @@ for Indx_T = 1:numel(Tasks)
     
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
-    Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', Task);
+    Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'Cuts', Task);
     
     Files = deblank(cellstr(ls(Source)));
     Files(~contains(Files, '.set')) = [];
