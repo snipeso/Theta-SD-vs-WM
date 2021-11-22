@@ -17,10 +17,6 @@ Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
 
-IC_Brain_Threshold = 0.1; % %confidence of automatic IC classifier in determining a brain artifact
-IC_Other_Threshold = 0.6; % %confidence of automatic IC classifier in determining a brain artifact
-
-IC_Max = 60; % limit of components automatically considered for elimination
 
 
 TitleTag = strjoin({'RemovedChannels'}, '_');
@@ -35,7 +31,7 @@ end
 
 %  classes: {'Brain'  'Muscle'  'Eye'  'Heart'  'Line Noise'  'Channel Noise'  'Other'}
 ICValues = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), 128, 7);
-ICLabels = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), 128, 7);
+ICLabels = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), 128);
 
 
 for Indx_P = 1:numel(Participants)
@@ -52,18 +48,38 @@ for Indx_P = 1:numel(Participants)
             end
             
             EEG = pop_loadset('filename', Filename, 'filepath', Path_EEG);
-           
+            
             IC = EEG.etc.ic_classification.ICLabel.classifications;
             ICValues(Indx_P, Indx_S, Indx_T, 1:size(IC, 1), :) = IC;
-             ICLabels(Indx_P, Indx_S, Indx_T, 1:size(IC, 1), :) = EEG.reject.gcompreject;
+            ICLabels(Indx_P, Indx_S, Indx_T, 1:size(IC, 1)) = EEG.reject.gcompreject;
         end
     end
 end
 
 
+%%% Plots
 
-% Plot participant per figure, task x session
+%% Plot participant per figure, task x session
 
+for Indx_P = 1:numel(Participants)
+    
+    figure('units','normalized','outerposition',[0 0 1 1])
+    tiledlayout(numel(AllTasks), numel(Sessions.Labels), ...
+        'Padding', 'none', 'TileSpacing', 'compact');
+    
+    for Indx_T = 1:numel(AllTasks)
+        for Indx_S = 1:numel(Sessions.Labels)
+            V = squeeze(ICValues(Indx_P, Indx_S, Indx_T, :, :));
+            L = squeeze(ICLabels(Indx_P, Indx_S, Indx_T, :, :));
+            nexttile
+            plotICLabel(IC, Labels, Format)
+            title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' '))
+        end
+    end
+    
+    saveFig(strjoin({TitleTag, 'Task'}, '_'), Results, Format)
+
+end
 
 % get percent removed components per task and per session
 

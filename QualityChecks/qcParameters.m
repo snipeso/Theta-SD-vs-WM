@@ -53,14 +53,29 @@ P.Paths = Paths;
 Format = struct();
 
 Format.FontName = 'Tw Cen MT'; % use something else for papers
-Format.FontSize = 12;
-Format.TitleSize = 16;
-Format.TopoRes = 300;
-Format.Steps.Topo = 15;
-Format.LW = 5;
-Format.Topo.Sig = 3;
-Format.ScatterSize = 200; % TODO: seperate features for small or big screen
 
+Pix = get(0,'screensize');
+
+if Pix(3) < 2000
+    Format.FontSize = 10;
+    Format.TitleSize = 15;
+    Format.TopoRes = 150;
+    Format.LW = 2;
+    Format.Topo.Sig = 2; % marker size
+    Format.ScatterSize = 10; % TODO: seperate features for small or big screen
+    
+else
+    Format.FontSize = 25;
+    Format.TitleSize = 30;
+    Format.TopoRes = 300;
+    Format.LW = 4;
+    Format.Topo.Sig = 5; % marker size
+    Format.ScatterSize = 200; % TODO: seperate features for small or big screen
+end
+
+Format.Steps.Linear = 20;
+Format.Steps.Divergent = 30;
+Format.Steps.Monochrome = 20;
 Format.Colormap.Linear = flip(colorcet('L17'));
 Format.Colormap.Monochrome = colorcet('L1');
 Format.Colormap.Divergent = colorcet('D1A');
