@@ -23,6 +23,10 @@ if ~any(EEG.reject.gcompreject)
     EEG.reject.gcompreject(Other) = 0;
     
     EEG.reject.gcompreject(IC_Max+1:end) = 0; % don't do anything to smaller components
+    
+    % save IC dataset, now containing new components to remove
+    pop_saveset(EEG, 'filename', Filename_Comps,  'filepath', Source_Comps, ...
+        'check', 'on', 'savemode', 'onefile', 'version', '7.3');
 end
 
 
@@ -124,6 +128,10 @@ if CheckOutput
         disp('press enter to proceed')
         pause
         
+        % save IC dataset, now containing new components to remove
+        pop_saveset(EEG, 'filename', Filename_Comps,  'filepath', Source_Comps, ...
+            'check', 'on', 'savemode', 'onefile', 'version', '7.3');
+        
     elseif ~strcmp(xComp, 'y') % if answered n, or anything else
         
         pop_selectcomps(EEG, 1:IC_Max); % plot grid of all components
@@ -131,11 +139,12 @@ if CheckOutput
         % wait, only proceed when prompted
         disp('press enter to proceed')
         pause
+        
+        % save IC dataset, now containing new components to remove
+        pop_saveset(EEG, 'filename', Filename_Comps,  'filepath', Source_Comps, ...
+            'check', 'on', 'savemode', 'onefile', 'version', '7.3');
     end
     
-    % save IC dataset, now containing new components to remove
-    pop_saveset(EEG, 'filename', Filename_Comps,  'filepath', Source_Comps, ...
-        'check', 'on', 'savemode', 'onefile', 'version', '7.3');
     
     %%% Is final product ok?
     if strcmp(xComp, 'y') % if component selection was ok, see if final product is ok

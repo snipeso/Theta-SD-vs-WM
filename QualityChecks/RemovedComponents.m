@@ -34,7 +34,7 @@ ICValues = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), 128
 ICLabels = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), 128);
 
 
-for Indx_P = 1:numel(Participants)
+for Indx_P = 6:numel(Participants)
     for Indx_S = 1:numel(Sessions.Labels)
         for Indx_T = 1:numel(AllTasks)
             Task = AllTasks{Indx_T};
