@@ -12,9 +12,14 @@ Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
 Paths.Datasets ='D:\LSM\Data\Raw'; % where the raw data is saved (split by participant)
-Paths.Preprocessed = 'D:\Data\Preprocessed';
-% Paths.Preprocessed = 'F:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
 
+if exist( 'D:\Data\Raw', 'dir')
+    Paths.Preprocessed = 'D:\Data\Preprocessed';
+elseif exist( 'F:\Data\Raw', 'dir')
+    Paths.Preprocessed = 'F:\Data\Preprocessed'; % where the preprocessed data gets saved (split by task)
+else
+    error('no data disk!')
+end
 
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis, 'functions','general'))

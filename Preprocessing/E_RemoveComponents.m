@@ -17,14 +17,14 @@ Data_Type = 'Power';
 allTasks  = { 'PVT'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
+CheckOutput = true; % manually verify if selection was good at the end
 
 % %%% emergency code if I need to fix a specific file
-% Filename = 'P02_SpFT_Session2_ICA_Components.set';
-% FN = split(Filename, '_');
-% Task = FN{2};
-% Refresh = true;
-
-CheckOutput = false; % manually verify if selection was good at the end
+Filename = 'P01_LAT_Session2Comp_ICA_Components.set';
+FN = split(Filename, '_');
+Task = FN{2};
+Refresh = true;
+CheckOutput = true; % manually verify if selection was good at the end
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
