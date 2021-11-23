@@ -20,7 +20,7 @@ Refresh = false; % redo already done files
 CheckOutput = true; % manually verify if selection was good at the end
 
 % %%% emergency code if I need to fix a specific file
-Filename = 'P06_Match2Sample_Session2_ICA_Components.set';
+Filename = 'P19_Music_Session2_ICA_Components.set';
 FN = split(Filename, '_');
 Task = FN{2};
 Refresh = true;

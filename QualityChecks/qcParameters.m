@@ -65,12 +65,12 @@ if Pix(3) < 2000
     Format.ScatterSize = 10; % TODO: seperate features for small or big screen
     
 else
-    Format.FontSize = 25;
-    Format.TitleSize = 30;
+    Format.FontSize = 15;
+    Format.TitleSize = 20;
     Format.TopoRes = 300;
     Format.LW = 4;
     Format.Topo.Sig = 5; % marker size
-    Format.ScatterSize = 200; % TODO: seperate features for small or big screen
+    Format.ScatterSize = 80; % TODO: seperate features for small or big screen
 end
 
 Format.Steps.Linear = 20;

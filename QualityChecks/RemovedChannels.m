@@ -35,7 +35,7 @@ for Indx_P = 1:numel(Participants)
         for Indx_T = 1:numel(AllTasks)
             Filename = strjoin({Participants{Indx_P}, AllTasks{Indx_T}, ...
                 Sessions.( AllTasks{Indx_T}){Indx_S}, 'Cuts.mat'}, '_');
-            Path = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', AllTasks{Indx_T}, Filename);
+            Path = fullfile(Paths.Preprocessed, 'Cutting', 'Cuts', AllTasks{Indx_T}, Filename);
             
             if ~exist(Path, 'file')
                 continue
@@ -66,7 +66,7 @@ for Indx_P = 1:numel(Participants)
     end
 end
 
-AllCh(:, :, :, Channels.Removed) = [];
+AllCh(:, :, :, Channels.Removed) = nan;
 
 %%% plots
 
@@ -88,7 +88,6 @@ saveFig(strjoin({TitleTag, 'allRecordings'}, '_'), Results, Format)
 load('StandardChanlocs128.mat', 'StandardChanlocs')
 load('Cz.mat', 'CZ')
 StandardChanlocs(end+1) = CZ;
-StandardChanlocs(Channels.Removed) = [];
 
 figure('units','normalized','outerposition',[0 0 .3 .4])
 bubbleTopo(Data, StandardChanlocs, 200, '2D', {StandardChanlocs.labels}, Format)
@@ -161,7 +160,7 @@ end
 
 saveFig(strjoin({TitleTag, 'Tasks'}, '_'), Results, Format)
 
-%%
+%
 figure('units','normalized','outerposition',[0 0 1 .4])
 tiledlayout(1, numel(TaskLabels), 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_T =1:numel(AllTasks)
@@ -189,7 +188,6 @@ end
 
 Data = 100*(squeeze(sum(sum(AllCh==0, 2),3))./squeeze(sum(sum(~isnan(AllCh), 2),3)));
 
-
 for Indx_P =1:numel(Participants)
     if ismember(Indx_P, [1 5 9 13 17])
         if Indx_P ~= 1
@@ -211,6 +209,9 @@ end
 
 
 %%
+
+Data = 100*(squeeze(sum(sum(AllCh==0, 2),3))./squeeze(sum(sum(~isnan(AllCh), 2),3)));
+
 figure('units','normalized','outerposition',[0 0 1 1])
 tiledlayout(3,6, 'Padding', 'none', 'TileSpacing', 'compact');
 for Indx_P =1:numel(Participants)

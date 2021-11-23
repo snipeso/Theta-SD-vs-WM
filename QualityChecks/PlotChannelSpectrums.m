@@ -26,7 +26,7 @@ WelchWindow = 8;
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'ChannelSpectrums', 'LogLog', num2str(WelchWindow), 'zScored'}, '_');
 
-Results = fullfile(Paths.Results, 'Task_Spectrums', Tag);
+Results = fullfile(Paths.Results, 'Spectrums', Tag);
 if ~exist(Results, 'dir')
     mkdir(Results)
 end
@@ -67,7 +67,7 @@ for Indx_P = 1:numel(Participants)
             title(strjoin({Participants{Indx_P}, TaskLabels{Indx_T}, Sessions.Labels{Indx_S}}, ' ') )
         end
     end
-    setLimsTiles(numel(Sessions.Labels)*numel(AllTasks), 'y')
+    setLimsTiles(numel(Sessions.Labels)*numel(AllTasks), 'y');
     saveFig(strjoin({TitleTag, Participants{Indx_P}}, '_'), Results, Format)
 end
 

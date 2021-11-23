@@ -53,7 +53,7 @@ Dims = size(Color);
 
 if Dims(2) ~=3 % if not a color triplet
     Colormap = Format.Colormap.Linear;
-    Colormap = reduxColormap(Colormap, Format.Steps.Topo);
+    Colormap = reduxColormap(Colormap, Format.Steps.Linear);
     colormap(Colormap)
     colorbar
 end
