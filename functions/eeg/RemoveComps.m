@@ -168,7 +168,7 @@ if CheckOutput
             end
             
             if ~isempty(RS)
-                rsCh_postICA(fullfile(Source_Cuts, Filename_Cuts), RS)
+                rsCh_postICA(fullfile(Source_Cuts, Filename_Cuts), abs(RS))
             end
             
             xEEG = 'y';
