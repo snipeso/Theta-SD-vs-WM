@@ -23,7 +23,7 @@ Prep_Parameters
 %%% Parameters
 
 % % Single filename
-Filename = 'P09_SpFT_Session2_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+Filename = 'P14_Music_Session2_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 % % Filename list
 % Filename = [

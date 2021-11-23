@@ -12,16 +12,25 @@ P.Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', ...
 
 P.AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
 P.TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
-% 
+%
 % P.AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'Standing', 'Oddball', 'Fixation'};
 % P.TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music', 'EC', 'Oddball', 'EO'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Locations
 
-Core = 'F:\Data\';
-Paths.Preprocessed = fullfile(Core, 'Preprocessed'); % where the preprocessed data gets saved (split by task)
-Paths.Datasets = 'G:\LSM\Data\Raw'; 
+
+if exist( 'D:\Data\Raw', 'dir')
+    Core = 'D:\Data\';
+elseif exist( 'F:\Data\Raw', 'dir')
+    Core = 'F:\Data\';
+else
+    error('no data disk!')
+end
+
+Paths.Preprocessed = fullfile(Core, 'Preprocessed');
+
+Paths.Datasets = 'G:\LSM\Data\Raw';
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
 Paths.Results = fullfile(Core, 'QualityCheck', 'Theta-SD-vs-WM'); % where figures and tables end up
 
@@ -63,7 +72,7 @@ if Pix(3) < 2000
     Format.LW = 2;
     Format.Topo.Sig = 2; % marker size
     Format.ScatterSize = 10; % TODO: seperate features for small or big screen
-    
+
 else
     Format.FontSize = 15;
     Format.TitleSize = 20;
@@ -87,7 +96,7 @@ Format.Alpha.Participants = .3;
 
 Format.Colors.AllTasks = getColors(6, 'rainbow');
 for Indx_T = 1:numel(P.AllTasks)
-     Format.Colors.Tasks.(P.AllTasks{Indx_T}) = Format.Colors.AllTasks(Indx_T, :);
+    Format.Colors.Tasks.(P.AllTasks{Indx_T}) = Format.Colors.AllTasks(Indx_T, :);
 end
 
 Format.Colors.Levels = getColors([1 3], 'rainbow', 'red'); % M2S red
@@ -132,11 +141,11 @@ Channels.Standard.C = [36 104 129];
 Channels.Standard.T = [45 108];
 Format.Colors.Standard = [
     [44, 190, 107]/255; % green
- [228, 104, 90]/255; % red
-[244, 204, 32]/255; % yellow
-[22, 144, 167]/255; % blue
-[99, 88, 226]/255; % pink
-];
+    [228, 104, 90]/255; % red
+    [244, 204, 32]/255; % yellow
+    [22, 144, 167]/255; % blue
+    [99, 88, 226]/255; % pink
+    ];
 
 Channels.Standard_10_20.Fz = 11;
 Channels.Standard_10_20.Fp1 = 22;
@@ -162,7 +171,7 @@ Channels.Standard_10_20.O2 = 83;
 Channels.Standard_10_20_Titles = fieldnames(Channels.Standard_10_20);
 Channels.Standard_10_20_All = [];
 for Indx = 1:numel(Channels.Standard_10_20_Titles)
-   Channels.Standard_10_20_All = cat(2, Channels.Standard_10_20_All, Channels.Standard_10_20.(Channels.Standard_10_20_Titles{Indx}));
+    Channels.Standard_10_20_All = cat(2, Channels.Standard_10_20_All, Channels.Standard_10_20.(Channels.Standard_10_20_Titles{Indx}));
 end
 
 
@@ -209,7 +218,7 @@ P.Sessions = Sessions;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Durations
-% 
+%
 % Durations.Match2Sample =  [-2, 1 2 4 6 8, 10, 12, 15, 20, 25];
 % Durations.LAT =  [-2, 1 2 4 6 8, 10];
 % Durations.PVT =  [-2, 1 2 4 6 8];

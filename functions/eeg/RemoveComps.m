@@ -235,8 +235,9 @@ switch xEEG
         % restore "bad" channels to remove after ICA
         badchans_postICA = []; %#ok<NASGU>
         load(fullfile(Source_Cuts, Filename_Cuts), 'badchans_postICA')
-        BC = badchans_postICA;
-        rsCh_postICA(fullfile(Source_Cuts, Filename_Cuts), badchans_postICA)
+        if ~isempty(badchans_postICA)
+            rsCh_postICA(fullfile(Source_Cuts, Filename_Cuts), badchans_postICA)
+        end
         
         disp(['***********', 'Deleting ', Filename_Destination, '***********'])
         close all

@@ -65,7 +65,7 @@ for Indx_P = 1:numel(Participants)
     
     figure('units','normalized','outerposition',[0 0 1 1])
     tiledlayout(numel(AllTasks), numel(Sessions.Labels), ...
-        'Padding', 'none', 'TileSpacing', 'none');
+        'Padding', 'none', 'TileSpacing', 'compact');
     
     for Indx_T = 1:numel(AllTasks)
         for Indx_S = 1:numel(Sessions.Labels)
@@ -145,7 +145,7 @@ for Indx_P = 1:numel(Participants)
     
     figure('units','normalized','outerposition',[0 0 1 1])
     tiledlayout(numel(AllTasks), numel(Sessions.Labels), ...
-        'Padding', 'none', 'TileSpacing', 'none');
+        'Padding', 'none', 'TileSpacing', 'compact');
     
     for Indx_T = 1:numel(AllTasks)
         for Indx_S = 1:numel(Sessions.Labels)
