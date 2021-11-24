@@ -19,8 +19,18 @@ P.TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Locations
 
-Core = 'D:\Data\';
-Paths.Preprocessed = fullfile(Core, 'Preprocessed'); % where the preprocessed data gets saved (split by task)
+
+if exist( 'D:\Data\Raw', 'dir')
+    Core = 'D:\Data\';
+elseif exist( 'F:\Data\Raw', 'dir')
+    Core = 'F:\Data\';
+else
+    error('no data disk!')
+end
+
+Paths.Preprocessed = fullfile(Core, 'Preprocessed');
+
+
 Paths.Datasets = 'G:\LSM\Data\Raw';
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
 Paths.Results = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and tables end up
@@ -185,7 +195,7 @@ Channels.preROI.Elsewhere = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedCha
 
 Format.Colors.preROI = getColors(numel(fieldnames(Channels.preROI)));
 
-Channels.Remove = [48 119];
+Channels.Remove = [17, 48, 119];
 
 P.Format = Format;
 P.Channels = Channels;
@@ -211,29 +221,12 @@ P.Sessions = Sessions;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Durations
 %
-% Durations.Match2Sample =  [-2, 1 2 4 6 8, 10, 12, 15, 20, 25];
-% Durations.LAT =  [-2, 1 2 4 6 8, 10];
-% Durations.PVT =  [-2, 1 2 4 6 8];
-% Durations.SpFT =  [-2, 1 2 4 6];
-% Durations.Game =  [-2, 1 2 4 6 8];
-% Durations.Music =  [-2, 1 2 4];
-% Durations.Fixation =  [-2, 1 2 4 6];
-% Durations.Standing =  [-2, 1 2 4 6];
-% Durations.Oddball =  [-2, 1 2 4 6];
-% Durations.MWT = [40];
-
-
-Durations.Match2Sample =  [4];
-Durations.LAT =  [4];
-Durations.PVT =  [4];
-Durations.SpFT =  [4];
-Durations.Game =  [4];
-Durations.Music =  [4];
-Durations.Fixation =  [4];
-Durations.Standing =  [4];
-Durations.Oddball =  [4];
-Durations.MWT = [4];
-
+Durations.Match2Sample =  [-2, -4, 1 2 4 6 8, 10, 12, 15, 20];
+Durations.LAT =  [-2, -4, 1 2 4 6 8, 10];
+Durations.PVT =  [-2, -4, 1 2 4 6 8];
+Durations.SpFT =  [-2, 1 2 4];
+Durations.Game =  [-2, -4, 1 2 4 6 8];
+Durations.Music =  [-2, 1 2 4];
 
 P.Durations = Durations;
 

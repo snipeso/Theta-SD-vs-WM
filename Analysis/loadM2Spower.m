@@ -18,7 +18,7 @@ for Indx_P = 1:numel(P.Participants)
         
         if ~exist(Path, 'file')
             warning(['Missing ', Filename])
-            if not(Indx_P==1 && Indx_S ==1 && Indx_T==1)
+            if not(Indx_P==1 && Indx_S ==1)
                 AllData(Indx_P, Indx_S, 1:Dims(1), 1:Dims(2),  1:Dims(3), 1:Dims(4)) = nan; %#ok<NODEF>
             end
             continue

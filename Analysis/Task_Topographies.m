@@ -33,7 +33,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-Filepath =  fullfile(P.Paths.Data, 'EEG', ['Unlocked_', Tag]);
+Filepath =  fullfile(P.Paths.Data, 'EEG', 'Unlocked', Tag);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % z-score it

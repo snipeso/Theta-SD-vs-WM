@@ -90,7 +90,8 @@ load('Cz.mat', 'CZ')
 StandardChanlocs(end+1) = CZ;
 
 figure('units','normalized','outerposition',[0 0 .3 .4])
-bubbleTopo(Data, StandardChanlocs, 200, '2D', {StandardChanlocs.labels}, Format)
+Data = 100*(squeeze(sum(sum(sum(AllCh==0, 3), 2),1))./squeeze(sum(sum(sum(~isnan(AllCh), 3), 2),1)));
+bubbleTopo(Data, StandardChanlocs, 200, '3D', {StandardChanlocs.labels}, Format)
 colormap(flip(Format.Colormap.Monochrome))
 saveFig(strjoin({TitleTag, 'allRecordings', 'Topo'}, '_'), Results, Format)
 

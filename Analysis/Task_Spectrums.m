@@ -61,14 +61,14 @@ chDataRaw = meanChData(sDataRaw, Chanlocs, ChannelStruct, 4);
 
 %% Plot map of clusters
 
-PlotChannelMap(Chanlocs, ChannelStruct, Format.Colors.AllTasks, Format)
+PlotChannelMap(Chanlocs, ChannelStruct, getColors(3), Format)
 saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
 
 
 %% Plot spectrums as task x ch coloring all channels
 
 Log = true;
-figure('units','normalized','outerposition',[0 0 .8 .8])
+figure('units','normalized','outerposition',[0 0 .8 1])
 tiledlayout( numel(ChLabels),numel(AllTasks), 'Padding', 'compact', 'TileSpacing', 'normal');
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
@@ -76,7 +76,6 @@ for Indx_Ch = 1:numel(ChLabels)
         
         nexttile
         plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Format, StatsP);
-        axis square
         set(gca, 'FontSize', 14)
         if Indx_Ch > 1 || Indx_T > 1
             legend off
@@ -392,6 +391,9 @@ saveFig(strjoin({TitleTag, 'PeakFreq', 'All'}, '_'), Results, Format)
 %% plot all participants' spectrums session x task, one fig per ch
 
 
+Log = true;
+
+
 for Indx_Ch =  1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
         figure('units','normalized','outerposition',[0 0 .24 1])
@@ -402,10 +404,9 @@ for Indx_Ch =  1:numel(ChLabels)
             subplot(numel(Sessions.Labels), 1, Indx_S)
             % TODO: plot peaks! so can inspect where peak came from
             plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-                Format.Alpha.Participants, Format.LW, Format)
+                Format.Alpha.Participants, Format.LW, Log, Format)
             legend off
             title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
-            xlim([1 25])
         end
         setLims(numel(Sessions.Labels), 1, 'y');
         
@@ -417,6 +418,8 @@ end
 
 %% plot all participants' spectrums session x task, one fig per ch NOT Z SCORED
 
+Log = true;
+
 for Indx_Ch =  1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
         figure('units','normalized','outerposition',[0 0 .24 1])
@@ -426,10 +429,10 @@ for Indx_Ch =  1:numel(ChLabels)
             
             subplot(numel(Sessions.Labels), 1, Indx_S)
             plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-                Format.Alpha.Participants, Format.LW, Format)
+                Format.Alpha.Participants, Format.LW, Log, Format)
             title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
             legend off
-            xlim([1 25])
+            ylabel(Format.Labels.Power)
         end
         setLims(numel(Sessions.Labels), 1, 'y');
         

@@ -303,7 +303,7 @@ for Indx_B = 1:numel(BandLabels)
         SR = squeeze(bData(:, 2, Indx_T, :, Indx_B));
         
         nexttile
-        plotTopoDiff(BL, SR, Chanlocs, CLims_Diff, StatsP, Format);
+        Stats = plotTopoDiff(BL, SR, Chanlocs, CLims_Diff, StatsP, Format);
         title({[TaskLabels{Indx_T}, ' SR vs BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', Format.TitleSize)
         
     end
@@ -321,7 +321,7 @@ for Indx_B = 1:numel(BandLabels)
         SD = squeeze(bData(:, 3, Indx_T, :, Indx_B));
         
         nexttile
-        plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
+        Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
         title({[TaskLabels{Indx_T}, ' SD vs BL']; BandLabels{Indx_B}}, 'Color', Format.Colors.AllTasks(Indx_T, :), 'FontSize', Format.TitleSize)
         
     end

@@ -4,13 +4,14 @@ function Stats = plotTopoDiff(Data1, Data2, Chanlocs, CLims, StatsP, Format)
 
 % get t values
 [~, p, CI, stats] = ttest((Data2 - Data1));
-[~, Sig] = fdr(p, StatsP.Alpha);
-% [Sig, p, CI, stats] = ttest((Data2 - Data1));
+[Sig, crit_p, ~, adj_P] = fdr_bh(p, StatsP.Alpha, 'pdep'); % NOTE: dep is good for ERPs, since data can be negatively correlated as well
 
 t_values = stats.tstat';
 
 Stats.t = t_values(:);
 Stats.p = p(:);
+Stats.p_fdr = adj_P;
+Stats.crit_p = crit_p;
 Stats.sig = Sig(:);
 Stats.df = stats.df(:);
 Stats.CI = CI';
@@ -40,6 +41,8 @@ end
 topoplot(stats.(StatsP.Paired.ES), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
     'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
     'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .05});
+
+
 
 %
 % h = colorbar;

@@ -18,8 +18,9 @@ Durations = P.Durations;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 Refresh = false;
-Tasks = {'PVT'};
+Tasks = P.AllTasks;
 WelchWindow = 8;
 Overlap = .75; % overlap of hanning windows for FFT
 

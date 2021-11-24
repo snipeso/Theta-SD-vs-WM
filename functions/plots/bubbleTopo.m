@@ -35,7 +35,7 @@ switch Type
         Z = [Chanlocs.Z];
         scatter3(X, Y, Z, Size, Color, 'filled')
         
-        if Labels
+        if  ~isempty(Labels)
             hold on
             textscatter3(X, Y, Z, {Chanlocs.labels}, 'ColorData', TextColor, 'FontName', Format.FontName)
         end
