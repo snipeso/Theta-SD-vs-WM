@@ -238,6 +238,7 @@ StatsP.ANOVA.ES_lims = [0 1];
 StatsP.ANOVA.nBoot = 2000;
 StatsP.ANOVA.pValue = 'pValueGG';
 StatsP.ttest.nBoot = 2000;
+StatsP.ttest.dep = 'pdep'; % use 'dep' for ERPs, pdep for power
 StatsP.Alpha = .05;
 StatsP.Trend = .1;
 StatsP.Paired.ES = 'hedgesg';

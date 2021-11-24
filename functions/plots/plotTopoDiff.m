@@ -4,7 +4,7 @@ function Stats = plotTopoDiff(Data1, Data2, Chanlocs, CLims, StatsP, Format)
 
 % get t values
 [~, p, CI, stats] = ttest((Data2 - Data1));
-[Sig, crit_p, ~, adj_P] = fdr_bh(p, StatsP.Alpha, 'pdep'); % NOTE: dep is good for ERPs, since data can be negatively correlated as well
+[Sig, crit_p, ~, adj_P] = fdr_bh(p, StatsP.Alpha, StatsP.ttest.dep); % NOTE: dep is good for ERPs, since data can be negatively correlated as well
 
 t_values = stats.tstat';
 

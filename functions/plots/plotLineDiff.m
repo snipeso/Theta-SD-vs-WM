@@ -37,7 +37,8 @@ Stats.pvalues = nan(Dims(2),  numel(Edges)-1);
 Stats.sig = Stats.pvalues;
 Stats.df = Stats.pvalues;
 Stats.tvalues =  Stats.pvalues;
-
+Stats.p_fdr = Stats.pvalues;
+Stats.crit_p = nan(Dims(2), 1);
 DataBL = squeeze(MeanDataX(:, BL_Indx, :));
 for Indx_S = 1:Dims(2)
     if Indx_S == BL_Indx
@@ -46,10 +47,12 @@ for Indx_S = 1:Dims(2)
     
     Data1 = squeeze(MeanDataX(:, Indx_S, :));
     [~, p, ~, stats] = ttest(Data1, DataBL);
-    [~, sig] = fdr(p, StatsP.Alpha);
+    [sig, crit_p, ~, adj_P] = fdr_bh(p, StatsP.Alpha, StatsP.ttest.dep);
     
     Stats.pvalues(Indx_S, :) = p;
     Stats.sig(Indx_S, :) = sig;
+    Stats.p_fdr(Indx_S, :) = adj_P;
+    Stats.crit_p(Indx_S) = crit_p;
     Stats.df(Indx_S, :) = stats.df;
     Stats.tvalues(Indx_S, :, :)= stats.tstat;
     
