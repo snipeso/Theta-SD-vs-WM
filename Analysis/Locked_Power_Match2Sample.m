@@ -30,7 +30,7 @@ TotTrials = 10*Blocks*Levels;
 
 % get files and paths
 Source = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
-Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', Task);
+Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'Cuts', Task);
 Source_Tables = fullfile(Paths.Data, 'Behavior');
 Destination = fullfile(Paths.Data, 'EEG', 'Locked', Task, ['w', num2str(WelchWindow)]);
 

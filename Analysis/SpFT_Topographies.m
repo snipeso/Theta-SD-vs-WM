@@ -78,7 +78,7 @@ end
 
 
 figure('units','normalized','outerposition',[0 0 .25 .35])
-plotColorbar( CLims_Diff, 'hedges g', Format)
+plotColorbar('Divergent', CLims_Diff, 'hedges g', Format)
 saveFig(strjoin({TitleTag, 'Diff_Colorbar'}, '_'), Results, Format)
 
 
@@ -104,8 +104,3 @@ for Indx_B = 1:numel(BandLabels)
     end
     saveFig(strjoin({ TitleTag, 'SDvsBL', BandLabels{Indx_B}}, '_'), Results, Format)
 end
-
-
-
-scatter
-

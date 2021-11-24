@@ -139,7 +139,7 @@ close all
 Hedges = [];
 CI = [];
 % fmTheta
-Data = squeeze(bData(:, 1, :, 2, 2, 2)); % BL Ret1 front theta
+Data = squeeze(bData(:, 1, :, 2, 1, 2)); % BL Ret1 front theta
 Data1 = averageTrials(Data, squeeze(AllTrials.level(:, 1, :)) == 1);
 Data2 =  averageTrials(Data, squeeze(AllTrials.level(:, 1, :)) == 3);
 Data3 =  averageTrials(Data, squeeze(AllTrials.level(:, 1, :)) == 6);
@@ -151,9 +151,9 @@ Hedges = [Hedges, Stats.hedgesg];
 CI = [CI; Stats.hedgesgCI];
 
 % sdTheta
-Data1 = squeeze(nanmean(bData(:, 1, :, 2, 2, 2), 3)); % BL Ret1 front theta
-Data2 = squeeze(nanmean(bData(:, 2, :, 2, 2, 2), 3));
-Data3 = squeeze(nanmean(bData(:, 3, :, 2, 2, 2), 3));
+Data1 = squeeze(nanmean(bData(:, 1, :, 2, 1, 2), 3)); % BL Ret1 front theta
+Data2 = squeeze(nanmean(bData(:, 2, :, 2, 1, 2), 3));
+Data3 = squeeze(nanmean(bData(:, 3, :, 2, 1, 2), 3));
 Stats = hedgesG(Data1, Data2, StatsP);
 Hedges = [Hedges, Stats.hedgesg];
 CI = [CI; Stats.hedgesgCI];
@@ -161,8 +161,12 @@ Stats = hedgesG(Data1, Data3, StatsP);
 Hedges = [Hedges, Stats.hedgesg];
 CI = [CI; Stats.hedgesgCI];
 
-%%
-Colors = [makePale(Format.Colors.Tasks.Match2Sample, .5); Format.Colors.Tasks.Match2Sample; makePale( Format.Colors.Tasks.Music, .5);  Format.Colors.Tasks.Music;];
+%
+% Colors = [makePale(Format.Colors.Tasks.Match2Sample, .5); Format.Colors.Tasks.Match2Sample; makePale( Format.Colors.Tasks.Music, .5);  Format.Colors.Tasks.Music;];
+Colors = flip(getColors([2, 2]));
+
+Colors = cat(1, Colors(:, :, 1), Colors(:, :, 2));
+
 figure
 plotUFO(Hedges', CI, {'L3 vs L1', 'L6 vs L1', 'SR vs BL', 'SD vs BL'}, {}, Colors, 'vertical', Format)
 yticks(0:.5:2)

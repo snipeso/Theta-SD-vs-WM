@@ -96,7 +96,7 @@ end
 
 
 figure('units','normalized','outerposition',[0 0 .25 .35])
-plotColorbar( CLims_Diff, 'hedges g', Format)
+plotColorbar('Divergent', CLims_Diff, 'hedges g', Format)
 saveFig(strjoin({TitleTag, 'Diff_Colorbar'}, '_'), Main_Results, Format)
 
 
