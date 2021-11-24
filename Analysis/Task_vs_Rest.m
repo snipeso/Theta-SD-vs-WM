@@ -45,6 +45,8 @@ end
 Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
+
+
 % z-score it
 zData = zScoreData(AllData, 'last');
 

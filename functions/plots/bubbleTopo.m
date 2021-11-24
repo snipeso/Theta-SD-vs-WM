@@ -44,7 +44,7 @@ switch Type
         set(gca,'DataAspectRatio',[1 1 1.2])
 end
 
-set(gca, 'visible', 'off', 'FontName', Format.FontName)
+set(gca, 'visible', 'off', 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 title('')
 
 set(findall(gca, 'type', 'text'), 'visible', 'on')

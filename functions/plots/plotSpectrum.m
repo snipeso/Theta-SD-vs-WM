@@ -7,7 +7,7 @@ Dims = size(Data);
 hold on
 
 if Log
-    XLim = [2 35];
+    XLim = [1 35];
     plotFreqs = log(Freqs);
     
     % plot thin lines marking the theta range

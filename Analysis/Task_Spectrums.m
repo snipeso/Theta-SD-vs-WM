@@ -56,6 +56,9 @@ sDataRaw = smoothFreqs(AllData, Freqs, 'last', SmoothFactor);
 chData = meanChData(sData, Chanlocs, ChannelStruct, 4);
 chDataRaw = meanChData(sDataRaw, Chanlocs, ChannelStruct, 4);
 
+% change frequency bin
+StatsP.FreqBin = diff(Freqs(1:2));
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 
@@ -104,16 +107,18 @@ saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Results, Format
 
 
 for Indx_Ch =  1:numel(ChLabels)
-    figure('units','normalized','outerposition',[0 0 .5 .25])
+    figure('units','normalized','outerposition',[0 0 .8 .5])
+    tiledlayout(1,numel(Sessions.Labels), 'Padding', 'compact', 'TileSpacing', 'normal');
+
     for Indx_S = 1:numel(Sessions.Labels)
         Data = squeeze(chData(:, Indx_S, :, Indx_Ch, :));
         
-        subplot(1, numel(Sessions.Labels), Indx_S)
-        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, Format.Colors.AllTasks, Format)
+        nexttile
+        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, Format.Colors.AllTasks, Log, Format, StatsP);
+        legend off
         title(strjoin({ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, ' '))
     end
-    setLims(1, numel(Sessions.Labels), 'y');
-    padAxis
+    setLimsTiles(numel(Sessions.Labels), 'y');
     saveFig(strjoin({TitleTag, 'Channel', 'Tasks', ChLabels{Indx_Ch}}, '_'), Results, Format)
     
 end
@@ -128,8 +133,9 @@ for Indx_S = 2:3
         Data = SD - BL;
         
         subplot(2, numel(ChLabels), Indx)
-        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, Format.Colors.AllTasks, Format)
+        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels,Format.Colors.AllTasks, Log, Format, StatsP);
         title(strjoin({ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, ' '))
+        legend off
         
         Indx = Indx+1;
     end
@@ -145,7 +151,7 @@ disp('Gathering peaks, this is slow')
 
 Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(Chanlocs));
 DiffPeaks = Peaks;
-BL_Task = strcmp(AllTasks, 'Fixation');
+BL_Task = strcmp(AllTasks, 'Music');
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions.Labels)
@@ -180,20 +186,20 @@ for Indx_T = 1:numel(AllTasks)
         Data = squeeze(nanmean(Peaks(:, Indx_S, Indx_T, :), 1));
         
         subplot(2, numel(Sessions.Labels), Indx_S)
-        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', false, Format)
+        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', [], Format)
         caxis(PeakPlotRange)
         colormap(Colormap)
         title(strjoin({Sessions.Labels{Indx_S}, TaskLabels{Indx_T}}, ' '))
         
         Data = squeeze(nanmean(DiffPeaks(:, Indx_S, Indx_T, :), 1));
         subplot(2, numel(Sessions.Labels), numel(Sessions.Labels)+Indx_S)
-        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', false, Format)
+        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', [], Format)
         caxis(PeakPlotRange)
         colormap(Colormap)
         if Indx_S == 1
-            title(strjoin({Sessions.Labels{Indx_S},  TaskLabels{Indx_T}, 'vs Rest'}, ' '))
+            title(strjoin({Sessions.Labels{Indx_S},  TaskLabels{Indx_T}, 'vs Rest'}, ' '), 'FontSize', Format.TitleSize)
         else
-            title(strjoin({Sessions.Labels{Indx_S},  TaskLabels{Indx_T}, 'vs BL'}, ' '))
+            title(strjoin({Sessions.Labels{Indx_S},  TaskLabels{Indx_T}, 'vs BL'}, ' '), 'FontSize', Format.TitleSize)
         end
     end
     
@@ -208,7 +214,7 @@ end
 chPeaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(ChLabels));
 DiffchPeaks = chPeaks;
 
-BL_Task = strcmp(AllTasks, 'Fixation');
+BL_Task = strcmp(AllTasks, 'Music');
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions.Labels)
@@ -235,7 +241,7 @@ end
 chPeaksRAW = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(ChLabels));
 DiffchPeaksRAW = chPeaksRAW;
 
-BL_Task = find(strcmp(AllTasks, 'Fixation'));
+BL_Task = find(strcmp(AllTasks, 'Music'));
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions.Labels)
