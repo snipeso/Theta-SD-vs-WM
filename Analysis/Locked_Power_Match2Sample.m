@@ -78,7 +78,6 @@ for Indx_F = 1:numel(Files)
     [Channels, Points] = size(EEG.data);
     fs = EEG.srate;
     
-    
     % set to nan all cut data
     Cuts_Filepath = fullfile(Source_Cuts, [Filename_Core, '_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
@@ -95,9 +94,6 @@ for Indx_F = 1:numel(Files)
     
     nfft = 2^nextpow2(WelchWindow*fs);
     
-    EndPre =  AllTriggerTimes(ismember(AllTriggerTypes, Stim_Trig))-1*fs; % IMPORTANT: there's a 1 s cue period prior to stim, so BL excludes this
-    StartPre = EndPre - nfft;
-    
     StartEncoding = AllTriggerTimes(ismember(AllTriggerTypes, Stim_Trig))-.1*fs; % this little shift is so that the end encoding isn't partially in the retention, but rather with the cue
     EndEncoding = StartEncoding + nfft;
     
@@ -110,12 +106,12 @@ for Indx_F = 1:numel(Files)
     EndProbes = StartProbes + nfft;
     
     
-    if TotTrials ~= numel(EndPre) || TotTrials ~= numel(StartRetentions) || TotTrials ~= numel(StartProbes)
+    if TotTrials ~= numel(StartEncoding) || TotTrials ~= numel(StartRetentions) || TotTrials ~= numel(StartProbes)
         warning(['Something went wrong with triggers for ', EEG_Filename])
         continue
     end
     
-    Encoding = PowerTrials(EEG, StartEncoding, StartRetentions, WelchWindow);
+    Encoding = PowerTrials(EEG, StartEncoding, EndEncoding, WelchWindow);
     Retention1 = PowerTrials(EEG, StartRetentions, MidRetentions, WelchWindow);
     Retention2 = PowerTrials(EEG, MidRetentions, EndRetentions, WelchWindow);
     [Probe, Freqs] = PowerTrials(EEG, StartProbes, EndProbes, WelchWindow);
