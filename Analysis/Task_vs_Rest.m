@@ -20,6 +20,9 @@ clc
 
 P = analysisParameters();
 
+% P.AllTasks = {'Match2Sample', 'LAT', 'PVT' 'Game'};
+% P.TaskLabels = {'STM', 'LAT', 'PVT', 'Game'};
+
 Paths = P.Paths;
 Participants = P.Participants;
 AllTasks = P.AllTasks;
@@ -30,7 +33,7 @@ Sessions = P.Sessions;
 StatsP = P.StatsP;
 Channels = P.Channels;
 
-Duration = 4;
+Duration = 2;
 WelchWindow = 8;
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'Topos', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
