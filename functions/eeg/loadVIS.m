@@ -11,6 +11,7 @@ if any(contains(Content, 'rh')) % if reto scored it
     VIS_Filename = Content(contains(Content, 'rh'));
 elseif numel(Content) == 1 % if there's only one vis
     VIS_Filename = Content;
+      warning(['No Reto score in ', Filepath])
 elseif numel(Content) > 1 % if there's more than one, just get the first
       VIS_Filename = Content(1);
       warning(['More than one VIS in ', Filepath])
@@ -44,4 +45,4 @@ SO = find(strScores=='2' | strScores=='3' | strScores=='r', 1, 'first'); % sleep
 SleepQuality.sol = SO*EL/60; % sleep onset latency (first N2 or N3 episode)
 SleepQuality.sd = nnz(strScores~='0')*EL/60; % sleep duration
 SleepQuality.waso = nnz(strScores(SO:end)=='0')*EL/60; % wake after sleep onset
-SleepQuality.se = (Tot-Minutes.wake)/Tot; % sleep efficiency
+SleepQuality.se = 100*(Tot-nnz(strScores=='0'))/Tot; % sleep efficiency
