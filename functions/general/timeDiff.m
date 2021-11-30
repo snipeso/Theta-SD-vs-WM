@@ -6,4 +6,13 @@ if iscell(Start)
     End = str2time(End);
 end
 
-Hours = mod(End-Start, 24);
+Hours = End-Start;
+Sign = sign(Hours);
+
+% positive times
+Pos = Sign == 1;
+Hours(Pos) = mod(Hours(Pos), 24);
+
+% negative times
+Neg = Sign == -1;
+Hours(Neg) = -mod(abs(Hours(Neg)), 24);

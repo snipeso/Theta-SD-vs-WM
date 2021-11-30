@@ -4,8 +4,10 @@
 Path = mfilename('fullpath');
 Path = extractBefore(Path, 'addExternalFunctions');
 
-% add MES toolbox
-addpath(fullfile(Path, 'hhentschke-measures-of-effect-size-toolbox-3d90ae5'))
-addpath(fullfile(Path, 'colormaps'))
-addpath(fullfile(Path, 'Mass_univariate_erp_toolbox'))
-addpath(fullfile(Path, 'Other'))
+SubFolders = getContent(Path);
+SubFolders(contains(SubFolders, '.')) = [];
+
+for Indx_F = 1:numel(SubFolders)
+    
+   addpath(fullfile(Path, SubFolders(Indx_F))) 
+end

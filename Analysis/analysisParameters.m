@@ -34,6 +34,7 @@ Paths.Preprocessed = fullfile(Core, 'Preprocessed');
 Paths.Datasets = 'G:\LSM\Data\Raw';
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
 Paths.Results = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and tables end up
+Paths.Scoring = fullfile(Core, 'Scoring');
 
 % get path where these scripts were saved
 Paths.Analysis = mfilename('fullpath');
@@ -183,6 +184,7 @@ end
 % posterior EEG
 Frontspot = [22 15 9 23 18 16 10 3 24 19 11 4 124 20 12 5 118 13 6 112];
 Backspot = [66 71 76 84 65 70 75 83 90 69 74 82 89];
+Centerspot = [129 7 106 80 55 31 30 37 54 79 87 105 36 42 53 61 62 78 86 93 104 35 41 47  52 92 98 103 110, 60 85 51 97];
 
 % get all the other channels so neither main spots, or edge channels
 EdgeChannels = [17 128 43 48 63 68 73 81 88 94 99 120 119 125];
@@ -191,7 +193,8 @@ AllCh = 1:129;
 % Channels.preROI.All = AllCh;
 Channels.preROI.Front = Frontspot;
 Channels.preROI.Back = Backspot;
-Channels.preROI.Elsewhere = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
+Channels.preROI.Center = Centerspot;
+% Channels.preROI.Elsewhere = AllCh(not(ismember(AllCh, [EdgeChannels, ExcludedChannels, Frontspot, Backspot])));
 
 Format.Colors.preROI = getColors(numel(fieldnames(Channels.preROI)));
 
@@ -217,6 +220,9 @@ Sessions.Oddball = {'BaselinePost', 'Main3', 'Main7'};
 Sessions.Labels = {'BL', 'SR', 'SD'};
 
 P.Sessions = Sessions;
+
+P.Nights = {'Baseline', 'NightPre', 'NightPost'};
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Durations
