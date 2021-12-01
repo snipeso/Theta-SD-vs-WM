@@ -70,6 +70,7 @@ Pix = get(0,'screensize');
 if Pix(3) < 2000
     Format.FontSize = 12;
     Format.TitleSize = 15;
+    Format.BarSize = 10;
     Format.TopoRes = 150;
     Format.LW = 2;
     Format.Topo.Sig = 2; % marker size
@@ -78,11 +79,18 @@ if Pix(3) < 2000
 else
     Format.FontSize = 25;
     Format.TitleSize = 30;
+    Format.BarSize = 18;
     Format.TopoRes = 300;
     Format.LW = 4;
     Format.Topo.Sig = 5; % marker size
     Format.ScatterSize = 200; % TODO: seperate features for small or big screen
 end
+
+% final figure size in pixels
+Format.Pixels.Padding = 20; % border & distance between main figures
+Format.Pixels.PaddingMinor = 15;
+Format.Pixels.PaddingExterior = 30;
+Format.Pixels.LetterSize = 30;
 
 Format.Steps.Linear = 20;
 Format.Steps.Divergent = 30;
