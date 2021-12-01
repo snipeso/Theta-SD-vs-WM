@@ -87,10 +87,12 @@ else
 end
 
 % final figure size in pixels
-Format.Pixels.Padding = 20; % border & distance between main figures
-Format.Pixels.PaddingMinor = 15;
+Format.Pixels.Padding = 30; % border & distance between main figures
+Format.Pixels.PaddingMinor = 20;
 Format.Pixels.PaddingExterior = 30;
 Format.Pixels.LetterSize = 30;
+Format.Pixels.TitleSize = 25;
+Format.Pixels.FontSize = 15;
 
 Format.Steps.Linear = 20;
 Format.Steps.Divergent = 30;
