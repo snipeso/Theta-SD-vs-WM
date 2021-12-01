@@ -25,6 +25,7 @@ function Axes = subfigure(Space, Grid, CornerLocation, Size, Letter, Format)
 set(gcf, 'units', 'pixels')
 FigSpace = get(gcf, 'position');
 
+PaddingLabels = Format.Pixels.PaddingLabels;
 
 if isempty(Space)
     Space = FigSpace;
@@ -57,10 +58,10 @@ axisWidth = ((Space(3)-PaddingExterior*2)/Grid(2));
 axisHeight = ((Space(4)-PaddingExterior*2)/Grid(1));
 
 % get position
-Left = X(CornerLocation(2))+Padding;
-Bottom = Y(1+CornerLocation(1))+Padding;
-Width = axisWidth*Size(2)-Padding*2;
-Height = axisHeight*Size(1)-Padding*2;
+Left = X(CornerLocation(2))+Padding+PaddingLabels;
+Bottom = Y(1+CornerLocation(1))+Padding+PaddingLabels;
+Width = axisWidth*Size(2)-Padding*2-PaddingLabels;
+Height = axisHeight*Size(1)-Padding*2-PaddingLabels;
 
 % set up axes
 Position = [Left, Bottom, Width, Height];
@@ -71,7 +72,7 @@ Axes = axes('Units', 'pixels', 'Position', Position);
 if ~isempty(Letter)
     Txt = annotation('textbox', [0 0 0 0], 'string', Letter, 'Units', 'pixels', ...
         'FontSize', FontSize, 'FontName', Format.FontName, 'FontWeight', 'Bold');
-    Txt.Position =  [X(CornerLocation(2))-FontSize+Padding/2, Y(CornerLocation(1))+FontSize-Padding/2 0 0];
+    Txt.Position =  [X(CornerLocation(2))-FontSize+Padding/2, Y(CornerLocation(1))+FontSize-Padding/2+PaddingLabels 0 0];
     Txt.Units = 'normalized';
 end
 
