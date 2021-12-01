@@ -22,9 +22,9 @@ Participants = {'P01', 'P02', 'P04', 'P05', 'P06', 'P07', 'P08', ...
 
 
 Variables = {'wake',  'n1', 'n2', 'n3', 'rem',};
-sqVariables = {'sol', 'sd', 'waso', 'se'};
+sqVariables = {'sol', 'sd', 'waso', 'se', 'rol'};
 
-TableLabels = {'Wake (min)', 'N1', 'N2', 'N3' 'REM', 'SOL', 'SD', 'WASO', 'SE'};
+TableLabels = {'Wake (min)', 'N1', 'N2', 'N3' 'REM', 'SOL', 'SD', 'WASO', 'SE', 'ROL'};
 
 
 Results = fullfile(Paths.Results, 'Sleep');

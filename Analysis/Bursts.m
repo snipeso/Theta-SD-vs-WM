@@ -9,7 +9,7 @@ Bands = P.Bands;
 Format = P.Format;
 
 
-Filename = 'P10_Game_Session2_Clean.set';
+Filename = 'P10_LAT_BaselineComp_Clean.set';
 
 Levels = split(Filename, '_');
 Task = Levels{2};
@@ -41,3 +41,7 @@ Start = 47; Ch = 69; Title = PlotBurst(EEG, Start, Start+5, Ch, Bands, Format);
 
 
 %   saveFig([TitleTag, '_', Title], Results, Format)
+
+
+%% Plots used in paper 1
+
