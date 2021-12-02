@@ -19,4 +19,5 @@ if ~isempty(CLabel)
 end
 
 Colormap = reduxColormap(Format.Colormap.(Colormap), Format.Steps.(Colormap));
-colormap(Colormap)
+set(gca, 'Colormap', Colormap)
+% colormap(Colormap)

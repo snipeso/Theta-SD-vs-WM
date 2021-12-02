@@ -110,6 +110,8 @@ Format.Pixels.PaddingLabels = Format.Pixels.FontSize*2;
 Format.Pixels.W = 42; % width of reference "paper"
 Format.Pixels.H = 60; % height of "paper"
 Format.Pixels.LW = 3;
+Format.Pixels.ScatterSize = 100;
+  Format.Pixels.Topo_Sig = 2;
 
 % lettering for figures
 Format.Letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
@@ -166,6 +168,7 @@ Format.Labels.Frequency = 'Frequency (Hz)';
 Format.Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'}; % for M2S task
 Format.Labels.Amplitude = 'Amplitude (\muV)';
 Format.Labels.Time = 'Time (s)';
+Format.Labels.ES = "Hedge's G";
 
 %%% Channels and Regions of Interest (ROI)
 Channels = struct();
