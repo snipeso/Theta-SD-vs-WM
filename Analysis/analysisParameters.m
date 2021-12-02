@@ -97,16 +97,19 @@ else
 end
 
 % final figure size in pixels
-Format.Pixels.xPadding = 20; % border & distance between main figures
+Format.Pixels.xPadding = 25; % border & distance between main figures
 Format.Pixels.yPadding = 25;
-Format.Pixels.PaddingMinor = 20;
+Format.Pixels.xPaddingMinor = 25;
+Format.Pixels.yPaddingMinor = 25;
 Format.Pixels.PaddingExterior = 90;
 Format.Pixels.LetterSize = 30;
 Format.Pixels.TitleSize = 25;
 Format.Pixels.FontSize = 15;
+Format.Pixels.BarSize = 12;
 Format.Pixels.PaddingLabels = Format.Pixels.FontSize*2;
 Format.Pixels.W = 42; % width of reference "paper"
 Format.Pixels.H = 60; % height of "paper"
+Format.Pixels.LW = 3;
 
 % lettering for figures
 Format.Letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
@@ -156,11 +159,13 @@ Bands.Gamma = [25 35];
 
 Format.Labels.logBands = [1 2 4 8 16 32]; % x markers for plot on log scale
 Format.Labels.Bands = [1 4 8 15 25 35 40]; % normal scale
+Format.Labels.FreqLimits = [1 40];
 Format.Labels.zPower = 'PSD z-scored';
 Format.Labels.Power = 'PSD Amplitude (\muV^2/Hz)';
 Format.Labels.Frequency = 'Frequency (Hz)';
 Format.Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'}; % for M2S task
-
+Format.Labels.Amplitude = 'Amplitude (\muV)';
+Format.Labels.Time = 'Time (s)';
 
 %%% Channels and Regions of Interest (ROI)
 Channels = struct();

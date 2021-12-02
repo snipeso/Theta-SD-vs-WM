@@ -3,7 +3,7 @@ function Stats = plotSpectrumDiff(Data, Freqs, BL_Indx, LineLabels, Colors, Log,
 % different from specified BL_Indx. It also marks where the theta range is.
 % Data is a P x S x Freq matrix.
 
-XLims = [1 40];
+XLims = Format.Labels.FreqLimits;
 
 XIndx = dsearchn(Freqs', XLims');
 
