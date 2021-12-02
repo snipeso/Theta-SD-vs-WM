@@ -1,9 +1,6 @@
 # Paper 1
 This repository contains the complete analysis used for paper XXX.
  
-## Content
-### Preprocessing
-
 
 ## Setup
 1. Download EEGLAB
@@ -12,7 +9,18 @@ This repository contains the complete analysis used for paper XXX.
     - Text Analytics Toolbox
     - Statistics And Analytics Toolbox
 
-### External scripts
+### Preprocessing
+1. Chech Prep_Paramaters, and make sure the folders point to the data
+2. Run the scripts in alphabetical order. Scripts C and E require manual work for every file.
+
+### Analysis
+1. Modify analysisParameters. so that paths and so on are correct
+2. Run "Unlocked_Power.m" and the "Locked_Power..." scripts to get the power spectrum data
+3. For example data, run "ExampleBursts.m"
+4. For power spectrums, run "Task_Spectrums.m"
+
+
+## External scripts
 
 - For EEG: EEGLAB: https://sccn.ucsd.edu/eeglab/downloadtoolbox.php. I used version 2019_1
 - For Questionnaires: EWOQ analysis: https://github.com/snipeso/EWOQ_Analysis 

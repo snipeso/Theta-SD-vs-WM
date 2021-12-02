@@ -35,7 +35,6 @@ if ~isempty(m.TMPREJ)
     
 end
 
-
 EEG = eeg_checkset(EEG);
 
 end

@@ -15,21 +15,18 @@ Bands = P.Bands;
 Format = P.Format;
 Channels = P.Channels;
 Durations = P.Durations;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+Tasks = P.AllTasks;
 
 Refresh = false;
-Tasks = P.AllTasks;
-WelchWindow = 8;
+WelchWindow = 8; % duration of window to do FFT
 Overlap = .75; % overlap of hanning windows for FFT
 
 EEG_Triggers.Start = 'S  1';
 EEG_Triggers.End = 'S  2';
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Freqs = 0.5:(1/WelchWindow):40;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Calculate power for minutes of the recording
 
 for Indx_T = 1:numel(Tasks)
     
@@ -110,8 +107,9 @@ for Indx_T = 1:numel(Tasks)
             end
             
             Chanlocs = EEGshort.chanlocs;
-            Duration = size(EEGshort.data, 2)/EEGshort.srate;
+            Durtion = size(EEGshort.data, 2)/EEGshort.srate;
             
+            % FFT
             nfft = 2^nextpow2(WelchWindow*fs);
             noverlap = round(nfft*Overlap);
             window = hanning(nfft);
@@ -123,7 +121,6 @@ for Indx_T = 1:numel(Tasks)
             Title = replace([Filename_Core, ' ',Tag], '_', ' ');
             PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Channels, Title, Format)
             
-            
             % save
             save(fullfile(Destination, Filename), 'Power', 'Freqs', 'Chanlocs', 'Duration')
             Filename_Figure = strjoin({Filename_Core, Tag, 'Welch.jpg'}, '_');
@@ -132,5 +129,4 @@ for Indx_T = 1:numel(Tasks)
         end
         disp(['*************finished ',Filename '*************'])
     end
-    
 end

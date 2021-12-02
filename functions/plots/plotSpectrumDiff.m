@@ -20,7 +20,7 @@ StatWidth = StatsP.FreqBin; % # frequencies to pool
 
 % plot thin lines marking the band ranges
 if Log
-    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Format.Labels.Bands))
+    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Format.Labels.logBands))
     Stats = plotLineDiff(Data, Freqs, BL_Indx, LineLabels, StatWidth, Colors, Log, Format, StatsP);
     xticks(log(Format.Labels.Bands))
     xticklabels(Format.Labels.Bands)
