@@ -20,6 +20,7 @@ Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
 
+
 PeakRange = [3 15];
 SmoothFactor = 1; % in Hz, range to smooth over
 
@@ -62,6 +63,68 @@ StatsP.FreqBin = diff(Freqs(1:2));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Paper Figure
+%% Plot spectrums as task x ch coloring all channels
+Format.Labels.Bands = [1 2 4 8 16 32];
+Format.Pixels.xPadding = 10; % border & distance between main figures
+Format.Pixels.yPadding = 10;
+
+Grid = [numel(ChLabels),numel(AllTasks)];
+Size = [1 1];
+YLim = [-1 3.5];
+
+Log = true;
+figure('units','centimeters','position',[0 0 Format.Pixels.W Format.Pixels.H*.45])
+Indx = 1;
+for Indx_Ch = 1:numel(ChLabels)
+    for Indx_T = 1:numel(AllTasks)
+        Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
+        
+        Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], Size, '', Format);
+        Indx = Indx+1;
+        
+        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Format, StatsP);
+        set(gca, 'FontSize', Format.Pixels.FontSize, 'YLim', YLim)
+        if Indx_Ch > 1 || Indx_T > 1
+            legend off
+        end
+
+        if Indx_T ==1
+            ylabel(Format.Labels.zPower)
+            X = get(gca, 'XLim');
+            text(X(1)-diff(X)*.5, YLim(1)+diff(YLim)*.5, ChLabels{Indx_Ch}, ...
+                'FontSize', Format.Pixels.TitleSize, 'FontName', Format.FontName, ...
+                'FontWeight', 'Bold', 'Rotation', 90, 'HorizontalAlignment', 'Center');
+        else
+            ylabel ''
+        end
+        
+        if Indx_Ch==1
+              title(TaskLabels{Indx_T}, 'FontSize', Format.Pixels.TitleSize, 'Color', 'k')
+        end
+        
+        if Indx_Ch == numel(ChLabels)
+            xlabel(Format.Labels.Frequency)
+        else
+            xlabel ''
+        end
+      
+        
+    end
+end
+% setLimsFig(Axes(1:18), 'y');
+
+% save
+saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Paths.Paper, Format)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Plot map of clusters
 
 PlotChannelMap(Chanlocs, ChannelStruct, getColors(3), Format)
@@ -69,6 +132,7 @@ saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
 
 
 %% Plot spectrums as task x ch coloring all channels
+Format.Labels.Bands = [1 4 8 12 35];
 
 Log = true;
 figure('units','normalized','outerposition',[0 0 .8 1])
@@ -93,7 +157,7 @@ for Indx_Ch = 1:numel(ChLabels)
         else
             xlabel ''
         end
-        title(strjoin({ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', 20, 'Color', 'k')
+        title(strjoin({ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', Format.Pixels.FontSize, 'Color', 'k')
         
     end
 end
@@ -102,14 +166,13 @@ setLimsTiles(numel(ChLabels)*numel(AllTasks), 'y');
 % save
 saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Results, Format)
 
-
 %% plot all tasks, split by session, one fig for each ch
 
 
 for Indx_Ch =  1:numel(ChLabels)
     figure('units','normalized','outerposition',[0 0 .8 .5])
     tiledlayout(1,numel(Sessions.Labels), 'Padding', 'compact', 'TileSpacing', 'normal');
-
+    
     for Indx_S = 1:numel(Sessions.Labels)
         Data = squeeze(chData(:, Indx_S, :, Indx_Ch, :));
         

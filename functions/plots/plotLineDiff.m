@@ -92,6 +92,7 @@ end
 set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 
 if ~isempty(LineLabels)
-    Sig = ['p < ', num2str(StatsP.Alpha)];
+    Alpha = num2str(StatsP.Alpha);
+    Sig = ['p < ', Alpha(2:end)];
     legend([LineLabels, Sig])
 end

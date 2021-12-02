@@ -34,6 +34,7 @@ Paths.Preprocessed = fullfile(Core, 'Preprocessed');
 Paths.Datasets = 'G:\LSM\Data\Raw';
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
 Paths.Results = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and tables end up
+Paths.Paper = 'C:\Users\colas\Dropbox\Research\Publications and Presentations\Sleep\Paper1\Figures';
 Paths.Scoring = fullfile(Core, 'Scoring');
 
 % get path where these scripts were saved
@@ -87,13 +88,19 @@ else
 end
 
 % final figure size in pixels
-Format.Pixels.Padding = 10; % border & distance between main figures
+Format.Pixels.xPadding = 20; % border & distance between main figures
+Format.Pixels.yPadding = 25;
 Format.Pixels.PaddingMinor = 20;
-Format.Pixels.PaddingExterior = 30;
+Format.Pixels.PaddingExterior = 90;
 Format.Pixels.LetterSize = 30;
 Format.Pixels.TitleSize = 25;
 Format.Pixels.FontSize = 15;
-Format.Pixels.PaddingLabels = Format.Pixels.FontSize;
+Format.Pixels.PaddingLabels = Format.Pixels.FontSize*2;
+Format.Pixels.W = 42; % width of reference "paper"
+Format.Pixels.H = 60; % height of "paper"
+
+Format.Letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+Format.Numerals = {'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'};
 
 Format.Steps.Linear = 20;
 Format.Steps.Divergent = 30;

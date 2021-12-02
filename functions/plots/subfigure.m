@@ -34,7 +34,8 @@ end
 
 % Check if Space is full figure or not; if not, use minor padding
 if all(Space == FigSpace)
-    Padding = Format.Pixels.Padding;
+    xPadding = Format.Pixels.xPadding;
+    yPadding = Format.Pixels.yPadding;
     PaddingExterior = Format.Pixels.PaddingExterior;
     FontSize = Format.Pixels.LetterSize;
     
@@ -43,7 +44,8 @@ if all(Space == FigSpace)
     Y = flip(linspace(PaddingExterior, Space(4)-PaddingExterior, Grid(1)+1));
     
 else
-    Padding = Format.Pixels.PaddingMinor;
+    xPadding = Format.Pixels.xPaddingMinor;
+    yPadding = Format.Pixels.yPaddingMinor;
     FontSize = Format.Pixels.LetterSize*2/3;
     PaddingExterior = 0;
     
@@ -58,10 +60,10 @@ axisWidth = ((Space(3)-PaddingExterior*2)/Grid(2));
 axisHeight = ((Space(4)-PaddingExterior*2)/Grid(1));
 
 % get position
-Left = X(CornerLocation(2))+Padding+PaddingLabels;
-Bottom = Y(1+CornerLocation(1))+Padding+PaddingLabels;
-Width = axisWidth*Size(2)-Padding*2-PaddingLabels;
-Height = axisHeight*Size(1)-Padding*2-PaddingLabels;
+Left = X(CornerLocation(2))+xPadding+PaddingLabels;
+Bottom = Y(1+CornerLocation(1))+yPadding+PaddingLabels;
+Width = axisWidth*Size(2)-xPadding*2-PaddingLabels;
+Height = axisHeight*Size(1)-yPadding*2-PaddingLabels;
 
 % set up axes
 Position = [Left, Bottom, Width, Height];
@@ -72,10 +74,13 @@ Axes = axes('Units', 'pixels', 'Position', Position);
 if ~isempty(Letter)
     Txt = annotation('textbox', [0 0 0 0], 'string', Letter, 'Units', 'pixels', ...
         'FontSize', FontSize, 'FontName', Format.FontName, 'FontWeight', 'Bold');
-    Txt.Position =  [X(CornerLocation(2))-FontSize+Padding/2, Y(CornerLocation(1))+FontSize-Padding/2+PaddingLabels 0 0];
+    Txt.Position =  [X(CornerLocation(2))-FontSize+xPadding/2, Y(CornerLocation(1))+FontSize-xPadding/2+PaddingLabels 0 0];
     Txt.Units = 'normalized';
 end
 
 % Axes.Units = 'normalized';
 set(gca, 'Units', 'normalized')
 
+% % 
+% Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
+% Box.Position = [PaddingExterior, PaddingExterior, Space(3)-PaddingExterior*2,  Space(4)-PaddingExterior*2];
