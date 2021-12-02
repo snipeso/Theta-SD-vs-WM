@@ -8,7 +8,7 @@ function Axes = subfigure(Space, Grid, CornerLocation, Size, Letter, Format)
 % plotted.
 % CornerLocation indicates which parcel the bottom left corner of the axes
 % should occupy. should be [r x c].
-% Size is number of parcels [r x c].
+% Size is number of parcels [r x c]. If empty, assumed to be [1 1]
 % Letter is optional, and would make a big letter in the corner of the
 % parcel.
 
@@ -30,6 +30,11 @@ PaddingLabels = Format.Pixels.PaddingLabels;
 if isempty(Space)
     Space = FigSpace;
 end
+
+if isempty(Size)
+    Size = [1 1];
+end
+
 
 
 % Check if Space is full figure or not; if not, use minor padding

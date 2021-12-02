@@ -14,12 +14,10 @@ Paths = P.Paths;
 Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
-Bands = P.Bands;
 Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
-
 
 PeakRange = [3 15];
 SmoothFactor = 1; % in Hz, range to smooth over
@@ -75,7 +73,6 @@ Format.Pixels.xPadding = 10; % smaller distance than default because no labels
 Format.Pixels.yPadding = 10;
 
 Grid = [numel(ChLabels),numel(AllTasks)];
-Size = [1 1];
 YLim = [-1 3.5];
 
 Log = true; % whether to plot on log scale or not
@@ -87,7 +84,7 @@ for Indx_Ch = 1:numel(ChLabels)
         Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
         
         %%% plot
-        Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], Size, '', Format);
+        Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], [], '', Format);
         Indx = Indx+1;
         plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Format, StatsP);
         set(gca, 'FontSize', Format.Pixels.FontSize, 'YLim', YLim)
