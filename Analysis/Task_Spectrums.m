@@ -125,7 +125,7 @@ saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Paths.Paper, Fo
 
 
 
-%% All participants in Game and PVT as Task x Session
+%% Overlap of all participants' spectrums for subset of tasks, with raw data for reference
 
 Log = true;
 Indx_Ch = 1;
