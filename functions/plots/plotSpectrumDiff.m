@@ -22,8 +22,8 @@ StatWidth = StatsP.FreqBin; % # frequencies to pool
 if Log
     set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Format.Labels.logBands))
     Stats = plotLineDiff(Data, Freqs, BL_Indx, LineLabels, StatWidth, Colors, Log, Format, StatsP);
-    xticks(log(Format.Labels.Bands))
-    xticklabels(Format.Labels.Bands)
+    xticks(log(Format.Labels.logBands))
+    xticklabels(Format.Labels.logBands)
     xlim(log(XLims))
    
 else

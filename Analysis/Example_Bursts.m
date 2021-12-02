@@ -42,17 +42,22 @@ end
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper figure
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Plot bursts
+
+Log = true; % whether to plot on log scale or not
+figure('units','centimeters','position',[0 0 Format.Pixels.W*.5 Format.Pixels.H]) 
 
 B.Theta = Bands.Theta;
 
+Grid = [4 1];
 Fig = figure('units','normalized','position',[0 0 .3 1]);
 
 ProtoChannel = unique([Coordinates{:, 3}]);
 for Indx_E = 1:size(Coordinates, 1)
     Start = Coordinates{Indx_E, 2};
     Stop = Start +3;
+    
+    Axes(Indx) = subfigure([], Grid, [Indx_E, 1], [], '', Format);
+
     Title = PlotBurst2(AllEEG(Indx_E), Start, Stop, ProtoChannel, B, Format);
     saveFig([TitleTag, '_', Title], Results, Format)
 end

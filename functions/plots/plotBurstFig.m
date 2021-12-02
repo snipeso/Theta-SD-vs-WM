@@ -1,4 +1,4 @@
-function Title = PlotBurst2(EEG, Start, Stop, ProtoChannel, Bands, Format)
+function Title = plotBurstFig(EEG, Start, Stop, ProtoChannel, Bands, Axis, Format)
 % plots a burst with a butterfly plot, the specified band's topoplot, and
 % the power spectrum
 
@@ -15,10 +15,9 @@ t = linspace(0, Window,  Points);
 
 Colors =  getColors(numel(ProtoChannel));
 
-figure('units','normalized','outerposition',[0 0 .4 .4])
-subplot(2, 4, 1:4)
+
 % tiledlayout(2, 4, 'Padding', 'none', 'TileSpacing', 'compact');
-% 
+%
 % nexttile(1, [1, 4])
 hold on
 plot(t, Data', 'Color', [.8 .8 .8 .5])
@@ -34,7 +33,7 @@ set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 
 bData = bandData(FFT', Freqs', Bands, 'last');
 
-CLims = [min(bData), max(bData)]; 
+CLims = [min(bData), max(bData)];
 % nexttile
 subplot(2, 4, 5)
 topoplotTEMP(bData(:, 1), EEG.chanlocs, 'style', 'map', 'headrad', 'rim', ...
@@ -45,8 +44,8 @@ xlim([-.55 .55])
 ylim([-.55 .6])
 
 h = colorbar;
- ylabel(h, Format.Labels.Power, 'FontName', Format.FontName, 'FontSize', Format.BarSize)
- h.TickLength = 0;
+ylabel(h, Format.Labels.Power, 'FontName', Format.FontName, 'FontSize', Format.BarSize)
+h.TickLength = 0;
 caxis(CLims)
 axis off
 Colormap = 'Monochrome';
