@@ -68,15 +68,18 @@ StatsP.FreqBin = diff(Freqs(1:2));
 %%% Paper Figure
 %% Plot spectrums as ch x task, shade indicating task block
 
+delete(Axes)
+
 % format variables
 Format.Pixels.xPadding = 10; % smaller distance than default because no labels
 Format.Pixels.yPadding = 10;
+Format.Pixels.PaddingExterior = 90;
 
 Grid = [numel(ChLabels),numel(AllTasks)];
 YLim = [-1 3.5];
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 Format.Pixels.W Format.Pixels.H*.45])
+figure('units','centimeters','position',[0 0 Format.Pixels.W Format.Pixels.H*.47])
 Indx = 1; % tally of axes
 
 for Indx_Ch = 1:numel(ChLabels)
@@ -92,8 +95,9 @@ for Indx_Ch = 1:numel(ChLabels)
         % plot labels/legends only in specific locations
         if Indx_Ch > 1 || Indx_T > 1 % first tile
             legend off
+            
         end
-
+        
         if Indx_T == 1 % first column
             ylabel(Format.Labels.zPower)
             X = get(gca, 'XLim');
@@ -104,8 +108,8 @@ for Indx_Ch = 1:numel(ChLabels)
             ylabel ''
         end
         
-        if Indx_Ch == 1 % first row 
-              title(TaskLabels{Indx_T}, 'FontSize', Format.Pixels.TitleSize, 'Color', 'k')
+        if Indx_Ch == 1 % first row
+            title(TaskLabels{Indx_T}, 'FontSize', Format.Pixels.TitleSize, 'Color', 'k')
         end
         
         if Indx_Ch == numel(ChLabels) % last row
@@ -118,6 +122,62 @@ end
 
 % save
 saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Paths.Paper, Format)
+
+
+
+%% All participants in Game and PVT as Task x Session
+
+Log = true;
+Indx_Ch = 1;
+Tasks = {'Game', 'PVT'};
+S = [1 3];
+YLim = [0 60];
+Grid = [3 2];
+
+Format.Pixels.xPadding = 20;
+Format.Pixels.yPadding = 50; % larger distance than default because no labels
+
+TaskIndx = [5 2];
+
+figure('units','centimeters','position',[0 0 Format.Pixels.W Format.Pixels.H*.75])
+
+% plot raw data
+LetterIndx = 1;
+for Indx_S = 1:numel(S)
+    
+    Data = squeeze(chDataRaw(:, S(Indx_S), TaskIndx(1), Indx_Ch, :));
+    
+    subfigure([], Grid, [1, Indx_S], [], Format.Letters{LetterIndx}, Format);
+    LetterIndx = LetterIndx+1;
+    plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
+        Format.Alpha.Participants, Format.Pixels.LW, Log, Format)
+    legend off
+    set(gca, 'FontSize', Format.Pixels.FontSize, 'YLim', YLim)
+    title(strjoin({Tasks{1}, Sessions.Labels{S(Indx_S)}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.Pixels.TitleSize)
+end
+
+YLim = [-1.5 5.5];
+
+%
+% plot z-scored data
+for Indx_T = 1:numel(Tasks)
+    for Indx_S = 1:numel(S)
+        
+        Data = squeeze(chData(:, Indx_S,  TaskIndx(Indx_T), Indx_Ch, :));
+        
+        subfigure([], Grid, [1+Indx_T, Indx_S], [], Format.Letters{LetterIndx}, Format);
+        LetterIndx = LetterIndx+1;
+        plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
+            Format.Alpha.Participants, Format.Pixels.LW, Log, Format)
+        legend off
+        set(gca, 'FontSize', Format.Pixels.FontSize, 'YLim', YLim)
+        title(strjoin({Tasks{Indx_T}, Sessions.Labels{S(Indx_S)}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.Pixels.TitleSize)
+        
+    end
+end
+
+saveFig(strjoin({TitleTag, 'Participants'}, '_'), Paths.Paper, Format)
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

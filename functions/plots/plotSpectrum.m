@@ -7,15 +7,15 @@ Dims = size(Data);
 hold on
 
 if Log
-    XLim = [1 35];
+    XLim = Format.Labels.FreqLimits;
     plotFreqs = log(Freqs);
     
     % plot thin lines marking the theta range
-    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Format.Labels.Bands), ...
+    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Format.Labels.logBands), ...
         'FontName', Format.FontName, 'FontSize', Format.FontSize)
     
-    xticks(log(Format.Labels.Bands))
-    xticklabels(Format.Labels.Bands)
+    xticks(log(Format.Labels.logBands))
+    xticklabels(Format.Labels.logBands)
     xlim(log(XLim))
     
 else

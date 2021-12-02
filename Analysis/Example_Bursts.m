@@ -10,7 +10,7 @@ Paths = P.Paths;
 Bands = P.Bands;
 Format = P.Format;
 
-
+% preselected snippets of data with good examples of theta bursts
 Coordinates = {
     'P10_LAT_BaselineComp_Clean.set', 536.2, 118, Format.Colors.Tasks.LAT;
     'P10_LAT_Session2Comp_Clean.set', 244, 118,  Format.Colors.Tasks.LAT;
@@ -60,14 +60,16 @@ for Indx_E = 1:size(Coordinates, 1)
     
     Axis = subfigure([], Grid, [Indx_E, 1], [], Format.Letters{Indx_E}, Format);
     Title = text(.5, 1, Titles{Indx_E}, 'FontSize', Format.Pixels.TitleSize, 'FontName', Format.FontName, ...
-                'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+        'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+   
+    % make subplots
     Axis.Units = 'pixels';
     Title.Units = 'pixels';
     Space = Axis.Position;
-   axis off
+    axis off
     plotBurstFig(AllEEG(Indx_E), Start, Stop, Coordinates{Indx_E, 3}, B, Space, Log,  Coordinates{Indx_E, 4}, Format);
     
-        Axis.Units = 'normalized';
+    Axis.Units = 'normalized';
     Title.Units = 'normalized';
 end
 
