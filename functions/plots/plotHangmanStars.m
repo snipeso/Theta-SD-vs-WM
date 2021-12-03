@@ -71,13 +71,13 @@ for Indx = 1:nGroups % go from most to least significant
     for x = X
         % plot minor posts
         plot([x, x], [YHeight-Increase*.2, YHeight], ...
-               '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
+               '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW*.5, 'Color', C)
         
         % plot stars
         P = pValues_mirror(x, G_Indx);
         Symbol = getSigSymbol(P);
         if ~isempty(Symbol)
-            text(x, YHeight-Increase*.5, Symbol, 'HorizontalAlignment', 'center', 'Color', C, 'FontSize', Format.FontSize)
+            text(x, YHeight-Increase*.5, Symbol, 'HorizontalAlignment', 'center', 'Color', C, 'FontSize', Format.BarSize)
         end
     end
     

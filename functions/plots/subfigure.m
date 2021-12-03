@@ -84,9 +84,16 @@ if ~isempty(Letter)
     Txt.Units = 'normalized';
 end
 
-% Axes.Units = 'normalized';
+
 set(gca, 'Units', 'normalized')
 
-% % 
+% % figure padding
 % Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
 % Box.Position = [PaddingExterior, PaddingExterior, Space(3)-PaddingExterior*2,  Space(4)-PaddingExterior*2];
+% 
+% 
+% % Axis padding
+% Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
+% A = gca;
+% A.Units = 'pixels';
+% Box.Position = A.Position;

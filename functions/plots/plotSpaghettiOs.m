@@ -7,8 +7,6 @@ function Stats = plotSpaghettiOs(Data, Indx_BL, XLabels, CLabels, Colors, StatsP
 % Colors is a n x 3 matrix.
 
 Dims = size(Data);
-GenericColor = [.5 .5 .5]; % color for legend items indicating significance
-
 
 % indicate whether Clabels get included in plot
 if isempty(CLabels)
@@ -98,7 +96,7 @@ for Indx_T = 1:Dims(3) % loop through lines
             
             if ~Marked(2) % if not already placed a hidden marker, do so
                 plot(Indx_S, Mean(Indx_S), 'o', 'MarkerSize', Format.OSize,...
-                    'MarkerEdgeColor', GenericColor, 'MarkerFaceColor', MF,  'LineWidth', Format.LW, ...
+                    'MarkerEdgeColor', Format.Colors.Generic, 'MarkerFaceColor', MF,  'LineWidth', Format.LW, ...
                     'HandleVisibility', 'on');
                 
                 Legend = [Legend, Alpha]; % add legend item
@@ -111,7 +109,7 @@ for Indx_T = 1:Dims(3) % loop through lines
             
             if ~Marked(1)
                 plot(Indx_S, Mean(Indx_S), 'o', 'MarkerSize', Format.OSize,...
-                    'MarkerEdgeColor', ME, 'MarkerFaceColor', GenericColor,  'LineWidth', Format.LW, ...
+                    'MarkerEdgeColor', ME, 'MarkerFaceColor', Format.Colors.Generic,  'LineWidth', Format.LW, ...
                     'HandleVisibility', 'on');
                 Legend = [Legend, Trend];
                 Marked(1) = true;

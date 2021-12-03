@@ -126,6 +126,7 @@ Format.Colors.Levels = getColors([1 3], 'rainbow', 'red'); % M2S red
 % other colors
 Format.Colors.SigStar = [0 0 0];
 Format.Colors.Participants = reduxColormap(Format.Colormap.Rainbow, numel(P.Participants));
+Format.Colors.Generic = [.5 .5 .5];
 
 % colors + shades for all the tasks
 Format.Colors.Sessions = getColors([numel(P.AllTasks), 3], 'rainbow');

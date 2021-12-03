@@ -1,6 +1,7 @@
 function Stats = plotScatterBox(Data, XLabels, StatsP, Colors, YLims, Format)
 % Data is a P x m matrix. This plots a cluster of boxplots for each m, with
 % the partcipant dots on top.
+set(gca, 'Units', 'pixels') % don't know why, but figure acts weird without this
 
 Dims = size(Data);
 
@@ -38,14 +39,15 @@ if ~isempty(YLims)
 end
 
 
+set(findobj(gca,'LineStyle','--'),'LineStyle','-') % make whiskers solid line
+set(findobj(gca,'LineStyle','-'),'LineWidth',Format.LW/2) % make all lines quite thick
+
 %%% plot pairwise significances
 plotHangmanStars(Stats, 1:Dims(2), YLims, BoxColor, Format)
 
 
 xticklabels(XLabels)
-set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
-axis square
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize, 'Units', 'normalized')
+% axis square
 box off
 
-set(findobj(gca,'LineStyle','--'),'LineStyle','-') % make whiskers solid line
-set(findobj(gca,'LineStyle','-'),'LineWidth',Format.LW) % make all lines quite thick

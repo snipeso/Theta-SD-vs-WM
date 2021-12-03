@@ -89,11 +89,11 @@ bRawData = bandData(chRawData, Freqs, Bands, 'last');
 %% Theta changes for ROIs
 
 Indx_B = 2; % theta
-Grid = [2, 6];
+Grid = [2, 5];
 YLim = [-.75 1.9];
 Indx_BL = 1; % the reference for SpaghettiO plots
 
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.3])
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.33])
 Indx = 1; % tally of axes
 
 %%% change in means
@@ -120,17 +120,32 @@ for Indx_Ch = 1:numel(ChLabels)
     title(ChLabels{Indx_Ch}, 'FontSize', Pixels.TitleSize)
 end
 
-%%% difference at baseline
 
+%%% difference at baseline
+Data = squeeze(bData(:, 1, :, 1, Indx_B));
+MEANS = nanmean(Data);
+[~, Order] = sort(MEANS, 'descend');
+
+subfigure([], Grid, [1, Indx_Ch+1], [1, Grid(2)-Indx_Ch], Pixels.Letters{Indx}, Pixels);
+Indx = Indx+1;
+plotScatterBox(Data(:, Order), TaskLabels(Order), StatsP, ...
+    Format.Colors.AllTasks(Order, :), [], Pixels);
+ylabel(Format.Labels.zPower)
+title('Baseline Front Means', 'FontSize', Pixels.TitleSize)
 
 
 % effect sizes
+subfigure([], Grid, [2, Indx_Ch+1], [1, Grid(2)-Indx_Ch], Pixels.Letters{Indx}, Pixels);
 
+ Data = squeeze(bData(:, :, :, 2, Indx_B)); % for middle channels
+ Stats = plotES(Data, 'horizontal', Format.Colors.AllTasks, TaskLabels, ...
+     {'SR vs BL', 'SD vs BL'}, Pixels, StatsP);
 
-
-
-
-
+%  title('Center', 'FontSize', Pixels.TitleSize)
+ X = get(gca, 'XLim');
+  text(X(1)+diff(X)/2, YLim(2)*1.2, 'Center Effect Sizes', ...
+                'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
+                'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
 
 
 % save
@@ -148,7 +163,6 @@ saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Main_Results, Format)
 
 %% run main ANOVA
 
-Effects = 0:.5:3;
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_B = 1:numel(BandLabels)
@@ -174,30 +188,9 @@ for Indx_Ch = 1:numel(ChLabels)
         P = Stats.ranovatbl.(StatsP.ANOVA.pValue);
         Interaction = P(7);
         if Interaction < StatsP.Alpha
-            
-            % get hedge's g stats (because <50 participants)
-            BL = Data(:, 1, :);
-            BL = permute(repmat(BL, 1, 2, 1), [1 3 2]);
-            
-            SD = permute(Data(:, 2:3, :), [1 3 2]);
-            StatsH = hedgesG(BL, SD, StatsP);
-            
-            % Order values based on SD hedge's G
-            [~, Order] = sort(mean(StatsH.hedgesg, 2));
-            
             figure('units','normalized','outerposition',[0 0 .2 .6])
-            
-            % plot effect size lines
-            hold on
-            for E = Effects
-                plot( [0, numel(TaskLabels)+1],[E, E], 'Color', [.9 .9 .9], 'HandleVisibility', 'off')
-            end
-            
-            plotUFO(StatsH.hedgesg(Order, :), StatsH.hedgesgCI(Order, :, :), TaskLabels(Order), {'SR-BL', 'SD-BL'}, ...
-                Format.Colors.AllTasks(Order, :), 'vertical', Format)
+            Stats = plotES(Data, 'vertical', Format.Colors.AllTasks, TaskLabels, {'SR-BL', 'SD-BL'}, Format, StatsP);
             title(strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'Hedges g'}, ' '))
-            ylabel('Hedges g')
-            axis tight
             saveFig(strjoin({TitleTag, 'hedgesg', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
         end
     end
