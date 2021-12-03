@@ -234,13 +234,13 @@ Pixels.PaddingExterior = 90;
 Pixels.LetterSize = 30;
 Pixels.TitleSize = 22;
 Pixels.FontSize = 18;
-Pixels.BarSize = 12;
+Pixels.BarSize = 14;
 Pixels.PaddingLabels = Pixels.FontSize*2;
 Pixels.W = 42; % width of reference "paper"
 Pixels.H = 60; % width of reference "paper"
 Pixels.LW = 3;
 Pixels.ScatterSize = 100;
-Pixels.Topo_Sig = 2;
+Pixels.Topo.Sig = 2;
 Pixels.OSize = 10; % Spaghetti O
 
 P.Pixels = Pixels;

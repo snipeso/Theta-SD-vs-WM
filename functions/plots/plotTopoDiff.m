@@ -38,18 +38,9 @@ if isempty(CLims)
     CLims = [-Max Max];
 end
 
-% topoplot(stats.(StatsP.Paired.ES), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
-%     'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
-%     'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .05});
-
 topoplot(stats.(StatsP.Paired.ES), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
     'style', 'map',  'plotrad', .72, 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
     'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .05});
-
-
-%
-% h = colorbar;
-% ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 
 set(gca, 'FontName', Format.FontName)
 xlim([-.55 .55])
@@ -58,5 +49,4 @@ ylim([-.55 .6])
 set(gca, 'FontName', Format.FontName)
 
 Colormap = reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent);
-% colormap(Colormap)
 set(gca, 'Colormap', Colormap)

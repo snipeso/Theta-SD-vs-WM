@@ -9,6 +9,7 @@ P = analysisParameters();
 Paths = P.Paths;
 Bands = P.Bands;
 Format = P.Format;
+Pixels = P.Pixels;
 
 % preselected snippets of data with good examples of theta bursts
 Coordinates = {
@@ -44,10 +45,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper figure
 
-Format.Pixels.PaddingExterior = 30;
+Pixels.PaddingExterior = 30;
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 Format.Pixels.W*.5 Format.Pixels.H*.8])
+figure('units','centimeters','position',[0 0 Pixels.W*.5 Pixels.H*.8])
 
 B.Theta = Bands.Theta;
 
@@ -58,8 +59,8 @@ for Indx_E = 1:size(Coordinates, 1)
     Start = Coordinates{Indx_E, 2};
     Stop = Start +2;
     
-    Axis = subfigure([], Grid, [Indx_E, 1], [], Format.Letters{Indx_E}, Format);
-    Title = text(.5, 1, Titles{Indx_E}, 'FontSize', Format.Pixels.TitleSize, 'FontName', Format.FontName, ...
+    Axis = subfigure([], Grid, [Indx_E, 1], [], Pixels.Letters{Indx_E}, Pixels);
+    Title = text(.5, 1, Titles{Indx_E}, 'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
    
     % make subplots
@@ -67,7 +68,7 @@ for Indx_E = 1:size(Coordinates, 1)
     Title.Units = 'pixels';
     Space = Axis.Position;
     axis off
-    plotBurstFig(AllEEG(Indx_E), Start, Stop, Coordinates{Indx_E, 3}, B, Space, Log,  Coordinates{Indx_E, 4}, Format);
+    plotBurstFig(AllEEG(Indx_E), Start, Stop, Coordinates{Indx_E, 3}, B, Space, Log,  Coordinates{Indx_E, 4}, Pixels);
     
     Axis.Units = 'normalized';
     Title.Units = 'normalized';

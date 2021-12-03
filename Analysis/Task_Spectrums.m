@@ -18,6 +18,7 @@ Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
+Pixels = P.Pixels;
 
 PeakRange = [3 15];
 SmoothFactor = 1; % in Hz, range to smooth over
@@ -68,18 +69,15 @@ StatsP.FreqBin = diff(Freqs(1:2));
 %%% Paper Figure
 %% Plot spectrums as ch x task, shade indicating task block
 
-delete(Axes)
-
 % format variables
-Format.Pixels.xPadding = 10; % smaller distance than default because no labels
-Format.Pixels.yPadding = 10;
-Format.Pixels.PaddingExterior = 90;
+Pixels.xPadding = 10; % smaller distance than default because no labels
+Pixels.yPadding = 10;
 
 Grid = [numel(ChLabels),numel(AllTasks)];
 YLim = [-1 3.5];
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 Format.Pixels.W Format.Pixels.H*.47])
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.47])
 Indx = 1; % tally of axes
 
 for Indx_Ch = 1:numel(ChLabels)
@@ -87,10 +85,10 @@ for Indx_Ch = 1:numel(ChLabels)
         Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
         
         %%% plot
-        Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], [], '', Format);
+        Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], [], '', Pixels);
         Indx = Indx+1;
-        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Format, StatsP);
-        set(gca, 'FontSize', Format.Pixels.FontSize, 'YLim', YLim)
+        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Pixels, StatsP);
+        set(gca, 'FontSize', Pixels.FontSize, 'YLim', YLim)
         
         % plot labels/legends only in specific locations
         if Indx_Ch > 1 || Indx_T > 1 % first tile
@@ -102,14 +100,14 @@ for Indx_Ch = 1:numel(ChLabels)
             ylabel(Format.Labels.zPower)
             X = get(gca, 'XLim');
             text(X(1)-diff(X)*.5, YLim(1)+diff(YLim)*.5, ChLabels{Indx_Ch}, ...
-                'FontSize', Format.Pixels.TitleSize, 'FontName', Format.FontName, ...
+                'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
                 'FontWeight', 'Bold', 'Rotation', 90, 'HorizontalAlignment', 'Center');
         else
             ylabel ''
         end
         
         if Indx_Ch == 1 % first row
-            title(TaskLabels{Indx_T}, 'FontSize', Format.Pixels.TitleSize, 'Color', 'k')
+            title(TaskLabels{Indx_T}, 'FontSize', Pixels.LetterSize, 'Color', 'k')
         end
         
         if Indx_Ch == numel(ChLabels) % last row
