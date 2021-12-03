@@ -68,6 +68,7 @@ StatsP.FreqBin = diff(Freqs(1:2));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure
 %% Plot spectrums as ch x task, shade indicating task block
+Pixels = P.Pixels;
 
 % format variables
 Pixels.xPadding = 10; % smaller distance than default because no labels
@@ -132,12 +133,12 @@ S = [1 3];
 YLim = [0 60];
 Grid = [3 2];
 
-Format.Pixels.xPadding = 20;
-Format.Pixels.yPadding = 50; % larger distance than default because no labels
+Pixels.xPadding = 20;
+Pixels.yPadding = 50; % larger distance than default because no labels
 
 TaskIndx = [5 2];
 
-figure('units','centimeters','position',[0 0 Format.Pixels.W Format.Pixels.H*.75])
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.75])
 
 % plot raw data
 LetterIndx = 1;
@@ -145,13 +146,14 @@ for Indx_S = 1:numel(S)
     
     Data = squeeze(chDataRaw(:, S(Indx_S), TaskIndx(1), Indx_Ch, :));
     
-    subfigure([], Grid, [1, Indx_S], [], Format.Letters{LetterIndx}, Format);
+    subfigure([], Grid, [1, Indx_S], [], Pixels.Letters{LetterIndx}, Pixels);
     LetterIndx = LetterIndx+1;
     plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-        Format.Alpha.Participants, Format.Pixels.LW, Log, Format)
+        Format.Alpha.Participants, Pixels.LW, Log, Pixels)
     legend off
-    set(gca, 'FontSize', Format.Pixels.FontSize, 'YLim', YLim)
-    title(strjoin({Tasks{1}, Sessions.Labels{S(Indx_S)}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.Pixels.TitleSize)
+    set(gca, 'FontSize', Pixels.FontSize, 'YLim', YLim)
+    title(strjoin({Tasks{1}, Sessions.Labels{S(Indx_S)}, ChLabels{Indx_Ch}}, ' '), ...
+        'FontSize', Pixels.TitleSize)
 end
 
 YLim = [-1.5 5.5];
@@ -163,13 +165,14 @@ for Indx_T = 1:numel(Tasks)
         
         Data = squeeze(chData(:, Indx_S,  TaskIndx(Indx_T), Indx_Ch, :));
         
-        subfigure([], Grid, [1+Indx_T, Indx_S], [], Format.Letters{LetterIndx}, Format);
+        subfigure([], Grid, [1+Indx_T, Indx_S], [], Pixels.Letters{LetterIndx}, Pixels);
         LetterIndx = LetterIndx+1;
         plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-            Format.Alpha.Participants, Format.Pixels.LW, Log, Format)
+            Format.Alpha.Participants, Pixels.LW, Log, Pixels)
         legend off
-        set(gca, 'FontSize', Format.Pixels.FontSize, 'YLim', YLim)
-        title(strjoin({Tasks{Indx_T}, Sessions.Labels{S(Indx_S)}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.Pixels.TitleSize)
+        set(gca, 'FontSize', Pixels.FontSize, 'YLim', YLim)
+        title(strjoin({Tasks{Indx_T}, Sessions.Labels{S(Indx_S)}, ChLabels{Indx_Ch}}, ' '), ...
+            'FontSize', Pixels.TitleSize)
         
     end
 end
