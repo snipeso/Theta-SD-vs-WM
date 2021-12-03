@@ -25,13 +25,16 @@ Format = P.Format;
 Sessions = P.Sessions;
 StatsP = P.StatsP;
 Channels = P.Channels;
+Pixels = P.Pixels;
 
 Window = 2;
+ROI = 'preROI';
 Task = 'Match2Sample';
 Tag = ['w', num2str(Window)];
 
 TitleTag = strjoin({'M2S', Tag, 'Topos'}, '_');
 BandLabels = fieldnames(Bands);
+ChLabels = fieldnames(Channels.(ROI));
 
 Main_Results = fullfile(Paths.Results, 'M2S_Topographies', Tag);
 if ~exist(Main_Results, 'dir')
@@ -54,6 +57,16 @@ zData = zScoreData(AllData, 'last');
 % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
 
+tData = trialData(bData, AllTrials.level);
+
+% average data into ROIs
+chData = meanChData(zData, Chanlocs, Channels.(ROI), 5);
+
+% save it into bands
+bchData = bandData(chData, Freqs, Bands, 'last');
+
+% split levels
+tchData = trialData(bchData, AllTrials.level);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
@@ -63,6 +76,114 @@ CLims_Diff = [-1.7 1.7];
 
 Epochs = Format.Labels.Epochs;
 Levels = [1 3 6];
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Paper Figure
+
+%% M2S theta changes
+
+Pixels.PaddingExterior = 30;
+Grid = [1 5];
+YLims = [-.2 .8;
+    -.2 .2;
+    -.2 .2;
+    ];
+Indx_E = 2; % retention 1 period
+Indx_B = 2; % theta
+
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.4])
+Indx = 1; % tally of axes
+
+%%% mean changes in ROIs
+miniGrid = [4, 1];
+Legend = append('L', string(Levels));
+
+Axis = subfigure([], Grid, [1, 1], [], Pixels.Letters{Indx}, Pixels);
+Indx = Indx+1;
+
+Axis.Units = 'pixels';
+Space = Axis.Position;
+axis off
+
+for Indx_Ch = 1:numel(ChLabels)
+    Data = squeeze(tchData(:, :, :, Indx_E, Indx_Ch, Indx_B));
+    
+    if Indx_Ch==1 % make only first plot twice as long
+        Height=2;
+    else
+        Height = 1;
+    end
+    
+    subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], {}, Pixels);
+    Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Legend, ...
+        flip(Format.Colors.Levels), StatsP, Pixels);
+    ylim(YLims(Indx_Ch, :))
+    ylabel(Format.Labels.zPower)
+    
+    if Indx_Ch >1
+        legend off
+    else
+        legend(Legend)
+    end
+    
+    title(ChLabels{Indx_Ch}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)
+end
+
+Axis.Units = 'normalized';
+
+
+%%% N3 vs N2 by session
+miniGrid = [2 3];
+
+Axis = subfigure([], Grid, [1, 2], [1, 3], Pixels.Letters{Indx}, Pixels);
+Indx = Indx+1;
+Axis.Units = 'pixels';
+Space = Axis.Position;
+axis off
+
+for Indx_L =  2:numel(Levels)
+    
+    for Indx_S = 1:nSessions
+        A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], {}, Pixels);
+        N1 = squeeze(tData(:, Indx_S, 1, Indx_E, :, Indx_B));
+        N3 = squeeze(tData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
+        
+        A.Units = 'pixels';
+        A.Position(2) = A.Position(2)-Pixels.PaddingLabels-Pixels.xPadding;
+        A.Position(4) =  A.Position(4) + Pixels.PaddingLabels+Pixels.xPadding;
+        
+        A.Position(1) = A.Position(1)-Pixels.PaddingLabels-Pixels.xPadding;
+        A.Position(3) =  A.Position(3) + Pixels.PaddingLabels+Pixels.xPadding;
+        A.Units = 'normalized';
+        
+        plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
+          set(A.Children, 'LineWidth', 1)
+          
+        if Indx_L == 2
+        title(Sessions.Labels{Indx_S}, 'FontName', Format.FontName, 'FontSize', Pixels.LetterSize)
+        end
+        
+        if Indx_S ==1
+            X = get(gca, 'XLim');
+            Y = get(gca, 'YLim');
+            text(X(1)-diff(X)*.2, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
+                'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
+                'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+        end
+    end
+end
+colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent))
+
+
+%%% SD vs BL by epoch
+
+
+
+Axis.Units = 'normalized';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %% plot N3 vs N1 for every epoch
 

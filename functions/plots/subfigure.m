@@ -87,12 +87,12 @@ end
 
 set(gca, 'Units', 'normalized')
 
-% % figure padding
+% figure padding
 % Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
 % Box.Position = [PaddingExterior, PaddingExterior, Space(3)-PaddingExterior*2,  Space(4)-PaddingExterior*2];
-% 
-% 
-% % Axis padding
+
+% % 
+% Axis padding
 % Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
 % A = gca;
 % A.Units = 'pixels';

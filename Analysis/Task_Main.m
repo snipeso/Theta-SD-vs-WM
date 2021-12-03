@@ -137,15 +137,15 @@ title('Baseline Front Means', 'FontSize', Pixels.TitleSize)
 % effect sizes
 subfigure([], Grid, [2, Indx_Ch+1], [1, Grid(2)-Indx_Ch], Pixels.Letters{Indx}, Pixels);
 
- Data = squeeze(bData(:, :, :, 2, Indx_B)); % for middle channels
- Stats = plotES(Data, 'horizontal', Format.Colors.AllTasks, TaskLabels, ...
-     {'SR vs BL', 'SD vs BL'}, Pixels, StatsP);
+Data = squeeze(bData(:, :, :, 2, Indx_B)); % for middle channels
+Stats = plotES(Data, 'horizontal', Format.Colors.AllTasks, TaskLabels, ...
+    {'SR vs BL', 'SD vs BL'}, Pixels, StatsP);
 
 %  title('Center', 'FontSize', Pixels.TitleSize)
- X = get(gca, 'XLim');
-  text(X(1)+diff(X)/2, YLim(2)*1.2, 'Center Effect Sizes', ...
-                'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
-                'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+X = get(gca, 'XLim');
+text(X(1)+diff(X)/2, YLim(2)*1.2, 'Center Effect Sizes', ...
+    'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
+    'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
 
 
 % save

@@ -126,7 +126,7 @@ for Indx_T = 1:Dims(3) % loop through lines
     end
 end
 
-set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize, 'YGrid', 'on')
 xlim([.75, Dims(2)+.25])
 xticks(1:Dims(2))
 xticklabels(XLabels)
