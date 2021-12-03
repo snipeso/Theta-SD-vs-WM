@@ -1,4 +1,4 @@
-function Axes = subfigure(Space, Grid, CornerLocation, Size, Letter, Format)
+function Axes = subfigure(Space, Grid, CornerLocation, Size, Letter, Pixels)
 %  subfigure(Space, Grid, Location, Letter, Format)
 % Instead of subplot, this lets you place a subfigure anywhere on the
 % figure (could be overlap if you're not careful).
@@ -25,7 +25,7 @@ function Axes = subfigure(Space, Grid, CornerLocation, Size, Letter, Format)
 set(gcf, 'units', 'pixels')
 FigSpace = get(gcf, 'position');
 
-PaddingLabels = Format.Pixels.PaddingLabels;
+PaddingLabels = Pixels.PaddingLabels;
 
 if isempty(Space)
     Space = FigSpace;
@@ -39,19 +39,19 @@ end
 
 % Check if Space is full figure or not; if not, use minor padding
 if all(Space == FigSpace)
-    xPadding = Format.Pixels.xPadding;
-    yPadding = Format.Pixels.yPadding;
-    PaddingExterior = Format.Pixels.PaddingExterior;
-    FontSize = Format.Pixels.LetterSize;
+    xPadding = Pixels.xPadding;
+    yPadding = Pixels.yPadding;
+    PaddingExterior = Pixels.PaddingExterior;
+    FontSize = Pixels.LetterSize;
     
     % get grid dividers
     X = linspace(PaddingExterior, Space(3)-PaddingExterior, Grid(2)+1);
     Y = flip(linspace(PaddingExterior, Space(4)-PaddingExterior, Grid(1)+1));
     
 else
-    xPadding = Format.Pixels.xPaddingMinor;
-    yPadding = Format.Pixels.yPaddingMinor;
-    FontSize = Format.Pixels.LetterSize*2/3;
+    xPadding = Pixels.xPaddingMinor;
+    yPadding = Pixels.yPaddingMinor;
+    FontSize = Pixels.LetterSize*2/3;
     PaddingExterior = 0;
     
     % get grid dividers
@@ -78,7 +78,7 @@ Axes = axes('Units', 'pixels', 'Position', Position);
 
 if ~isempty(Letter)
     Txt = annotation('textbox', [0 0 0 0], 'string', Letter, 'Units', 'pixels', ...
-        'FontSize', FontSize, 'FontName', Format.FontName, 'FontWeight', 'Bold');
+        'FontSize', FontSize, 'FontName', Pixels.FontName, 'FontWeight', 'Bold');
     Txt.Position =  [X(CornerLocation(2))-FontSize+xPadding, Y(CornerLocation(1))+FontSize-xPadding/2 0 0];
     Txt.Units = 'normalized';
 end

@@ -38,7 +38,7 @@ switch fDim
                         bData(Indx_P, :, :, :, Indx_B) = D;
                     end
                 case 6
-                     for Indx_P = 1:size(Data, 1)
+                    for Indx_P = 1:size(Data, 1)
                         D = Data(Indx_P, :, :, :, :, Band(1):Band(2));
                         D = nanmean(D, numel(Dims));
                         

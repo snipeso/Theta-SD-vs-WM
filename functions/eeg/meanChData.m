@@ -38,7 +38,7 @@ for Indx_Ch = 1:numel(ChLabels)
                     error("Don't know this dimention (total matrix size)")
             end
         case 5
-              switch TotDims
+            switch TotDims
                 case 6
                     NewData(:, :, :, :, Indx_Ch, :) = nanmean(Data(:, :, :, :, Ch, :), ChDim);
                 otherwise

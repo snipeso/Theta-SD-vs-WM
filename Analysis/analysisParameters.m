@@ -85,6 +85,7 @@ if Pix(3) < 2000
     Format.LW = 2;
     Format.Topo.Sig = 2; % marker size
     Format.ScatterSize = 70; % TODO: seperate features for small or big screen
+    Format.OSize = 5; % Spaghetti O
     
 else
     Format.FontSize = 25;
@@ -94,24 +95,8 @@ else
     Format.LW = 4;
     Format.Topo.Sig = 5; % marker size
     Format.ScatterSize = 200; % TODO: seperate features for small or big screen
+     Format.OSize = 20; % Spaghetti O
 end
-
-% final figure size in pixels
-Format.Pixels.xPadding = 25; % border & distance between main figures
-Format.Pixels.yPadding = 25;
-Format.Pixels.xPaddingMinor = 25;
-Format.Pixels.yPaddingMinor = 25;
-Format.Pixels.PaddingExterior = 90;
-Format.Pixels.LetterSize = 30;
-Format.Pixels.TitleSize = 22;
-Format.Pixels.FontSize = 18;
-Format.Pixels.BarSize = 12;
-Format.Pixels.PaddingLabels = Format.Pixels.FontSize*2;
-Format.Pixels.W = 42; % width of reference "paper"
-Format.Pixels.H = 60; % height of "paper"
-Format.Pixels.LW = 3;
-Format.Pixels.ScatterSize = 100;
-  Format.Pixels.Topo_Sig = 2;
 
 % lettering for figures
 Format.Letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
@@ -233,6 +218,31 @@ for Indx = 1:numel(Channels.Standard_10_20_Titles)
     Channels.Standard_10_20_All = cat(2, Channels.Standard_10_20_All, Channels.Standard_10_20.(Channels.Standard_10_20_Titles{Indx}));
 end
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Alternative Format for Pixels
+
+Pixels = Format;
+
+% final figure size in pixels
+Pixels.xPadding = 25; % border & distance between main figures
+Pixels.yPadding = 25;
+Pixels.xPaddingMinor = 25;
+Pixels.yPaddingMinor = 25;
+Pixels.PaddingExterior = 90;
+Pixels.LetterSize = 30;
+Pixels.TitleSize = 22;
+Pixels.FontSize = 18;
+Pixels.BarSize = 12;
+Pixels.PaddingLabels = Pixels.FontSize*2;
+Pixels.W = 42; % width of reference "paper"
+Pixels.H = 60; % width of reference "paper"
+Pixels.LW = 3;
+Pixels.ScatterSize = 100;
+Pixels.Topo_Sig = 2;
+Pixels.OSize = 10; % Spaghetti O
+
+P.Pixels = Pixels;
 P.Format = Format;
 P.Channels = Channels;
 P.Bands = Bands;

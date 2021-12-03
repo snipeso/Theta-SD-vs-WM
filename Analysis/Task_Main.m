@@ -27,6 +27,7 @@ Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
+Pixels = P.Pixels;
 
 AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
 TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
@@ -52,7 +53,7 @@ Main_Results = fullfile(Paths.Results, 'Task_ANOVA', strjoin({TASKTYPE, Tag}, '_
 if ~exist(Main_Results, 'dir')
     for Indx_B = 1:numel(BandLabels)
         for Indx_Ch = 1:numel(ChLabels)
-        mkdir(fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch}))
+            mkdir(fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch}))
         end
     end
 end
@@ -78,6 +79,70 @@ bRawData = bandData(chRawData, Freqs, Bands, 'last');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot & analyze data
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Paper Figure
+
+%% Theta changes for ROIs
+
+Indx_B = 2; % theta
+Grid = [2, 6];
+YLim = [-.75 1.9];
+Indx_BL = 1; % the reference for SpaghettiO plots
+
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.3])
+Indx = 1; % tally of axes
+
+% change in means
+for Indx_Ch = 1:numel(ChLabels)
+    
+    Axes(Indx) = subfigure([], Grid, [2, Indx_Ch], [2, 1], '', Pixels);
+    Indx = Indx+1;
+    
+    Data = squeeze(bData(:, :, :, Indx_Ch, Indx_B));
+    
+    % plot spaghetti-o plot of tasks x sessions for each ch and each band
+    Stats = plotSpaghettiOs(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
+        Format.Colors.AllTasks, StatsP, Pixels);
+    ylim(YLim)
+    
+    if Indx_Ch == 1
+        ylabel(Format.Labels.zPower)
+        legend off
+    elseif Indx_Ch ~= 2
+        legend off
+    end
+    
+    
+    
+    set(gca, 'FontSize', Pixels.FontSize)
+    
+    title(ChLabels{Indx_Ch}, 'FontSize', Pixels.TitleSize)
+    
+    
+end
+
+% difference at baseline
+
+
+
+% effect sizes
+
+
+
+
+
+
+
+
+% save
+saveFig(strjoin({TitleTag, 'Means'}, '_'), Paths.Paper, Format)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 %% plot map of channels
@@ -243,9 +308,9 @@ for Indx_Ch = 1:numel(ChLabels)
         
         saveFig(strjoin({TitleTag, 'scatter', 'BL_Tasks_Pairwise', ...
             BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
-         
+        
         Stats = Pairwise(Data, StatsP);
-        TitleStats = strjoin({'Stats_Main', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'BL'}, '_'); 
+        TitleStats = strjoin({'Stats_Main', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'BL'}, '_');
         saveStats(Stats, 'Pairwise', Results, TitleStats, StatsP)
         
         
@@ -263,8 +328,8 @@ for Indx_Ch = 1:numel(ChLabels)
         
         saveFig(strjoin({TitleTag, 'scatter', 'SD_Pairwise', ...
             BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
-        Stats = Pairwise(Diff, StatsP); 
-        TitleStats = strjoin({'Stats_Main', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'SD-BL'}, '_'); 
+        Stats = Pairwise(Diff, StatsP);
+        TitleStats = strjoin({'Stats_Main', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}, 'SD-BL'}, '_');
         saveStats(Stats, 'Pairwise', Results, TitleStats, StatsP)
     end
 end
