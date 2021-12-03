@@ -95,12 +95,8 @@ else
     Format.LW = 4;
     Format.Topo.Sig = 5; % marker size
     Format.ScatterSize = 200; % TODO: seperate features for small or big screen
-     Format.OSize = 20; % Spaghetti O
+    Format.OSize = 20; % Spaghetti O
 end
-
-% lettering for figures
-Format.Letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-Format.Numerals = {'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'};
 
 
 %%% colors and colormaps
@@ -225,6 +221,10 @@ end
 Pixels = Format;
 
 % final figure size in pixels
+% lettering for figures
+Pixels.Letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+Pixels.Numerals = {'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'};
+
 Pixels.xPadding = 25; % border & distance between main figures
 Pixels.yPadding = 25;
 Pixels.xPaddingMinor = 25;

@@ -13,9 +13,21 @@ GenericColor = [.5 .5 .5]; % color for legend items indicating significance
 % indicate whether Clabels get included in plot
 if isempty(CLabels)
     CMarker = 'off';
+    Legend = {};
 else
     CMarker = 'on';
+    Legend = CLabels;
 end
+
+% terms for significant dots
+Alpha = num2str(StatsP.Alpha);
+Alpha = ['p<', Alpha(2:end)];
+
+TrendAlpha =  num2str(StatsP.Trend);
+Trend = ['p<', TrendAlpha(2:end)];
+
+
+%%% Get stats
 
 % get all p-values
 pValues = nan(Dims(2), Dims(3));
@@ -88,6 +100,8 @@ for Indx_T = 1:Dims(3) % loop through lines
                 plot(Indx_S, Mean(Indx_S), 'o', 'MarkerSize', Format.OSize,...
                     'MarkerEdgeColor', GenericColor, 'MarkerFaceColor', MF,  'LineWidth', Format.LW, ...
                     'HandleVisibility', 'on');
+                
+                Legend = [Legend, Alpha]; % add legend item
                 Marked(2) = true;
             end
             
@@ -99,6 +113,7 @@ for Indx_T = 1:Dims(3) % loop through lines
                 plot(Indx_S, Mean(Indx_S), 'o', 'MarkerSize', Format.OSize,...
                     'MarkerEdgeColor', ME, 'MarkerFaceColor', GenericColor,  'LineWidth', Format.LW, ...
                     'HandleVisibility', 'on');
+                Legend = [Legend, Trend];
                 Marked(1) = true;
             end
             
@@ -120,26 +135,9 @@ xticklabels(XLabels)
 
 
 %%% legend
-
-% terms for significant dots
-Alpha = num2str(StatsP.Alpha);
-Sig = ['p<', Alpha(2:end)];
-
-TrendAlpha =  num2str(StatsP.Trend);
-Trend = ['p<', TrendAlpha(2:end)];
-Legend = {Trend, Sig};
-
-if isempty(CLabels) % if not indicating colors, then just sig dots
-    legend(Legend(Marked))
-    if ~any(Marked) % removes empty box
-        legend off
-    end
-    
-else
-    legend([CLabels, Legend(Marked)])
+legend(Legend)
+if ~any(Marked) % removes empty box
+    legend off
 end
-end
-
-
 
 

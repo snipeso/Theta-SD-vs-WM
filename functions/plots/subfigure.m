@@ -79,7 +79,8 @@ Axes = axes('Units', 'pixels', 'Position', Position);
 if ~isempty(Letter)
     Txt = annotation('textbox', [0 0 0 0], 'string', Letter, 'Units', 'pixels', ...
         'FontSize', FontSize, 'FontName', Pixels.FontName, 'FontWeight', 'Bold');
-    Txt.Position =  [X(CornerLocation(2))-FontSize+xPadding, Y(CornerLocation(1))+FontSize-xPadding/2 0 0];
+    Txt.Position =  [X(CornerLocation(2))-FontSize+xPadding, ...
+        Y(CornerLocation(1)-Size(1)+1)+FontSize-xPadding/2 0 0];
     Txt.Units = 'normalized';
 end
 

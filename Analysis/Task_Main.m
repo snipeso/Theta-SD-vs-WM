@@ -96,10 +96,10 @@ Indx_BL = 1; % the reference for SpaghettiO plots
 figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.3])
 Indx = 1; % tally of axes
 
-% change in means
+%%% change in means
 for Indx_Ch = 1:numel(ChLabels)
     
-    Axes(Indx) = subfigure([], Grid, [2, Indx_Ch], [2, 1], '', Pixels);
+    subfigure([], Grid, [2, Indx_Ch], [2, 1], Pixels.Letters{Indx}, Pixels);
     Indx = Indx+1;
     
     Data = squeeze(bData(:, :, :, Indx_Ch, Indx_B));
@@ -109,6 +109,7 @@ for Indx_Ch = 1:numel(ChLabels)
         Format.Colors.AllTasks, StatsP, Pixels);
     ylim(YLim)
     
+    % plot labels only in specific plots
     if Indx_Ch == 1
         ylabel(Format.Labels.zPower)
         legend off
@@ -116,16 +117,10 @@ for Indx_Ch = 1:numel(ChLabels)
         legend off
     end
     
-    
-    
-    set(gca, 'FontSize', Pixels.FontSize)
-    
     title(ChLabels{Indx_Ch}, 'FontSize', Pixels.TitleSize)
-    
-    
 end
 
-% difference at baseline
+%%% difference at baseline
 
 
 
