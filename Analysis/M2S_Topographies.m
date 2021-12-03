@@ -85,14 +85,14 @@ Levels = [1 3 6];
 
 Pixels.PaddingExterior = 30;
 Grid = [1 5];
-YLims = [-.2 .8;
+YLims = [-.1 .9;
     -.2 .2;
-    -.2 .2;
+    -.1 .3;
     ];
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.4])
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.35])
 Indx = 1; % tally of axes
 
 %%% mean changes in ROIs
@@ -119,6 +119,7 @@ for Indx_Ch = 1:numel(ChLabels)
     Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Legend, ...
         flip(Format.Colors.Levels), StatsP, Pixels);
     ylim(YLims(Indx_Ch, :))
+    yticks(-.4:.2:.10)
     ylabel(Format.Labels.zPower)
     
     if Indx_Ch >1
@@ -150,36 +151,85 @@ for Indx_L =  2:numel(Levels)
         N3 = squeeze(tData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
         
         A.Units = 'pixels';
-        A.Position(2) = A.Position(2)-Pixels.PaddingLabels-Pixels.xPadding;
-        A.Position(4) =  A.Position(4) + Pixels.PaddingLabels+Pixels.xPadding;
+        A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
+        A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
         
-        A.Position(1) = A.Position(1)-Pixels.PaddingLabels-Pixels.xPadding;
-        A.Position(3) =  A.Position(3) + Pixels.PaddingLabels+Pixels.xPadding;
+        A.Position(1) = A.Position(1)-Pixels.PaddingLabels;
+        A.Position(3) =  A.Position(3) + Pixels.PaddingLabels*2;
         A.Units = 'normalized';
         
         plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
-          set(A.Children, 'LineWidth', 1)
-          
+        set(A.Children, 'LineWidth', 1)
+        
         if Indx_L == 2
-        title(Sessions.Labels{Indx_S}, 'FontName', Format.FontName, 'FontSize', Pixels.LetterSize)
+            title(Sessions.Labels{Indx_S}, 'FontName', Format.FontName, 'FontSize', Pixels.LetterSize)
         end
         
         if Indx_S ==1
             X = get(gca, 'XLim');
             Y = get(gca, 'YLim');
-            text(X(1)-diff(X)*.2, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
+            text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
                 'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
                 'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
         end
     end
 end
+
+Axis.Units = 'normalized';
+
+
+%%% SD vs BL by level
+miniGrid = [3 2];
+
+Axis = subfigure([], Grid, [1, 5], [1, 1], Pixels.Letters{Indx}, Pixels);
+Axis.Units = 'pixels';
+Space = Axis.Position;
+axis off
+
+for Indx_L =  1:numel(Levels)
+    
+    A = subfigure(Space, miniGrid, [Indx_L 1], [], {}, Pixels);
+    BL = squeeze(tData(:, 1, Indx_L, Indx_E, :, Indx_B));
+    SD = squeeze(tData(:, 3, Indx_L, Indx_E, :, Indx_B));
+    
+    A.Units = 'pixels';
+    A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
+    A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
+    
+    A.Position(1) = A.Position(1)-Pixels.PaddingLabels-Pixels.xPadding;
+    A.Position(3) =  A.Position(3) + Pixels.PaddingLabels*2+Pixels.xPadding*2;
+    A.Units = 'normalized';
+    
+    plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
+    set(A.Children, 'LineWidth', 1)
+    
+    title(Legend{Indx_L}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)
+    
+    
+    if Indx_S ==1
+        X = get(gca, 'XLim');
+        Y = get(gca, 'YLim');
+        text(X(1)-diff(X)*.2, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
+            'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
+            'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+    end
+end
+%
+% Axis.Units = 'normalized';
+%
+% Axis = subfigure([], Grid, [1, Grid(2)], [], Pixels.Letters{Indx}, Pixels);
+A = subfigure(Space, miniGrid, [3 2], [3, 1], {}, Pixels);
+A.Units = 'pixels';
+A.Position(1) = A.Position(1);
+A.Position(3) =  A.Position(3) + Pixels.PaddingLabels*2+Pixels.xPadding*2;
+
+    A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
+    A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
+    
+A.Units = 'normalized';
+plotColorbar('Divergent', CLims_Diff, Pixels.Labels.ES, Pixels)
+
 colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent))
-
-
-%%% SD vs BL by epoch
-
-
-
 Axis.Units = 'normalized';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
