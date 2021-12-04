@@ -99,11 +99,8 @@ miniGrid = [4, 1];
 YLims = [-.075; -.21; -.05];
 YLims = [YLims, YLims + [.8; .3; .3]];
 
-Axis = subfigure([], Grid, [1, 1], [], Pixels.Letters{Indx}, Pixels);
+Space = subaxis(Grid, [1, 1], [], Pixels.Letters{Indx}, Pixels);
 Indx = Indx+1;
-Axis.Units = 'pixels';
-Space = Axis.Position;
-axis off
 
 for Indx_Ch = 1:numel(ChLabels)
     Data = squeeze(tchData(:, :, :, Indx_E, Indx_Ch, Indx_B));
@@ -115,12 +112,9 @@ for Indx_Ch = 1:numel(ChLabels)
     end
     
     A = subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], {}, Pixels);
-    A.Units = 'pixels';
-    A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
-    A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
+    shiftaxis(A, [], Pixels.PaddingLabels)
     A.TickLength = [0 0];
-    A.Units = 'normalized';
-    
+
     Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Legend, ...
         flip(Format.Colors.Levels), StatsP, Pixels);
     ylim(YLims(Indx_Ch, :))
@@ -138,8 +132,6 @@ for Indx_Ch = 1:numel(ChLabels)
     end
     title(ChLabels{Indx_Ch}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)
 end
-
-Axis.Units = 'normalized';
 
 
 %%% N3 vs N2 by session

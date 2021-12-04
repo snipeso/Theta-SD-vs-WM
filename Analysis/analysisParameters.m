@@ -122,6 +122,7 @@ end
 
 % colors for levels in M2S task
 Format.Colors.Levels = getColors([1 3], 'rainbow', 'red'); % M2S red
+Format.Colors.spEpochs = getColors([1 2], 'rainbow', 'green'); % speech green
 
 % other colors
 Format.Colors.SigStar = [0 0 0];
