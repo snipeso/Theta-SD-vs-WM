@@ -49,4 +49,4 @@ ylim([-.55 .6])
 set(gca, 'FontName', Format.FontName)
 
 Colormap = reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent);
-set(gca, 'Colormap', Colormap)
+colormap(Colormap)

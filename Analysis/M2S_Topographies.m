@@ -83,25 +83,24 @@ Levels = [1 3 6];
 
 %% M2S theta changes
 
-Pixels.PaddingExterior = 30;
+Pixels.PaddingExterior = 30; % reduce because of subplots
 Grid = [1 5];
-YLims = [-.1 .9;
-    -.2 .2;
-    -.1 .3;
-    ];
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
+
+Legend = append('L', string(Levels));
 
 figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.35])
 Indx = 1; % tally of axes
 
+
 %%% mean changes in ROIs
 miniGrid = [4, 1];
-Legend = append('L', string(Levels));
+YLims = [-.075; -.21; -.05];
+YLims = [YLims, YLims + [.8; .3; .3]];
 
 Axis = subfigure([], Grid, [1, 1], [], Pixels.Letters{Indx}, Pixels);
 Indx = Indx+1;
-
 Axis.Units = 'pixels';
 Space = Axis.Position;
 axis off
@@ -110,16 +109,22 @@ for Indx_Ch = 1:numel(ChLabels)
     Data = squeeze(tchData(:, :, :, Indx_E, Indx_Ch, Indx_B));
     
     if Indx_Ch==1 % make only first plot twice as long
-        Height=2;
+        Height = 2;
     else
         Height = 1;
     end
     
-    subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], {}, Pixels);
+    A = subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], {}, Pixels);
+    A.Units = 'pixels';
+    A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
+    A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
+    A.TickLength = [0 0];
+    A.Units = 'normalized';
+    
     Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Legend, ...
         flip(Format.Colors.Levels), StatsP, Pixels);
     ylim(YLims(Indx_Ch, :))
-    yticks(-.4:.2:.10)
+    yticks(-.4:.1:1)
     ylabel(Format.Labels.zPower)
     
     if Indx_Ch >1
@@ -128,6 +133,9 @@ for Indx_Ch = 1:numel(ChLabels)
         legend(Legend)
     end
     
+    if Indx_Ch ~= numel(ChLabels)
+        xticklabels('')
+    end
     title(ChLabels{Indx_Ch}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)
 end
 
@@ -161,11 +169,11 @@ for Indx_L =  2:numel(Levels)
         plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
         set(A.Children, 'LineWidth', 1)
         
-        if Indx_L == 2
+        if Indx_L == 2 % only title for top row
             title(Sessions.Labels{Indx_S}, 'FontName', Format.FontName, 'FontSize', Pixels.LetterSize)
         end
         
-        if Indx_S ==1
+        if Indx_S ==1 % left labels of rows
             X = get(gca, 'XLim');
             Y = get(gca, 'YLim');
             text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
@@ -204,33 +212,27 @@ for Indx_L =  1:numel(Levels)
     set(A.Children, 'LineWidth', 1)
     
     title(Legend{Indx_L}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)
-    
-    
-    if Indx_S ==1
-        X = get(gca, 'XLim');
-        Y = get(gca, 'YLim');
-        text(X(1)-diff(X)*.2, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
-            'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
-            'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
-    end
 end
-%
-% Axis.Units = 'normalized';
-%
-% Axis = subfigure([], Grid, [1, Grid(2)], [], Pixels.Letters{Indx}, Pixels);
+
+% plot colorbar
 A = subfigure(Space, miniGrid, [3 2], [3, 1], {}, Pixels);
 A.Units = 'pixels';
 A.Position(1) = A.Position(1);
 A.Position(3) =  A.Position(3) + Pixels.PaddingLabels*2+Pixels.xPadding*2;
 
-    A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
-    A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
-    
+A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
+A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
+
 A.Units = 'normalized';
 plotColorbar('Divergent', CLims_Diff, Pixels.Labels.ES, Pixels)
 
 colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent))
 Axis.Units = 'normalized';
+
+
+% save
+saveFig(strjoin({TitleTag, 'M2S_Topographies'}, '_'), Paths.Paper, Format)
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -273,7 +275,6 @@ saveFig(strjoin({TitleTag, 'Diff_Colorbar'}, '_'), Main_Results, Format)
 
 %% plot SD - BL for each level
 
-
 for Indx_S = 2:nSessions
     for Indx_B = 1:numel(BandLabels)
         Results = fullfile(Main_Results, BandLabels{Indx_B});
@@ -300,6 +301,29 @@ for Indx_S = 2:nSessions
         end
     end
     close all
+end
+
+
+
+%% plot for each session first block vs last block s x e
+
+for Indx_B = 1:numel(BandLabels)
+figure('units','normalized','outerposition',[0 0 .66 .66])
+Indx = 1;
+for Indx_S = 1:nSessions
+    for Indx_E = 1:nEpochs
+    Start = squeeze(nanmean(bData(:, Indx_S, 1:30, Indx_E, :, Indx_B), 3));
+    End = squeeze(nanmean(bData(:, Indx_S, end-30:end, Indx_E, :, Indx_B), 3));
+     subplot(nSessions, nEpochs, Indx)
+     Indx = Indx+1;
+     
+                plotTopoDiff(Start, End, Chanlocs, CLims_Diff, StatsP, Format);
+                   title(strjoin({Epochs{Indx_E}, Sessions.Labels{Indx_S}, BandLabels{Indx_B}}, ' '), 'FontSize', Format.TitleSize)
+    
+    end
+end
+  saveFig(strjoin({ TitleTag, 'Duration_Effect', BandLabels{Indx_B}}, '_'), Results, Format)
+
 end
 
 %% plot SD - BL for every epoch
