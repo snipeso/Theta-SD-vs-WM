@@ -45,13 +45,23 @@ end
 % plot mean
 [ColorGroups, ~, Groups] = unique(Colors, 'rows');
 TotGroups = size(ColorGroups, 1);
+
 if TotGroups == Dims(1) % if there's one color per participant, so no special groups
+    
     plot(nanmean(Data, 1), 'o-', 'LineWidth', Format.LW, 'Color', 'k',  'MarkerFaceColor', 'k')
     
     % conduct stats
     if ~isempty(StatsP)
-            Stats = Pairwise(Data, StatsP);
-            plotHangmanStars(Stats, XPoints, YLims, Format.Colors.SigStar, Format)
+        Stats = Pairwise(Data, StatsP);
+        plotHangmanStars(Stats, XPoints, YLims, Format.Colors.SigStar, Format)
+    end
+elseif  TotGroups == 1 
+      plot(nanmean(Data, 1), 'o-', 'LineWidth', Format.LW, 'Color', ColorGroups,  'MarkerFaceColor', ColorGroups)
+    
+    % conduct stats
+    if ~isempty(StatsP)
+        Stats = Pairwise(Data, StatsP);
+        plotHangmanStars(Stats, XPoints, YLims, ColorGroups, Format)
     end
     
 else
@@ -60,13 +70,13 @@ else
         Color = ColorGroups(Indx_C, :);
         
         plot(nanmean(Data(Groups==Indx_C, :)),...
-            'o-', 'LineWidth', 2.5, 'Color', Color,  'MarkerFaceColor', Color)
+            'o-', 'LineWidth', Format.LW, 'Color', Color,  'MarkerFaceColor', Color)
     end
     
-%     % TODO: group stats
-%     if Stats
-%         Stats = groupStats();
-%     end
+    %     % TODO: group stats
+    %     if Stats
+    %         Stats = groupStats();
+    %     end
 end
 
 set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)

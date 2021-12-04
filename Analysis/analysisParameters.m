@@ -112,7 +112,7 @@ Format.Steps.Linear = 20;
 Format.Steps.Divergent = 30;
 Format.Steps.Monochrome = 20;
 
-Format.Alpha.Participants = .3; % transparency when plotting all participants together
+Format.Alpha.Participants = .2; % transparency when plotting all participants together
 
 % task colors
 Format.Colors.AllTasks = getColors(6, 'rainbow');
@@ -152,6 +152,8 @@ Format.Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'}; % for 
 Format.Labels.Amplitude = 'Amplitude (\muV)';
 Format.Labels.Time = 'Time (s)';
 Format.Labels.ES = "Hedge's G";
+Format.Labels.Correct = '% Correct';
+Format.Labels.RT = 'RT (s)';
 
 %%% Channels and Regions of Interest (ROI)
 Channels = struct();

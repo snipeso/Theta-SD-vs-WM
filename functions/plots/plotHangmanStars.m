@@ -71,7 +71,7 @@ for Indx = 1:nGroups % go from most to least significant
     for x = X
         % plot minor posts
         plot([x, x], [YHeight-Increase*.2, YHeight], ...
-               '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW*.5, 'Color', C)
+               '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
         
         % plot stars
         P = pValues_mirror(x, G_Indx);
@@ -80,9 +80,6 @@ for Indx = 1:nGroups % go from most to least significant
             text(x, YHeight-Increase*.5, Symbol, 'HorizontalAlignment', 'center', 'Color', C, 'FontSize', Format.BarSize)
         end
     end
-    
-    
-    
     
     % remove from list the p-values already plotted
     pValues_mirror(G_Indx, :) = nan;

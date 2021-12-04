@@ -13,9 +13,6 @@ clc
 P = analysisParameters();
 
 Paths = P.Paths;
-Participants = P.Participants;
-AllTasks = P.AllTasks;
-TaskLabels = P.TaskLabels;
 Bands = P.Bands;
 Format = P.Format;
 Sessions = P.Sessions;
