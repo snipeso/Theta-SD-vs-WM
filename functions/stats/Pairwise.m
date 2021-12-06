@@ -40,17 +40,20 @@ switch nDims
             Indexes_long(Nans) = [];
             
             % identify still significant values
-            [~, sig] = fdr(pValues_long, StatsP.Alpha);
+            [sig, crit_p, ~,  pValues_fdr] = fdr_bh(pValues_long, StatsP.Alpha, StatsP.ttest.dep);
+
             h = nan(Dims(2));
             h(Indexes_long) = sig;
             Stats.sig = h;
           
             % identify trending values
-           [~, sig] = fdr(pValues_long, StatsP.Trend);
+           sig = pValues_fdr < StatsP.Trend;
             h = nan(Dims(2));
             h(Indexes_long) = sig;
             Stats.trend = h;
             
+            Stats.crit_p = crit_p;
+            Stats.pFDR = pValues_fdr;
         end
         
         

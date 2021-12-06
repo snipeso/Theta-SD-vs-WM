@@ -29,6 +29,8 @@ Channels = P.Channels;
 StatsP = P.StatsP;
 Pixels = P.Pixels;
 AllTasks = P.AllTasks;
+TaskLabels = P.TaskLabels;
+
 
 TASKTYPE = 'Main';
 
