@@ -4,7 +4,7 @@ function saveFig(Title, Destination, Format)
 
 
 % set(gcf, 'Color', 'none');
-set(gcf, 'InvertHardcopy', 'off', 'Color', 'w')
+set(gcf, 'InvertHardcopy', 'off', 'Color', Format.Colors.Background)
 
 saveas(gcf, fullfile(Destination, [Title, '.svg']));
 try

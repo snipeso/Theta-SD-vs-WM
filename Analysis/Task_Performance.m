@@ -109,7 +109,7 @@ for Indx_L = 1:nLevels
     
     subfigure(Space, miniGrid, [1, Indx_L], [], {}, Pixels);
     
-    plotConfettiSpaghetti(Data, Sessions.Labels, [], [50 100], ...
+    plotConfettiSpaghetti(Data, Sessions.Labels, [], [35 100], ...
         repmat(Format.Colors.Tasks.Match2Sample, nParticipants, 1), StatsP, Pixels);
     
     if Indx_L ==1

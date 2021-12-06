@@ -5,6 +5,7 @@ function sData = smoothFreqs(Data, Freqs, FreqDim, SmoothSpan)
 
 Dims = size(Data);
 
+
 sData = nan(Dims);
 switch FreqDim
     case 'last'
@@ -28,7 +29,18 @@ switch FreqDim
                         end
                     end
                 end
-                
+            case 6
+                for Indx_P = 1:Dims(1)
+                    for Indx_S = 1:Dims(2)
+                        for Indx_T = 1:Dims(3)
+                            for Indx_Ch = 1:Dims(4)
+                                for Indx_6 = 1:Dims(5)
+                                    sData(Indx_P, Indx_S, Indx_T, Indx_Ch, Indx_6, :) = smoothF(Data(Indx_P, Indx_S, Indx_T, Indx_Ch, Indx_6, :), Freqs, SmoothSpan);
+                                end
+                            end
+                        end
+                    end
+                end
             otherwise
                 error('dont know this dimention for smoothing')
         end

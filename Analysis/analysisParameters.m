@@ -128,6 +128,7 @@ Format.Colors.spEpochs = getColors([1 2], 'rainbow', 'green'); % speech green
 Format.Colors.SigStar = [0 0 0];
 Format.Colors.Participants = reduxColormap(Format.Colormap.Rainbow, numel(P.Participants));
 Format.Colors.Generic = [.5 .5 .5];
+Format.Colors.Background = [1 1 1];
 
 % colors + shades for all the tasks
 Format.Colors.Sessions = getColors([numel(P.AllTasks), 3], 'rainbow');

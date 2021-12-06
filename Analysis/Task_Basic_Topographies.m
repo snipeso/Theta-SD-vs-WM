@@ -19,6 +19,7 @@ Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
+Pixels = P.Pixels;
 
 Duration = 4;
 WelchWindow = 8;
@@ -49,56 +50,86 @@ FreqRes = Freqs(2)-Freqs(1);
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Paper Figure
+
+
+%% map of ROIs
+
+
+ROI = 'preROI';
+PlotChannelMap(Chanlocs, Channels.(ROI), Format.Colors.(ROI), Pixels)
+
+Format.Colors.Background = [0 0 0];
+saveFig(strjoin({'Channel', 'Map'}, '_'), Paths.Paper, Format)
+
+
+Format.Colors.Background = [1 1 1];
+
 %% plot bubble plots of single subject, all sessions, to illustrate z-scoring
 
 P = 13;
 F = dsearchn(Freqs', 6.5);
+Grid = [6, 4];
+CLims = [0.5 3.5];
 
-% raw data
-figure('units','normalized','outerposition',[0 0 .2 1])
-tiledlayout( numel(AllTasks), 2, 'Padding', 'none', 'TileSpacing', 'compact');
+%%% raw data
+Fig = figure('units','centimeters','position',[0 0 Pixels.W*.5 Pixels.H/2]);
+
 for Indx_T = 1:numel(AllTasks)
-    for Indx_S = [1 3]
+    for Indx_S = 1:3
         Data = squeeze(AllData(P, Indx_S, Indx_T, :, F));
-        nexttile
-        bubbleTopo(Data, Chanlocs, 40, '2D', false, Format)
-        colormap(reduxColormap(Format.Colormap.Linear, 17))
+        
+        A = subfigure([], Grid, [Indx_T Indx_S], [], {}, Pixels);
+        shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels/2)
+        
+        bubbleTopo(Data, Chanlocs, 25, '2D', [], Pixels)
+        colormap(reduxColormap(Format.Colormap.Linear, Format.Steps.Linear))
+        caxis(CLims)
         colorbar off
-        title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', 16)
+        title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', Pixels.TitleSize)
     end
 end
-Lims = setLimsTiles(numel(AllTasks)*2, 'c');
 
-saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'Raw'}, '_'), Results, Format)
+A = subfigure([], Grid, [Indx_T Grid(2)], [numel(AllTasks), 1], {}, Pixels);
+shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+Pixels.BarSize = Pixels.TitleSize;
+plotColorbar('Linear', CLims, Format.Labels.Power, Pixels)
+saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'Raw'}, '_'), Paths.Paper, Format)
 
 
-figure('units','normalized','outerposition',[0 0 .25 .7])
-plotColorbar(Lims, 'Power', Format)
- colormap(reduxColormap(Format.Colormap.Linear, 17))
-saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'Raw', 'Colorbar'}, '_'), Results, Format)
 
-% z-score data
-figure('units','normalized','outerposition',[0 0 .2 1])
-tiledlayout( numel(AllTasks), 2, 'Padding', 'none', 'TileSpacing', 'compact');
+%%% z-scored
+%
+
+CLims = [-5 5];
+
+Fig = figure('units','centimeters','position',[0 0 Pixels.W*.5 Pixels.H/2]);
+
 for Indx_T = 1:numel(AllTasks)
-    for Indx_S = [1 3]
-        Data = squeeze(zData(P, Indx_S, Indx_T, :, F));
-        nexttile
-        bubbleTopo(Data, Chanlocs, 40, '2D', false, Format)
-        colormap(reduxColormap(Format.Colormap.Divergent, 17))
+    for Indx_S = 1:3
+       Data = squeeze(zData(P, Indx_S, Indx_T, :, F));
+
+        A = subfigure([], Grid, [Indx_T Indx_S], [], {}, Pixels);
+          shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels/2)
+        
+        bubbleTopo(Data, Chanlocs, 25, '2D', [], Pixels)
+        colormap(reduxColormap(Format.Colormap.Linear, Format.Steps.Linear))
+        caxis(CLims)
         colorbar off
-        title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', 16)
+        title([TaskLabels{Indx_T}, ' ', Sessions.Labels{Indx_S}], 'FontSize', Pixels.TitleSize)
     end
 end
-Lims = setLimsTiles(numel(AllTasks)*2, 'c', true);
 
-saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'Zscore'}, '_'), Results, Format)
+A = subfigure([], Grid, [Indx_T Grid(2)], [numel(AllTasks), 1], {}, Pixels);
+shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+Pixels.BarSize = Pixels.TitleSize;
+plotColorbar('Divergent', CLims, Format.Labels.zPower, Pixels)
+saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'zScored'}, '_'), Paths.Paper, Format)
 
 
-figure('units','normalized','outerposition',[0 0 .25 .7])
-plotColorbar(Lims, 'Z-scored Power', Format)
- colormap(reduxColormap(Format.Colormap.Divergent, 17))
-saveFig(strjoin({'Example', Participants{P}, num2str(Freqs(F)), 'Zscore', 'Colorbar'}, '_'), Results, Format)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %% plot topographies by task

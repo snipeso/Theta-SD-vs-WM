@@ -68,7 +68,6 @@ StatsP.FreqBin = diff(Freqs(1:2));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure
 %% Plot spectrums as ch x task, shade indicating task block
-Pixels = P.Pixels;
 
 % format variables
 Pixels.xPadding = 10; % smaller distance than default because no labels
@@ -150,6 +149,7 @@ for Indx_S = 1:numel(S)
     LetterIndx = LetterIndx+1;
     plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
         Format.Alpha.Participants, Pixels.LW, Log, Pixels)
+    ylabel(Format.Labels.Power)
     legend off
     set(gca, 'FontSize', Pixels.FontSize, 'YLim', YLim)
     title(strjoin({Tasks{1}, Sessions.Labels{S(Indx_S)}, ChLabels{Indx_Ch}}, ' '), ...

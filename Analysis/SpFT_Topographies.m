@@ -97,9 +97,6 @@ for Indx_Ch = 1:numel(ChLabels)
 end
 
 %%% SD effects by epoch topo
-
-Indx= Indx+1;
-
 for Indx_E = 1:numel(Epochs)
     
     BL = squeeze(nanmean(bData(:, 1, :, Indx_E, :, Indx_B), 3));
