@@ -11,7 +11,7 @@ for Indx_G = 1:Dims(2)
     
     scatter(Data1(:, Indx_G), Data2(:, Indx_G), ...
         Format.ScatterSize, Colors(Indx_G, :), 'filled', 'MarkerFaceAlpha', .5 )
-     
+    
     % get correlation
     [Stats.r(Indx_G), Stats.pvalue(Indx_G)] = corr(Data1(:, Indx_G), Data2(:, Indx_G));
     
@@ -25,18 +25,18 @@ FlippedColors = flipud(Colors);
 FlippedStats = flipud(Stats.pvalue);
 for Indx_L = 1:numel(L)
     if  FlippedStats(Indx_L) <= .05
-   L(Indx_L).LineWidth = Format.LW;
+        L(Indx_L).LineWidth = Format.LW;
     else
         L(Indx_L).LineWidth = 2;
     end
-   L(Indx_L).Color = FlippedColors(Indx_L, :);
+    L(Indx_L).Color = FlippedColors(Indx_L, :);
     
 end
 
 set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 axis square
 if~isempty(Legend)
-legend(Legend)
+    legend(Legend)
 end
 xlim([min(Data1(:)), max(Data1(:))])
 ylim([min(Data2(:)), max(Data2(:))])

@@ -48,7 +48,7 @@ end
 Pixels.PaddingExterior = 30;
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 Pixels.W*.5 Pixels.H*.8])
+figure('units','centimeters','position',[0 0 Pixels.W*.5 Pixels.H])
 
 B.Theta = Bands.Theta;
 
@@ -57,17 +57,13 @@ Grid = [4 1];
 ProtoChannel = unique([Coordinates{:, 3}]);
 for Indx_E = 1:size(Coordinates, 1)
     Start = Coordinates{Indx_E, 2};
-    Stop = Start +2;
-    
-    Axis = subfigure([], Grid, [Indx_E, 1], [], Pixels.Letters{Indx_E}, Pixels);
-    Title = text(.5, 1, Titles{Indx_E}, 'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
-        'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
-   
+    Stop = Start + 2;
+
     % make subplots
-    Axis.Units = 'pixels';
-    Title.Units = 'pixels';
-    Space = Axis.Position;
-    axis off
+    Space = subaxis(Grid, [Indx_E, 1], [], Pixels.Letters{Indx_E}, Pixels);
+        Title = text(.5, 1, Titles{Indx_E}, 'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
+        'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+    
     plotBurstFig(AllEEG(Indx_E), Start, Stop, Coordinates{Indx_E, 3}, B, Space, Log,  Coordinates{Indx_E, 4}, Pixels);
     
     Axis.Units = 'normalized';

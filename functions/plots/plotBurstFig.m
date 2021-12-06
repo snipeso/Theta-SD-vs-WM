@@ -54,13 +54,8 @@ CLims = [min(bData), max(bData)];
 
 % plot topo
 A = subfigure(Space, Grid, [2, 1], [1 2], Pixels.Numerals{2}, Pixels);
-A.Units = 'pixels';
-A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
-A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
-
-A.Position(1) = A.Position(1)-Pixels.PaddingLabels;
-A.Position(3) =  A.Position(3) + Pixels.PaddingLabels;
-A.Units = 'normalized';
+   shiftaxis(A, Pixels.PaddingLabels/2, Pixels.PaddingLabels)
+   
 topoplotTEMP(bData(:, 1), EEG.chanlocs, 'style', 'map', 'headrad', 'rim', ...
     'whitebk', 'on', 'maplimits', CLims, 'gridscale', Pixels.TopoRes, ...
     'electrodes', 'on', 'emarker2', {ProtoChannelIndx,'.',Colors});
@@ -69,21 +64,14 @@ set(A.Children, 'LineWidth', 1)
 xlim([-.55 .55])
 ylim([-.55 .6])
 
-% % plot colorbar
-% h = colorbar('Location', 'westoutside', 'AxisLocation', 'out');
-% ylabel(h, PowerLabel, 'FontName', Format.FontName, 'FontSize', Format.Pixels.BarSize)
-% 
-% h.TickLength = 0;
-% h.Position = [0.15, h.Position(2:end)];
-% caxis(CLims)
-% set(gca, 'FontName', Format.FontName, 'FontSize', Format.Pixels.BarSize)
-% axis off
-
 colormap(reduxColormap(Pixels.Colormap.(Colormap), Pixels.Steps.(Colormap)))
 
 
 %%% plot spectrum
-subfigure(Space, Grid, [2, 3], [1, Grid(2)-2], Pixels.Numerals{3}, Pixels);
+Space(1) = Space(1)+Pixels.PaddingLabels*1.1;
+Space(3) = Space(3)-Pixels.PaddingLabels*1.1;
+A = subfigure(Space, Grid, [2, 3], [1, Grid(2)-2], Pixels.Numerals{3}, Pixels);
+%  shiftaxis(A, -Pixels.PaddingLabels, [])
 hold on
 
 if Log
@@ -103,7 +91,7 @@ if Log
     
 else
     % plot all channels
-    plot(Freqs, FFT', 'Color', [.8 .8 .8 .5])
+    plot(Freqs, FFT', 'Color', LineColors)
     
     % plot prototype channels
     for Indx_Ch = 1:numel(ProtoChannel)

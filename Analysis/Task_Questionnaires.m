@@ -41,7 +41,7 @@ Questions = fieldnames(Answers);
 Main_Results = fullfile(Paths.Results, 'Task_Questionnaires');
 if ~exist(Main_Results, 'dir')
     for Indx_Q = 1:numel(Questions)
-    mkdir(fullfile(Main_Results, Questions{Indx_Q}))
+        mkdir(fullfile(Main_Results, Questions{Indx_Q}))
     end
 end
 
@@ -54,9 +54,9 @@ for Indx_Q = 1:numel(Questions)-1
     
     % 2 way repeated measures anova with factors Session and Task
     Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
-     TitleStats = strjoin({'Stats', TitleTag,  Questions{Indx_Q} }, '_');
-        saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
-        
+    TitleStats = strjoin({'Stats', TitleTag,  Questions{Indx_Q} }, '_');
+    saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
+    
     % eta2 comparison for task and session to determine which has larger impact
     Title = strjoin({Questions{Indx_Q}, '2 way RANOVA Effect Sizes'}, ' ');
     
@@ -101,14 +101,14 @@ end
 YLim = [0 1];
 
 for Indx_Q = 1:numel(Questions)-1
-        Results = fullfile(Main_Results, Questions{Indx_Q});
+    Results = fullfile(Main_Results, Questions{Indx_Q});
     figure('units','normalized','outerposition',[0 0 1 .5])
     tiledlayout(1, 3, 'Padding', 'none', 'TileSpacing', 'compact');
     for Indx_S = 1:numel(Sessions.Labels)
         Data = squeeze(Answers.(Questions{Indx_Q})(:, Indx_S, :));
         
-%         subplot(1, numel(Sessions.Labels), Indx_S)
-nexttile
+        %         subplot(1, numel(Sessions.Labels), Indx_S)
+        nexttile
         L = Labels.(Questions{Indx_Q});
         ylim(YLim)
         yticks(linspace(0, 1, numel(L)))
@@ -131,7 +131,7 @@ Indx_BL = 1;
 YLim = [0 1];
 
 for Indx_Q = 1:numel(Questions)-1
-        Results = fullfile(Main_Results, Questions{Indx_Q});
+    Results = fullfile(Main_Results, Questions{Indx_Q});
     Data = Answers.(Questions{Indx_Q});
     
     % plot spaghetti-o plot of tasks x sessions for each ch and each band

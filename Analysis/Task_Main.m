@@ -28,14 +28,9 @@ Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
 Pixels = P.Pixels;
+AllTasks = P.AllTasks;
 
-AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
-TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 TASKTYPE = 'Main';
-
-% AllTasks = P.AllTasks;
-% TaskLabels = P.TaskLabels;
-% TASKTYPE = 'AllT';
 
 Format.Colors.AllTasks = Format.Colors.AllTasks(1:numel(TaskLabels), :);
 
@@ -62,7 +57,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
 
-Filepath =  fullfile(P.Paths.Data, 'EEG', 'Unlocked', Tag);
+Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % z-score it
