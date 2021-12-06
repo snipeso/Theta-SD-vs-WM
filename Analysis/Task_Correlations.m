@@ -139,7 +139,8 @@ for Indx_Q = 1:numel(Questions)-1
                 Data2 = (SD - BL)./BL; % sdBand
                 BL =  squeeze(Answers.(Questions{Indx_Q})(:, 1, :));
                 SD =  squeeze(Answers.(Questions{Indx_Q})(:, 3, :));
-                Data1 = (SD-BL)./BL;
+%                 Data1 = (SD-BL)./BL;
+                 Data1 = SD-BL;
                 
                 AxisLabels = {['\delta', Questions{Indx_Q}], ['\delta', BandLabels{Indx_B}]};
                 
@@ -154,4 +155,29 @@ for Indx_Q = 1:numel(Questions)-1
 end
 
 
+
+%% correlate changes zscore
+
+for Indx_Q = 1:numel(Questions)-1
+    Results = fullfile(Main_Results, Tag,  BandLabels{Indx_B}, Questions{Indx_Q});
+    for Indx_B = 2%1:numel(BandLabels)
+            for Indx_Ch = 1:numel(ChLabels)
+                BL = squeeze(bData(:, 1, :, Indx_Ch, Indx_B));
+                SD = squeeze(bData(:, 3, :, Indx_Ch, Indx_B));
+                Data2 = SD - BL; % sdBand
+                BL =  squeeze(Answers.(Questions{Indx_Q})(:, 1, :));
+                SD =  squeeze(Answers.(Questions{Indx_Q})(:, 3, :));
+                Data1 = SD-BL;
+                
+                AxisLabels = {['\delta', Questions{Indx_Q}], ['\delta', BandLabels{Indx_B}]};
+                
+                figure('units','normalized','position',[0 0 .25 .45])
+                Stats = plotSticksAndStones(Data1, Data2, AxisLabels, {}, Format.Colors.AllTasks, Format);
+                title(strjoin({'Diff' Questions{Indx_Q}, BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '))
+                saveFig(strjoin({TitleTag,  'Change', 'zscore', 'sdTheta', 'vs', 'Q', ...
+                    Questions{Indx_Q}, BandLabels{Indx_B}, ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, '_'), Results, Format)
+            end
+    end
+%     close all
+end
 
