@@ -17,6 +17,7 @@ Sessions = P.Sessions;
 AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
 TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 StatsP = P.StatsP;
+Pixels = P.Pixels;
 
 TitleTag = strjoin({'Task', 'Questionnaires'}, '_');
 
@@ -44,6 +45,83 @@ if ~exist(Main_Results, 'dir')
         mkdir(fullfile(Main_Results, Questions{Indx_Q}))
     end
 end
+
+
+%%
+% set to nan all answers for a questionnaire when more than 4 participants are missing data
+for Indx_T = 1:numel(AllTasks)
+   for Indx_Q = 1:numel(Questions)
+       NanP = nnz(any(isnan(Answers.(Questions{Indx_Q})(:, :, Indx_T)), 2))
+       
+       if NanP > 4
+           Answers.(Questions{Indx_Q})(:, :, Indx_T) = nan;
+       end
+   end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Paper Figure
+%%
+
+YLim = [-.05 1.05];
+Questions_Order = {'KSS', 'Relaxing', 'Interesting'; ...
+    'Focused',  'Difficult', 'Effortful';  ...
+    'Performance',   'Motivation',  'Slept',};
+Titles = {'Subjective Sleepiness', 'Relaxing', 'Engaging'; ...
+    'Focus', 'Subjective Difficulty', 'Effort'; ...
+    'Subjective Performance', 'Motivation', 'Slept',};
+
+Labels.KSS(7:9) = {'Sleepy, but no effort to keep awake', 'Sleepy, some effort to keep awake', 'Fighting sleep'}; % Fix
+
+Grid = [3, 6];
+
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.5])
+
+AxesIndexes = [2, 4, 6];
+Indx = 1;
+Indx_BL = 1;
+
+for Indx_G1 = 1:Grid(1)
+    for Indx_G2 = 1:3
+        
+        Q = Questions_Order{Indx_G1, Indx_G2};
+        Data = Answers.(Q);
+        L = Labels.(Q);
+       
+        
+        Axis = subfigure([], Grid, [Indx_G1 AxesIndexes(Indx_G2)], [], {}, Pixels);
+        shiftaxis(Axis, [], -Pixels.PaddingLabels/2)
+        
+        if strcmp(Q, 'Slept')
+            plotSpaghettiOs(Answers.Motivation, Indx_BL, [], TaskLabels, ...
+            Format.Colors.AllTasks, StatsP, Pixels);
+        ylim([-10 -9])
+        axis off
+            continue
+        end
+        
+        ylim(YLim)
+        yticks(linspace(0, 1, numel(L)))
+        yticklabels(L)
+        
+        Stats = plotSpaghettiOs(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
+            Format.Colors.AllTasks, StatsP, Pixels);
+        
+        legend off
+        
+        title([Pixels.Letters{Indx}, ': ' Titles{Indx_G1, Indx_G2}], 'FontSize', Pixels.TitleSize)
+        Indx = Indx+1;
+        
+        
+    end
+end
+
+saveFig(strjoin({TitleTag, 'Questionnaires'}, '_'), Paths.Paper, Format)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 %% ANOVA
 Effects = -3:.5:3;
