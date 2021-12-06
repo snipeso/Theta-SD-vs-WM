@@ -1,5 +1,5 @@
 function plotColorbar(Colormap, CLims, CLabel,  Format)
-h = colorbar('location', 'west');
+h = colorbar('location', Format.Colorbar);
  ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.BarSize)
  h.TickLength = 0;
 caxis(CLims)

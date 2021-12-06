@@ -112,6 +112,8 @@ Format.Steps.Linear = 20;
 Format.Steps.Divergent = 30;
 Format.Steps.Monochrome = 20;
 
+Format.Colorbar = 'west'; % location
+
 Format.Alpha.Participants = .2; % transparency when plotting all participants together
 
 % task colors
@@ -236,6 +238,7 @@ Pixels.xPaddingMinor = 25;
 Pixels.yPaddingMinor = 25;
 Pixels.PaddingExterior = 90;
 Pixels.LetterSize = 30;
+Pixels.TopoRes = 300;
 Pixels.TitleSize = 22;
 Pixels.FontSize = 18;
 Pixels.BarSize = 14;

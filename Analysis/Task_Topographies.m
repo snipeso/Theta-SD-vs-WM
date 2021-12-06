@@ -10,9 +10,6 @@ clc
 
 P = analysisParameters();
 
-% P.AllTasks = {'Match2Sample', 'LAT', 'PVT' 'Game'};
-% P.TaskLabels = {'STM', 'LAT', 'PVT', 'Game'};
-
 Paths = P.Paths;
 Participants = P.Participants;
 AllTasks = P.AllTasks;
@@ -61,10 +58,10 @@ CLims = [-1 2];
 %%% Paper Figure
 %% All topographies
 
-Grid = [3 7];
-Indx_B = 2;
-
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.35])
+Grid = [7 3];
+Indx_B = 2; % theta
+Sessions.Labels = {'Baseline', 'Sleep Restriction', 'Sleep Deprivation'};
+figure('units','centimeters','position',[0 0 Pixels.W*.8 Pixels.H])
 
 Indx = 1; % tally of axes
 
@@ -72,42 +69,32 @@ Indx = 1; % tally of axes
 for Indx_T = 1:numel(AllTasks)
     BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
     
-    
-    A = subfigure([], Grid, [1, Indx_T], [], '', Pixels);
+    A = subfigure([], Grid, [Indx_T, 1], [], '', Pixels);
     Indx = Indx+1;
-    
-    A.Units = 'pixels';
-    A.Position(2) = A.Position(2)-Pixels.PaddingLabels-Pixels.xPadding;
-    A.Position(4) =  A.Position(4) + Pixels.PaddingLabels+Pixels.xPadding;
-    
-    A.Position(1) = A.Position(1)-Pixels.PaddingLabels-Pixels.xPadding;
-    A.Position(3) =  A.Position(3) + Pixels.PaddingLabels+Pixels.xPadding;
-    A.Units = 'normalized';
+    shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
     
     plotTopo(nanmean(BL, 1), Chanlocs, CLims, '', 'Linear', Pixels);
     set(A.Children, 'LineWidth', 1)
     colorbar off
     
-    title(TaskLabels{Indx_T}, 'FontSize', Pixels.LetterSize)
-    
-    if Indx_T == 1 % first column
-        X = get(gca, 'XLim');
-        Y = get(gca, 'YLim');
-        text(X(1)-diff(X)*.25, Y(1)+diff(Y)*.5, Sessions.Labels{1}, ...
-            'FontSize', Pixels.LetterSize, 'FontName', Pixels.FontName, ...
-            'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+    if Indx_T == 1
+        title(Sessions.Labels{1}, 'FontSize', Pixels.LetterSize)
     end
+    
+    
+    X = get(gca, 'XLim');
+    Y = get(gca, 'YLim');
+    text(X(1)-diff(X)*.25, Y(1)+diff(Y)*.5, TaskLabels{Indx_T}, ...
+        'FontSize', Pixels.LetterSize, 'FontName', Pixels.FontName, ...
+        'FontWeight', 'Bold', 'HorizontalAlignment', 'Center', 'Rotation', 90);
+    
 end
 
 % colorbar
-A = subfigure([], Grid, [1, Indx_T+1], [], '', Pixels);
-A.Units = 'pixels';
-A.Position(2) = A.Position(2)-Pixels.PaddingLabels-Pixels.xPadding;
-A.Position(4) =  A.Position(4) + Pixels.PaddingLabels+Pixels.xPadding;
-
-A.Position(1) = A.Position(1)-Pixels.PaddingLabels-Pixels.xPadding;
-A.Position(3) =  A.Position(3) + Pixels.PaddingLabels+Pixels.xPadding;
-A.Units = 'normalized';
+A = subfigure([], Grid, [Indx_T+1, 1], [], '', Pixels);
+shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+Pixels.Colorbar = 'north';
+Pixels.BarSize = Pixels.FontSize;
 plotColorbar('Linear', CLims, Pixels.Labels.zPower, Pixels)
 
 % Change from baseline
@@ -116,42 +103,27 @@ for Indx_S = [2,3]
         BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
         SD = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
         
-        A = subfigure([], Grid, [Indx_S, Indx_T], [], '', Pixels);
+        A = subfigure([], Grid, [Indx_T, Indx_S], [], '', Pixels);
         Indx = Indx+1;
         
-        A.Units = 'pixels';
-        A.Position(2) = A.Position(2)-Pixels.PaddingLabels-Pixels.xPadding;
-        A.Position(4) =  A.Position(4) + Pixels.PaddingLabels+Pixels.xPadding;
-        
-        A.Position(1) = A.Position(1)-Pixels.PaddingLabels-Pixels.xPadding;
-        A.Position(3) =  A.Position(3) + Pixels.PaddingLabels+Pixels.xPadding;
-        A.Units = 'normalized';
+        shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
         
         Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
         set(A.Children, 'LineWidth', 1)
         colormap(gca, Format.Colormap.Divergent)
         colorbar off
         
-        if Indx_T == 1 % first column
-            X = get(gca, 'XLim');
-            Y = get(gca, 'YLim');
-            text(X(1)-diff(X)*.25, Y(1)+diff(Y)*.5, Sessions.Labels{Indx_S}, ...
-                'FontSize', Pixels.TitleSize+10, 'FontName', Pixels.FontName, ...
-                'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+        if Indx_T == 1
+            title(Sessions.Labels{Indx_S}, 'FontSize', Pixels.LetterSize)
         end
     end
 end
 
 
 % colorbar
-A = subfigure([], Grid, [3, numel(AllTasks)+1], [2, 1], '', Pixels);
-A.Units = 'pixels';
-A.Position(2) = A.Position(2)-Pixels.PaddingLabels-Pixels.xPadding;
-A.Position(4) =  A.Position(4) + Pixels.PaddingLabels+Pixels.xPadding;
+A = subfigure([], Grid, [numel(AllTasks)+1, 2], [1, 2], '', Pixels);
+shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
 
-A.Position(1) = A.Position(1)-Pixels.PaddingLabels-Pixels.xPadding;
-A.Position(3) =  A.Position(3) + Pixels.PaddingLabels+Pixels.xPadding;
-A.Units = 'normalized';
 plotColorbar('Divergent', CLims_Diff, Format.Labels.ES, Pixels)
 
 
