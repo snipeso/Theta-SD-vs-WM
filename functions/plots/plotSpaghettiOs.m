@@ -133,7 +133,7 @@ xticklabels(XLabels)
 
 
 %%% legend
-legend(Legend)
+legend(Legend ,'Location','northwest')
 if ~any(Marked) % removes empty box
     legend off
 end

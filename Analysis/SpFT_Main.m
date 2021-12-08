@@ -65,7 +65,7 @@ Epochs = {'Read', 'Speak'};
 
 FactorLabels = {'Session', 'Epoch'};
 
-YLims = [-.3 .8];
+YLims = [-.3 1];
 
 for Indx_B = 1:numel(BandLabels)
     for Indx_Ch = 1:numel(ChLabels)

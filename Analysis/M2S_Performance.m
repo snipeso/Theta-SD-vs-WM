@@ -65,7 +65,7 @@ Data = splitLevels(AllTrials.correct, AllTrials.level, 'ratio');
 Stats = anova2way(Data, FactorLabels, Sessions.Labels, string(Levels), StatsP);
 
  TitleStats = strjoin({'Stats', TitleTag, 'SessionxLevel', '%correct'}, '_');
-        saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
+        saveStats(Stats, 'rmANOVA', Paths.PaperStats, TitleStats, StatsP)
         
 figure('units','normalized','outerposition',[0 0 .3 .4])
 plotANOVA2way(Stats, FactorLabels, StatsP, Format)

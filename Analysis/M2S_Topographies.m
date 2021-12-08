@@ -112,7 +112,7 @@ for Indx_Ch = 1:numel(ChLabels)
     end
     
     A = subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], {}, Pixels);
-    shiftaxis(A, [], Pixels.PaddingLabels)
+    shiftaxis(A, [], Pixels.PaddingLabels/2)
     A.TickLength = [0 0];
 
     Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Legend, ...
@@ -178,6 +178,7 @@ end
 Axis.Units = 'normalized';
 
 
+
 %%% SD vs BL by level
 miniGrid = [3 2];
 
@@ -200,7 +201,10 @@ for Indx_L =  1:numel(Levels)
     A.Position(3) =  A.Position(3) + Pixels.PaddingLabels*2+Pixels.xPadding*2;
     A.Units = 'normalized';
     
-    plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
+    Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
+    Title = strjoin({Legend{Indx_L}, 'SDvsBL', 'Topo'}, '_');
+    saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
+    
     set(A.Children, 'LineWidth', 1)
     
     title(Legend{Indx_L}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)

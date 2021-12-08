@@ -51,7 +51,7 @@ end
 % set to nan all answers for a questionnaire when more than 4 participants are missing data
 for Indx_T = 1:numel(AllTasks)
    for Indx_Q = 1:numel(Questions)
-       NanP = nnz(any(isnan(Answers.(Questions{Indx_Q})(:, :, Indx_T)), 2))
+       NanP = nnz(any(isnan(Answers.(Questions{Indx_Q})(:, :, Indx_T)), 2));
        
        if NanP > 4
            Answers.(Questions{Indx_Q})(:, :, Indx_T) = nan;
@@ -133,7 +133,7 @@ for Indx_Q = 1:numel(Questions)-1
     % 2 way repeated measures anova with factors Session and Task
     Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
     TitleStats = strjoin({'Stats', TitleTag,  Questions{Indx_Q} }, '_');
-    saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
+    saveStats(Stats, 'rmANOVA', Paths.PaperStats, TitleStats, StatsP)
     
     % eta2 comparison for task and session to determine which has larger impact
     Title = strjoin({Questions{Indx_Q}, '2 way RANOVA Effect Sizes'}, ' ');

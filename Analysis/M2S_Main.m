@@ -37,7 +37,7 @@ if ~exist(Main_Results, 'dir')
 end
 
 TitleTag = strjoin({'M2S', Tag, 'Main'}, '_');
-
+Legend = append('L', string(Levels));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
@@ -125,7 +125,7 @@ for Indx_B = 1:numel(BandLabels)
         
         subplot(4, 1, 2:4)
         Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Epochs, ...
-            reduxColormap(Format.Colormap.Rainbow, numel(Epochs)+1), StatsP, Format);
+            getColors(numel(Epochs)), StatsP, Format);
         ylim(YLims)
         
         saveFig(strjoin({TitleTag, 'ANOVA', 'Epochs', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
@@ -133,6 +133,66 @@ for Indx_B = 1:numel(BandLabels)
 end
 close all
 
+
+
+%% ANOVA at BL between epoch and level
+
+
+FactorLabels = {'Level', 'Epoch'};
+for Indx_B = 2%1:numel(BandLabels)
+    for Indx_Ch = 1 %1:numel(ChLabels)
+        Data = squeeze(tData(:, 1, :, :, Indx_Ch, Indx_B));
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
+        
+        Stats = anova2way(Data, FactorLabels, Legend, Epochs, StatsP);
+        figure('units','normalized','outerposition',[0 0 .2 1])
+        subplot(4, 1, 1)
+        plotANOVA2way(Stats, FactorLabels, StatsP, Format)
+        ylim([0 1])
+        title(strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
+        
+        TitleStats = strjoin({'Stats_Main_Level_Epoch', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_');
+        saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
+        
+        subplot(4, 1, 2:4)
+        Stats = plotSpaghettiOs(Data, 1, Legend, Epochs, ...
+            getColors(numel(Epochs)), StatsP, Format);
+        ylim(YLims)
+        
+        saveFig(strjoin({TitleTag, 'ANOVA', 'Levels', 'Epochs', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+    end
+end
+% close all
+
+%% flip now to level and epoch
+
+
+FactorLabels = { 'Epoch', 'Level'};
+for Indx_B = 2%1:numel(BandLabels)
+    for Indx_Ch = 1 %1:numel(ChLabels)
+        Data = squeeze(tData(:, 1, :, :, Indx_Ch, Indx_B));
+        Data = permute(Data, [1 3 2]);
+        Results = fullfile(Main_Results, BandLabels{Indx_B}, ChLabels{Indx_Ch});
+        
+        Stats = anova2way(Data, FactorLabels, Epochs, Legend, StatsP);
+        figure('units','normalized','outerposition',[0 0 .2 1])
+        subplot(4, 1, 1)
+        plotANOVA2way(Stats, FactorLabels, StatsP, Format)
+        ylim([0 1])
+        title(strjoin({BandLabels{Indx_B}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
+        
+        TitleStats = strjoin({'Stats_Main_Epoch_Level', TitleTag, BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_');
+        saveStats(Stats, 'rmANOVA', Results, TitleStats, StatsP)
+        
+        subplot(4, 1, 2:4)
+        Stats = plotSpaghettiOs(Data, 2, Epochs, Legend, ...
+            getColors(numel(Epochs)), StatsP, Format);
+        ylim(YLims)
+        legend(Legend)
+        
+        saveFig(strjoin({TitleTag, 'ANOVA',  'Epochs', 'Levels', BandLabels{Indx_B}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+    end
+end
 
 %% hedgesg for N3 vs N1 and BL vs SR and BL vs SD
 

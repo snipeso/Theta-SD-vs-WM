@@ -112,7 +112,9 @@ for Indx_E = 1:numel(Epochs)
     A = subfigure([], Grid, [2 Indx_E], [], Letter, Pixels);
     shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
     
-    plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
+    Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
+      Title = strjoin({Epochs{Indx_E}, 'SDvsBL', 'Topo'}, '_');
+    saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
     set(A.Children, 'LineWidth', 1)
     title(Epochs{Indx_E}, 'FontSize', Pixels.TitleSize)
 end
@@ -125,7 +127,10 @@ Speak = squeeze(nanmean(bData(:, 3, :, 2, :, Indx_B), 3));
 A = subfigure([], Grid, [2 Indx_E+1], [], {}, Pixels);
 shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
 
-plotTopoDiff(Read, Speak, Chanlocs, CLims_Diff, StatsP, Pixels);
+Stats = plotTopoDiff(Read, Speak, Chanlocs, CLims_Diff, StatsP, Pixels);
+  Title = strjoin({'ReadvSpeak', 'SDvsBL', 'Topo'}, '_');
+    saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
+    
 set(A.Children, 'LineWidth', 1)
 title('Speak vs Read SD', 'FontSize', Pixels.TitleSize)
 
