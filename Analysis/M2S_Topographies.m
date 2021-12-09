@@ -71,7 +71,7 @@ tchData = trialData(bchData, AllTrials.level);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 
-CLims_Diff = [-1.7 1.7];
+CLims_Diff = [-2 2];
 [nParticipants, nSessions, nTrials, nEpochs, nCh, nFreqs] = size(AllData);
 
 Epochs = Format.Labels.Epochs;
@@ -146,30 +146,28 @@ axis off
 for Indx_L =  2:numel(Levels)
     
     for Indx_S = 1:nSessions
-        A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], {}, Pixels);
-        N1 = squeeze(tData(:, Indx_S, 1, Indx_E, :, Indx_B));
+        
+                N1 = squeeze(tData(:, Indx_S, 1, Indx_E, :, Indx_B));
         N3 = squeeze(tData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
         
-        A.Units = 'pixels';
-        A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
-        A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
-        
-        A.Position(1) = A.Position(1)-Pixels.PaddingLabels;
-        A.Position(3) =  A.Position(3) + Pixels.PaddingLabels*2;
-        A.Units = 'normalized';
-        
-        plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
+        A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], {}, Pixels);
+         shiftaxis(A, Pixels.PaddingLabels, [])
+
+        Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
+          Title = strjoin({'M2S_Topo',Sessions.Labels{Indx_S}, Legend{Indx_L}, 'vs', 'BL'}, '_');
+         saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
+         
         set(A.Children, 'LineWidth', 1)
         
         if Indx_L == 2 % only title for top row
-            title(Sessions.Labels{Indx_S}, 'FontName', Format.FontName, 'FontSize', Pixels.LetterSize)
+            title(Sessions.Labels{Indx_S}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)
         end
         
         if Indx_S ==1 % left labels of rows
             X = get(gca, 'XLim');
             Y = get(gca, 'YLim');
             text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
-                'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
+                'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
                 'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
         end
     end
@@ -182,10 +180,7 @@ Axis.Units = 'normalized';
 %%% SD vs BL by level
 miniGrid = [3 2];
 
-Axis = subfigure([], Grid, [1, 5], [1, 1], Pixels.Letters{Indx}, Pixels);
-Axis.Units = 'pixels';
-Space = Axis.Position;
-axis off
+Space = subaxis(Grid, [1 5], [], Pixels.Letters{Indx}, Pixels);
 
 for Indx_L =  1:numel(Levels)
     
@@ -193,14 +188,8 @@ for Indx_L =  1:numel(Levels)
     BL = squeeze(tData(:, 1, Indx_L, Indx_E, :, Indx_B));
     SD = squeeze(tData(:, 3, Indx_L, Indx_E, :, Indx_B));
     
-    A.Units = 'pixels';
-    A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
-    A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
-    
-    A.Position(1) = A.Position(1)-Pixels.PaddingLabels-Pixels.xPadding;
-    A.Position(3) =  A.Position(3) + Pixels.PaddingLabels*2+Pixels.xPadding*2;
-    A.Units = 'normalized';
-    
+    shiftaxis(A, Pixels.PaddingLabels*2, Pixels.PaddingLabels)
+
     Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
     Title = strjoin({Legend{Indx_L}, 'SDvsBL', 'Topo'}, '_');
     saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
@@ -212,18 +201,11 @@ end
 
 % plot colorbar
 A = subfigure(Space, miniGrid, [3 2], [3, 1], {}, Pixels);
-A.Units = 'pixels';
-A.Position(1) = A.Position(1);
-A.Position(3) =  A.Position(3) + Pixels.PaddingLabels*2+Pixels.xPadding*2;
-
-A.Position(2) = A.Position(2)-Pixels.PaddingLabels;
-A.Position(4) =  A.Position(4) + Pixels.PaddingLabels;
-
-A.Units = 'normalized';
+    shiftaxis(A, Pixels.PaddingLabels*2, Pixels.PaddingLabels)
+A.Position(1) = .93;
 plotColorbar('Divergent', CLims_Diff, Pixels.Labels.ES, Pixels)
 
 colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent))
-Axis.Units = 'normalized';
 
 
 % save

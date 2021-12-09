@@ -26,7 +26,18 @@ Stats.std2 = nanstd(Data2, 0, 1)';
 
 
 stats = mes(Data2, Data1, StatsP.Paired.ES, 'isDep', 1);
-Stats.(StatsP.Paired.ES) = stats.(StatsP.Paired.ES)';
+Gs = stats.(StatsP.Paired.ES)';
+Stats.(StatsP.Paired.ES) = Gs;
+
+% save max significant Hedge's g, # of sig channels, and # channels with
+% G>1
+Stats.ES_top1 = nnz(Gs >= 1);
+
+Gs(~Sig) = nan; % only consider significant channels for rest
+[Stats.ES_maxG, Indx] = max(Gs);
+Stats.ES_maxGch = Chanlocs(Indx).labels;
+Stats.sigtot = nnz(Sig);
+
 
 
 CLabel = StatsP.Paired.ES;

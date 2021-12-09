@@ -109,6 +109,8 @@ for Indx_S = [2,3]
         shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
         
         Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
+          Title = strjoin({'Task_Topo', TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, 'vs', 'BL'}, '_');
+         saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
         set(A.Children, 'LineWidth', 1)
         colormap(gca, Format.Colormap.Divergent)
         colorbar off
