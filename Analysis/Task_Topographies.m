@@ -21,7 +21,7 @@ StatsP = P.StatsP;
 Channels = P.Channels;
 Pixels = P.Pixels;
 
-Duration = 2;
+Duration = 4;
 WelchWindow = 8;
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = strjoin({'Task', 'Topos', 'Welch', num2str(WelchWindow), 'zscored'}, '_');
@@ -112,8 +112,8 @@ for Indx_S = [2,3]
         shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
         
         Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
-          Title = strjoin({'Task_Topo', TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, 'vs', 'BL'}, '_');
-         saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
+        Title = strjoin({'Task_Topo', TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, 'vs', 'BL'}, '_');
+        saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
         set(A.Children, 'LineWidth', 1)
         colormap(gca, Format.Colormap.Divergent)
         
@@ -146,3 +146,24 @@ end
 
 % save
 saveFig(strjoin({TitleTag, 'All_Topographies'}, '_'), Paths.Paper, Format)
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Presentation figures
+
+%%
+Format_PPT = P.Format_PPT;
+
+Indx_B = 2;
+
+for Indx_T = 1:numel(AllTasks)
+    figure('units','centimeters','position',[0 0 20 15])
+    BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
+    SD = squeeze(bData(:, 3, Indx_T, :, Indx_B));
+    plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format_PPT);
+    saveFig(strjoin({TitleTag, AllTasks{Indx_T}, 'sdTheta'}, '_'), Results, Format)
+    
+end

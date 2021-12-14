@@ -83,6 +83,7 @@ Levels = [1 3 6];
 
 %% M2S theta changes
 
+CLims_Diff = [-2 2];
 Pixels.PaddingExterior = 30; % reduce because of subplots
 Grid = [1 5];
 Indx_E = 2; % retention 1 period
@@ -213,6 +214,48 @@ saveFig(strjoin({TitleTag, 'M2S_Topographies'}, '_'), Paths.Paper, Format)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Presentation figures
+
+%%
+
+Format_PPT = P.Format_PPT;
+CLims_Diff = [-1.6 1.6];
+
+Indx_E = 2;
+Indx_B = 2;
+figure('units','centimeters','position',[0 0 20 15])
+ BL = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
+    SD = squeeze(tData(:, 1, 2, Indx_E, :, Indx_B));
+plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format_PPT);
+h = colorbar;
+ ylabel(h,  Pixels.Labels.ES, 'FontName', Format_PPT.FontName, 'FontSize', Format_PPT.BarSize)
+ h.TickLength = 0;
+caxis(CLims_Diff)
+
+set(gca, 'FontName', Format.FontName, 'FontSize', Format_PPT.BarSize)
+
+saveFig(strjoin({TitleTag, 'fmTheta'}, '_'), Main_Results, Format)
+
+
+figure('units','centimeters','position',[0 0 20 15])
+ BL = squeeze(nanmean(bData(:, 1, :, Indx_E, :, Indx_B), 3));
+    SD = squeeze(nanmean(bData(:, 3, :, Indx_E, :, Indx_B), 3));
+plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format_PPT);
+h = colorbar;
+ ylabel(h,  Pixels.Labels.ES, 'FontName', Format_PPT.FontName, 'FontSize', Format_PPT.BarSize)
+ h.TickLength = 0;
+caxis(CLims_Diff)
+
+set(gca, 'FontName', Format.FontName, 'FontSize', Format_PPT.BarSize)
+
+saveFig(strjoin({TitleTag, 'sdTheta'}, '_'), Main_Results, Format)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 %% plot N3 vs N1 for every epoch

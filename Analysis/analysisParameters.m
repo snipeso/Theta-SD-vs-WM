@@ -253,6 +253,14 @@ Pixels.ScatterSize = 100;
 Pixels.Topo.Sig = 2;
 Pixels.OSize = 10; % Spaghetti O
 
+
+Format_PPT = Format;
+Format_PPT.Steps.Divergent = 40;
+Format_PPT.BarSize = 25;
+Format_PPT.TopoRes = 500;
+
+
+P.Format_PPT = Format_PPT;
 P.Pixels = Pixels;
 P.Format = Format;
 P.Channels = Channels;
