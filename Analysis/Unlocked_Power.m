@@ -93,18 +93,8 @@ for Indx_T = 1:numel(Tasks)
                 continue
             end
             
-            
             % get the requested amount of data
-            if abs(D)*60*fs >= size(EEG.data, 2)
-                warning([EEG.filename, ' has only ', num2str(round(size(EEG.data, 2)/fs)/60), ...
-                    ' minutes but requested ', num2str(D)])
-                EEGshort = EEG;
-            elseif D < 0
-                TotT = size(EEG.data, 2)/EEG.srate;
-                EEGshort = pop_select(EEG, 'time', [TotT+D*60, TotT]); 
-            else
-                EEGshort = pop_select(EEG, 'time', [0 D*60]);
-            end
+            EEGshort = keepEEG(EEG, D);
             
             Chanlocs = EEGshort.chanlocs;
             Durtion = size(EEGshort.data, 2)/EEGshort.srate;

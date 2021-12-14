@@ -14,11 +14,13 @@ Data_Type = 'Power';
 Destination_Folder = 'SourceLocalization';
 Cuts_Folder = 'Cuts';
 
-Window = 8; % epoch window in seconds
+Window_seconds = 8; % epoch window in seconds
+Minutes = 4; % time in windows to use for epochs
 
 EEG_Triggers.Start = 'S  1';
 EEG_Triggers.End = 'S  2';
 
+allTasks = {'SpFT', 'Match2Sample', 'LAT', 'PVT',  'Game', 'Music'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -55,8 +57,9 @@ for Indx_T = 1:numel(allTasks)
         
         %%% Set as nan all noise
         % remove nonEEG channels
-        [Channels, Points] = size(EEG.data);
+        Channels = size(EEG.data, 1);
         fs = EEG.srate;
+        Window = 2^nextpow2(Window_seconds*fs); % make window a power of 2
         
         % remove beginning
         if any(strcmpi({EEG.event.type}, EEG_Triggers.Start))
@@ -84,9 +87,11 @@ for Indx_T = 1:numel(allTasks)
         RmCh = find(ismember({EEG.chanlocs.labels}, [string(EEG_Channels.notSourceLoc), "CZ"]));
         EEG = pop_select(EEG, 'nochannel', RmCh);
         
-        % epoch data
-        Starts = 1:Window*fs:Points;
-        Starts(end) = [];
+        %%% epoch data
+        EEG = keepEEG(EEG, Minutes);
+        Points = size(EEG.data, 2);
+        
+        Starts = 1:Window:Points;
         Indx = numel(EEG.event)+1;
         for Indx_S = 1:numel(Starts)
             
@@ -98,7 +103,11 @@ for Indx_T = 1:numel(allTasks)
             Indx = Indx+1;
         end
         
-        EEG = pop_epoch(EEG, {'Epoch_Start'}, [0 Window]);
+        % remove all events that are marked as boundaries
+        EEG.event(strcmp({EEG.event.type}, 'boundary')) = [];
+        
+        % epoch data into the windows
+        EEG = pop_epoch(EEG, {'Epoch_Start'}, [0 Window/fs]);
         
         Data = eeglab2fieldtrip(EEG, 'raw', 'none');
         

@@ -43,7 +43,7 @@ for Indx_P = 1:numel(Participants)
             Filename_Cuts = [Filename_Core, '_Cuts.mat'];
             Filename = [Filename_Core, '_Clean.set'];
             
-            Path_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'New_Cuts', Task, Filename_Cuts);
+            Path_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'Cuts', Task, Filename_Cuts);
             Path_EEG = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
             
             if ~exist(Path_Cuts, 'file')

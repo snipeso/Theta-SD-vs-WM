@@ -70,16 +70,20 @@ if Pix(3) < 2000
     Format.TitleSize = 15;
     Format.TopoRes = 150;
     Format.LW = 2;
+        Format.BarSize = 10;
     Format.Topo.Sig = 2; % marker size
     Format.ScatterSize = 10; % TODO: seperate features for small or big screen
-
+      Format.OSize = 5; % Spaghetti O
 else
     Format.FontSize = 15;
     Format.TitleSize = 20;
     Format.TopoRes = 300;
+        Format.BarSize = 18;
     Format.LW = 4;
     Format.Topo.Sig = 5; % marker size
     Format.ScatterSize = 80; % TODO: seperate features for small or big screen
+
+      Format.OSize = 20; % Spaghetti O
 end
 
 Format.Steps.Linear = 20;
@@ -102,6 +106,8 @@ end
 Format.Colors.Levels = getColors([1 3], 'rainbow', 'red'); % M2S red
 
 Format.Colors.SigStar = [0 0 0];
+Format.Colors.Generic = [.5 .5 .5];
+Format.Colors.Background = [1 1 1];
 
 Format.Colors.Sessions = getColors(3);
 
@@ -257,6 +263,7 @@ StatsP.Trend = .1;
 StatsP.Paired.ES = 'hedgesg';
 StatsP.Paired.Benchmarks = -2:.5:2;
 StatsP.FreqBin = 1; % # of frequencies to bool in spectrums stats
+StatsP.ttest.dep = 'pdep';
 
 P.StatsP = StatsP;
 
