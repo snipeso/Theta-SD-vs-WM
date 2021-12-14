@@ -87,7 +87,11 @@ for Indx_Ch = 1:numel(ChLabels)
         %%% plot
         Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], [], '', Pixels);
         Indx = Indx+1;
-        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Pixels, StatsP);
+        Stats = plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Pixels, StatsP);
+
+         Title = strjoin({'Task_Spectrum', TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, '_');
+         saveStats(Stats, 'Spectrum', Paths.PaperStats, Title, StatsP)
+         
         set(gca, 'FontSize', Pixels.FontSize, 'YLim', YLim)
         
         % plot labels/legends only in specific locations
@@ -98,7 +102,7 @@ for Indx_Ch = 1:numel(ChLabels)
         
         if Indx_T == 1 % first column
             ylabel(Format.Labels.zPower)
-            X = get(gca, 'XLim');
+            X = double(get(gca, 'XLim'));
             text(X(1)-diff(X)*.5, YLim(1)+diff(YLim)*.5, ChLabels{Indx_Ch}, ...
                 'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
                 'FontWeight', 'Bold', 'Rotation', 90, 'HorizontalAlignment', 'Center');

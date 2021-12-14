@@ -115,7 +115,9 @@ Format.Steps.Monochrome = 20;
 
 Format.Colorbar = 'west'; % location
 
-Format.Alpha.Participants = .2; % transparency when plotting all participants together
+Format.Alpha.Participants = .3; % transparency when plotting all participants together
+Format.Alpha.Channels = .15; % transparency when plotting all participants together
+
 
 % task colors
 Format.Colors.AllTasks = getColors(6, 'rainbow');

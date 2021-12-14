@@ -44,6 +44,9 @@ zData = zScoreData(AllData, 'last');
 % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
 
+% TEMP QUALITY CHECK RAW DATA
+% bData = bandData(AllData, Freqs, Bands, 'last');
+% CLims_Diff = [-1 1];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
@@ -113,7 +116,6 @@ for Indx_S = [2,3]
          saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
         set(A.Children, 'LineWidth', 1)
         colormap(gca, Format.Colormap.Divergent)
-        colorbar off
         
         if Indx_T == 1
             title(Sessions.Labels{Indx_S}, 'FontSize', Pixels.LetterSize)

@@ -60,8 +60,19 @@ switch Type
           writematrix(T, fullfile(Destination,  [Title, '_CIhigh.csv']));
              T = Stats.sig;
           writematrix(T, fullfile(Destination,  [Title, '_fdr.csv']));
-               
-        
+             
+    case 'Spectrum'
+            Variables = {'pvalues', 'p_fdr', 'sig', 'tvalues', 'df'};
+          T = table();
+          T.freqs = Stats.freqs';
+          
+          for Indx_L = 1:numel(Stats.lines)
+              for Indx_V = 1:numel(Variables)
+                  T.([Variables{Indx_V}, '_', Stats.lines{Indx_L}]) = reshape(Stats.(Variables{Indx_V})(Indx_L, :), [], 1);
+              end
+          end
+          
+           writetable(T, fullfile(Destination,  [Title, '.csv']));
     otherwise
         error('dont know this stats')
 end

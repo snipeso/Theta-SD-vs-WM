@@ -21,8 +21,8 @@ end
 % conduct stats
 
 Edges = X(1):StatWidth:X(end);
-Edges(1) =  X(1);
-Edges(end) = X(end);
+Edges = Edges-StatWidth*.01; % litle hack to make bin encompass the actual frequency
+Edges(end+1) = X(end)+StatWidth*.01;
 Bins = discretize(X, Edges);
 Midpoints = Edges(1:end-1)+StatWidth/2;
 MeanDataX = nan([Dims(1:2), numel(Edges)-1]);

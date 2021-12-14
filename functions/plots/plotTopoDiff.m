@@ -38,11 +38,7 @@ Gs(~Sig) = nan; % only consider significant channels for rest
 Stats.ES_maxGch = Chanlocs(Indx).labels;
 Stats.sigtot = nnz(Sig);
 
-
-
-CLabel = StatsP.Paired.ES;
 Indexes = 1:numel(Chanlocs);
-
 
 if isempty(CLims)
     Max = max(abs([quantile(t_values(:), .01), quantile(t_values(:), .99)]));
