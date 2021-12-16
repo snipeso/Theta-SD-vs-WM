@@ -1,4 +1,4 @@
-function [pks, locs, prom, width] = peakfinder_topo(Data, X, Y, Z)
+function [pks, locs, prom, width] = peakfinder_topo(Data, X, Y, Z, minProminence)
 % function for finding peaks in a topoplot.
 % [pks, locs, prom] = peakfinder_topo(Data, Chanlocs)
 
@@ -11,6 +11,11 @@ function [pks, locs, prom, width] = peakfinder_topo(Data, X, Y, Z)
 % 5) when either an increase or the whole grid has been searched, identify
 % the prominence of that peak, save info to the outcome variables
 % 6) continue through list of electrodes steps 2-5
+
+
+if ~exist('minProminence', 'var')
+    minProminence = 0;
+end
 
 pks = []; % Data value peaks
 locs = []; % index of the peak
@@ -58,7 +63,7 @@ for Indx_Ch = 1:numel(Data)
             Neighbors = Remaining(Distances(Remaining, Ch) < Min_D*1.5);
             
             % see which direction neighbors go in with respect to edge point
-            Descend = Data(Neighbors) <= Data(Ch);
+            Descend = Data(Neighbors) <= Data(Ch)+minProminence;
             
             if isempty(Descend) % if there are no more neighbors to search throuh
                 continue
@@ -66,7 +71,7 @@ for Indx_Ch = 1:numel(Data)
                 NextEdge = union(NextEdge, Neighbors); % add neighbors to upcoming edge
                 
             elseif any(~Descend) % jackpot!
-                goesUp = union(goesUp, find(~Descend)); % get all channels that flip direction, so that can later pick the one is closest
+                goesUp = union(goesUp, Neighbors(~Descend)); % get all channels that flip direction, so that can later pick the one is closest
                 flipPoints = cat(2, flipPoints, Data(Ch));
             end
         end
@@ -83,19 +88,23 @@ for Indx_Ch = 1:numel(Data)
     end
     
     
-   %%% calculate prominence of peak respect to rest of data
-    if isempty(goesUp) % if only one peak, then just span of data
-        Prominance = max(Data) - min(Data);
+    if numel(goesDown) > 1 % save as peak if there's more than one channel
         
-    else
-        Prominance = Data(Ch_ID) -  max(flipPoints);
+        %%% calculate prominence of peak respect to rest of data
+        if isempty(goesUp) % if only one peak, then just span of data
+            Prominance = max(Data) - min(Data);
+            
+        else
+            Prominance = Data(Ch_ID) -  max(flipPoints);
+        end
+        
+        
+        pks = [pks; Data(Ch_ID)];
+        locs = [locs; Ch_ID];
+        prom = [prom; Prominance];
+        width = [width; numel(goesDown)];
+        
     end
-    
-    
-    pks = [pks, Data(Ch_ID)];
-    locs = [locs, Ch_ID];
-    prom = [prom, Prominance];
-    width = [width, numel(goesDown)];
     
     % remove from data ordered the channels involved in the descent
     Data_Ordered(ismember(Order, goesDown)) = nan; % CHECK

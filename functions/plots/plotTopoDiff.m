@@ -57,3 +57,13 @@ set(gca, 'FontName', Format.FontName)
 
 Colormap = reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent);
 colormap(Colormap)
+
+
+
+%%% save in stats the peaks of values
+
+[pks, locs, prom, width] = peakfinder_topo(Stats.hedgesg, [Chanlocs.X], [Chanlocs.Y], [Chanlocs.Z], StatsP.minProminence);
+Labels = str2double({Chanlocs.labels})';
+Stats.ES_Peaks = [pks, Labels(locs), prom, width];
+
+
