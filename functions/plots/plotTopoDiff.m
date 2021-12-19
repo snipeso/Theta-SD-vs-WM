@@ -64,6 +64,10 @@ colormap(Colormap)
 
 [pks, locs, prom, width] = peakfinder_topo(Stats.hedgesg, [Chanlocs.X], [Chanlocs.Y], [Chanlocs.Z], StatsP.minProminence);
 Labels = str2double({Chanlocs.labels})';
-Stats.ES_Peaks = [pks, Labels(locs), prom, width];
+Peaks = [pks, Labels(locs), prom, width];
+Peaks(~Sig(locs), :) = []; % remove peaks when peak channel is not significant
+
+
+Stats.ES_Peaks = Peaks;
 
 
