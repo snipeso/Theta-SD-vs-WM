@@ -1,5 +1,7 @@
 # Theta during tasks and sleep deprivation
-This repository contains all the scripts used for {paper XXX}. This was an investigation in the local changes in EEG theta power caused by sleep deprivation during different tasks. The data is available upon request. 
+This repository contains all the scripts used for {paper XXX}. This was an investigation in the local changes in EEG theta power caused by sleep deprivation during different tasks. The data is available upon request.
+
+DISCLAIMER: I am a psychologist by training, and did the best I could with writing scripts. I prioritized making it work intuitively (for ) over formal formatting correctness. Also, I am a PhD student 1 year from graduation, and don't really have time to make perfect documentation. If there's something not clear that you really want to know, just write to me. This is NOT a toolbox, and is only being published for the sake of transparency.
 
 **Preprocessing** contains the scripts used for preprocessing the data, and of course must be run first. These clean the raw EEG data (saved as BrainVision .eeg files) as described in the paper. This works with the EEGLAB toolbox, and at each step saves the EEG data as a .set file. The scripts are run in alphabetical order ('A_EEG2SET.mat', 'B_Filtering_Downsampling.m', ...).
 
@@ -35,10 +37,20 @@ All other scripts are experimental and peripheral things that were not part of t
 
 
 ### Analysis
-1. Modify analysisParameters. so that paths and so on are correct
-2. Run "Unlocked_Power.m" and the "Locked_Power..." scripts to get the power spectrum data
-3. For example data, run "ExampleBursts.m"
-4. For power spectrums, run "Task_Spectrums.m"
+Scripts used to create the results in the paper (and more). Some scripts will plot a lot of extra figures; the ones used in the paper are at the beginning. Each script is similarly structured: first the parameters are loaded in, then script-specific parameters are specified, then the data is loaded, and then the individual plots can be run, either in order or not. 
+
+1. Modify **analysisParameters.m**. so that filepaths are correct. Like for preprocessing, this is (now a function) that indicates the parameters in common across scripts. Now the bulk is related to plotting and such.
+2. Run **A_Unlocked_Power.m** and the **A1_Locked_Power...** scripts to get the power spectrum data from the clean .set files created by the preprocessing. These are saved in *Final>Unlocked* and *Final>Locked* respectively. "Unlocked" refers to power that is not locked to any particular event, and just takes a certain number of minutes of data, whereas "Locked" takes epochs specific to the underlying task, which is why there's a seperate one for each task.
+3. Run the scripts used for the paper. These don't actually have to be run in order
+    - **B_Example_Bursts.m** plots the the little example bursts of EEG data
+    - **C_Task_Main.m** plots the figure showing averages of theta in the three ROIs (regions of interest) across all tasks. 
+    - **D_Task_Topographies.m** plots the topographies of theta in all the tasks, and how they change with sleep deprivation. Other bands can be plotted further down in the script.
+    - **E_Task_Spectrums.m** plots the spectrums for each ROI and each task. 
+    - **F_M2S_Main.m** plots all the figures related to the match to sample (M2S) short term memory task (STM in the paper).
+    - **G_SpFT_Topographies.m** plots the figure showing the changes in theta in the Speech Fluency Task (SpFT).
+    - **H_Task_Questionnaires.m** plots the questionnaire data of all the tasks.
+
+Other lettered scripts are from the supplementary material, or not published at all. 
 
 
 ## External scripts
