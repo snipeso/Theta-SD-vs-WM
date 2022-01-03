@@ -1,22 +1,27 @@
-# Theta during tasks and sleep deprivation
+# EEG theta power during tasks and sleep deprivation
 This repository contains all the scripts used for {paper XXX}. This was an investigation in the local changes in EEG theta power caused by sleep deprivation during different tasks. The data is available upon request.
 
-DISCLAIMER: I am a psychologist by training, and did the best I could with writing scripts but they are not high quality. I prioritized making them work intuitively (for me) over formal formatting correctness. Also, I am a PhD student 1 year from graduation, and don't really have time to make perfect documentation. If there's something not clear that you really want to know, just write to me. This is NOT a toolbox, and is only being published for the sake of transparency.
+DISCLAIMER: I am a psychologist by training, and did the best I could but this is not "professional" code. I prioritized making the scripts work intuitively (for me) over formal formatting correctness. Also, I am a PhD student 1 year from graduation, and don't really have time to make perfect documentation. If there's something not clear that you really want to know, just write to me. This is NOT a toolbox, and is only being published for the sake of transparency.
 
-**Preprocessing** contains the scripts used for preprocessing the data, and of course must be run first. These clean the raw EEG data as described in the paper. This works with the EEGLAB toolbox, and at each step saves the EEG data as a .set file. The scripts are run in alphabetical order ('A_EEG2SET.mat', 'B_Filtering_Downsampling.m', ...).
 
-**Analysis** contains the scripts used for analyzing the data. A lot more analyses were conducted than were included in the final publication. The ones that were publised are marked with letters at the beginning of the filename in the order in which they appear in the publication.
+### Content
 
-**Quality_Checks** contains unedited scripts that I used to make sure the data was ok. It tabulated the amount of data removed, and things like that. 
+***Preprocessing/*** contains the scripts used for preprocessing the data, and of course must be run first. These clean the raw EEG data as described in the paper. This works with the EEGLAB toolbox, and at each step saves the EEG data as a .set file. The scripts are run in alphabetical order ('A_EEG2SET.mat', 'B_Filtering_Downsampling.m', ...).
 
-**SpfT_Scoring** contains the quick scripts I used to blind myself for the scoring of the Speech Fluency Task data.
+***Analysis/*** contains the scripts used for analyzing the data. A lot more analyses were conducted than were included in the final publication. The ones that were publised are marked with letters at the beginning of the filename in the order in which they appear in the publication.
 
-**functions** contains all the functions used in the script folders. Functions in the *external* folder are, as you could imagine, from other toolboxes and little bits of code from other people. All other code was written by me (Sophia Snipes).
+***Quality_Checks/*** contains unedited scripts that I used to make sure the data was ok. It tabulated the amount of data removed, and things like that. 
+
+***SpfT_Scoring/*** contains the quick scripts I used to blind myself for the scoring of the Speech Fluency Task data.
+
+***functions/*** contains all the functions used in the script folders. Functions in the *external* folder are, as you could imagine, from other toolboxes and little bits of code from other people. All other code was written by me (Sophia Snipes).
 
 
 ## Setup
+Below are the instructions to reproduce my results starting from the raw data.
+
 1. Download EEGLAB
-    - in the "pop_loadset" function, disable line 117:  fprintf('pop_loadset(): loading file %s ...\n', filename); so that you can't see which file is being loaded during the randomized file cleaning
+    - in the "pop_loadset" function, disable line 117:  `fprintf('pop_loadset(): loading file %s ...\n', filename)`; so that you can't see which file is being loaded during the randomized file cleaning
 2. Make sure to have the required MATLAB toolboxes: 
     - Text Analytics Toolbox
     - Statistics And Analytics Toolbox
