@@ -20,14 +20,18 @@ This repository contains all the scripts used for {paper XXX}. This was an inves
     - Statistics And Analytics Toolbox
 
 ### Preprocessing
-1. Chech Prep_Paramaters, and change the filepaths to point to the data and destination folders. This script is where all the parameters for the preprocessing are specified for easy visualization and consistency across scripts.
+Scripts to clean the EEG data.
+
+1. Check **Prep_Paramaters.m**, and change the filepaths to point to the data and destination folders. This script is where all the parameters for the preprocessing are specified for easy visualization and consistency across scripts.
 2. Run the scripts in alphabetical order. Scripts C and E require manual work for every file.
     1. **A_EEG2SET.m** converts the BrainVision raw files (saved as '.eeg') into EEGLAB '.set' files in the same folder as the raw data. *A1_SplitRRT.m* is not relevant to this first paper, and can be for now ignored. *A2_SpecialFixes.m* was for me to fix files that had missing triggers or merged multiple recordings together. In the final dataset, all the '.set' files are correct.
     2. **B_Filtering_Downsampling.m** takes the .set files, filters and downsamples them, and saves the new files in a *Preprocessing* folder. Seperate filtering is done for *Cuts*, *Power*, and *ICA*; the first is for visualizing quickly the data to determine manually where there is data to be removed, the second is the filtering used for the final data analysis, and the last is for calculating the independent components used for the final stage of preprocessing.
     3. **C_Cuts.m** is a script for identifying for each file what data to cut. It generates a file in *Preprocessing>Cutting>Cuts* which contains the channels, the snippets (bad segments in single channels), and time windows to remove. This must be run over and over again until all the files are clean. It is done blinded.
     4. **D_GetICA.m** takes the ICA filtered data, removes all the bad data marked in C, and calculates the components for each file. This takes a long time.
-    5. **E_RemoveComponents.m** is another manual process that involves running over and over again until all files have been visualized. It shows the components that were automatically marked for removal, allows the user to select further components to remove over and over until the user is happy. Additional channels can further be removed at the end.
+    5. **E_RemoveComponents.m** is another manual process that requires running over and over again until all files have been visualized. It shows the components that were automatically marked for removal, allows the user to select further components to remove over and over until the user is happy. Additional channels can further be removed at the end. This outputs a final '.set' file into *Preprocessing>Clean* which is used for data analysis.
     6. **F_eeglab3fieldtrip.m** converts data to fieldtrip datastructure for source localization.
+
+All other scripts are experimental and peripheral things that were not part of the preprocessing pipeline.
 
 
 ### Analysis
