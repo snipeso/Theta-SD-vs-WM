@@ -24,7 +24,8 @@ Below are the instructions to reproduce my results starting from the raw data.
     - in the "pop_loadset" function, disable line 117:  `fprintf('pop_loadset(): loading file %s ...\n', filename)`; so that you can't see which file is being loaded during the randomized file cleaning
 2. Make sure to have the required MATLAB toolboxes: 
     - Text Analytics Toolbox
-    - Statistics And Analytics Toolbox
+    - Statistics and Machine Learning Toolbox
+    - Signal Processinh Toolbox
 
 ### Preprocessing
 Scripts to clean the EEG data.
@@ -33,9 +34,9 @@ Scripts to clean the EEG data.
 2. Run the scripts in alphabetical order. Scripts C and E require manual work for every file.
     1. **A_EEG2SET.m** converts the BrainVision raw files (saved as '.eeg') into EEGLAB '.set' files in the same folder as the raw data. *A1_SplitRRT.m* is not relevant to this first paper, and can be for now ignored. *A2_SpecialFixes.m* was for me to fix files that had missing triggers or merged multiple recordings together. In the final dataset, all the '.set' files are correct.
     2. **B_Filtering_Downsampling.m** takes the .set files, filters and downsamples them, and saves the new files in a *Preprocessing* folder. Seperate filtering is done for *Cuts*, *Power*, and *ICA*; the first is for visualizing quickly the data to determine manually where there is data to be removed, the second is the filtering used for the final data analysis, and the last is for calculating the independent components used for the final stage of preprocessing.
-    3. **C_Cuts.m** is a script for identifying for each file what data to cut. It generates a file in *Preprocessing>Cutting>Cuts* which contains the channels, the snippets (bad segments in single channels), and time windows to remove. This must be run over and over again until all the files are clean. It is done blinded.
+    3. **C_Cuts.m** is a script for identifying for each file what data to cut. It generates a file in *Preprocessing/Cutting/Cuts* which contains the channels, the snippets (bad segments in single channels), and time windows to remove. This must be run over and over again until all the files are clean. It is done blinded.
     4. **D_GetICA.m** takes the ICA filtered data, removes all the bad data marked in C, and calculates the components for each file. This takes a long time.
-    5. **E_RemoveComponents.m** is another manual process that requires running over and over again until all files have been visualized. It shows the components that were automatically marked for removal, allows the user to select further components to remove over and over until the user is happy. Additional channels can further be removed at the end. This outputs a final '.set' file into *Preprocessing>Clean* which is used for data analysis.
+    5. **E_RemoveComponents.m** is another manual process that requires running over and over again until all files have been visualized. It shows the components that were automatically marked for removal, allows the user to select further components to remove over and over until the user is happy. Additional channels can further be removed at the end. This outputs a final '.set' file into *Preprocessing/Clean* which is used for data analysis.
     6. **F_eeglab3fieldtrip.m** converts data to fieldtrip datastructure for source localization.
 
 All other scripts are experimental and peripheral things that were not part of the preprocessing pipeline.
@@ -59,48 +60,50 @@ Other lettered scripts are from the supplementary material, or not published at 
 
 
 
-### Data
-As of now, the data is in the hands of the Kinderspital Zurich and Sophia Snipes. Eventually this will be made open source.
+## Data
+As of now, the data is in the hands of the Kinderspital Zurich. A copy can be provided upon request, but I can't make it open access until I figure out all the legal stuff.
 
-#### EEG
+### EEG
 Raw EEG data is saved as a .eeg file of BrainVision. This gets converted early on as a .set of EEGLAB, and used as such throughout. 
-EEG was recorded from a 128 Channel EGI montage at 1000 Hz. 
+EEG was recorded from a 128 Channel EGI montage at 1000 Hz. Because the preprocessing takes so long, every step saves a new file; this gets heavy quickly. At least 5 TB are needed just for handling all the preprocessing versions (excluding raw data).
 
-#### Questionnaires
+### Questionnaires
 Questionnaires were recoded on the custom EWOQ platform, and the answers saved as JSON. These need to be first converted to .csv to run the scripts included here.
 
-#### Tasks
+For converting Questionnaires into csv: EWOQ analysis: https://github.com/snipeso/EWOQ_Analysis 
+- clone repository
+- run Main_LSM.m (after adjusting for data source location)
+- move .csv files with relevant questionnaire names from .Raw/CSVs to folder ./Final/Questionnaires (create if it doesn't exist)
+
+### Tasks
 Task output is also saved as a JSON, but the scripts here will gladly convert them into a single .mat file.
 
 
-## credits
+## Credits
 
-#### External scripts and toolboxes
+### External scripts and toolboxes
 
 - For EEG: EEGLAB: https://sccn.ucsd.edu/eeglab/downloadtoolbox.php. I used version 2019_1
-- For converting Questionnaires into csv: EWOQ analysis: https://github.com/snipeso/EWOQ_Analysis 
-    - clone repository
-    - run Main_LSM.m (after adjusting for data source location)
-    - move .csv files with relevant questionnaire names from .Raw/CSVs to folder ./Final/Questionnaires (create if it doesn't exist)
+- Colormaps: https://colorcet.holoviz.org/ 
+- Normality tests: Ahmed BenSaïda (2021). Shapiro-Wilk and Shapiro-Francia normality tests. (https://www.mathworks.com/matlabcentral/fileexchange/13964-shapiro-wilk-and-shapiro-francia-normality-tests), MATLAB Central File Exchange. Retrieved August 13, 2021.
+- Effect size measurements: Harald Hentschke (2021). hhentschke/measures-of-effect-size-toolbox (https://github.com/hhentschke/measures-of-effect-size-toolbox), GitHub. Retrieved November 20, 2019.
+- Color converter: Vladimir Bychkovsky (2021). hsl2rgb and rgb2hsl conversion (https://www.mathworks.com/matlabcentral/fileexchange/20292-hsl2rgb-and-rgb2hsl-conversion), MATLAB Central File Exchange. Retrieved November 12, 2021.
+- Correction for multiple comparisons: Mass Univariate ERP Toolbox. (2017, October 2). OpenWetWare. Retrieved January 3, 2022 from https://openwetware.org/mediawiki/index.php?title=Mass_Univariate_ERP_Toolbox&oldid=1019603.
 
-- sigstar: Rob Campbell (2020). raacampbell/sigstar (https://www.github.com/raacampbell/sigstar), GitHub. Retrieved April 27, 2020.
 
-- colorcet: https://colorcet.holoviz.org/ 
+### Reference papers and sources
 
-- normalitytest: Ahmed BenSaïda (2021). Shapiro-Wilk and Shapiro-Francia normality tests. (https://www.mathworks.com/matlabcentral/fileexchange/13964-shapiro-wilk-and-shapiro-francia-normality-tests), MATLAB Central File Exchange. Retrieved August 13, 2021.
+Overall pipeline was based on: 
+Makoto Miyakoshi (2020). Makoto's preprocessing pipeline (https://sccn.ucsd.edu/wiki/Makoto's_preprocessing_pipeline), Swartz Center for Computational Neuroscience wiki. Retrieved March 15, 2020.
 
-- effect size measurements: Harald Hentschke (2021). hhentschke/measures-of-effect-size-toolbox (https://github.com/hhentschke/measures-of-effect-size-toolbox), GitHub. Retrieved November 20, 2019.
+ICA parameters were chosen based on: 
+Dimigen, O. (2020). Optimizing the ICA-based removal of ocular EEG artifacts from free viewing experiments. NeuroImage, 207, 116117.
 
-- rgb2hsl: Vladimir Bychkovsky (2021). hsl2rgb and rgb2hsl conversion (https://www.mathworks.com/matlabcentral/fileexchange/20292-hsl2rgb-and-rgb2hsl-conversion), MATLAB Central File Exchange. Retrieved November 12, 2021.
+Correction for multiple comparisons was based on: 
+Groppe, D. M., Urbach, T. P., & Kutas, M. (2011). Mass univariate analysis of event‐related brain potentials/fields I: A critical tutorial review. Psychophysiology, 48(12), 1711-1725.
 
-#### Reference papers and sources
+EEGLAB: 
+Delorme, A., & Makeig, S. (2004). EEGLAB: an open source toolbox for analysis of single-trial EEG dynamics including independent component analysis. Journal of neuroscience methods, 134(1), 9-21.
 
-Overall pipeline was based on: Makoto Miyakoshi (2020). Makoto's preprocessing pipeline (https://sccn.ucsd.edu/wiki/Makoto's_preprocessing_pipeline), Swartz Center for Computational Neuroscience wiki. Retrieved March 15, 2020.
-
-ICA parameters were chosen based on: Dimigen, O. (2020). Optimizing the ICA-based removal of ocular EEG artifacts from free viewing experiments. NeuroImage, 207, 116117.
-
-Correction for multiple comparisons was based on: Groppe, D. M., Urbach, T. P., & Kutas, M. (2011). Mass univariate analysis of event‐related brain potentials/fields I: A critical tutorial review. Psychophysiology, 48(12), 1711-1725.
-
-EEGLAB: Delorme, A., & Makeig, S. (2004). EEGLAB: an open source toolbox for analysis of single-trial EEG dynamics including independent component analysis. Journal of neuroscience methods, 134(1), 9-21.
-
-Measures of effect size: Hentschke, H., & Stüttgen, M. C. (2011). Computation of measures of effect size for neuroscience data sets. European Journal of Neuroscience, 34(12), 1887-1894.
+Measures of effect size: 
+Hentschke, H., & Stüttgen, M. C. (2011). Computation of measures of effect size for neuroscience data sets. European Journal of Neuroscience, 34(12), 1887-1894.
