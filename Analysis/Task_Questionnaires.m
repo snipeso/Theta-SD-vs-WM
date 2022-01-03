@@ -132,8 +132,6 @@ for Indx_Q = 1:numel(Questions)-1
     
     % 2 way repeated measures anova with factors Session and Task
     Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
-    TitleStats = strjoin({'Stats', TitleTag,  Questions{Indx_Q} }, '_');
-    saveStats(Stats, 'rmANOVA', Paths.PaperStats, TitleStats, StatsP)
     
     % eta2 comparison for task and session to determine which has larger impact
     Title = strjoin({Questions{Indx_Q}, '2 way RANOVA Effect Sizes'}, ' ');

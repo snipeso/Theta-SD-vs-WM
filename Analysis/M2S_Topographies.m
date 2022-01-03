@@ -155,7 +155,7 @@ for Indx_L =  2:numel(Levels)
          shiftaxis(A, Pixels.PaddingLabels, [])
 
         Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
-          Title = strjoin({'M2S_Topo',Sessions.Labels{Indx_S}, Legend{Indx_L}, 'vs', 'BL'}, '_');
+          Title = strjoin({'M2S_Topo',Sessions.Labels{Indx_S}, Legend{Indx_L}, 'vs', 'L1'}, '_');
          saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
          
         set(A.Children, 'LineWidth', 1)
