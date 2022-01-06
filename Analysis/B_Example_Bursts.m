@@ -13,10 +13,10 @@ Pixels = P.Pixels;
 
 % preselected snippets of data with good examples of theta bursts
 Coordinates = {
+        'P10_Game_Baseline_Clean.set', 280, 6,  Format.Colors.Tasks.Game;
+    'P10_Game_Session2_Clean.set', 581, 6, Format.Colors.Tasks.Game;
     'P10_LAT_BaselineComp_Clean.set', 536.2, 118, Format.Colors.Tasks.LAT;
     'P10_LAT_Session2Comp_Clean.set', 244, 118,  Format.Colors.Tasks.LAT;
-    'P10_Game_Baseline_Clean.set', 280, 6,  Format.Colors.Tasks.Game;
-    'P10_Game_Session2_Clean.set', 581, 6, Format.Colors.Tasks.Game;
     };
 
 Titles = {'Baseline LAT', 'Sleep Deprivation LAT', 'Baseline Game', 'Sleep Deprivation Game'};
@@ -48,11 +48,18 @@ end
 Pixels.PaddingExterior = 30;
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 Pixels.W*.5 Pixels.H])
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.5])
 
 B.Theta = Bands.Theta;
 
-Grid = [4 1];
+Grid = [2 2];
+
+CornerLocations = [
+    1, 1;
+    1, 2;
+    2, 1;
+    2, 2
+    ];
 
 ProtoChannel = unique([Coordinates{:, 3}]);
 for Indx_E = 1:size(Coordinates, 1)
@@ -60,7 +67,7 @@ for Indx_E = 1:size(Coordinates, 1)
     Stop = Start + 2;
 
     % make subplots
-    Space = subaxis(Grid, [Indx_E, 1], [], Pixels.Letters{Indx_E}, Pixels);
+    Space = subaxis(Grid, CornerLocations(Indx_E, :), [], Pixels.Letters{Indx_E}, Pixels);
         Title = text(.5, 1, Titles{Indx_E}, 'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
     
