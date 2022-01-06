@@ -9,6 +9,10 @@ SleepQuality = struct();
 
 [~, strScores] = loadVIS(Filepath);
 
+if isempty(strScores)
+    return
+end
+
 Tot = numel(strScores); % total epochs scored
 
 %%% calculate metrics

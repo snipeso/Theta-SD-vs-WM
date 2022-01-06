@@ -17,9 +17,6 @@ Sessions = P.Sessions;
 StatsP = P.StatsP;
 Nights = P.Nights;
 
-Participants = {'P01', 'P02', 'P04', 'P05', 'P06', 'P07', 'P08', ...
-    'P09', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P19'};
-
 
 Variables = {'wake',  'n1', 'n2', 'n3', 'rem',};
 sqVariables = {'sol', 'sd', 'waso', 'se', 'rol'};
@@ -47,7 +44,7 @@ for Indx_P = 1:numel(Participants)
         Path = fullfile(Paths.Scoring, 'Sleep', Folder);
         
         % get scoring info
-        [Percent, Minutes, SleepQuality] = loadVIS(Path);
+        [Percent, Minutes, SleepQuality] = loadScoring(Path);
         
         % load into matrices
         for Indx_V = 1:numel(Variables)
@@ -66,7 +63,7 @@ for Indx_P = 1:numel(Participants)
     Path = fullfile(Paths.Scoring, 'MWT', Folder);
     
     % get scoring info
-    [Percent, Minutes, SleepQuality] = loadVIS(Path);
+    [Percent, Minutes, SleepQuality] = loadScoring(Path);
     if isempty(fieldnames(Percent))
         continue
     end
@@ -92,7 +89,7 @@ Labels = [Variables, sqVariables];
 Table = sleepArchitecture(Matrix, TableLabels, Nights);
 disp(Table)
 
-writetable(Table, fullfile(Results, 'Sleep_Architecture.csv'));
+writetable(Table, fullfile(P.Paths.PaperStats, 'Sleep_Architecture.csv'));
 
 
 %% create table with MWT
@@ -108,5 +105,14 @@ writetable(Table, fullfile(Results, 'Sleep_Architecture_MWT.csv'));
 
 
 
+%% Display change from baseline as average %
+clc
 
+for Indx_V = 1:numel(Variables)
+   BL = squeeze(Variables_Matrix(:, 1, Indx_V));
+   SD = squeeze(Variables_Matrix(:, 3, Indx_V));
+    
+    Change = nanmean(100*((SD-BL)./BL));
+    disp([Variables{Indx_V}, ' SD change from BL: ', num2str(round(Change)), '%'])
+end
 

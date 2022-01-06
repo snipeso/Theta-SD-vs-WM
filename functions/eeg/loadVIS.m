@@ -16,6 +16,8 @@ elseif numel(Content) > 1 % if there's more than one, just get the first
       warning(['More than one VIS in ', Filepath])
 else
     warning(['No VIS in ', Filepath])
+    BadData = [];
+    strScores = [];
     return
 end
 

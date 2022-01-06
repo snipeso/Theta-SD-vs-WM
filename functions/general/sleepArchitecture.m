@@ -14,7 +14,7 @@ for Indx_V = 1:numel(Variables)
     for Indx_N1 = 1:numel(Nights)
         
         % descriptives
-        Table.(Nights{Indx_N1})(Indx_V) = {[num2str(Means(Indx_N1, Indx_V), '%.1f'), ' ', char(177) ' ', num2str(SD(Indx_N1, Indx_V), '%.1f')]};
+        Table.(Nights{Indx_N1})(Indx_V) = {[num2str(Means(Indx_N1, Indx_V), '%.1f'), ' $ ', num2str(SD(Indx_N1, Indx_V), '%.1f')]};
 
         % stats
         for Indx_N2 = Indx_N1+1:numel(Nights)
