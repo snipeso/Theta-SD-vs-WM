@@ -16,6 +16,7 @@ AllColors.olive = [181, 191, 109];
 AllColors.teal = [87, 162, 172];
 AllColors.blue = [78, 121, 196];
 AllColors.purple = [130, 77, 153];
+AllColors.black = [0 0 0];
 
 if exist('Color', 'var')
     N = [1, N(end)];
