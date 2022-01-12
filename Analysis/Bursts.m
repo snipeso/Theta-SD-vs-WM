@@ -9,7 +9,7 @@
 % Format = P.Format;
 
 
-Filename = 'P12_Match2Sample_Session2_Clean.set';
+Filename = 'P10_Match2Sample_Session2_Clean.set';
 
 Levels = split(Filename, '_');
 Task = Levels{2};

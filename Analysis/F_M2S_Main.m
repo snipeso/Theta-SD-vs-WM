@@ -52,8 +52,8 @@ Filepath =  fullfile(Paths.Data, 'EEG', 'Locked', Task, Tag);
 [AllData, Freqs, Chanlocs, AllTrials] = loadM2Spower(P, Filepath);
 
 % z-score it
-% zData = zScoreData(AllData, 'last');
-zData = AllData;
+zData = zScoreData(AllData, 'last');
+% zData = AllData;
 
 % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
@@ -258,6 +258,28 @@ saveFig(strjoin({TitleTag, 'sdTheta'}, '_'), Main_Results, Format)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+%% For baseline, determine if there's an ANOVA of time on task (first vs last 20%)
+
+B_Indx = 2; % theta
+Legend = append('L', string(Levels));
+
+Results = fullfile(Main_Results, BandLabels{B_Indx});
+
+for Indx_E = 1:nEpochs
+   
+        figure('units','normalized','outerposition',[0 0 1 .5])
+         for Indx_S = 1:nSessions
+        
+        Start = squeeze(nanmean(bData(:, Indx_S, 1:50, Indx_E, :, B_Indx), 3));
+        End = squeeze(nanmean(bData(:, Indx_S, end-50:end, Indx_E, :, B_Indx), 3));
+        
+        subplot(1, nSessions, Indx_S)
+        Stats = plotTopoDiff(Start, End, Chanlocs, CLims_Diff, StatsP, Format);
+        title(strjoin({Sessions.Labels{Indx_S}, Epochs{Indx_E}, 'Fatigue'}, ' '), 'FontSize', Format.TitleSize)
+         end
+    saveFig(strjoin({ TitleTag,BandLabels{B_Indx}, Epochs{Indx_E}}, '_'), Results, Format)
+end
+
 %% scatter plot for each session for each
 
 Ch_Indx = 1; % front roi
@@ -269,35 +291,29 @@ Results = fullfile(Main_Results, BandLabels{B_Indx});
 
 LineColors = flip(getColors([1 3], 'rainbow', 'black'));
 
-% for Indx_E = 2 %1:nEpochs
-    for P = 1:18
+for Indx_E = 1:nEpochs
     figure('units','normalized','outerposition',[0 0 .5 1])
     for Indx_S = 1:nSessions
         
         subplot(1, 3, Indx_S)
         hold on
         for Indx_L = numel(Levels):-1:1
-%             Data = squeeze(bchData(:, Indx_S, :, Indx_E, Ch_Indx, B_Indx));
-%             L = squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L);
-
-            Data = squeeze(bchData(P, Indx_S, :, Indx_E, Ch_Indx, B_Indx));
-            L = squeeze(AllTrials.level(P, Indx_S, :)) == Levels(Indx_L);
+            Data = squeeze(bchData(:, Indx_S, :, Indx_E, Ch_Indx, B_Indx));
+            L = squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L);
             
             D = Data(L);
-            T = Trials(P, L);
+            T = Trials(L);
             scatter(T, D, 20, ...
                 Format.Colors.Levels(Indx_L, :), 'filled', 'MarkerFaceAlpha', 1)
         end
         
         Lines = lsline;
         for Indx_L = numel(Levels):-1:1
-            %             Lines(Indx_L).Color = Format.Colors.Levels(Indx_L, :);
             Lines(Indx_L).Color = LineColors(Indx_L, :);
             Lines(Indx_L).LineWidth = Format.LW;
         end
         
-        %         ylabel([BandLabels{B_Indx}, ' ', Format.Labels.zPower])
-        ylabel([BandLabels{B_Indx}, ' ', Format.Labels.Power])
+                ylabel([BandLabels{B_Indx}, ' ', Format.Labels.zPower])
         xlabel('Trial')
         axis tight
         set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
