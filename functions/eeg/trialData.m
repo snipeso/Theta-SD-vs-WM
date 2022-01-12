@@ -1,6 +1,6 @@
 function NewData = trialData(Data, Trials)
 % splits EEG power matrix by trial type and provides new averages
-% Data is a P x S x T x E x Ch x F matrix. Trials is a P x S x T matix
+% Data is a P x S x L x E x Ch x F matrix. Trials is a P x S x T matix
 
 Dims = size(Data);
 

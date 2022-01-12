@@ -9,7 +9,7 @@ Bands = P.Bands;
 Format = P.Format;
 
 
-Filename = 'P10_LAT_BaselineComp_Clean.set';
+Filename = 'P10_Match2Sample_Session2_Clean.set';
 
 Levels = split(Filename, '_');
 Task = Levels{2};

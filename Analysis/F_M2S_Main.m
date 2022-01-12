@@ -115,9 +115,9 @@ for Indx_Ch = 1:numel(ChLabels)
     A = subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], {}, Pixels);
     shiftaxis(A, [], Pixels.PaddingLabels/2)
     A.TickLength = [0 0];
-
+    
     Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Legend, ...
-        flip(Format.Colors.Levels), StatsP, Pixels);
+        Format.Colors.Levels, StatsP, Pixels);
     ylim(YLims(Indx_Ch, :))
     yticks(-.4:.1:1)
     ylabel(Format.Labels.zPower)
@@ -148,16 +148,16 @@ for Indx_L =  2:numel(Levels)
     
     for Indx_S = 1:nSessions
         
-                N1 = squeeze(tData(:, Indx_S, 1, Indx_E, :, Indx_B));
+        N1 = squeeze(tData(:, Indx_S, 1, Indx_E, :, Indx_B));
         N3 = squeeze(tData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
         
         A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], {}, Pixels);
-         shiftaxis(A, Pixels.PaddingLabels, [])
-
+        shiftaxis(A, Pixels.PaddingLabels, [])
+        
         Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
-          Title = strjoin({'M2S_Topo',Sessions.Labels{Indx_S}, Legend{Indx_L}, 'vs', 'L1'}, '_');
-         saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
-         
+        Title = strjoin({'M2S_Topo',Sessions.Labels{Indx_S}, Legend{Indx_L}, 'vs', 'L1'}, '_');
+        saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
+        
         set(A.Children, 'LineWidth', 1)
         
         if Indx_L == 2 % only title for top row
@@ -190,7 +190,7 @@ for Indx_L =  1:numel(Levels)
     SD = squeeze(tData(:, 3, Indx_L, Indx_E, :, Indx_B));
     
     shiftaxis(A, Pixels.PaddingLabels*2, Pixels.PaddingLabels)
-
+    
     Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
     Title = strjoin({Legend{Indx_L}, 'SDvsBL', 'Topo'}, '_');
     saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
@@ -202,7 +202,7 @@ end
 
 % plot colorbar
 A = subfigure(Space, miniGrid, [3 2], [3, 1], {}, Pixels);
-    shiftaxis(A, Pixels.PaddingLabels*2, Pixels.PaddingLabels)
+shiftaxis(A, Pixels.PaddingLabels*2, Pixels.PaddingLabels)
 A.Position(1) = .93;
 plotColorbar('Divergent', CLims_Diff, Pixels.Labels.ES, Pixels)
 
@@ -228,12 +228,12 @@ CLims_Diff = [-1.6 1.6];
 Indx_E = 2;
 Indx_B = 2;
 figure('units','centimeters','position',[0 0 20 15])
- BL = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
-    SD = squeeze(tData(:, 1, 2, Indx_E, :, Indx_B));
+BL = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
+SD = squeeze(tData(:, 1, 2, Indx_E, :, Indx_B));
 plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format_PPT);
 h = colorbar;
- ylabel(h,  Pixels.Labels.ES, 'FontName', Format_PPT.FontName, 'FontSize', Format_PPT.BarSize)
- h.TickLength = 0;
+ylabel(h,  Pixels.Labels.ES, 'FontName', Format_PPT.FontName, 'FontSize', Format_PPT.BarSize)
+h.TickLength = 0;
 caxis(CLims_Diff)
 
 set(gca, 'FontName', Format.FontName, 'FontSize', Format_PPT.BarSize)
@@ -242,12 +242,12 @@ saveFig(strjoin({TitleTag, 'fmTheta'}, '_'), Main_Results, Format)
 
 
 figure('units','centimeters','position',[0 0 20 15])
- BL = squeeze(nanmean(bData(:, 1, :, Indx_E, :, Indx_B), 3));
-    SD = squeeze(nanmean(bData(:, 3, :, Indx_E, :, Indx_B), 3));
+BL = squeeze(nanmean(bData(:, 1, :, Indx_E, :, Indx_B), 3));
+SD = squeeze(nanmean(bData(:, 3, :, Indx_E, :, Indx_B), 3));
 plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format_PPT);
 h = colorbar;
- ylabel(h,  Pixels.Labels.ES, 'FontName', Format_PPT.FontName, 'FontSize', Format_PPT.BarSize)
- h.TickLength = 0;
+ylabel(h,  Pixels.Labels.ES, 'FontName', Format_PPT.FontName, 'FontSize', Format_PPT.BarSize)
+h.TickLength = 0;
 caxis(CLims_Diff)
 
 set(gca, 'FontName', Format.FontName, 'FontSize', Format_PPT.BarSize)
@@ -257,6 +257,53 @@ saveFig(strjoin({TitleTag, 'sdTheta'}, '_'), Main_Results, Format)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+%% scatter plot for each session for each 
+
+Ch_Indx = 1; % front roi
+B_Indx = 2; % theta
+Trials = repmat(1:120, 18, 1);
+Legend = append('L', string(Levels));
+
+Results = fullfile(Main_Results, BandLabels{B_Indx});
+
+for Indx_E = 1:nEpochs
+    figure('units','normalized','outerposition',[0 0 .66 .4])
+    for Indx_S = 1:nSessions
+        
+        subplot(1, 3, Indx_S)
+        hold on
+        for Indx_L = numel(Levels):-1:1
+            Data = squeeze(bchData(:, Indx_S, :, Indx_E, Ch_Indx, B_Indx));
+            L = squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L);
+            
+%             D = Data(L);
+%             T = Trials(L);
+            for Indx_P = 1:nParticipants
+                
+                if Indx_P ==1
+                    HV = 'on';
+                else
+                    HV = 'off';
+                end
+                D = Data(Indx_P, L(Indx_P, :));
+                scatter(Trials(L(Indx_P, :)), D, 20, ...
+                    Format.Colors.Levels(Indx_L, :), 'filled', 'MarkerFaceAlpha', 1, ...
+                     'HandleVisibility',HV)
+            end
+        end
+        
+       ylabel(Format.Labels.zPower)
+       xlabel('Trial')
+        axis tight
+        set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+         title(strjoin({Sessions.Labels{Indx_S}, Epochs{Indx_E}}, ' '), 'FontSize', Format.TitleSize)
+         if Indx_S ==2
+         legend(flip(Legend))
+         end
+    end
+    setLims(1, 3, 'y');
+      saveFig(strjoin({ TitleTag,BandLabels{B_Indx}, Epochs{Indx_E}, ChLabels{Ch_Indx}}, '_'), Results, Format)
+end
 
 %% plot N3 vs N1 for every epoch
 
@@ -329,22 +376,22 @@ end
 %% plot for each session first block vs last block s x e
 
 for Indx_B = 1:numel(BandLabels)
-figure('units','normalized','outerposition',[0 0 .66 .66])
-Indx = 1;
-for Indx_S = 1:nSessions
-    for Indx_E = 1:nEpochs
-    Start = squeeze(nanmean(bData(:, Indx_S, 1:30, Indx_E, :, Indx_B), 3));
-    End = squeeze(nanmean(bData(:, Indx_S, end-30:end, Indx_E, :, Indx_B), 3));
-     subplot(nSessions, nEpochs, Indx)
-     Indx = Indx+1;
-     
-                plotTopoDiff(Start, End, Chanlocs, CLims_Diff, StatsP, Format);
-                   title(strjoin({Epochs{Indx_E}, Sessions.Labels{Indx_S}, BandLabels{Indx_B}}, ' '), 'FontSize', Format.TitleSize)
-    
+    figure('units','normalized','outerposition',[0 0 .66 .66])
+    Indx = 1;
+    for Indx_S = 1:nSessions
+        for Indx_E = 1:nEpochs
+            Start = squeeze(nanmean(bData(:, Indx_S, 1:30, Indx_E, :, Indx_B), 3));
+            End = squeeze(nanmean(bData(:, Indx_S, end-30:end, Indx_E, :, Indx_B), 3));
+            subplot(nSessions, nEpochs, Indx)
+            Indx = Indx+1;
+            
+            plotTopoDiff(Start, End, Chanlocs, CLims_Diff, StatsP, Format);
+            title(strjoin({Epochs{Indx_E}, Sessions.Labels{Indx_S}, BandLabels{Indx_B}}, ' '), 'FontSize', Format.TitleSize)
+            
+        end
     end
-end
-  saveFig(strjoin({ TitleTag, 'Duration_Effect', BandLabels{Indx_B}}, '_'), Results, Format)
-
+    saveFig(strjoin({ TitleTag, 'Duration_Effect', BandLabels{Indx_B}}, '_'), Results, Format)
+    
 end
 
 %% plot SD - BL for every epoch
