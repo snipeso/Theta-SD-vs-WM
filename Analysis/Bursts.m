@@ -1,15 +1,15 @@
-clear
-clc
-close all
+% clear
+% clc
+% close all
+% 
+% P = analysisParameters();
+% 
+% Paths = P.Paths;
+% Bands = P.Bands;
+% Format = P.Format;
 
-P = analysisParameters();
 
-Paths = P.Paths;
-Bands = P.Bands;
-Format = P.Format;
-
-
-Filename = 'P10_Match2Sample_Session2_Clean.set';
+Filename = 'P12_Match2Sample_Session2_Clean.set';
 
 Levels = split(Filename, '_');
 Task = Levels{2};
@@ -27,12 +27,13 @@ end
 
 
 EEG = pop_loadset('filename', Filename, 'filepath', Source);
+pop_eegplot(EEG)
 
 Pix = get(0,'screensize');
-
-eegplot(EEG.data,'spacing', 20, 'srate', EEG.srate, ...
-    'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], 'eloc_file', ...
-    EEG.chanlocs)
+% 
+% eegplot(EEG.data,'spacing', 20, 'srate', EEG.srate, ...
+%     'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], 'eloc_file', ...
+%     EEG.chanlocs)
 
 
 

@@ -269,31 +269,35 @@ Results = fullfile(Main_Results, BandLabels{B_Indx});
 
 LineColors = flip(getColors([1 3], 'rainbow', 'black'));
 
-for Indx_E = 1:nEpochs
+% for Indx_E = 2 %1:nEpochs
+    for P = 1:18
     figure('units','normalized','outerposition',[0 0 .5 1])
     for Indx_S = 1:nSessions
         
         subplot(1, 3, Indx_S)
         hold on
         for Indx_L = numel(Levels):-1:1
-            Data = squeeze(bchData(:, Indx_S, :, Indx_E, Ch_Indx, B_Indx));
-            L = squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L);
+%             Data = squeeze(bchData(:, Indx_S, :, Indx_E, Ch_Indx, B_Indx));
+%             L = squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L);
+
+            Data = squeeze(bchData(P, Indx_S, :, Indx_E, Ch_Indx, B_Indx));
+            L = squeeze(AllTrials.level(P, Indx_S, :)) == Levels(Indx_L);
             
             D = Data(L);
-            T = Trials(L);
+            T = Trials(P, L);
             scatter(T, D, 20, ...
                 Format.Colors.Levels(Indx_L, :), 'filled', 'MarkerFaceAlpha', 1)
         end
         
         Lines = lsline;
         for Indx_L = numel(Levels):-1:1
-%             Lines(Indx_L).Color = Format.Colors.Levels(Indx_L, :);
-Lines(Indx_L).Color = LineColors(Indx_L, :);
-              Lines(Indx_L).LineWidth = Format.LW;
+            %             Lines(Indx_L).Color = Format.Colors.Levels(Indx_L, :);
+            Lines(Indx_L).Color = LineColors(Indx_L, :);
+            Lines(Indx_L).LineWidth = Format.LW;
         end
         
-%         ylabel([BandLabels{B_Indx}, ' ', Format.Labels.zPower])
-  ylabel([BandLabels{B_Indx}, ' ', Format.Labels.Power])
+        %         ylabel([BandLabels{B_Indx}, ' ', Format.Labels.zPower])
+        ylabel([BandLabels{B_Indx}, ' ', Format.Labels.Power])
         xlabel('Trial')
         axis tight
         set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
