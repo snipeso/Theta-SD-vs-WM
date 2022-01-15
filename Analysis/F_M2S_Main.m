@@ -280,51 +280,6 @@ for Indx_E = 1:nEpochs
     saveFig(strjoin({ TitleTag,BandLabels{B_Indx}, Epochs{Indx_E}}, '_'), Results, Format)
 end
 
-%% scatter plot for each session for each
-
-Ch_Indx = 1; % front roi
-B_Indx = 2; % theta
-Trials = repmat(1:120, 18, 1);
-Legend = append('L', string(Levels));
-
-Results = fullfile(Main_Results, BandLabels{B_Indx});
-
-LineColors = flip(getColors([1 3], 'rainbow', 'black'));
-
-for Indx_E = 1:nEpochs
-    figure('units','normalized','outerposition',[0 0 .5 1])
-    for Indx_S = 1:nSessions
-        
-        subplot(1, 3, Indx_S)
-        hold on
-        for Indx_L = numel(Levels):-1:1
-            Data = squeeze(bchData(:, Indx_S, :, Indx_E, Ch_Indx, B_Indx));
-            L = squeeze(AllTrials.level(:, Indx_S, :)) == Levels(Indx_L);
-            
-            D = Data(L);
-            T = Trials(L);
-            scatter(T, D, 20, ...
-                Format.Colors.Levels(Indx_L, :), 'filled', 'MarkerFaceAlpha', 1)
-        end
-        
-        Lines = lsline;
-        for Indx_L = numel(Levels):-1:1
-            Lines(Indx_L).Color = LineColors(Indx_L, :);
-            Lines(Indx_L).LineWidth = Format.LW;
-        end
-        
-                ylabel([BandLabels{B_Indx}, ' ', Format.Labels.zPower])
-        xlabel('Trial')
-        axis tight
-        set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
-        title(strjoin({Sessions.Labels{Indx_S}, Epochs{Indx_E}}, ' '), 'FontSize', Format.TitleSize)
-        if Indx_S ==2
-            legend(flip(Legend))
-        end
-    end
-    setLims(1, 3, 'y');
-    saveFig(strjoin({ TitleTag,BandLabels{B_Indx}, Epochs{Indx_E}, ChLabels{Ch_Indx}}, '_'), Results, Format)
-end
 
 %% plot N3 vs N1 for every epoch
 

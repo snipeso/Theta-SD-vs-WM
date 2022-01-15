@@ -51,7 +51,7 @@ Folders.Ignore = {'CSVs', 'other', 'Lazy', 'P00', 'Applicants'};
 % EEG channels
 EEG_Channels = struct();
 EEG_Channels.notEEG = [49, 56, 107, 113, 126, 127];
-EEG_Channels.notSourceLoc = [EEG_Channels.notEEG, 48, 119, 125, 128];
+EEG_Channels.notSourceLoc = [EEG_Channels.notEEG, 48, 119, 17];
 
 allTasks = {'Fixation', 'Oddball', 'Standing', 'MWT', ...
     'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)

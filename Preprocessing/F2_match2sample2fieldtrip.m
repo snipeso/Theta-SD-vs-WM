@@ -11,7 +11,7 @@ Refresh = true;
 
 Data_Type = 'Power';
 
-Destination_Folder = 'SourceLocalization_Trials';
+Destination_Folder = 'SourceLocalization_Trials119';
 Cuts_Folder = 'Cuts';
 
 Window = 2; % epoch window in seconds

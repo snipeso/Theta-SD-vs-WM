@@ -39,14 +39,14 @@ Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
 
 
 % z-score it
-zData = zScoreData(AllData, 'last');
-
-% save it into bands
+% zData = zScoreData(AllData, 'last');
+% 
+% % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
 
 % TEMP QUALITY CHECK RAW DATA
-% bData = bandData(AllData, Freqs, Bands, 'last');
-% CLims_Diff = [-1 1];
+bData = bandData(AllData, Freqs, Bands, 'last');
+CLims_Diff = [-1 1];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
@@ -64,8 +64,9 @@ CLims = [-1 2];
 Grid = [7 3];
 Indx_B = 2; % theta
 Sessions.Labels = {'Baseline', 'Sleep Restriction', 'Sleep Deprivation'};
-figure('units','centimeters','position',[0 0 Pixels.W*.8 Pixels.H])
+% figure('units','centimeters','position',[0 0 Pixels.W*.8 Pixels.H])
 
+ figure('units','centimeters','position',[0 0 Pixels.W*.4 Pixels.H*.8])
 Indx = 1; % tally of axes
 
 % just baseline
