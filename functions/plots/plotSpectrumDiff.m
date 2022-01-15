@@ -29,6 +29,10 @@ if Log
 else
     set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', Format.Labels.Bands)
     Stats = plotLineDiff(Data, Freqs, BL_Indx, LineLabels, StatWidth, Colors, Log, Format, StatsP);
+        
+        xticks(Format.Labels.Bands)
+    xticklabels(Format.Labels.Bands)
+    
   xlim(Freqs([1, end]))
 end
 

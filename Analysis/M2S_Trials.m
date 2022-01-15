@@ -218,7 +218,7 @@ for Indx_E = 1:numel(Epochs)
     Colors = getColors([1, numel(Quants)], 'rainbow', 'red');
     
     figure('units','normalized','outerposition',[0 0 .3 1])
-    plotSpaghettiOs(Q, 1, Sessions.Labels, string(Quants), Colors, StatsP, Format)
+    plotSpaghettiOs(Q, 1, Sessions.Labels, string(Quants), Colors, StatsP, Format);
     title(['Theta increase tensiles', Epochs{Indx_E}])
     saveFig(strjoin({TitleTag, 'QuantileChange', BandLabels{B_Indx}, ChLabels{Indx_Ch}}, '_'), Results, Format)
     

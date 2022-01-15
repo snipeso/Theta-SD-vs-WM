@@ -44,9 +44,9 @@ Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
 % % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
 
-% TEMP QUALITY CHECK RAW DATA
-bData = bandData(AllData, Freqs, Bands, 'last');
-CLims_Diff = [-1 1];
+% % TEMP QUALITY CHECK RAW DATA
+% bData = bandData(AllData, Freqs, Bands, 'last');
+% CLims_Diff = [-1 1];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
