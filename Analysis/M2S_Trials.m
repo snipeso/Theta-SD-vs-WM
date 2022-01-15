@@ -200,16 +200,32 @@ Data = reshape(Data, nSessions, []);
 figure('units','normalized','outerposition',[0 0 1 .5])
 plotHistogram(Data, 0.1, [], Label, [], Sessions.Labels, getColors(3), Format)
 title(strjoin({BandLabels{B_Indx}, Epochs{E_Indx}, ChLabels{Ch_Indx}}, ' '), 'FontSize', Format.TitleSize)
- saveFig(strjoin({TitleTag, 'Distribution', BandLabels{B_Indx}, ChLabels{Indx_Ch}}, '_'), Results, Format)
- 
- 
- %% change in quantiles
- 
- 
- E_Indx = 2;
-Data = squeeze(bchData(:, :, :, E_Indx, Indx_Ch, B_Indx));
- 
- 
- 
+saveFig(strjoin({TitleTag, 'Distribution', BandLabels{B_Indx}, ChLabels{Indx_Ch}}, '_'), Results, Format)
 
 
+%% change in quantiles
+
+Ch_Indx = 1;
+B_Indx = 2;
+
+for Indx_E = 1:numel(Epochs)
+    Results = fullfile(Main_Results, BandLabels{B_Indx}, Epochs{Indx_E});
+    Data = squeeze(bchData(:, :, :, Indx_E, Ch_Indx, B_Indx));
+    
+    Quants = 0.05:.05:.95;
+    Q = quantile(Data, Quants, 3);
+    
+    Colors = getColors([1, numel(Quants)], 'rainbow', 'red');
+    
+    figure('units','normalized','outerposition',[0 0 .3 1])
+    plotSpaghettiOs(Q, 1, Sessions.Labels, string(Quants), Colors, StatsP, Format)
+    title(['Theta increase tensiles', Epochs{Indx_E}])
+    saveFig(strjoin({TitleTag, 'QuantileChange', BandLabels{B_Indx}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+    
+    
+    figure('units','normalized','outerposition',[0 0 .66 .5])
+    Stats = plotES(squeeze(Q(:, [1 3], :)), 'horizontal', false, Colors, string(Quants), ...
+        [], Format, StatsP);
+    title(strjoin({BandLabels{B_Indx}, Epochs{Indx_E}, ChLabels{Ch_Indx}}, ' '), 'FontSize', Format.TitleSize)
+    saveFig(strjoin({TitleTag, 'QuantileES', BandLabels{B_Indx}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+end
