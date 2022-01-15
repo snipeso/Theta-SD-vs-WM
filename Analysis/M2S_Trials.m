@@ -184,20 +184,32 @@ for Indx_Ch = 1:numel(ChLabels)
     plotFlames(Data, Epochs, getColors(3), .3, Format)
     ylabel([BandLabels{B_Indx}, ' ', Label])
     title([ChLabels{Indx_Ch}, ' distribution change'])
-
-    saveFig(strjoin({TitleTag, 'DistributionShift', BandLabels{B_Indx}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+    
+    saveFig(strjoin({TitleTag, 'DistributionFlame', BandLabels{B_Indx}, ChLabels{Indx_Ch}}, '_'), Results, Format)
 end
 
-%% plot histogram of theta retention1 
+%% plot histogram of theta retention1
 
 E_Indx = 2;
+Ch_Indx = 1;
+B_Indx = 2;
+Data = squeeze(bchData(:, :, :, E_Indx, Ch_Indx, B_Indx));
+
+Data = permute(Data, [2, 1, 3]);
+Data = reshape(Data, nSessions, []);
+figure('units','normalized','outerposition',[0 0 1 .5])
+plotHistogram(Data, 0.1, [], Label, [], Sessions.Labels, getColors(3), Format)
+title(strjoin({BandLabels{B_Indx}, Epochs{E_Indx}, ChLabels{Ch_Indx}}, ' '), 'FontSize', Format.TitleSize)
+ saveFig(strjoin({TitleTag, 'Distribution', BandLabels{B_Indx}, ChLabels{Indx_Ch}}, '_'), Results, Format)
+ 
+ 
+ %% change in quantiles
+ 
+ 
+ E_Indx = 2;
 Data = squeeze(bchData(:, :, :, E_Indx, Indx_Ch, B_Indx));
-    
-    Data = permute(Data, [2, 1, 3]);
-    Data = reshape(Data, nSessions, []);
-    
-    plotHistogram(Data, Legend, Colors, Format)
-
-
+ 
+ 
+ 
 
 
