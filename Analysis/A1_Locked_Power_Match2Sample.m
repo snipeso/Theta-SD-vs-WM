@@ -11,12 +11,14 @@ Paths = P.Paths;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = false;
+Refresh = true;
+RefreshAnswers = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Task = 'Match2Sample';
-WelchWindow = 2;
+WelchWindow = 8; % duration of pWelch window; if larger than epoch window, will 0pad
+EpochWindow = 2; % duration of each epoch
 
 % triggers
 Stim_Trig = {'S  3'};
@@ -41,7 +43,7 @@ end
 
 % get trial information
 Answers_Path = fullfile(Source_Tables, [Task, '_AllAnswers.mat']);
-if  ~Refresh &&  exist(Answers_Path, 'file')
+if  ~RefreshAnswers &&  exist(Answers_Path, 'file')
     load(Answers_Path, 'Answers')
 else
     if ~exist(Source_Tables, 'dir')
@@ -92,18 +94,18 @@ for Indx_F = 1:numel(Files)
     AllTriggerTypes = {EEG.event.type};
     AllTriggerTimes =  [EEG.event.latency];
     
-    nfft = 2^nextpow2(WelchWindow*fs);
+    Window = EpochWindow*fs;
     
     StartEncoding = AllTriggerTimes(ismember(AllTriggerTypes, Stim_Trig))-.1*fs; % this little shift is so that the end encoding isn't partially in the retention, but rather with the cue
-    EndEncoding = StartEncoding + nfft;
+    EndEncoding = StartEncoding + Window;
     
     StartRetentions =  AllTriggerTimes(ismember(AllTriggerTypes, Retention_Trig));
-    MidRetentions = StartRetentions + nfft;
-    EndRetentions = MidRetentions +  nfft;
+    MidRetentions = StartRetentions + Window;
+    EndRetentions = MidRetentions +  Window;
     
     ProbeIndx = find(ismember(AllTriggerTypes, Probe_Trig));
     StartProbes =  AllTriggerTimes(ProbeIndx);
-    EndProbes = StartProbes + nfft;
+    EndProbes = StartProbes + Window;
     
     
     if TotTrials ~= numel(StartEncoding) || TotTrials ~= numel(StartRetentions) || TotTrials ~= numel(StartProbes)
@@ -125,7 +127,7 @@ for Indx_F = 1:numel(Files)
     Trials = Answers(strcmp(Answers.Participant, Info{1})& ...
         strcmp(Answers.Session, Info{3}), :);
     
-    if size(Trials, 1) ~= numel(EndPre) || size(Trials, 1) ~= numel(StartRetentions)
+    if size(Trials, 1) ~= numel(StartEncoding) || size(Trials, 1) ~= numel(StartRetentions)
         warning(['Something went wrong with trials for ', EEG_Filename])
         continue
     end
