@@ -85,11 +85,46 @@ Levels = [1 3 6];
 
 %% fmTheta vs sdTheta
 
+Indx_E = 2; % retention 1 period
+Indx_B = 2; % theta
+CLims_Diff = [-2 2];
+
+Grid  = [2 3];
+
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.4])
+Indx = 1; % tally of axes
+
+% fmTheta
+Axes = subfigure([], Grid, [1 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
+shiftaxis(Axes, Pixels.PaddingLabels, [])
+N1 = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
+N3 = squeeze(tData(:, 1, 2, Indx_E, :, Indx_B));
+
+Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
+title('fmTheta', 'FontSize', Pixels.TitleSize)
+
+% balloon brains fmTheta
+Axes = subfigure([], Grid, [1 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
+
+Axes = subfigure([], Grid, [1 3], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
 
 
+% sdTheta
+Axes = subfigure([], Grid, [2 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
+shiftaxis(Axes, Pixels.PaddingLabels, [])
+BL = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
+SD = squeeze(tData(:, 3, 1, Indx_E, :, Indx_B));
+
+Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
+title('sdTheta', 'FontSize', Pixels.TitleSize)
+
+% balloon sdTheta
+Axes = subfigure([], Grid, [2 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
+Axes = subfigure([], Grid, [2 3], [], Pixels.Letters{Indx}, Pixels);
 
 
-
+% save
+saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
 
 
 %% M2S fmtheta changes
@@ -294,9 +329,9 @@ Legend = append('L', string(Levels));
 Results = fullfile(Main_Results, BandLabels{B_Indx});
 
 for Indx_E = 1:nEpochs
-   
-        figure('units','normalized','outerposition',[0 0 1 .5])
-         for Indx_S = 1:nSessions
+    
+    figure('units','normalized','outerposition',[0 0 1 .5])
+    for Indx_S = 1:nSessions
         
         Start = squeeze(nanmean(bData(:, Indx_S, 1:50, Indx_E, :, B_Indx), 3));
         End = squeeze(nanmean(bData(:, Indx_S, end-50:end, Indx_E, :, B_Indx), 3));
@@ -304,7 +339,7 @@ for Indx_E = 1:nEpochs
         subplot(1, nSessions, Indx_S)
         Stats = plotTopoDiff(Start, End, Chanlocs, CLims_Diff, StatsP, Format);
         title(strjoin({Sessions.Labels{Indx_S}, Epochs{Indx_E}, 'Fatigue'}, ' '), 'FontSize', Format.TitleSize)
-         end
+    end
     saveFig(strjoin({ TitleTag,BandLabels{B_Indx}, Epochs{Indx_E}}, '_'), Results, Format)
 end
 

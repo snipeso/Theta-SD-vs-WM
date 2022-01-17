@@ -21,7 +21,7 @@ SmoothFactor = 1; % in Hz, range to smooth over
 Pixels = P.Pixels;
 
 ROI = 'preROI';
-Window = 8;
+Window = 2;
 Task = 'Match2Sample';
 Tag = ['w', num2str(Window)];
 

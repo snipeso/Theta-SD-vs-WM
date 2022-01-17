@@ -67,6 +67,75 @@ StatsP.FreqBin = diff(Freqs(1:2));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure
+
+%% plot spectrum changes for all participants for each task
+
+xLog = false;
+Indx_Ch = 1;
+Grid = [2 3];
+xLims = [2 10];
+yLims = [-1.5 6.4];
+
+Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
+
+% Pixels.xPadding = 10; % smaller distance than default because no labels
+% Pixels.yPadding = 10;
+
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.47])
+for Indx_T = 1:numel(AllTasks)
+    Data = squeeze(chData(:, [1, 3], Indx_T, Indx_Ch, :));
+    
+   subfigure([], Grid, Coordinates(Indx_T, :), [], '', Pixels);
+%     Indx = Indx+1;
+    
+    plotSpectrumFlames(Data, Freqs, xLog, xLims, Pixels) 
+    title(TaskLabels{Indx_T}, 'FontSize', Pixels.LetterSize)
+    ylim(yLims)
+    
+    if Indx_T <= 3 % only x labels for bottom row
+        xlabel('')
+    end
+    
+    if Indx_T == 1 || Indx_T == 4 % only y labels for left-most plots
+        ylabel(Pixels.Labels.zPower)
+    end
+end
+
+set(gcf, 'Color', 'w')
+
+saveFig('Spectrums_AllP', Paths.Paper, Format)
+
+
+
+%% Same as above, but raw values
+
+yLims = [0 60];
+
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.47])
+for Indx_T = 1:numel(AllTasks)
+    Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
+   subfigure([], Grid, Coordinates(Indx_T, :), [], '', Pixels);
+%     Indx = Indx+1;
+
+    
+    plotSpectrumFlames(Data, Freqs, xLog, xLims, Pixels) 
+    title(TaskLabels{Indx_T}, 'FontSize', Pixels.LetterSize)
+    ylim(yLims)
+    
+    if Indx_T <= 3 % only x labels for bottom row
+        xlabel('')
+    end
+    
+    if Indx_T == 1 || Indx_T == 4 % only y labels for left-most plots
+        ylabel(Pixels.Labels.Power)
+    end
+end
+
+set(gcf, 'Color', 'w')
+
+saveFig('Spectrums_AllP_RAW', Paths.Paper, Format)
+
+
 %% Plot spectrums as ch x task, shade indicating task block
 
 % format variables
@@ -88,10 +157,10 @@ for Indx_Ch = 1:numel(ChLabels)
         Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], [], '', Pixels);
         Indx = Indx+1;
         Stats = plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Pixels, StatsP);
-
-         Title = strjoin({'Task_Spectrum', TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, '_');
-         saveStats(Stats, 'Spectrum', Paths.PaperStats, Title, StatsP)
-         
+        
+        Title = strjoin({'Task_Spectrum', TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, '_');
+        saveStats(Stats, 'Spectrum', Paths.PaperStats, Title, StatsP)
+        
         set(gca, 'FontSize', Pixels.FontSize, 'YLim', YLim)
         
         % plot labels/legends only in specific locations
