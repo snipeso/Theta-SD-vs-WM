@@ -2,14 +2,14 @@
 % clc
 % close all
 % 
-% P = analysisParameters();
-% 
-% Paths = P.Paths;
-% Bands = P.Bands;
-% Format = P.Format;
+P = analysisParameters();
+
+Paths = P.Paths;
+Bands = P.Bands;
+Format = P.Format;
 
 
-Filename = 'P10_Match2Sample_Session2_Clean.set';
+Filename = 'P15_LAT_Session2Beam3_Clean.set';
 
 Levels = split(Filename, '_');
 Task = Levels{2};
@@ -26,8 +26,8 @@ if ~exist(Results, 'dir')
 end
 
 
-EEG = pop_loadset('filename', Filename, 'filepath', Source);
-pop_eegplot(EEG)
+EEG2 = pop_loadset('filename', Filename, 'filepath', Source);
+pop_eegplot(EEG2)
 
 Pix = get(0,'screensize');
 % 
