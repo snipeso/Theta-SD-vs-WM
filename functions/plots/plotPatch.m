@@ -1,4 +1,4 @@
-function plotPatch(Data, X, Direction, Color, xLog, xLims, Format)
+function plotPatch(Data, X, Direction, Color, Alpha, LW, xLog, xLims, Format)
 % plots a patch of either the increase or decrease between 2 conditions.
 % Data is a 2 x F matrix. Direction is either 'pos' or 'neg'. xLog is true
 % or false.
@@ -18,9 +18,8 @@ if xLog
         xticks(log(Format.Labels.logBands))
     xticklabels(Format.Labels.logBands)
     
-    if ~isempty(xLims)
-        xlim(log(xLims))
-    end
+    Lims = log(xLims);
+
 else
     D1=Data(1, :);
     D2=Data(2, :);
@@ -28,9 +27,7 @@ else
         xticks(Format.Labels.Bands)
     xticklabels(Format.Labels.Bands)
     
-    if ~isempty(xLims)
-        xlim(xLims)
-    end
+  Lims = xLims;
 end
 
 
@@ -48,7 +45,7 @@ end
 
 
 hold on
-plot(X, D1, 'Color', [Color, Format.Alpha.Patch], 'LineWidth', .5,  'HandleVisibility', 'off')
+plot(X, D1, 'Color', [Color, Alpha], 'LineWidth', LW,  'HandleVisibility', 'off')
 
 for Indx_P = 1:numel(Starts)
     
@@ -61,13 +58,18 @@ for Indx_P = 1:numel(Starts)
     else
         HV = 'off';
     end
+        patch([x fliplr(x)], [y1 fliplr(y2)], Color, 'FaceAlpha',Alpha, ...
+        'EdgeColor', Color, 'EdgeAlpha', Alpha, 'LineWidth', 0.5, 'HandleVisibility', HV)
     
-    patch([x fliplr(x)], [y1 fliplr(y2)], Color, 'FaceAlpha',Format.Alpha.Patch, ...
-        'EdgeColor', 'none', 'HandleVisibility', HV)
+%     patch([x fliplr(x)], [y1 fliplr(y2)], Color, 'FaceAlpha',Alpha, ...
+%         'EdgeColor', 'none', 'HandleVisibility', HV)
     hold off
 end
 
 set(gca,'FontName', Format.FontName, 'FontSize', Format.FontSize, 'XGrid', 'on')
-% if xLog
-%     set(gca, 'XScale', 'log')
-% end
+
+%  set(gca,'FontName', Format.FontName, 'FontSize', Format.FontSize)
+axis tight
+    if ~isempty(xLims)
+        xlim(Lims)
+    end

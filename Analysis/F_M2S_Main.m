@@ -82,7 +82,17 @@ Levels = [1 3 6];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure
 
-%% M2S theta changes
+
+%% fmTheta vs sdTheta
+
+
+
+
+
+
+
+
+%% M2S fmtheta changes
 
 CLims_Diff = [-2 2];
 Pixels.PaddingExterior = 30; % reduce because of subplots

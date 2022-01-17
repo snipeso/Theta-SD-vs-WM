@@ -38,8 +38,7 @@ if ~exist(Results, 'dir')
     mkdir(Results)
 end
 
-ChannelStruct =  Channels.(ChannelLabels);
-ChLabels = fieldnames(ChannelStruct);
+
 
 %%% load data
 Filepath =  fullfile(P.Paths.Data, 'EEG', 'Unlocked', Tag);
@@ -113,7 +112,7 @@ PlotChannelMap(Chanlocs, ChStruct, Colors, Format)
 
 
 
-%%
+%% plot tasks overlapped to see how they change
 
 ChLabels = [24, 11, 124];
 
@@ -132,3 +131,44 @@ for Indx_Ch = 1:numel(Ch)
 end
 setLims(1, 3, 'y');
 legend(flip(TaskLabels))
+
+
+%% plot for each task, every participant's patch spectrum to show
+
+
+ChannelStruct =  Channels.(ChannelLabels);
+ChLabels = fieldnames(ChannelStruct);
+
+% average across channels
+chData = meanChData(sData, Chanlocs, ChannelStruct, 4);
+
+
+%%
+xLims = [1.5 35];
+xLog = true;
+
+for Indx_Ch = 1:numel(ChLabels)
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for Indx_T = 1:numel(Tasks)
+        subplot(2, 3, Indx_T)
+        Data = squeeze(chData(:, [1, 3], Indx_T, Indx_Ch, :));
+        plotParticipantPatch(Data, Freqs, xLog, xLims, Format)
+        
+        title(TaskLabels{Indx_T}, 'FontSize', Format.TitleSize)
+        if Indx_T > 3
+            xlabel(Format.Labels.Frequency)
+        end
+        if Indx_T == 1 || Indx_T == 4
+            ylabel(Format.Labels.zPower)
+        end
+    end
+    setLims(2, 3, 'y');
+     set(gcf, 'Color', 'w')
+     
+       saveFig(strjoin({TitleTag, 'Patch', 'SDvsBL', ChLabels{Indx_Ch}}, '_'), Results, Format)
+end
+
+
+
+
+
