@@ -227,6 +227,24 @@ saveFig(strjoin({TitleTag, 'M2S_Topographies'}, '_'), Paths.Paper, Format)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+%% plot confetti spaghetti of fmTheta vs sdTheta
+
+yLims = [-.5 1.5];
+
+
+Data = squeeze(tchData(:, 1, :, 2, 1, 2));
+figure('units','normalized','outerposition',[0 0 .5 .5])
+subplot(1, 2, 1)
+plotConfettiSpaghetti(Data, Legend, [], yLims, Format.Colors.Participants, StatsP, Format);
+title('fmTheta')
+
+Data = squeeze(tchData(:, :, 1, 2, 1, 2));
+subplot(1, 2, 2)
+plotConfettiSpaghetti(Data, Sessions.Labels, [], yLims, Format.Colors.Participants, StatsP, Format);
+title('sdTheta')
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Presentation figures

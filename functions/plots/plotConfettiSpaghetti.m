@@ -20,9 +20,9 @@ end
 % plot each participant
 hold on
 for Indx_P = 1:Dims(1)
-    plot(XPoints, Data(Indx_P, :),  'LineWidth', .7, 'Color', [Colors(Indx_P, :), Format.Alpha.Participants])
+    plot(XPoints, Data(Indx_P, :), 'LineWidth', Format.LW, 'Color', [Colors(Indx_P, :), Format.Alpha.Participants])
     
-    scatter(XPoints, Data(Indx_P, :), 50, ...
+    scatter(XPoints, Data(Indx_P, :), Format.ScatterSize, ...
         'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha',  Format.Alpha.Participants, ...
         'MarkerEdgeAlpha',  Format.Alpha.Participants, 'MarkerEdgeColor', Colors(Indx_P, :))
 end

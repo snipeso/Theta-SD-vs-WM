@@ -121,6 +121,48 @@ saveFig(strjoin({'M2S_Spectrums', Epochs{Indx_E}}, '_'), Paths.Paper, Format)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% plot all partipants
+yLim = [-0.5, 2];
+Data = squeeze(spData(:, [1 3], 1, 2, 1, :));
+figure
+plotSpectrumFlames(Data, Freqs, false, [2 10], Format)
+ylabel(Format.Labels.zPower)
+ylim(yLim)
+title('sdTheta Retention1 L1')
+ saveFig('sdTheta_Retention1_L1_AllP', Results, Format)
+
+ Data = squeeze(spData(:, [1 3], 2, 2, 1, :));
+figure
+plotSpectrumFlames(Data, Freqs, false, [2 10], Format)
+ylabel(Format.Labels.zPower)
+ylim(yLim)
+title('sdTheta Retention1 L3')
+ saveFig('sdTheta_Retention1_L3_AllP', Results, Format)
+
+ Data = squeeze(spData(:, [1 3], 3, 2, 1, :));
+figure
+plotSpectrumFlames(Data, Freqs, false, [2 10], Format)
+ylabel(Format.Labels.zPower)
+ylim(yLim)
+title('sdTheta Retention1 L6')
+ saveFig('sdTheta_Retention1_L6_AllP', Results, Format)
+
+ Data = squeeze(spData(:, 1, [1 2], 2, 1, :));
+figure
+plotSpectrumFlames(Data, Freqs, false, [2 10], Format)
+ylabel(Format.Labels.zPower)
+ylim(yLim)
+title('fmTheta Retention1 L3 vs L1')
+ saveFig('fmTheta_Retention1_L3vL1_AllP', Results, Format)
+
+  Data = squeeze(spData(:, 1, [1 3], 2, 1, :));
+figure
+plotSpectrumFlames(Data, Freqs, false, [2 10], Format)
+ylabel(Format.Labels.zPower)
+ylim(yLim)
+title('fmTheta Retention1 L6 vs L1')
+ saveFig('fmTheta_Retention1_L6vL1_AllP', Results, Format)
+
 
 %% plot spectrum: N1, N3 and N6 at BL, SR, and SD
 
