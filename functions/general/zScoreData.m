@@ -5,6 +5,8 @@ function Data = zScoreData(Data, Dimentions)
 % 'last' indicates that last dimention is also to be kept separate
 % 'last-1' indicates the second to last dimention is also seperate
 
+disp('************* z-scoring data *************')
+
 Dims = ndims(Data); % probs wrong
 
 switch Dimentions
