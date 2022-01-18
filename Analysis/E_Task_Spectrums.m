@@ -85,10 +85,10 @@ figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.47])
 for Indx_T = 1:numel(AllTasks)
     Data = squeeze(chData(:, [1, 3], Indx_T, Indx_Ch, :));
     
-   subfigure([], Grid, Coordinates(Indx_T, :), [], '', Pixels);
-%     Indx = Indx+1;
+    subfigure([], Grid, Coordinates(Indx_T, :), [], '', Pixels);
+    %     Indx = Indx+1;
     
-    plotSpectrumFlames(Data, Freqs, xLog, xLims, Pixels) 
+    plotSpectrumFlames(Data, Freqs, xLog, xLims, Pixels)
     title(TaskLabels{Indx_T}, 'FontSize', Pixels.LetterSize)
     ylim(yLims)
     
@@ -114,11 +114,11 @@ yLims = [0 60];
 figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.47])
 for Indx_T = 1:numel(AllTasks)
     Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
-   subfigure([], Grid, Coordinates(Indx_T, :), [], '', Pixels);
-%     Indx = Indx+1;
-
+    subfigure([], Grid, Coordinates(Indx_T, :), [], '', Pixels);
+    %     Indx = Indx+1;
     
-    plotSpectrumFlames(Data, Freqs, xLog, xLims, Pixels) 
+    
+    plotSpectrumFlames(Data, Freqs, xLog, xLims, Pixels)
     title(TaskLabels{Indx_T}, 'FontSize', Pixels.LetterSize)
     ylim(yLims)
     
@@ -196,7 +196,37 @@ saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Paths.Paper, Fo
 
 
 
-%% Overlap of all participants' spectrums for subset of tasks, with raw data for reference
+%% peak frequency in the game
+clc
+Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(ChLabels));
+PeakRange = [3 9];
+
+for Indx_T = 1:numel(AllTasks)
+    for Indx_P = 1:numel(Participants)
+        for Indx_S = 1:numel(Sessions.Labels)
+            Data = squeeze(chData(Indx_P, Indx_S, Indx_T, :, :));
+            [Peaks(Indx_P, Indx_S, Indx_T, :, :), ~] = findPeaks(Data, PeakRange, Freqs, false);
+        end
+    end
+    Ch_Indx = 1;
+    Data1 = squeeze(Peaks(:, 1, Indx_T, Ch_Indx));
+    Data2 = squeeze(Peaks(:, 3, Indx_T,  Ch_Indx));
+    Stats = pairedttest(Data1, Data2, StatsP);
+    disp([TaskLabels{Indx_T}, ':'])
+    disp(['BL Mean: ', num2str(Stats.mean1), ' STD: ', num2str(Stats.std1) ])
+    disp(['SD Mean: ', num2str(Stats.mean2), ' STD: ', num2str(Stats.std2) ])
+    disp(['p: ', num2str(Stats.p), ' t: ', num2str(Stats.t) ' g: ', num2str(Stats.hedgesg)])
+    Title = strjoin({'ThetaPeak', TaskLabels{Indx_T}, ChLabels{Ch_Indx}}, '_');
+    saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
+end
+
+
+
+
+
+
+
+%% Overlap of all participants' spectrums for subset of tasks, with raw data for reference TODO: remove
 
 Log = true;
 Indx_Ch = 1;
@@ -431,6 +461,7 @@ for Indx_P = 1:numel(Participants)
     end
 end
 
+%%
 
 %%% Do the same as above for raw data
 
