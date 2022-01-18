@@ -19,7 +19,7 @@ Coordinates = {
     'P10_LAT_Session2Comp_Clean.set', 244, 118,  Format.Colors.Tasks.LAT;
     };
 
-Titles = {'Baseline LAT', 'Sleep Deprivation LAT', 'Baseline Game', 'Sleep Deprivation Game'};
+Titles = { 'Baseline Game', 'Sleep Deprivation Game', 'Baseline LAT', 'Sleep Deprivation LAT',};
 
 Results = fullfile(Paths.Results, 'Bursts', 'Final');
 if ~exist(Results, 'dir')
