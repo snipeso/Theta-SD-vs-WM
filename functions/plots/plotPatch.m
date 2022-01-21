@@ -15,19 +15,19 @@ if xLog
     D1 = Data(1, ~RM);
     D2 = Data(2, ~RM);
     
-        xticks(log(Format.Labels.logBands))
+    xticks(log(Format.Labels.logBands))
     xticklabels(Format.Labels.logBands)
     
     Lims = log(xLims);
-
+    
 else
     D1=Data(1, :);
     D2=Data(2, :);
     
-        xticks(Format.Labels.Bands)
+    xticks(Format.Labels.Bands)
     xticklabels(Format.Labels.Bands)
     
-  Lims = xLims;
+    Lims = xLims;
 end
 
 
@@ -58,11 +58,11 @@ for Indx_P = 1:numel(Starts)
     else
         HV = 'off';
     end
-        patch([x fliplr(x)], [y1 fliplr(y2)], Color, 'FaceAlpha',Alpha, ...
+    patch([x fliplr(x)], [y1 fliplr(y2)], Color, 'FaceAlpha',Alpha, ...
         'EdgeColor', Color, 'EdgeAlpha', Alpha, 'LineWidth', 0.5, 'HandleVisibility', HV)
     
-%     patch([x fliplr(x)], [y1 fliplr(y2)], Color, 'FaceAlpha',Alpha, ...
-%         'EdgeColor', 'none', 'HandleVisibility', HV)
+    %     patch([x fliplr(x)], [y1 fliplr(y2)], Color, 'FaceAlpha',Alpha, ...
+    %         'EdgeColor', 'none', 'HandleVisibility', HV)
     hold off
 end
 
@@ -70,6 +70,6 @@ set(gca,'FontName', Format.FontName, 'FontSize', Format.FontSize, 'XGrid', 'on')
 
 %  set(gca,'FontName', Format.FontName, 'FontSize', Format.FontSize)
 axis tight
-    if ~isempty(xLims)
-        xlim(Lims)
-    end
+if ~isempty(xLims)
+    xlim(Lims)
+end
