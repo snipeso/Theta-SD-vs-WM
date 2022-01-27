@@ -141,12 +141,57 @@ figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.35])
 Indx = 1; % tally of axes
 
 
+
+
+%%% N3 vs N2 by session
+miniGrid = [2 3];
+
+Axis = subfigure([], Grid, [1, 1], [1, 3], Pixels.Letters{Indx}, Pixels);
+Indx = Indx+1;
+Axis.Units = 'pixels';
+Space = Axis.Position;
+axis off
+
+for Indx_L =  2:numel(Levels)
+    
+    for Indx_S = 1:nSessions
+        
+        N1 = squeeze(tData(:, Indx_S, 1, Indx_E, :, Indx_B));
+        N3 = squeeze(tData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
+        
+        A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], {}, Pixels);
+%         shiftaxis(A, Pixels.PaddingLabels, [])
+    shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+
+        
+        Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
+        Title = strjoin({'M2S_Topo',Sessions.Labels{Indx_S}, Legend{Indx_L}, 'vs', 'L1'}, '_');
+        saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
+        
+        set(A.Children, 'LineWidth', 1)
+        
+        if Indx_L == 2 % only title for top row
+            title(Sessions.Labels{Indx_S}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)
+        end
+        
+        if Indx_S ==1 % left labels of rows
+            X = get(gca, 'XLim');
+            Y = get(gca, 'YLim');
+            text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
+                'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
+                'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+        end
+    end
+end
+
+Axis.Units = 'normalized';
+
 %%% mean changes in ROIs
 miniGrid = [4, 1];
 YLims = [-.075; -.21; -.05];
 YLims = [YLims, YLims + [.8; .3; .3]];
 
-Space = subaxis(Grid, [1, 1], [], Pixels.Letters{Indx}, Pixels);
+Space = subaxis(Grid, [1, 4], [], Pixels.Letters{Indx}, Pixels);
 Indx = Indx+1;
 
 for Indx_Ch = 1:numel(ChLabels)
@@ -179,49 +224,6 @@ for Indx_Ch = 1:numel(ChLabels)
     end
     title(ChLabels{Indx_Ch}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)
 end
-
-
-%%% N3 vs N2 by session
-miniGrid = [2 3];
-
-Axis = subfigure([], Grid, [1, 2], [1, 3], Pixels.Letters{Indx}, Pixels);
-Indx = Indx+1;
-Axis.Units = 'pixels';
-Space = Axis.Position;
-axis off
-
-for Indx_L =  2:numel(Levels)
-    
-    for Indx_S = 1:nSessions
-        
-        N1 = squeeze(tData(:, Indx_S, 1, Indx_E, :, Indx_B));
-        N3 = squeeze(tData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
-        
-        A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], {}, Pixels);
-        shiftaxis(A, Pixels.PaddingLabels, [])
-        
-        Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
-        Title = strjoin({'M2S_Topo',Sessions.Labels{Indx_S}, Legend{Indx_L}, 'vs', 'L1'}, '_');
-        saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
-        
-        set(A.Children, 'LineWidth', 1)
-        
-        if Indx_L == 2 % only title for top row
-            title(Sessions.Labels{Indx_S}, 'FontName', Format.FontName, 'FontSize', Pixels.TitleSize)
-        end
-        
-        if Indx_S ==1 % left labels of rows
-            X = get(gca, 'XLim');
-            Y = get(gca, 'YLim');
-            text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
-                'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
-                'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
-        end
-    end
-end
-
-Axis.Units = 'normalized';
-
 
 
 %%% SD vs BL by level

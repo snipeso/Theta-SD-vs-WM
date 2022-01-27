@@ -250,7 +250,7 @@ Pixels.W = 42; % width of reference "paper"
 Pixels.H = 60; % width of reference "paper"
 Pixels.LW = 3;
 Pixels.ScatterSize = 100;
-Pixels.Topo.Sig = 2;
+Pixels.Topo.Sig = 3;
 Pixels.OSize = 10; % Spaghetti O
 
 
