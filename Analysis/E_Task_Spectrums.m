@@ -226,12 +226,12 @@ for Indx_T = 1:numel(AllTasks)
     
     
     % frontal peak prominence
-        Ch_Indx = 1;
+    Ch_Indx = 1;
     Data1 = squeeze(Prominence(:, 1, Indx_T, Ch_Indx));
     Data2 = squeeze(Prominence(:, 3, Indx_T,  Ch_Indx));
     Stats = pairedttest(Data1, Data2, StatsP);
     disp([TaskLabels{Indx_T}, ':'])
-         disp('---PEAK Prominence---')
+    disp('---PEAK Prominence---')
     disp(['BL Mean: ', num2str(Stats.mean1), ' STD: ', num2str(Stats.std1) ])
     disp(['SD Mean: ', num2str(Stats.mean2), ' STD: ', num2str(Stats.std2) ])
     disp(['p: ', num2str(Stats.p), ' t: ', num2str(Stats.t) ' g: ', num2str(Stats.hedgesg)])
@@ -241,14 +241,71 @@ for Indx_T = 1:numel(AllTasks)
 end
 
 
+%%
+Grid = [2 2];
+YLims = [0 8];
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.5])
+
+% BL Prom
+Data = squeeze(Prominence(:, 1, :, 1));
+subfigure([], Grid, [1 1], [], Pixels.Letters{1}, Pixels);
+Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [0 6], Format.Colors.Participants, StatsP, Pixels);
+title('BL Prominence', 'FontSize', Pixels.TitleSize)
+ylim(YLims)
+ylabel(Pixels.Labels.zPower)
+
+% SD Prom
+Data = squeeze(Prominence(:, 3, :, 1));
+subfigure([], Grid, [1 2], [], Pixels.Letters{1}, Pixels);
+Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], Format.Colors.Participants, StatsP, Pixels);
+title('SD Prominence',  'FontSize', Pixels.TitleSize)
+ylim(YLims)
+
+% BL Peaks
+Data = squeeze(Peaks(:, 1, :, 1));
+subfigure([], Grid, [2 1], [], Pixels.Letters{3}, Pixels);
+Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], Format.Colors.Participants, StatsP, Pixels);
+title('BL Peaks', 'FontSize', Pixels.TitleSize)
+ylim([2 11])
+ylabel(Pixels.Labels.Frequency)
+
+% SD Peaks
+Data = squeeze(Peaks(:, 2, :, 1));
+subfigure([], Grid, [2 2], [], Pixels.Letters{3}, Pixels);
+Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], Format.Colors.Participants, StatsP, Pixels);
+title('SD Peaks', 'FontSize', Pixels.TitleSize)
+ylim([2 11])
+ylabel(Pixels.Labels.Frequency)
+
+
+% save
+saveFig('TaskPeaks', Paths.Paper, Format)
+
+%%
+figure('units','centimeters','position',[0 0 Pixels.W*.6 Pixels.H*.4])
+Pixels.xPadding = 40;
 % plot change in prominence for all data
 Data = squeeze(Prominence(:, :, :, 1));
-  figure('units','normalized','outerposition',[0 0 .2 .7])
-  plotSpaghettiOs(Data, 1, Sessions.Labels, TaskLabels, Format.Colors.AllTasks, StatsP, Format)
- saveFig(strjoin({TitleTag, 'SD', 'Means', ChLabels{Indx_Ch}, BandLabels{Indx_B}}, '_'), Results, Format)
+subfigure([], [1 2], [1 1], [], Pixels.Letters{1}, Pixels);
+plotSpaghettiOs(Data, 1, Sessions.Labels, TaskLabels, Format.Colors.AllTasks, StatsP, Format)
+ylabel(Pixels.Labels.zPower)
+ylim([0 4])
+title('Prominence')
 
+Data = squeeze(Peaks(:, :, :, 1));
+subfigure([], [1 2], [1 2], [], Pixels.Letters{2}, Pixels);
+plotSpaghettiOs(Data, 1, Sessions.Labels, TaskLabels, Format.Colors.AllTasks, StatsP, Format)
+legend off
+ylabel(Pixels.Labels.Frequency)
+ylim([4 8])
+title('Frequency')
 
+% save
+saveFig('TaskPeaks', Paths.Results, Format)
 
+%%
+
+Pixels.xPadding = 25;
 %% Overlap of all participants' spectrums for subset of tasks, with raw data for reference TODO: remove
 
 Log = true;
