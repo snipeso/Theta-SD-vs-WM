@@ -199,30 +199,53 @@ saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Paths.Paper, Fo
 %% peak frequency in the game
 clc
 Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(ChLabels));
+Prominence = Peaks;
 PeakRange = [3 9];
 
 for Indx_T = 1:numel(AllTasks)
     for Indx_P = 1:numel(Participants)
         for Indx_S = 1:numel(Sessions.Labels)
             Data = squeeze(chData(Indx_P, Indx_S, Indx_T, :, :));
-            [Peaks(Indx_P, Indx_S, Indx_T, :, :), ~] = findPeaks(Data, PeakRange, Freqs, false);
+            [Peaks(Indx_P, Indx_S, Indx_T, :, :), ~, Prominence(Indx_P, Indx_S, Indx_T, :, :)] ...
+                = findPeaks(Data, PeakRange, Freqs, false);
         end
     end
+    
+    % frontal peak frequency
     Ch_Indx = 1;
     Data1 = squeeze(Peaks(:, 1, Indx_T, Ch_Indx));
     Data2 = squeeze(Peaks(:, 3, Indx_T,  Ch_Indx));
     Stats = pairedttest(Data1, Data2, StatsP);
     disp([TaskLabels{Indx_T}, ':'])
+    disp('---PEAK FREQUENCY---')
     disp(['BL Mean: ', num2str(Stats.mean1), ' STD: ', num2str(Stats.std1) ])
     disp(['SD Mean: ', num2str(Stats.mean2), ' STD: ', num2str(Stats.std2) ])
     disp(['p: ', num2str(Stats.p), ' t: ', num2str(Stats.t) ' g: ', num2str(Stats.hedgesg)])
     Title = strjoin({'ThetaPeak', TaskLabels{Indx_T}, ChLabels{Ch_Indx}}, '_');
     saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
+    
+    
+    % frontal peak prominence
+        Ch_Indx = 1;
+    Data1 = squeeze(Prominence(:, 1, Indx_T, Ch_Indx));
+    Data2 = squeeze(Prominence(:, 3, Indx_T,  Ch_Indx));
+    Stats = pairedttest(Data1, Data2, StatsP);
+    disp([TaskLabels{Indx_T}, ':'])
+         disp('---PEAK Prominence---')
+    disp(['BL Mean: ', num2str(Stats.mean1), ' STD: ', num2str(Stats.std1) ])
+    disp(['SD Mean: ', num2str(Stats.mean2), ' STD: ', num2str(Stats.std2) ])
+    disp(['p: ', num2str(Stats.p), ' t: ', num2str(Stats.t) ' g: ', num2str(Stats.hedgesg)])
+    Title = strjoin({'ThetaProminence', TaskLabels{Indx_T}, ChLabels{Ch_Indx}}, '_');
+    saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
+    disp('****')
 end
 
 
-
-
+% plot change in prominence for all data
+Data = squeeze(Prominence(:, :, :, 1));
+  figure('units','normalized','outerposition',[0 0 .2 .7])
+  plotSpaghettiOs(Data, 1, Sessions.Labels, TaskLabels, Format.Colors.AllTasks, StatsP, Format)
+ saveFig(strjoin({TitleTag, 'SD', 'Means', ChLabels{Indx_Ch}, BandLabels{Indx_B}}, '_'), Results, Format)
 
 
 
