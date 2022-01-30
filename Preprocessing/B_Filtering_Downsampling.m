@@ -60,7 +60,9 @@ for Indx_DF = 1:numel(Destination_Formats)
             Content = ls(Path);
             SET = contains(string(Content), '.set');
             if ~any(SET)
-                if any(strcmpi(Levels, 'EEG')) % if there should have been an EEG file, be warned
+                if any(strcmpi(Levels, 'EEG')) % if there should have been an EEG file, be warned 
+                    %%% ELIAS: you remove the EEG information from Levels in line 55
+                    %%% so you would never enter this if statement, no? 
                     warning([Path, ' is missing SET file'])
                 end
                 continue
