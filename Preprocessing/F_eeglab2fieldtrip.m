@@ -1,4 +1,4 @@
-
+% This script converts data to fieldtrip datastructure for source localization.
 close all
 clc
 clear

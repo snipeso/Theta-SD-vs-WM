@@ -1,4 +1,5 @@
-
+% This script converts data from the match-to-sample task to fieldtrip
+% datastructure for source localization.
 close all
 clc
 clear
