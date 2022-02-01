@@ -256,7 +256,7 @@ ylabel(Pixels.Labels.zPower)
 
 % SD Prom
 Data = squeeze(Prominence(:, 3, :, 1));
-subfigure([], Grid, [1 2], [], Pixels.Letters{1}, Pixels);
+subfigure([], Grid, [1 2], [], Pixels.Letters{2}, Pixels);
 Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], Format.Colors.Participants, StatsP, Pixels);
 title('SD Prominence',  'FontSize', Pixels.TitleSize)
 ylim(YLims)
@@ -271,11 +271,10 @@ ylabel(Pixels.Labels.Frequency)
 
 % SD Peaks
 Data = squeeze(Peaks(:, 2, :, 1));
-subfigure([], Grid, [2 2], [], Pixels.Letters{3}, Pixels);
+subfigure([], Grid, [2 2], [], Pixels.Letters{4}, Pixels);
 Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], Format.Colors.Participants, StatsP, Pixels);
 title('SD Peaks', 'FontSize', Pixels.TitleSize)
 ylim([2 11])
-ylabel(Pixels.Labels.Frequency)
 
 
 % save

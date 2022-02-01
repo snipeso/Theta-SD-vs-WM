@@ -129,7 +129,8 @@ saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper
 
 %% M2S fmtheta changes
 
-CLims_Diff = [-2 2];
+% CLims_Diff = [-2 2];
+CLims_Diff = [-6 6];
 Pixels.PaddingExterior = 30; % reduce because of subplots
 Grid = [1 5];
 Indx_E = 2; % retention 1 period
