@@ -1,6 +1,9 @@
 % This script takes the data in source space, identifies significant
 % regions, and saves them in a table.
 
+clear
+clc
+close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
@@ -16,7 +19,7 @@ Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 Bands = P.Bands;
-
+Pixels = P.Pixels;
 
 
 
@@ -48,13 +51,15 @@ AllTheta = nanmean(mtrx_all_crtx, 5);
 Areas = cortical_areas;
 Areas = replace(Areas, '_', ' ');
 
+Dims = size(AllTheta);
+
 % theta in L3vsL1
 load(fullfile(TablePath, File_fmTheta), 'mtrx_cortex')
-fmTheta = nanmean(mtrx_cortex, 4);
+fmTheta = reshape(nanmean(mtrx_cortex, 4), Dims(1), Dims(2), 1, Dims(4));
 
 % theta in BL vs SD of L1
 load(fullfile(TablePath, File_sdTheta), 'mtrx_cortex')
-sdTheta = nanmean(mtrx_cortex, 4);
+sdTheta = reshape(nanmean(mtrx_cortex, 4), Dims(1), Dims(2), 1, Dims(4));
 
 
 % keep together for the following loops
@@ -79,13 +84,30 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot and save
 
+Keep = ~all(pValues > .05);
+Sig = pValues <.05;
+
+%% plot fake excel tables for all areas with at least 1 comparison significant
+
+Grid = [1 10];
+
+figure('units','centimeters','position',[0 4 Pixels.W Pixels.H])
+
+% all tasks
+subfigure([], Grid, [1, 2], [1 Grid(2)-4], '', Pixels);
+plotExcelTable(tValues(1:numel(TaskLabels), Keep)', Sig(1:numel(TaskLabels), Keep)', Areas(Keep), ...
+    TaskLabels,  't values', Pixels)
+colorbar off
+
+% sdTheta vs fmTheta comparison
+A = subfigure([], Grid, [1, Grid(2)-2], [1 3], '', Pixels);
+plotExcelTable(tValues(end-1:end, Keep)', Sig(end-1:end, Keep)', [], ...
+    {'fmTheta', 'sdTheta'},  't values', Pixels)
+
+% save
+saveFig('SourceTable', Paths.Paper, Pixels)
 
 
-
-
-
-
-
-
+%% plot change 
 
 
