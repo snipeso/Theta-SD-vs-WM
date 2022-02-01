@@ -7,7 +7,7 @@ Range = [min(Data(:)), max(Data(:))];
 
 if ~isempty(CLabel)
     h = colorbar;
-    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize-5)
+    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.BarSize)
 end
 
 if Range(1) < 0
@@ -25,16 +25,19 @@ nYLabels = numel(yLabels);
 yticks(1:nYLabels)
 yticklabels(yLabels)
 
-xticks((Grid+1)/2:Grid:nYLabels);
-xticklabels(xLabels)
 
 
-axis square
+
+% axis square
 set(gca, 'FontName', Format.FontName)
 
+xticklabels(xLabels)
 
 % plot session grid
 if ~isempty(Grid)
+    xticks((Grid+1)/2:Grid:nYLabels);
+xticklabels(xLabels)
+
     hold on
     for Indx_S = 1:numel(xLabels)-1
         X = Indx_S*Grid + .5;
