@@ -58,6 +58,7 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 addpath(fullfile(Paths.Analysis, 'functions','plots'))
 addpath(fullfile(Paths.Analysis, 'functions','tasks'))
 addpath(fullfile(Paths.Analysis, 'functions','stats'))
+addpath(fullfile(Paths.Analysis, 'functions','source_localization'))
 addpath(fullfile(Paths.Analysis, 'functions','questionnaires'))
 run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
 

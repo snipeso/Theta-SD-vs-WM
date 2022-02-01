@@ -8,9 +8,7 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
 
-Refresh = true;
-ValueType = 'mean';
-
+ValueType = 'median';
 
 P = analysisParameters();
 
@@ -105,9 +103,21 @@ plotExcelTable(tValues(end-1:end, Keep)', Sig(end-1:end, Keep)', [], ...
     {'fmTheta', 'sdTheta'},  't values', Pixels)
 
 % save
-saveFig('SourceTable', Paths.Paper, Pixels)
+saveFig(['SourceTable_',ValueType], Paths.Paper, Pixels)
 
 
-%% plot change 
 
+%% get top 5 areas (not counting symmetry) for each task
+clc
+
+T = array2table(tValues', 'VariableNames', [TaskLabels,  {'fmTheta', 'sdTheta'}]);
+T.Areas = Areas';
+writetable(T, fullfile(Paths.PaperStats, 'BigTable_Sources.csv'))
+
+
+for Indx_T = 1:Dims(3)
+    T = sortrows(T, Indx_T, 'descend');
+    disp(T(1:10, [Indx_T, end]))
+    
+end
 
