@@ -107,7 +107,7 @@ for Indx_T = 1:numel(AllTasks)
     text(0, 0, TaskLabels{Indx_T}, ...
         'FontSize', Pixels.LetterSize, 'FontName', Pixels.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center', 'Rotation', 90);
-    xlim([-1 .25])
+    xlim([-1 .1])
     ylim([-.5 .5])
     axis off
     

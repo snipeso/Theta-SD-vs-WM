@@ -22,11 +22,18 @@ PatchColor = [225, 221 192]/255;
 PatchAlpha = .75;
 Eccentricity = .75;
 
+if contains(Orientation, 'left')
+    cfg.surffile = 'surface_white_left.mat'; % if put inflated here it does not project correct
+    cfg.surfinflated = 'surface_inflated_left.mat';
+    
+elseif contains(Orientation, 'right')
+    cfg.surffile = 'surface_white_right.mat'; % if put inflated here it does not project correct
+    cfg.surfinflated = 'surface_inflated_right.mat';
+end
+
+
 switch Orientation
     case 'left-inside'
-        cfg.surffile       = 'surface_white_left.mat'; % if put inflated here it does not project correct
-        cfg.surfinflated   = 'surface_inflated_left.mat';
-        
         ft_sourceplot_hemisphere(cfg, Maps.left);
         view(90,0)
         if plotPatch
@@ -34,16 +41,11 @@ switch Orientation
             plotOval(Focus1, Focus2, Eccentricity, 'x', PatchColor, PatchAlpha)
         end
         
-    case 'left-outside'
-        cfg.surffile       = 'surface_white_left.mat'; % if put inflated here it does not project correct
-        cfg.surfinflated   = 'surface_inflated_left.mat';
-        
+    case 'left-outside'        
         ft_sourceplot_hemisphere(cfg, Maps.left);
         view(-90,0)
         
     case 'right-inside'
-        cfg.surffile       = 'surface_white_right.mat'; % if put inflated here it does not project correct
-        cfg.surfinflated   = 'surface_inflated_right.mat';
         
         ft_sourceplot_hemisphere(cfg, Maps.right);
         view(-90,0)
@@ -54,10 +56,7 @@ switch Orientation
         end
         
     case 'right-outside'
-        cfg.surffile       = 'surface_white_right.mat'; % if put inflated here it does not project correct
-        cfg.surfinflated   = 'surface_inflated_right.mat';
-        
-        ft_sourceplot_hemisphere(cfg, Maps.right);
+       ft_sourceplot_hemisphere(cfg, Maps.right);
         view(90,0)
 end
 
