@@ -20,4 +20,11 @@ w = atan2(y2-y1,x2-x1);
 x = (x1+x2)/2 + X*cos(w) - Y*sin(w);
 y = (y1+y2)/2 + X*sin(w) + Y*cos(w);
 
-patch(x,y, Color, 'FaceAlpha', Alpha, 'EdgeColor','none')
+switch ZeroAxis
+    case 'x'
+        patch('Vertices', [zeros(numel(x), 1), x(:), y(:)], 'Faces', 1:numel(x), ...
+            'FaceColor', Color, 'EdgeColor', 'none', 'FaceAlpha', Alpha)
+        light
+    otherwise
+        patch(x,y, Color, 'FaceAlpha', Alpha, 'EdgeColor','none')
+end

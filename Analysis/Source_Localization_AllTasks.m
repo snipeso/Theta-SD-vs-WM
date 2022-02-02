@@ -96,6 +96,7 @@ end
 
 Grid = [7, 5];
 CLims = [-6 6];
+plotPatch = true;
 figure('units','centimeters','position',[0 4 Pixels.W Pixels.H])
 
 
@@ -112,16 +113,16 @@ for Indx_T = 1:numel(AllTasks)
     
     % plot each face
     subfigure([], Grid, [Indx_T, 2], [], '', Pixels);
-    plotBalloonBrain(Maps(Indx_T), 'left-outside', CLims, Format)
+    plotBalloonBrain(Maps(Indx_T), 'left-outside', CLims, false, Format)
     
     subfigure([], Grid, [Indx_T, 3], [], '', Pixels);
-    plotBalloonBrain(Maps(Indx_T), 'right-outside', CLims, Format)
+    plotBalloonBrain(Maps(Indx_T), 'right-outside', CLims, false, Format)
      
     subfigure([], Grid, [Indx_T, 4], [], '', Pixels);
-    plotBalloonBrain(Maps(Indx_T), 'left-inside', CLims, Format)
+    plotBalloonBrain(Maps(Indx_T), 'left-inside', CLims, plotPatch, Format)
     
     subfigure([], Grid, [Indx_T, 5], [], '', Pixels);
-    plotBalloonBrain(Maps(Indx_T), 'right-inside', CLims, Format) 
+    plotBalloonBrain(Maps(Indx_T), 'right-inside', CLims, plotPatch, Format) 
 end
 
 % colorbar
