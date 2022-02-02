@@ -91,86 +91,47 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot
 
-cfg = [];
-cfg.method         = 'surface';
-cfg.funparameter   = 'stat';
-cfg.projmethod     = 'nearest';
-cfg.funcolorlim    = [-6 6];
-cfg.funcolormap    = reduxColormap(Format.Colormap.Divergent, 20);% YOUR COLORMAP
-% cfg.opacitylim     = [0 0.2];
-cfg.opacitymap     = 'rampup';
-cfg.maskparameter  = 'mask';
-cfg.colorbar       = 'no';
-
-
-cfg.surffile       = 'surface_white_left.mat'; % if put inflated here it does not project correct
-cfg.surfinflated   = 'surface_inflated_left.mat';
-
-
-
 
 %%
 
 Grid = [7, 5];
+CLims = [-6 6];
 figure('units','centimeters','position',[0 4 Pixels.W Pixels.H])
 
 
 for Indx_T = 1:numel(AllTasks)
     
     %Plot title
-    A = subfigure([], Grid, [Indx_T, 1], [], '', Pixels);
+    subfigure([], Grid, [Indx_T, 1], [], '', Pixels);
     text(0, 0, TaskLabels{Indx_T}, ...
         'FontSize', Pixels.LetterSize, 'FontName', Pixels.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center', 'Rotation', 90);
-    xlim([-.5 0])
-    ylim([-.5 0])
+    xlim([-1 .25])
+    ylim([-.5 .5])
     axis off
     
-    cfg.surffile       = 'surface_white_left.mat'; % if put inflated here it does not project correct
-    cfg.surfinflated   = 'surface_inflated_left.mat';
+    % plot each face
+    subfigure([], Grid, [Indx_T, 2], [], '', Pixels);
+    plotBalloonBrain(Maps(Indx_T), 'left-outside', CLims, Format)
     
-    % left inside
-    A = subfigure([], Grid, [Indx_T, 2], [], '', Pixels);
-    ft_sourceplot_hemisphere(cfg, Maps(Indx_T).left);
-    view(-90,0)
-    lighting none
-    axis tight
+    subfigure([], Grid, [Indx_T, 3], [], '', Pixels);
+    plotBalloonBrain(Maps(Indx_T), 'right-outside', CLims, Format)
+     
+    subfigure([], Grid, [Indx_T, 4], [], '', Pixels);
+    plotBalloonBrain(Maps(Indx_T), 'left-inside', CLims, Format)
     
-    
-    
-    A = subfigure([], Grid, [Indx_T, 4], [], '', Pixels);
-    ft_sourceplot_hemisphere(cfg, Maps(Indx_T).left);
-    view(90,0)
-    lighting none
-    axis tight
-    
-    cfg.surffile       = 'surface_white_right.mat'; % if put inflated here it does not project correct
-    cfg.surfinflated   = 'surface_inflated_right.mat';
-    
-    
-    A = subfigure([], Grid, [Indx_T, 5], [], '', Pixels);
-    ft_sourceplot_hemisphere(cfg, Maps(Indx_T).right);
-    view(-90,0)
-    lighting none
-    axis tight
-    
-    
-    A = subfigure([], Grid, [Indx_T, 3], [], '', Pixels);
-    ft_sourceplot_hemisphere(cfg, Maps(Indx_T).right);
-    view(90,0)
-    lighting none
-    axis tight
-    
+    subfigure([], Grid, [Indx_T, 5], [], '', Pixels);
+    plotBalloonBrain(Maps(Indx_T), 'right-inside', CLims, Format) 
 end
 
 % colorbar
 A = subfigure([], Grid, [numel(AllTasks)+1, 2], [1, 4], '', Pixels);
-% shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
 
 Pixels.Colorbar = 'north';
 Pixels.BarSize = Pixels.FontSize;
 Pixels.Steps.Divergent = 20;
-plotColorbar('Divergent', cfg.funcolorlim, Format.Labels.ES, Pixels)
+plotColorbar('Divergent', CLims, Format.Labels.ES, Pixels)
 
 % save
 saveFig('All_Sources', Paths.Paper, Format)

@@ -66,9 +66,6 @@ Theta = cat(3, AllTheta, fmTheta, sdTheta);
 
 Dims = size(Theta);
 
-
-Theta = Theta([1,2, 4, 5, 7:11, 13:18], :, :, :);
-
 %%% get t-values
 tValues = nan(Dims(3), Dims(4));
 pValues = tValues;
@@ -87,10 +84,9 @@ end
 %%% Plot and save
 
 
-% Keep = ~all(pValues > .05);
-% Sig = pValues <.05;
-Keep = ones(1, size(pValues, 2));
-Sig = ones(size(pValues));
+Keep = ~all(pValues > .05);
+Sig = pValues <.05;
+
 
 % plot fake excel tables for all areas with at least 1 comparison significant
 
