@@ -59,17 +59,21 @@ fmTheta = reshape(nanmean(mtrx_cortex, 4), Dims(1), Dims(2), 1, Dims(4));
 load(fullfile(TablePath, File_sdTheta), 'mtrx_cortex')
 sdTheta = reshape(nanmean(mtrx_cortex, 4), Dims(1), Dims(2), 1, Dims(4));
 
+%%
 
 % keep together for the following loops
 Theta = cat(3, AllTheta, fmTheta, sdTheta);
 
 Dims = size(Theta);
 
+
+Theta = Theta([1,2, 4, 5, 7:11, 13:18], :, :, :);
+
 %%% get t-values
 tValues = nan(Dims(3), Dims(4));
 pValues = tValues;
 
-for Indx_T = 1:Dims(3)
+for Indx_T = 1:Dims(3) % loop through contrasts
     Data1 = squeeze(Theta(:, 1, Indx_T, :));
     Data2 = squeeze(Theta(:, 2, Indx_T, :));
     Stats = pairedttest(Data1, Data2, P.StatsP);
@@ -82,10 +86,13 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot and save
 
-Keep = ~all(pValues > .05);
-Sig = pValues <.05;
 
-%% plot fake excel tables for all areas with at least 1 comparison significant
+% Keep = ~all(pValues > .05);
+% Sig = pValues <.05;
+Keep = ones(1, size(pValues, 2));
+Sig = ones(size(pValues));
+
+% plot fake excel tables for all areas with at least 1 comparison significant
 
 Grid = [1 10];
 

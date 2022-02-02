@@ -39,11 +39,6 @@ end
 
 
 %%
-ft_defaults
-
-load('mtrx_all_tasks')
-load('mri_for_plot.mat')
-load('stat_all_tasks_sess2_vs_base.mat')
 
 Maps = struct();
 
@@ -116,33 +111,34 @@ cfg.surfinflated   = 'surface_inflated_left.mat';
 
 %%
 
-Grid = [7, 4];
+Grid = [7, 5];
 figure('units','centimeters','position',[0 4 Pixels.W Pixels.H])
-% figure
-
 
 
 for Indx_T = 1:numel(AllTasks)
+    
+    %Plot title
+    A = subfigure([], Grid, [Indx_T, 1], [], '', Pixels);
+    text(0, 0, TaskLabels{Indx_T}, ...
+        'FontSize', Pixels.LetterSize, 'FontName', Pixels.FontName, ...
+        'FontWeight', 'Bold', 'HorizontalAlignment', 'Center', 'Rotation', 90);
+    xlim([-.5 0])
+    ylim([-.5 0])
+    axis off
     
     cfg.surffile       = 'surface_white_left.mat'; % if put inflated here it does not project correct
     cfg.surfinflated   = 'surface_inflated_left.mat';
     
     % left inside
-    A = subfigure([], Grid, [Indx_T, 1], [], '', Pixels);
+    A = subfigure([], Grid, [Indx_T, 2], [], '', Pixels);
     ft_sourceplot_hemisphere(cfg, Maps(Indx_T).left);
     view(-90,0)
     lighting none
     axis tight
     
-    % Plot title TODO
-%     X = get(gca, 'XLim');
-%     Y = get(gca, 'YLim');
-%     text(X(1)-diff(X)*.25, Y(1)+diff(Y)*.5, TaskLabels{Indx_T}, ...
-%         'FontSize', Pixels.LetterSize, 'FontName', Pixels.FontName, ...
-%         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center', 'Rotation', 90);
     
     
-    A = subfigure([], Grid, [Indx_T, 3], [], '', Pixels);
+    A = subfigure([], Grid, [Indx_T, 4], [], '', Pixels);
     ft_sourceplot_hemisphere(cfg, Maps(Indx_T).left);
     view(90,0)
     lighting none
@@ -152,14 +148,14 @@ for Indx_T = 1:numel(AllTasks)
     cfg.surfinflated   = 'surface_inflated_right.mat';
     
     
-    A = subfigure([], Grid, [Indx_T, 4], [], '', Pixels);
+    A = subfigure([], Grid, [Indx_T, 5], [], '', Pixels);
     ft_sourceplot_hemisphere(cfg, Maps(Indx_T).right);
     view(-90,0)
     lighting none
     axis tight
     
     
-    A = subfigure([], Grid, [Indx_T, 2], [], '', Pixels);
+    A = subfigure([], Grid, [Indx_T, 3], [], '', Pixels);
     ft_sourceplot_hemisphere(cfg, Maps(Indx_T).right);
     view(90,0)
     lighting none
@@ -167,6 +163,14 @@ for Indx_T = 1:numel(AllTasks)
     
 end
 
+% colorbar
+A = subfigure([], Grid, [numel(AllTasks)+1, 2], [1, 4], '', Pixels);
+% shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+
+Pixels.Colorbar = 'north';
+Pixels.BarSize = Pixels.FontSize;
+Pixels.Steps.Divergent = 20;
+plotColorbar('Divergent', cfg.funcolorlim, Format.Labels.ES, Pixels)
 
 % save
 saveFig('All_Sources', Paths.Paper, Format)

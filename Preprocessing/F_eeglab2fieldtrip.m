@@ -7,11 +7,11 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = true;
+Refresh = false;
 
 Data_Type = 'Power';
 
-Destination_Folder = 'SourceLocalization119';
+Destination_Folder = 'SourceLocalization119_Old';
 Cuts_Folder = 'Cuts';
 
 Window_seconds = 8; % epoch window in seconds
@@ -20,7 +20,7 @@ Minutes = 4; % time in windows to use for epochs
 EEG_Triggers.Start = 'S  1';
 EEG_Triggers.End = 'S  2';
 
-allTasks = {'SpFT', 'Match2Sample', 'LAT', 'PVT',  'Game', 'Music'};
+allTasks = {'Standing', 'Fixation', 'Oddball'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -29,7 +29,7 @@ for Indx_T = 1:numel(allTasks)
     
     Task = allTasks{Indx_T};
     
-    Source =  fullfile(Paths.Preprocessed, 'Clean', Data_Type, Task);
+    Source =  fullfile(Paths.Preprocessed, 'Clean_Old', Data_Type, Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Cuts_Folder, Task);
     
     Destination = fullfile(Paths.Preprocessed, Destination_Folder, Task);
@@ -79,7 +79,11 @@ for Indx_T = 1:numel(allTasks)
         
         % set to nan all cut data
         Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(Filename, '_Clean'), '_Cuts.mat']);
+        try
         EEG = rmNoise(EEG, Cuts_Filepath);
+        catch
+            continue
+        end
         
         EEG = rmNaN(EEG);
         
