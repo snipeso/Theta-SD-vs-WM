@@ -40,7 +40,6 @@ Maps = struct();
 
 for Indx_T = 1:numel(TaskLabels)
     if Refresh
-        
         Map = interpolateSources(stat.(AllTasks{Indx_T}));
         
         save(fullfile(Source, [AllTasks{Indx_T}, '.mat']), 'Map');

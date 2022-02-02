@@ -1,6 +1,5 @@
 % Script for looking at responses across trial types and sleep deprivation.
 
-
 % magnitude of theta.
 clear
 close all
@@ -37,7 +36,6 @@ if ~exist(Main_Results, 'dir')
 end
 
 TitleTag = strjoin({'M2S', Tag, 'Main'}, '_');
-Legend = append('L', string(Levels));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Setup data
@@ -57,18 +55,7 @@ bData = bandData(chData, Freqs, Bands, 'last');
 % split levels
 tData = trialData(bData, AllTrials.level);
 
-Folder = fullfile(Paths.Data, 'EEG', 'Source', 'Figure');
 
-% source space fmTheta
-load(fullfile(Folder, 'stat_M2S_lvl3_vs_lvl1.mat'), 'stat')
-fmTheta_Map = interpolateSources(stat);
-
-
-% source space sdTheta
-load(fullfile(Folder, 'stat_M2S_BS_vs_S2_lvl1.mat'), 'stat')
-sdTheta_Map = interpolateSources(stat);
-
-load('mri_for_plot.mat', 'mri_spm_sliced') % TODO check
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,13 +66,14 @@ CLims_Diff = [-1.7 1.7];
 
 Epochs = Format.Labels.Epochs;
 Levels = [1 3 6];
+Legend = append('L', string(Levels));
+
 
 YLims = [-.2 .6];
 
 %% Bands ANOVA for SD vs memory load
 
 FactorLabels = {'Session', 'Trial'};
-
 
 for Indx_B = 1:numel(BandLabels)
     for Indx_Ch = 1:numel(ChLabels)

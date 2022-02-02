@@ -69,6 +69,19 @@ bchData = bandData(chData, Freqs, Bands, 'last');
 % split levels
 tchData = trialData(bchData, AllTrials.level);
 
+%%
+Folder = fullfile(Paths.Data, 'EEG', 'Source', 'Figure');
+
+% source space fmTheta
+load(fullfile(Folder, 'stat_M2S_lvl3_vs_lvl1.mat'), 'stat')
+fmTheta_Map = interpolateSources(stat);
+
+
+% source space sdTheta
+load(fullfile(Folder, 'stat_M2S_BS_vs_S2_lvl1.mat'), 'stat')
+sdTheta_Map = interpolateSources(stat);
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 
