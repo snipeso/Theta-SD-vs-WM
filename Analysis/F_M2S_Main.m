@@ -82,6 +82,35 @@ load(fullfile(Folder, 'stat_M2S_BS_vs_S2_lvl1.mat'), 'stat')
 sdTheta_Map = interpolateSources(stat);
 
 
+%%
+
+TablePath = fullfile(Paths.Data, 'EEG', 'Source', 'Table');
+  File_fmTheta = 'mtrx_M2S_levels_median.mat';
+ File_sdTheta = 'mtrx_M2S_BS_vs_S2_lvl1_median.mat';
+ 
+ % theta in L3vsL1
+load(fullfile(TablePath, File_fmTheta), 'mtrx_cortex', 'cortical_areas')
+fmTheta_Table = nanmean(mtrx_cortex, 4);
+ Data1 = squeeze(fmTheta_Table(:, 1, :));
+    Data2 = squeeze(fmTheta_Table (:, 2, :));
+    Stats = pairedttest(Data1, Data2, P.StatsP);
+    t_fmTheta = Stats.t;
+    sig_fmTheta = Stats.sig;
+
+% theta in BL vs SD of L1
+load(fullfile(TablePath, File_sdTheta), 'mtrx_cortex')
+sdTheta_Table = nanmean(mtrx_cortex, 4);
+ Data1 = squeeze(sdTheta_Table(:, 1, :));
+    Data2 = squeeze(sdTheta_Table (:, 2, :));
+    Stats = pairedttest(Data1, Data2, P.StatsP);
+    t_sdTheta = Stats.t;
+    sig_sdTheta = Stats.sig;
+    
+    Areas = cortical_areas;
+    Areas = replace(Areas, '_', ' ');
+    
+    %%
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 
@@ -169,11 +198,39 @@ Pixels.BarSize = Pixels.FontSize;
 Pixels.Steps.Divergent = 20;
 plotColorbar('Divergent', CLims_Diff, Format.Labels.ES, Pixels)
 
+
+
+
+%%
+
+ KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L', 'Cingulum Ant R', ...
+    'Frontal Sup Medial L', 'Insula L', 'Cingulum Mid R', 'Supp Motor Area L' , 'Supp Motor Area R', ...
+    'Hippocampus R', 'Frontal Mid Orb L', 'Frontal Mid R','Frontal Inf Tri L', ...
+    };
+
+ Labels = Areas;
+ Labels(~(ismember(Areas, KeepAreaLabels))) = {''};
+ 
+% plot change
+figure
+
+% colors depends on sig status
+Colors = repmat([.8 .8 .8], size(t_fmTheta, 1), 1); % non significant in gray
+Colors(sig_fmTheta, :) = repmat(getColors([1 1], 'rainbow', 'blue'), nnz(sig_fmTheta), 1);
+Colors(sig_sdTheta, :) = repmat(getColors([1 1], 'rainbow', 'red'), nnz(sig_sdTheta), 1);
+Both =  sig_sdTheta & sig_fmTheta;
+Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
+
+
+ plotRankChange([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
+     {'Neither sig', 'sdTheta sig', 'Both sig'}, 'southeast', Pixels)
+
 % save
 % saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
 
 
 %% M2S fmtheta changes
+
 
 % CLims_Diff = [-2 2];
 CLims_Diff = [-6 6];
