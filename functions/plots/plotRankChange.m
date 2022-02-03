@@ -18,15 +18,21 @@ for Indx = 1:Dims(1)
 
     UC = ismember(UniqueColors, C, 'rows');
 
-    if any(UC)
+    if any(UC) && isempty(YLabels{Indx})
         HV = 'on';
         UniqueColors(UC, :) = [];
     else
         HV = 'off';
     end
     
+    if ~isempty(YLabels{Indx})
+        Alpha = 1;
+    else
+        Alpha = .3;
+    end
+    
     plot(X, Data(Indx, :), '-o', 'LineWidth', Format.LW, 'MarkerFaceColor', ...
-       C, 'Color', [C, .5], 'HandleVisibility', HV)
+       C, 'Color', [C, Alpha], 'HandleVisibility', HV)
 end
 
 if ~isempty(YLabels)

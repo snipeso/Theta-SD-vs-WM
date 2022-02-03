@@ -180,12 +180,18 @@ shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
 plotBalloonBrain(sdTheta_Map, 'left-outside', CLims_Diff, false, Pixels)
 
 Axes = subfigure([], Grid, [3 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
+shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
+
 plotBalloonBrain(sdTheta_Map, 'right-outside', CLims_Diff, false, Pixels)
 
 Axes = subfigure([], Grid, [4 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
+shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
+
 plotBalloonBrain(sdTheta_Map, 'left-inside', CLims_Diff, false, Pixels)
 
 Axes = subfigure([], Grid, [5 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
+shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
+
 plotBalloonBrain(sdTheta_Map, 'right-inside', CLims_Diff, false, Pixels)
 
 
@@ -199,20 +205,16 @@ Pixels.Steps.Divergent = 20;
 plotColorbar('Divergent', CLims_Diff, Format.Labels.ES, Pixels)
 
 
+%%% plot change
 
-
-%%
-
- KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L', 'Cingulum Ant R', ...
-    'Frontal Sup Medial L', 'Insula L', 'Cingulum Mid R', 'Supp Motor Area L' , 'Supp Motor Area R', ...
+ KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L',  ...
+    'Frontal Sup Medial L', 'Supp Motor Area L' , ...
     'Hippocampus R', 'Frontal Mid Orb L', 'Frontal Mid R','Frontal Inf Tri L', ...
     };
 
  Labels = Areas;
  Labels(~(ismember(Areas, KeepAreaLabels))) = {''};
  
-% plot change
-figure
 
 % colors depends on sig status
 Colors = repmat([.8 .8 .8], size(t_fmTheta, 1), 1); % non significant in gray
@@ -221,12 +223,14 @@ Colors(sig_sdTheta, :) = repmat(getColors([1 1], 'rainbow', 'red'), nnz(sig_sdTh
 Both =  sig_sdTheta & sig_fmTheta;
 Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 
+subfigure([], Grid, [5 4], [5, 1], Pixels.Letters{Indx}, Pixels);
+shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
 
  plotRankChange([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
-     {'Neither sig', 'sdTheta sig', 'Both sig'}, 'southeast', Pixels)
+     {'Neither significant', 'sdTheta significant', 'Both signficant'}, 'southeast', Pixels)
 
 % save
-% saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
+saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
 
 
 %% M2S fmtheta changes
