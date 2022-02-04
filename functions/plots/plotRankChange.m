@@ -29,11 +29,13 @@ for Indx = 1:Dims(1)
     if ~isempty(YLabels{Indx})
         Alpha = 1;
     else
-        Alpha = .3;
+        Alpha = .25;
     end
     
-    plot(X, Data(Indx, :), '-o', 'LineWidth', Format.LW, 'MarkerFaceColor', ...
-       C, 'Color', [C, Alpha], 'HandleVisibility', HV)
+    plot(X, Data(Indx, :), '-', 'LineWidth', Format.LW, ...
+        'Color', [C, Alpha], 'HandleVisibility', HV, 'LineJoin', 'round')
+    scatter(X, Data(Indx, :), Format.ScatterSize, 'HandleVisibility', 'off', ...
+        'MarkerFaceColor', C, 'MarkerFaceAlpha', Alpha, 'MarkerEdgeCOlor', 'none')
 end
 
 if ~isempty(YLabels)

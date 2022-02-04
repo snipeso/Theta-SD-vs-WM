@@ -129,6 +129,8 @@ Levels = [1 3 6];
 
 
  Pixels.PaddingLabels = 0;
+ Pixels.yPadding = 10;
+ Pixels.xPadding = 10;
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 CLims_Diff = [-7 7];
@@ -183,7 +185,7 @@ A = subfigure([], Grid, [5 3], [5, 1], '', Pixels);
 shiftaxis(A,  Pixels.PaddingLabels, Pixels.PaddingLabels)
 Pixels.BarSize = Pixels.FontSize;
 Pixels.Colorbar
-Pixels.Steps.Divergent = 20;
+Pixels.Steps.Divergent = 28;
 plotColorbar('Divergent', CLims_Diff, Format.Labels.ES, Pixels)
 
 
@@ -198,7 +200,7 @@ Labels = Areas;
 Labels(~(ismember(Areas, KeepAreaLabels))) = {''};
 
 % colors depends on sig status
-Colors = repmat([.8 .8 .8], size(t_fmTheta, 1), 1); % non significant in gray
+Colors = repmat([.7 .7 .7], size(t_fmTheta, 1), 1); % non significant in gray
 Colors(sig_fmTheta, :) = repmat(getColors([1 1], 'rainbow', 'blue'), nnz(sig_fmTheta), 1);
 Colors(sig_sdTheta, :) = repmat(getColors([1 1], 'rainbow', 'red'), nnz(sig_sdTheta), 1);
 Both =  sig_sdTheta & sig_fmTheta;
@@ -208,7 +210,7 @@ A = subfigure([], [5 3], [5 3], [5, 1], Pixels.Letters{Indx}, Pixels);
 shiftaxis(A,[],  Pixels.yPadding)
 
 plotRankChange([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
-    { 'Both signficant', 'sdTheta significant', 'Neither significant'}, 'northwest', Pixels)
+    { 'Both signficant','Neither significant', 'sdTheta significant'}, 'northwest', Pixels)
 set(legend, 'position', [ 0.7144    0.8449    0.1317    0.0566])
 ylim([-4 7.5])
 
@@ -219,6 +221,7 @@ saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper
 
 %% M2S fmtheta changes
 
+Pixels = P.Pixels;
 
 % CLims_Diff = [-2 2];
 CLims_Diff = [-6 6];
