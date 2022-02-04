@@ -85,31 +85,31 @@ sdTheta_Map = interpolateSources(stat);
 %%
 
 TablePath = fullfile(Paths.Data, 'EEG', 'Source', 'Table');
-  File_fmTheta = 'mtrx_M2S_levels_median.mat';
- File_sdTheta = 'mtrx_M2S_BS_vs_S2_lvl1_median.mat';
- 
- % theta in L3vsL1
+File_fmTheta = 'mtrx_M2S_levels_median.mat';
+File_sdTheta = 'mtrx_M2S_BS_vs_S2_lvl1_median.mat';
+
+% theta in L3vsL1
 load(fullfile(TablePath, File_fmTheta), 'mtrx_cortex', 'cortical_areas')
 fmTheta_Table = nanmean(mtrx_cortex, 4);
- Data1 = squeeze(fmTheta_Table(:, 1, :));
-    Data2 = squeeze(fmTheta_Table (:, 2, :));
-    Stats = pairedttest(Data1, Data2, P.StatsP);
-    t_fmTheta = Stats.t;
-    sig_fmTheta = Stats.sig;
+Data1 = squeeze(fmTheta_Table(:, 1, :));
+Data2 = squeeze(fmTheta_Table (:, 2, :));
+Stats = pairedttest(Data1, Data2, P.StatsP);
+t_fmTheta = Stats.t;
+sig_fmTheta = Stats.sig;
 
 % theta in BL vs SD of L1
 load(fullfile(TablePath, File_sdTheta), 'mtrx_cortex')
 sdTheta_Table = nanmean(mtrx_cortex, 4);
- Data1 = squeeze(sdTheta_Table(:, 1, :));
-    Data2 = squeeze(sdTheta_Table (:, 2, :));
-    Stats = pairedttest(Data1, Data2, P.StatsP);
-    t_sdTheta = Stats.t;
-    sig_sdTheta = Stats.sig;
-    
-    Areas = cortical_areas;
-    Areas = replace(Areas, '_', ' ');
-    
-    %%
+Data1 = squeeze(sdTheta_Table(:, 1, :));
+Data2 = squeeze(sdTheta_Table (:, 2, :));
+Stats = pairedttest(Data1, Data2, P.StatsP);
+t_sdTheta = Stats.t;
+sig_sdTheta = Stats.sig;
+
+Areas = cortical_areas;
+Areas = replace(Areas, '_', ' ');
+
+%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
@@ -134,12 +134,14 @@ PlotPatch = true;
 
 Grid  = [5 4];
 
+Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
+
 figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.6])
 Indx = 1; % tally of axes
 
 % fmTheta
 Axes = subfigure([], Grid, [1 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels, Pixels.PaddingLabels)
+shiftaxis(Axes, [], Pixels.PaddingLabels)
 N1 = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
 N3 = squeeze(tData(:, 1, 2, Indx_E, :, Indx_B));
 
@@ -147,22 +149,14 @@ Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
 title('fmTheta', 'FontSize', Pixels.TitleSize)
 
 % balloon brains fmTheta
-Axes = subfigure([], Grid, [2 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
-plotBalloonBrain(fmTheta_Map, 'left-outside', CLims_Diff, false, Pixels)
-
-Axes = subfigure([], Grid, [3 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
-plotBalloonBrain(fmTheta_Map, 'right-outside', CLims_Diff, false, Pixels)
-
-Axes = subfigure([], Grid, [4 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
-plotBalloonBrain(fmTheta_Map, 'left-inside', CLims_Diff, PlotPatch, Pixels)
-
-Axes = subfigure([], Grid, [5 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
-plotBalloonBrain(fmTheta_Map, 'right-inside', CLims_Diff, PlotPatch, Pixels)
-
+for Indx_F = 1:4
+    
+    Axes = subfigure([], Grid, [Indx_F+1 1], [], Pixels.Numerals{Indx_F}, Pixels);
+    subaxis
+    shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels/2)
+    % shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
+    plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Pixels)
+end
 
 % sdTheta
 Axes = subfigure([], Grid, [1 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
@@ -175,46 +169,35 @@ title('sdTheta', 'FontSize', Pixels.TitleSize)
 
 
 % balloon sdTheta
-Axes = subfigure([], Grid, [2 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
-plotBalloonBrain(sdTheta_Map, 'left-outside', CLims_Diff, false, Pixels)
-
-Axes = subfigure([], Grid, [3 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
-
-plotBalloonBrain(sdTheta_Map, 'right-outside', CLims_Diff, false, Pixels)
-
-Axes = subfigure([], Grid, [4 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
-
-plotBalloonBrain(sdTheta_Map, 'left-inside', CLims_Diff, false, Pixels)
-
-Axes = subfigure([], Grid, [5 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
-
-plotBalloonBrain(sdTheta_Map, 'right-inside', CLims_Diff, false, Pixels)
+for Indx_F = 1:4
+    Axes = subfigure([], Grid, [Indx_F+1 2], [], Pixels.Numerals{Indx_F}, Pixels);
+    shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels/2)
+    % shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
+    plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Pixels)
+end
 
 
 % colorbar
 A = subfigure([], Grid, [5 3], [5, 1], '', Pixels);
-shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+shiftaxis(A,  Pixels.PaddingLabels, Pixels.PaddingLabels)
 
 % Pixels.Colorbar = 'north';
 Pixels.BarSize = Pixels.FontSize;
+Pixels.Colorbar
 Pixels.Steps.Divergent = 20;
 plotColorbar('Divergent', CLims_Diff, Format.Labels.ES, Pixels)
 
 
 %%% plot change
 
- KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L',  ...
+KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L',  ...
     'Frontal Sup Medial L', 'Supp Motor Area L' , ...
     'Hippocampus R', 'Frontal Mid Orb L', 'Frontal Mid R','Frontal Inf Tri L', ...
     };
 
- Labels = Areas;
- Labels(~(ismember(Areas, KeepAreaLabels))) = {''};
- 
+Labels = Areas;
+Labels(~(ismember(Areas, KeepAreaLabels))) = {''};
+
 
 % colors depends on sig status
 Colors = repmat([.8 .8 .8], size(t_fmTheta, 1), 1); % non significant in gray
@@ -223,14 +206,14 @@ Colors(sig_sdTheta, :) = repmat(getColors([1 1], 'rainbow', 'red'), nnz(sig_sdTh
 Both =  sig_sdTheta & sig_fmTheta;
 Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 
-subfigure([], Grid, [5 4], [5, 1], Pixels.Letters{Indx}, Pixels);
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
+A = subfigure([], [5 3], [5 3], [5, 1], Pixels.Letters{Indx}, Pixels);
+shiftaxis(A,[],  Pixels.PaddingLabels)
 
- plotRankChange([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
-     {'Neither significant', 'sdTheta significant', 'Both signficant'}, 'southeast', Pixels)
+plotRankChange([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
+    {'Neither significant', 'sdTheta significant', 'Both signficant'}, 'southeast', Pixels)
 
 % save
-saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
+% saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
 
 
 %% M2S fmtheta changes
@@ -268,9 +251,9 @@ for Indx_L =  2:numel(Levels)
         N3 = squeeze(tData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
         
         A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], {}, Pixels);
-%         shiftaxis(A, Pixels.PaddingLabels, [])
-    shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
-
+        %         shiftaxis(A, Pixels.PaddingLabels, [])
+        shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+        
         
         Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
         Title = strjoin({'M2S_Topo',Sessions.Labels{Indx_S}, Legend{Indx_L}, 'vs', 'L1'}, '_');

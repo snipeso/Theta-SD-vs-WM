@@ -8,7 +8,7 @@ X = 1:Dims(2);
 
 % make legend items only the first of each color
 UniqueColors = unique(Colors, 'rows');
-
+LegendOrder = [];
 
 set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
 
@@ -20,6 +20,7 @@ for Indx = 1:Dims(1)
 
     if any(UC) && isempty(YLabels{Indx})
         HV = 'on';
+        LegendOrder = [LegendOrder, find(UC)];
         UniqueColors(UC, :) = [];
     else
         HV = 'off';
@@ -54,6 +55,6 @@ axis off
 set(gca, 'FontName', Format.FontName)
 
 if ~isempty(Legend)
-    legend(Legend, 'location', LegendPosition)
+    legend(Legend(LegendOrder), 'location', LegendPosition)
 end
 
