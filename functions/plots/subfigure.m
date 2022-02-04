@@ -1,4 +1,4 @@
-function Axes = subfigure(Space, Grid, CornerLocation, Size, Letter, Pixels)
+function Axes = subfigure(Space, Grid, CornerLocation, Size, LabelSpace, Letter, Pixels)
 %  subfigure(Space, Grid, Location, Letter, Format)
 % Instead of subplot, this lets you place a subfigure anywhere on the
 % figure (could be overlap if you're not careful).
@@ -9,6 +9,8 @@ function Axes = subfigure(Space, Grid, CornerLocation, Size, Letter, Pixels)
 % CornerLocation indicates which parcel the bottom left corner of the axes
 % should occupy. should be [r x c].
 % Size is number of parcels [r x c]. If empty, assumed to be [1 1]
+% LabelSpace is true/false, and indicates whether figure should shift for x
+% and y labels.
 % Letter is optional, and would make a big letter in the corner of the
 % parcel.
 
@@ -25,7 +27,11 @@ function Axes = subfigure(Space, Grid, CornerLocation, Size, Letter, Pixels)
 set(gcf, 'units', 'pixels')
 FigSpace = get(gcf, 'position');
 
+if LabelSpace
 PaddingLabels = Pixels.PaddingLabels;
+else
+    PaddingLabels = 0;
+end
 
 if isempty(Space)
     Space = FigSpace;
@@ -87,16 +93,16 @@ end
 
 set(gca, 'Units', 'normalized')
 
-
-%%% Debugging stuff
-
-% figure padding
-Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
-Box.Position = [PaddingExterior, PaddingExterior, Space(3)-PaddingExterior*2,  Space(4)-PaddingExterior*2];
-
-
-% Axis padding
-Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
-A = gca;
-A.Units = 'pixels';
-Box.Position = A.Position;
+% 
+% %% Debugging stuff
+% 
+% % figure padding
+% Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
+% Box.Position = [PaddingExterior, PaddingExterior, Space(3)-PaddingExterior*2,  Space(4)-PaddingExterior*2];
+% 
+% 
+% % Axis padding
+% Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
+% A = gca;
+% A.Units = 'pixels';
+% Box.Position = A.Position;

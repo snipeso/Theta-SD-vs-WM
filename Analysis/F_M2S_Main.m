@@ -222,9 +222,8 @@ saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper
 
 Pixels = P.Pixels;
 
-% CLims_Diff = [-2 2];
 CLims_Diff = [-7 7];
-Pixels.PaddingExterior = 30; % reduce because of subplots
+Pixels.PaddingExterior = 40; % reduce because of subplots
 Grid = [1 5];
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
@@ -234,13 +233,10 @@ Legend = append('L', string(Levels));
 figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.35])
 Indx = 1; % tally of axes
 
-
-
-
 %%% N3 vs N2 by session
 miniGrid = [2 3];
 
-Axis = subfigure([], Grid, [1, 1], [1, 3], Pixels.Letters{Indx}, Pixels);
+Axis = subfigure([], Grid, [1, 1], [1, 3], false, Pixels.Letters{Indx}, Pixels);
 Indx = Indx+1;
 Axis.Units = 'pixels';
 Space = Axis.Position;
@@ -253,9 +249,8 @@ for Indx_L =  2:numel(Levels)
         N1 = squeeze(bData(:, Indx_S, 1, Indx_E, :, Indx_B));
         N3 = squeeze(bData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
         
-        A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], {}, Pixels);
-        %         shiftaxis(A, Pixels.PaddingLabels, [])
-        shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+        A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], false, {}, Pixels);
+                shiftaxis(A, Pixels.PaddingLabels/2, [])
         
         
         Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
@@ -285,7 +280,7 @@ miniGrid = [4, 1];
 YLims = [-.2; -.5; -.2];
 YLims = [YLims, YLims + [1.4; .7; .7]];
 
-Space = subaxis(Grid, [1, 4], [], Pixels.Letters{Indx}, Pixels);
+Space = subaxis(Grid, [1, 4], [], false, Pixels.Letters{Indx}, Pixels);
 Indx = Indx+1;
 
 for Indx_Ch = 1:numel(ChLabels)
@@ -297,14 +292,14 @@ for Indx_Ch = 1:numel(ChLabels)
         Height = 1;
     end
     
-    A = subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], {}, Pixels);
+    A = subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], true, {}, Pixels);
     shiftaxis(A, [], Pixels.PaddingLabels/2)
     A.TickLength = [0 0];
     
     Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Legend, ...
         Format.Colors.Levels, StatsP, Pixels);
     ylim(YLims(Indx_Ch, :))
-%     yticks(-.4:.1:1)
+    yticks(-1:.2:2)
     ylabel(Format.Labels.zPower)
     
     if Indx_Ch >1
@@ -321,17 +316,18 @@ end
 
 
 %%% SD vs BL by level
-miniGrid = [3 2];
+miniGrid = [3 1];
+Pixels.Topo.Sig = 2;
+Space = subaxis(Grid, [1 5], [], false, Pixels.Letters{Indx}, Pixels);
 
-Space = subaxis(Grid, [1 5], [], Pixels.Letters{Indx}, Pixels);
-
+Space(1) = Space(1) - Pixels.xPadding;
 for Indx_L =  1:numel(Levels)
     
-    A = subfigure(Space, miniGrid, [Indx_L 1], [], {}, Pixels);
+    A = subfigure(Space, miniGrid, [Indx_L 1], [], false, {}, Pixels);
     BL = squeeze(bData(:, 1, Indx_L, Indx_E, :, Indx_B));
     SD = squeeze(bData(:, 3, Indx_L, Indx_E, :, Indx_B));
     
-    shiftaxis(A, Pixels.PaddingLabels*2, Pixels.PaddingLabels)
+%     shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
     
     Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
     Title = strjoin({Legend{Indx_L}, 'SDvsBL', 'Topo'}, '_');
@@ -343,11 +339,11 @@ for Indx_L =  1:numel(Levels)
 end
 
 % plot colorbar
-A = subfigure(Space, miniGrid, [3 2], [3, 1], {}, Pixels);
-shiftaxis(A, Pixels.PaddingLabels*2, Pixels.PaddingLabels)
-A.Position(1) = .93;
+A = subfigure(Space, miniGrid, [3 2], [3, 1], false, {}, Pixels);
+% % A.Position(1) = .93;
+% A.Position(1) = .98;
 plotColorbar('Divergent', CLims_Diff, Pixels.Labels.ES, Pixels)
-
+shiftaxis(A, Pixels.PaddingLabels, [])
 colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent))
 
 
