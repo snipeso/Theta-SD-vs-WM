@@ -93,9 +93,9 @@ end
 
 set(gca, 'Units', 'normalized')
 
-% 
-% %% Debugging stuff
-% 
+
+%% Debugging stuff
+
 % % figure padding
 % Box = annotation('rectangle', [0 0 0 0], 'Color', 'red', 'Units', 'pixels');
 % Box.Position = [PaddingExterior, PaddingExterior, Space(3)-PaddingExterior*2,  Space(4)-PaddingExterior*2];

@@ -126,15 +126,14 @@ Legend = append('L', string(Levels));
 
 %% fmTheta vs sdTheta
 
+Pixels = P.Pixels;
 
-Pixels.PaddingLabels = 0;
-Pixels.yPadding = 10;
-Pixels.xPadding = 10;
+Pixels.yPadding = 15;
+Pixels.xPadding = 15;
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 CLims_Diff = [-7 7];
 PlotPatch = true;
-
 Grid  = [5 4];
 
 Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
@@ -142,54 +141,51 @@ Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
 figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.6])
 Indx = 1; % tally of axes
 
-% fmTheta
-Axes = subfigure([], Grid, [1 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.xPadding, Pixels.yPadding)
+%%% fmTheta
 N1 = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
 N3 = squeeze(bData(:, 1, 2, Indx_E, :, Indx_B));
 
+Axes = subfigure([], Grid, [1 1], [], false, Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
+shiftaxis(Axes, [], Pixels.yPadding/2)
 plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
 title('fmTheta', 'FontSize', Pixels.LetterSize)
 
 % balloon brains fmTheta
 for Indx_F = 1:4
     Space = subaxis(Grid, [Indx_F+1 1], [], [], Pixels);
-    Axes = subfigure(Space, [1 1], [1 1], [], Pixels.Numerals{Indx_F}, Pixels);
+    Axes = subfigure(Space, [1 1], [1 1], [], false, Pixels.Numerals{Indx_F}, Pixels);
     shiftaxis(Axes, Pixels.xPadding/2, Pixels.yPadding/2)
-    
     plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Pixels)
 end
 
-% sdTheta
-Axes = subfigure([], Grid, [1 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.xPadding, Pixels.yPadding)
+
+%%% sdTheta
 BL = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
 SD = squeeze(bData(:, 3, 1, Indx_E, :, Indx_B));
 
+Axes = subfigure([], Grid, [1 2], [], false, Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
+shiftaxis(Axes, [], Pixels.yPadding/2)
 Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
 title('sdTheta', 'FontSize', Pixels.LetterSize)
-
 
 % balloon sdTheta
 for Indx_F = 1:4
     Space = subaxis(Grid, [Indx_F+1 2], [], [], Pixels);
-    Axes = subfigure(Space, [1 1], [1 1], [], Pixels.Numerals{Indx_F}, Pixels);
+    Axes = subfigure(Space, [1 1], [1 1], [], false, Pixels.Numerals{Indx_F}, Pixels);
     shiftaxis(Axes, Pixels.xPadding/2, Pixels.yPadding/2)
     plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Pixels)
 end
 
 
 % colorbar
-A = subfigure([], Grid, [5 3], [5, 1], '', Pixels);
-shiftaxis(A,  Pixels.PaddingLabels, Pixels.PaddingLabels)
+subfigure([], Grid, [5 3], [5, 1], false, '', Pixels);
 Pixels.BarSize = Pixels.FontSize;
-Pixels.Colorbar
-Pixels.Steps.Divergent = 28;
 plotColorbar('Divergent', CLims_Diff, Format.Labels.ES, Pixels)
 
 
-%%% plot change
+%%% plot change based on table data
 
+% decide which labels to show
 KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L', 'Precuneus R',  ...
     'Frontal Sup Medial L', 'Supp Motor Area L' , 'Cuneus R', 'Frontal Med Orb L',  ...
     'Hippocampus R', 'Frontal Mid Orb L', 'Frontal Mid R','Frontal Inf Tri L', ...
@@ -205,14 +201,13 @@ Colors(sig_sdTheta, :) = repmat(getColors([1 1], 'rainbow', 'red'), nnz(sig_sdTh
 Both =  sig_sdTheta & sig_fmTheta;
 Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 
-A = subfigure([], [5 3], [5 3], [5, 1], Pixels.Letters{Indx}, Pixels);
-shiftaxis(A,[],  Pixels.yPadding)
+A = subfigure([], [5 3], [5 3], [5, 1], false, Pixels.Letters{Indx}, Pixels);
 
 plotRankChange([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
     { 'Both signficant','Neither significant', 'sdTheta significant'}, 'northwest', Pixels)
 set(legend, 'position', [ 0.7144    0.8449    0.1317    0.0566])
-ylim([-4 7.5])
-
+ylim([-3.5 7.5])
+xlim([.5 2.2])
 
 % save
 saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
@@ -223,7 +218,6 @@ saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper
 Pixels = P.Pixels;
 
 CLims_Diff = [-7 7];
-Pixels.PaddingExterior = 40; % reduce because of subplots
 Grid = [1 5];
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
