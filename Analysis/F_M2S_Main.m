@@ -127,6 +127,8 @@ Levels = [1 3 6];
 
 %% fmTheta vs sdTheta
 
+
+ Pixels.PaddingLabels = 0;
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 CLims_Diff = [-7 7];
@@ -141,38 +143,37 @@ Indx = 1; % tally of axes
 
 % fmTheta
 Axes = subfigure([], Grid, [1 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, [], Pixels.PaddingLabels)
+shiftaxis(Axes, Pixels.xPadding, Pixels.yPadding)
 N1 = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
 N3 = squeeze(tData(:, 1, 2, Indx_E, :, Indx_B));
 
-Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
-title('fmTheta', 'FontSize', Pixels.TitleSize)
+plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
+title('fmTheta', 'FontSize', Pixels.LetterSize)
 
 % balloon brains fmTheta
 for Indx_F = 1:4
-    
-    Axes = subfigure([], Grid, [Indx_F+1 1], [], Pixels.Numerals{Indx_F}, Pixels);
-    subaxis
-    shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels/2)
-    % shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
+    Space = subaxis(Grid, [Indx_F+1 1], [], [], Pixels);
+    Axes = subfigure(Space, [1 1], [1 1], [], Pixels.Numerals{Indx_F}, Pixels);
+    shiftaxis(Axes, Pixels.xPadding/2, Pixels.yPadding/2)
+
     plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Pixels)
 end
 
 % sdTheta
 Axes = subfigure([], Grid, [1 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
+shiftaxis(Axes, Pixels.xPadding, Pixels.yPadding)
 BL = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
 SD = squeeze(tData(:, 3, 1, Indx_E, :, Indx_B));
 
 Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
-title('sdTheta', 'FontSize', Pixels.TitleSize)
+title('sdTheta', 'FontSize', Pixels.LetterSize)
 
 
 % balloon sdTheta
 for Indx_F = 1:4
-    Axes = subfigure([], Grid, [Indx_F+1 2], [], Pixels.Numerals{Indx_F}, Pixels);
-    shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels/2)
-    % shiftaxis(Axes, Pixels.PaddingLabels,  Pixels.PaddingLabels)
+    Space = subaxis(Grid, [Indx_F+1 2], [], [], Pixels);
+    Axes = subfigure(Space, [1 1], [1 1], [], Pixels.Numerals{Indx_F}, Pixels);
+    shiftaxis(Axes, Pixels.xPadding/2, Pixels.yPadding/2)
     plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Pixels)
 end
 
@@ -180,8 +181,6 @@ end
 % colorbar
 A = subfigure([], Grid, [5 3], [5, 1], '', Pixels);
 shiftaxis(A,  Pixels.PaddingLabels, Pixels.PaddingLabels)
-
-% Pixels.Colorbar = 'north';
 Pixels.BarSize = Pixels.FontSize;
 Pixels.Colorbar
 Pixels.Steps.Divergent = 20;
@@ -190,14 +189,13 @@ plotColorbar('Divergent', CLims_Diff, Format.Labels.ES, Pixels)
 
 %%% plot change
 
-KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L',  ...
-    'Frontal Sup Medial L', 'Supp Motor Area L' , ...
+KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L', 'Precuneus R',  ...
+    'Frontal Sup Medial L', 'Supp Motor Area L' , 'Cuneus R', 'Frontal Med Orb L',  ...
     'Hippocampus R', 'Frontal Mid Orb L', 'Frontal Mid R','Frontal Inf Tri L', ...
-    };
+    'Cingulum Mid L', 'Cingulum Post R', 'Occipital Sup R'   };
 
 Labels = Areas;
 Labels(~(ismember(Areas, KeepAreaLabels))) = {''};
-
 
 % colors depends on sig status
 Colors = repmat([.8 .8 .8], size(t_fmTheta, 1), 1); % non significant in gray
@@ -207,13 +205,16 @@ Both =  sig_sdTheta & sig_fmTheta;
 Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 
 A = subfigure([], [5 3], [5 3], [5, 1], Pixels.Letters{Indx}, Pixels);
-shiftaxis(A,[],  Pixels.PaddingLabels)
+shiftaxis(A,[],  Pixels.yPadding)
 
 plotRankChange([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
-    {'Neither significant', 'sdTheta significant', 'Both signficant'}, 'southeast', Pixels)
+    { 'Both signficant', 'sdTheta significant', 'Neither significant'}, 'northwest', Pixels)
+set(legend, 'position', [ 0.7144    0.8449    0.1317    0.0566])
+ylim([-4 7.5])
+
 
 % save
-% saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
+saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
 
 
 %% M2S fmtheta changes

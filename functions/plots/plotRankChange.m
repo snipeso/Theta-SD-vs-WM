@@ -21,7 +21,7 @@ for Indx = 1:Dims(1)
     if any(UC) && isempty(YLabels{Indx})
         HV = 'on';
         LegendOrder = [LegendOrder, find(UC)];
-        UniqueColors(UC, :) = [];
+        UniqueColors(UC, :) = [2 2 2];
     else
         HV = 'off';
     end
