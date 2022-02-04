@@ -25,30 +25,17 @@ if isempty(CLims)
     CLims = [-Max Max];
 end
 
-% topoplot(Stats.(StatsP.Paired.ES), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
-%     'style', 'map',  'plotrad', .72, 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
-%     'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .05});
-
 topoplot(Stats.t, Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
     'style', 'map',  'plotrad', .72, 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
     'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .05});
-
-% topoplot(nanmean(Data2./Data1), Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
-%     'style', 'map',  'plotrad', .72, 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
-%     'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .05});
-%
-
-
-% topoplot(Stats.mean2-Stats.mean1, Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
-%     'style', 'map',  'plotrad', .72, 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
-%     'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .05});
 
 set(gca, 'FontName', Format.FontName)
 xlim([-.55 .55])
 ylim([-.55 .6])
 
-set(gca, 'FontName', Format.FontName)
-
+A = gca;
+        set(A.Children, 'LineWidth', 1)
+        
 Colormap = reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent);
 colormap(Colormap)
 
