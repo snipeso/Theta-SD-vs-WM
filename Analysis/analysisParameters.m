@@ -111,7 +111,7 @@ Format.Colormap.Rainbow = unirainbow;
 
 % discrete color steps for topoplot colormaps
 Format.Steps.Linear = 20;
-Format.Steps.Divergent = 40;
+Format.Steps.Divergent = 28;
 Format.Steps.Monochrome = 20;
 
 Format.Colorbar = 'west'; % location

@@ -51,14 +51,15 @@ end
 Filepath =  fullfile(Paths.Data, 'EEG', 'Locked', Task, Tag);
 [AllData, Freqs, Chanlocs, AllTrials] = loadM2Spower(P, Filepath);
 
+% trial data
+tData = trialData(AllData, AllTrials.level);
+
 % z-score it
-zData = zScoreData(AllData, 'last');
+zData = zScoreData(tData, 'last');
 % zData = AllData;
 
 % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
-
-tData = trialData(bData, AllTrials.level);
 
 % average data into ROIs
 chData = meanChData(zData, Chanlocs, Channels.(ROI), 5);
@@ -66,8 +67,6 @@ chData = meanChData(zData, Chanlocs, Channels.(ROI), 5);
 % save it into bands
 bchData = bandData(chData, Freqs, Bands, 'last');
 
-% split levels
-tchData = trialData(bchData, AllTrials.level);
 
 %%
 Folder = fullfile(Paths.Data, 'EEG', 'Source', 'Figure');
@@ -146,8 +145,8 @@ Indx = 1; % tally of axes
 % fmTheta
 Axes = subfigure([], Grid, [1 1], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
 shiftaxis(Axes, Pixels.xPadding, Pixels.yPadding)
-N1 = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
-N3 = squeeze(tData(:, 1, 2, Indx_E, :, Indx_B));
+N1 = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
+N3 = squeeze(bData(:, 1, 2, Indx_E, :, Indx_B));
 
 plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
 title('fmTheta', 'FontSize', Pixels.LetterSize)
@@ -164,8 +163,8 @@ end
 % sdTheta
 Axes = subfigure([], Grid, [1 2], [], Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
 shiftaxis(Axes, Pixels.xPadding, Pixels.yPadding)
-BL = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
-SD = squeeze(tData(:, 3, 1, Indx_E, :, Indx_B));
+BL = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
+SD = squeeze(bData(:, 3, 1, Indx_E, :, Indx_B));
 
 Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
 title('sdTheta', 'FontSize', Pixels.LetterSize)
@@ -224,7 +223,7 @@ saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper
 Pixels = P.Pixels;
 
 % CLims_Diff = [-2 2];
-CLims_Diff = [-6 6];
+CLims_Diff = [-7 7];
 Pixels.PaddingExterior = 30; % reduce because of subplots
 Grid = [1 5];
 Indx_E = 2; % retention 1 period
@@ -251,8 +250,8 @@ for Indx_L =  2:numel(Levels)
     
     for Indx_S = 1:nSessions
         
-        N1 = squeeze(tData(:, Indx_S, 1, Indx_E, :, Indx_B));
-        N3 = squeeze(tData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
+        N1 = squeeze(bData(:, Indx_S, 1, Indx_E, :, Indx_B));
+        N3 = squeeze(bData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
         
         A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], {}, Pixels);
         %         shiftaxis(A, Pixels.PaddingLabels, [])
@@ -283,14 +282,14 @@ Axis.Units = 'normalized';
 
 %%% mean changes in ROIs
 miniGrid = [4, 1];
-YLims = [-.075; -.21; -.05];
-YLims = [YLims, YLims + [.8; .3; .3]];
+YLims = [-.2; -.5; -.2];
+YLims = [YLims, YLims + [1.4; .7; .7]];
 
 Space = subaxis(Grid, [1, 4], [], Pixels.Letters{Indx}, Pixels);
 Indx = Indx+1;
 
 for Indx_Ch = 1:numel(ChLabels)
-    Data = squeeze(tchData(:, :, :, Indx_E, Indx_Ch, Indx_B));
+    Data = squeeze(bchData(:, :, :, Indx_E, Indx_Ch, Indx_B));
     
     if Indx_Ch==1 % make only first plot twice as long
         Height = 2;
@@ -305,7 +304,7 @@ for Indx_Ch = 1:numel(ChLabels)
     Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Legend, ...
         Format.Colors.Levels, StatsP, Pixels);
     ylim(YLims(Indx_Ch, :))
-    yticks(-.4:.1:1)
+%     yticks(-.4:.1:1)
     ylabel(Format.Labels.zPower)
     
     if Indx_Ch >1
@@ -329,8 +328,8 @@ Space = subaxis(Grid, [1 5], [], Pixels.Letters{Indx}, Pixels);
 for Indx_L =  1:numel(Levels)
     
     A = subfigure(Space, miniGrid, [Indx_L 1], [], {}, Pixels);
-    BL = squeeze(tData(:, 1, Indx_L, Indx_E, :, Indx_B));
-    SD = squeeze(tData(:, 3, Indx_L, Indx_E, :, Indx_B));
+    BL = squeeze(bData(:, 1, Indx_L, Indx_E, :, Indx_B));
+    SD = squeeze(bData(:, 3, Indx_L, Indx_E, :, Indx_B));
     
     shiftaxis(A, Pixels.PaddingLabels*2, Pixels.PaddingLabels)
     
@@ -364,13 +363,13 @@ saveFig(strjoin({TitleTag, 'M2S_Topographies'}, '_'), Paths.Paper, Format)
 yLims = [-.5 1.5];
 
 
-Data = squeeze(tchData(:, 1, :, 2, 1, 2));
+Data = squeeze(chData(:, 1, :, 2, 1, 2));
 figure('units','normalized','outerposition',[0 0 .5 .5])
 subplot(1, 2, 1)
 plotConfettiSpaghetti(Data, Legend, [], yLims, Format.Colors.Participants, StatsP, Format);
 title('fmTheta')
 
-Data = squeeze(tchData(:, :, 1, 2, 1, 2));
+Data = squeeze(chData(:, :, 1, 2, 1, 2));
 subplot(1, 2, 2)
 plotConfettiSpaghetti(Data, Sessions.Labels, [], yLims, Format.Colors.Participants, StatsP, Format);
 title('sdTheta')
