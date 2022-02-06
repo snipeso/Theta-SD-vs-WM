@@ -114,12 +114,21 @@ clc
 
 T = array2table(tValues', 'VariableNames', [TaskLabels,  {'fmTheta', 'sdTheta'}]);
 T.Areas = Areas';
-writetable(T, fullfile(Paths.PaperStats, 'BigTable_Sources.csv'))
-
+T.Top = zeros(size(T, 1), 1);
 
 for Indx_T = 1:Dims(3)
     T = sortrows(T, Indx_T, 'descend');
-    disp(T(1:10, [Indx_T, end]))
+    disp(T(1:5, [Indx_T, end-1]))
+    
+    T.Top(1:5) = 1;
     
 end
+
+TTop = T(logical(T.Top), :);
+figure;
+plotExcelTable(table2array(TTop(:, 1:6)), [], TTop.Areas, ...
+    TaskLabels,  't values', Pixels)
+
+
+writetable(T, fullfile(Paths.PaperStats, 'BigTable_Sources.csv'))
 

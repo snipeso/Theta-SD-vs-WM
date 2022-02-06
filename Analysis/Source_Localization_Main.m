@@ -1,1 +1,0 @@
-% this script gets the 

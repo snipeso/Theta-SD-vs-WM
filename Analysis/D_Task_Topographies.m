@@ -61,6 +61,7 @@ CLims = [-1 2];
 
 Grid = [7 3];
 Indx_B = 2; % theta
+Pixels.PaddingExterior = 90;
 Sessions.Labels = {'Baseline', 'Sleep Restriction', 'Sleep Deprivation'};
 figure('units','centimeters','position',[0 4 Pixels.W*.7 Pixels.H])
 
@@ -84,7 +85,7 @@ for Indx_T = 1:numel(AllTasks)
     
     X = get(gca, 'XLim');
     Y = get(gca, 'YLim');
-    text(X(1)-diff(X)*.25, Y(1)+diff(Y)*.5, TaskLabels{Indx_T}, ...
+    text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, TaskLabels{Indx_T}, ...
         'FontSize', Pixels.LetterSize, 'FontName', Pixels.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center', 'Rotation', 90);
 end
