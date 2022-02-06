@@ -36,8 +36,6 @@ end
 Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
-
-
 % z-score it
 zData = zScoreData(AllData, 'last');
 
@@ -53,7 +51,7 @@ bData = bandData(zData, Freqs, Bands, 'last');
 
 BandLabels = fieldnames(Bands);
 BL_CLabel = 'z-score';
-CLims_Diff = [-2 2];
+CLims_Diff = [-7 7];
 CLims = [-1 2];
 
 
@@ -64,7 +62,7 @@ CLims = [-1 2];
 Grid = [7 3];
 Indx_B = 2; % theta
 Sessions.Labels = {'Baseline', 'Sleep Restriction', 'Sleep Deprivation'};
-figure('units','centimeters','position',[0 4 Pixels.W*.8 Pixels.H])
+figure('units','centimeters','position',[0 4 Pixels.W*.7 Pixels.H])
 
 Indx = 1; % tally of axes
 
@@ -72,9 +70,8 @@ Indx = 1; % tally of axes
 for Indx_T = 1:numel(AllTasks)
     BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
     
-    A = subfigure([], Grid, [Indx_T, 1], [], '', Pixels);
-    Indx = Indx+1;
-    shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+    A = subfigure([], Grid, [Indx_T, 1], [], false, '', Pixels); Indx = Indx+1;
+    shiftaxis(A, Pixels.xPadding, Pixels.yPadding)
     
     plotTopo(nanmean(BL, 1), Chanlocs, CLims, '', 'Linear', Pixels);
     set(A.Children, 'LineWidth', 1)
@@ -84,21 +81,20 @@ for Indx_T = 1:numel(AllTasks)
         title(Sessions.Labels{1}, 'FontSize', Pixels.LetterSize)
     end
     
-    
     X = get(gca, 'XLim');
     Y = get(gca, 'YLim');
     text(X(1)-diff(X)*.25, Y(1)+diff(Y)*.5, TaskLabels{Indx_T}, ...
         'FontSize', Pixels.LetterSize, 'FontName', Pixels.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center', 'Rotation', 90);
-    
 end
 
 % colorbar
-A = subfigure([], Grid, [Indx_T+1, 1], [], '', Pixels);
-shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+A = subfigure([], Grid, [Indx_T+1, 1], [], false, '', Pixels);
+% shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
 Pixels.Colorbar = 'north';
 Pixels.BarSize = Pixels.FontSize;
 plotColorbar('Linear', CLims, Pixels.Labels.zPower, Pixels)
+
 
 % Change from baseline
 for Indx_S = [2,3]
@@ -106,10 +102,9 @@ for Indx_S = [2,3]
         BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
         SD = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
         
-        A = subfigure([], Grid, [Indx_T, Indx_S], [], '', Pixels);
-        Indx = Indx+1;
+        A = subfigure([], Grid, [Indx_T, Indx_S], [], false, '', Pixels); Indx = Indx+1;
         
-        shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+    shiftaxis(A, Pixels.xPadding, Pixels.yPadding)
         
         Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
         Title = strjoin({'Task_Topo', TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, 'vs', 'BL'}, '_');
@@ -125,10 +120,10 @@ end
 
 
 % colorbar
-A = subfigure([], Grid, [numel(AllTasks)+1, 2], [1, 2], '', Pixels);
-shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+A = subfigure([], Grid, [numel(AllTasks)+1, 2], [1, 2], false, '', Pixels);
+% shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
 
-plotColorbar('Divergent', CLims_Diff, Format.Labels.ES, Pixels)
+plotColorbar('Divergent', CLims_Diff, Format.Labels.t, Pixels)
 
 
 % se color by row

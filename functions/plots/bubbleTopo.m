@@ -6,6 +6,7 @@ function bubbleTopo(Color, Chanlocs, Size, Type, Labels, Format)
 TextColor = [.75 .75 .75];
 switch Type
     case '2D'
+
         Theta =[Chanlocs.theta];
         Radius = [Chanlocs.radius];
         

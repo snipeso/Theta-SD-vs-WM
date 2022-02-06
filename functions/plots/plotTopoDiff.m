@@ -1,6 +1,6 @@
 function Stats = plotTopoDiff(Data1, Data2, Chanlocs, CLims, StatsP, Format)
 % plots the t-values (color) and significant channels (white dots) of
-% Data2 vs Data1. 
+% Data2 vs Data1.
 % Data are P x Ch matrices.
 % Chanlocs is an EEGLAB channel structure.
 % CLims is the limits for the colormap. If none is provided, then the
@@ -32,9 +32,11 @@ if isempty(CLims)
     CLims = [-Max Max];
 end
 
+
 % plot
+Chanlocs = shiftTopoChannels(Chanlocs, .06, 'y'); % little adjustment to center the chanlocs better
 topoplot(Stats.t, Chanlocs, 'maplimits', CLims, 'whitebk', 'on', ...
-    'style', 'map',  'plotrad', .72, 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
+    'style', 'map',  'plotrad', .73, 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
     'electrodes', 'on', 'emarker2', {Indexes(logical(Sig)), 'o', 'w', Format.Topo.Sig, .05});
 
 set(gca, 'FontName', Format.FontName)

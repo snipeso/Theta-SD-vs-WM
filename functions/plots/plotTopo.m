@@ -7,6 +7,7 @@ if numel(CLims) ~= 2
     CLims = 'minmax';
 end
 
+Chanlocs = shiftTopoChannels(Chanlocs, .06, 'y'); % little adjustment to center the chanlocs better
 topoplot(Data, Chanlocs, 'style', 'map', 'headrad', 'rim', 'whitebk', 'on', ...
     'electrodes', 'on',  'maplimits', CLims, 'gridscale', Format.TopoRes);
 xlim([-.55 .55])
@@ -20,4 +21,3 @@ end
 
 Colormap = reduxColormap(Format.Colormap.(Colormap), Format.Steps.(Colormap));
 set(gca, 'Colormap', Colormap)
-% colormap(Colormap)
