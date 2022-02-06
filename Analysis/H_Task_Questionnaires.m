@@ -14,8 +14,8 @@ Participants = P.Participants;
 
 Format = P.Format;
 Sessions = P.Sessions;
-AllTasks = {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
-TaskLabels = {'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
+AllTasks = P.AllTasks; %ELIAS: {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'}; 
+TaskLabels = P.TaskLabels; %{'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 StatsP = P.StatsP;
 Pixels = P.Pixels;
 
