@@ -55,6 +55,7 @@ Scripts used to create the results in the paper (and more). Some scripts will pl
     - **F_M2S_Main.m** plots all the figures related to the match to sample (M2S) short term memory task (STM in the paper).
     - **G_SpFT_Topographies.m** plots the figure showing the changes in theta in the Speech Fluency Task (SpFT).
     - **H_Task_Questionnaires.m** plots the questionnaire data of all the tasks.
+    - **K_Sleep_Architecture.m** analyzes sleep architecture.
 
 Other lettered scripts are from the supplementary material, or not published at all. 
 
