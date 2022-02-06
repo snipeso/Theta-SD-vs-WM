@@ -1,13 +1,5 @@
-% script for plotting topoplots of the different trial epochs from the
-% match2sample (short term memory) task. Compares 3 Items vs 1 and SD vs
-% BL, and correct responses vs lapses
-
-
-% Predictions:
-% If theta is higher during incorrect answers (but only following SD) then
-% this is evidence of local sleep impairing performance. If frontal theta is lower
-% during incorrect answers, this is a sign that theta is a form of
-% compensation and helps with performance.
+% Scripts for plotting figures based on trial data of the Short Term Memory
+% (STM, aka Match2Sample aka M2S task). 
 
 clear
 close all
@@ -26,6 +18,8 @@ Sessions = P.Sessions;
 StatsP = P.StatsP;
 Channels = P.Channels;
 Pixels = P.Pixels;
+
+SmoothFactor = 1; % in Hz, range to smooth over
 
 Window = 2;
 ROI = 'preROI';
@@ -56,7 +50,6 @@ tData = trialData(AllData, AllTrials.level);
 
 % z-score it
 zData = zScoreData(tData, 'last');
-% zData = AllData;
 
 % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
@@ -66,6 +59,9 @@ chData = meanChData(zData, Chanlocs, Channels.(ROI), 5);
 
 % save it into bands
 bchData = bandData(chData, Freqs, Bands, 'last');
+
+% smooth ch data for plotting
+chData = smoothFreqs(chData, Freqs, 'last', SmoothFactor);
 
 
 %%
@@ -138,7 +134,7 @@ Grid  = [5 4];
 
 Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
 
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.6])
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.5])
 Indx = 1; % tally of axes
 
 %%% fmTheta
@@ -146,15 +142,15 @@ N1 = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
 N3 = squeeze(bData(:, 1, 2, Indx_E, :, Indx_B));
 
 Axes = subfigure([], Grid, [1 1], [], false, Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, [], Pixels.yPadding/2)
+shiftaxis(Axes, [], Pixels.yPadding)
 plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Pixels);
-title('fmTheta', 'FontSize', Pixels.LetterSize)
+title('fmTheta', 'FontSize', Pixels.TitleSize)
 
 % balloon brains fmTheta
 for Indx_F = 1:4
     Space = subaxis(Grid, [Indx_F+1 1], [], [], Pixels);
     Axes = subfigure(Space, [1 1], [1 1], [], false, Pixels.Numerals{Indx_F}, Pixels);
-    shiftaxis(Axes, Pixels.xPadding/2, Pixels.yPadding/2)
+    shiftaxis(Axes, Pixels.xPadding/2, Pixels.yPadding)
     plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Pixels)
 end
 
@@ -164,15 +160,15 @@ BL = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
 SD = squeeze(bData(:, 3, 1, Indx_E, :, Indx_B));
 
 Axes = subfigure([], Grid, [1 2], [], false, Pixels.Letters{Indx}, Pixels); Indx = Indx+1;
-shiftaxis(Axes, [], Pixels.yPadding/2)
+shiftaxis(Axes, [], Pixels.yPadding)
 Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
-title('sdTheta', 'FontSize', Pixels.LetterSize)
+title('sdTheta', 'FontSize', Pixels.TitleSize)
 
 % balloon sdTheta
 for Indx_F = 1:4
     Space = subaxis(Grid, [Indx_F+1 2], [], [], Pixels);
     Axes = subfigure(Space, [1 1], [1 1], [], false, Pixels.Numerals{Indx_F}, Pixels);
-    shiftaxis(Axes, Pixels.xPadding/2, Pixels.yPadding/2)
+    shiftaxis(Axes, Pixels.xPadding/2, Pixels.yPadding)
     plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Pixels)
 end
 
@@ -201,12 +197,13 @@ Colors(sig_sdTheta, :) = repmat(getColors([1 1], 'rainbow', 'red'), nnz(sig_sdTh
 Both =  sig_sdTheta & sig_fmTheta;
 Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 
-A = subfigure([], [5 3], [5 3], [5, 1], false, Pixels.Letters{Indx}, Pixels);
+subfigure([], [5 3], [5 3], [5, 1], false, Pixels.Letters{Indx}, Pixels);
+    shiftaxis(Axes, [], Pixels.yPadding)
 
 plotRankChange([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
     { 'Both signficant','Neither significant', 'sdTheta significant'}, 'northwest', Pixels)
 set(legend, 'position', [ 0.7144    0.8449    0.1317    0.0566])
-ylim([-3.5 7.5])
+ylim([-3.5 7.15])
 xlim([.5 2.2])
 
 % save
@@ -334,8 +331,66 @@ colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent))
 saveFig(strjoin({TitleTag, 'M2S_Topographies'}, '_'), Paths.Paper, Format)
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%% plot spectrum
+
+Pixels = P.Pixels;
+Pixels.PaddingExterior = 90;
+Grid = [numel(ChLabels), nSessions];
+YLim = [-.8 3.1];
+
+Log = true; % whether to plot on log scale or not
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.47])
+Indx = 1; % tally of axes
+
+
+for Indx_Ch = 1:numel(ChLabels)
+    for Indx_S = 1:nSessions
+        Data = squeeze(chData(:, Indx_S, :, Indx_E, Indx_Ch, :));
+        
+        % plot
+        subfigure([], Grid, [Indx_Ch, Indx_S], [], true, '', Pixels); Indx = Indx+1;
+        plotSpectrumDiff(Data, Freqs, 1, {'L1', 'L3', 'L6'}, Format.Colors.Levels, Log, Pixels, StatsP);
+        ylim(YLim)
+        xlim(log([1 40]))
+        
+        % plot labels/legends only in specific locations
+        if Indx_Ch > 1 || Indx_S > 1 % first tile
+            legend off
+            
+        end
+        
+        if Indx_S == 1 % first column
+            ylabel(Format.Labels.zPower)
+            X = double(get(gca, 'XLim'));
+            Txt= text(X(1)-diff(X)*.25, YLim(1)+diff(YLim)*.5, ChLabels{Indx_Ch}, ...
+                'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
+                'FontWeight', 'Bold', 'Rotation', 90, 'HorizontalAlignment', 'Center'); 
+        else
+            ylabel ''
+        end
+        
+        if Indx_Ch == 1 % first row
+            title(Sessions.Labels{Indx_S}, 'FontSize', Pixels.LetterSize, 'Color', 'k')
+        end
+        
+        if Indx_Ch == numel(ChLabels) % last row
+            xlabel(Format.Labels.Frequency)
+        else
+            xlabel ''
+        end
+    end
+end
+
+% save
+saveFig(strjoin({'M2S_Spectrums', Epochs{Indx_E}}, '_'), Paths.Paper, Format)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% plot confetti spaghetti of fmTheta vs sdTheta
 

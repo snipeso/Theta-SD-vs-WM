@@ -95,13 +95,13 @@ Grid = [1 10];
 figure('units','centimeters','position',[0 4 Pixels.W Pixels.H])
 
 % all tasks
-subfigure([], Grid, [1, 2], [1 Grid(2)-4], '', Pixels);
+subfigure([], Grid, [1, 2], [1 Grid(2)-4], true, '', Pixels);
 plotExcelTable(tValues(1:numel(TaskLabels), Keep)', Sig(1:numel(TaskLabels), Keep)', Areas(Keep), ...
     TaskLabels,  't values', Pixels)
 colorbar off
 
 % sdTheta vs fmTheta comparison
-A = subfigure([], Grid, [1, Grid(2)-2], [1 3], '', Pixels);
+A = subfigure([], Grid, [1, Grid(2)-2], [1 3], true, '', Pixels);
 plotExcelTable(tValues(end-1:end, Keep)', Sig(end-1:end, Keep)', [], ...
     {'fmTheta', 'sdTheta'},  't values', Pixels)
 

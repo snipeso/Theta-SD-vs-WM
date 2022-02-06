@@ -1,5 +1,5 @@
 function plotStatsMatrix(Data, yLabels, xLabels, Grid, CLabel, Format)
-% plots t or g or whatever values.
+% plots a grid of colored rectangles based on values of Data. 
 
 imagesc(Data)
 
@@ -36,8 +36,8 @@ xticklabels(xLabels)
 % plot session grid
 if ~isempty(Grid)
     xticks((Grid+1)/2:Grid:nYLabels);
-xticklabels(xLabels)
-
+    xticklabels(xLabels)
+    
     hold on
     for Indx_S = 1:numel(xLabels)-1
         X = Indx_S*Grid + .5;

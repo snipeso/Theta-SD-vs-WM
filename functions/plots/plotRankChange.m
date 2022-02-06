@@ -48,7 +48,7 @@ YLims = ylim;
 
 Y = YLims(2)+diff(YLims)*.05;
 text(X(1, :), Y*ones(1, Dims(2)), XLabels, 'HorizontalAlignment', 'center', ...
-    'FontName', Format.FontName, 'FontSize', Format.TitleSize)
+    'FontName', Format.FontName, 'FontSize', Format.TitleSize, 'FontWeight', 'bold')
 
 xlim([.5 2.25])
 ylim([YLims(1),  YLims(2)+diff(YLims)*.1])
