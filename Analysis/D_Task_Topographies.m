@@ -66,10 +66,11 @@ figure('units','centimeters','position',[0 4 Pixels.W*.7 Pixels.H])
 
 Indx = 1; % tally of axes
 
-% just baseline
+% Baseline averages
 for Indx_T = 1:numel(AllTasks)
     BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
     
+    % plot
     A = subfigure([], Grid, [Indx_T, 1], [], false, '', Pixels); Indx = Indx+1;
     shiftaxis(A, Pixels.xPadding, Pixels.yPadding)
     
@@ -90,43 +91,40 @@ end
 
 % colorbar
 A = subfigure([], Grid, [Indx_T+1, 1], [], false, '', Pixels);
-% shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
 Pixels.Colorbar = 'north';
 Pixels.BarSize = Pixels.FontSize;
 plotColorbar('Linear', CLims, Pixels.Labels.zPower, Pixels)
 
 
-% Change from baseline
+%%% Change from baseline
 for Indx_S = [2,3]
     for Indx_T = 1:numel(AllTasks)
         BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
         SD = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
         
+        % plot
         A = subfigure([], Grid, [Indx_T, Indx_S], [], false, '', Pixels); Indx = Indx+1;
-        
     shiftaxis(A, Pixels.xPadding, Pixels.yPadding)
         
         Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
-        Title = strjoin({'Task_Topo', TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, 'vs', 'BL'}, '_');
-        saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
         set(A.Children, 'LineWidth', 1)
         colormap(gca, Format.Colormap.Divergent)
         
         if Indx_T == 1
             title(Sessions.Labels{Indx_S}, 'FontSize', Pixels.LetterSize)
         end
+        
+        % save stats
+         Title = strjoin({'Task_Topo', TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, 'vs', 'BL'}, '_');
+        saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
     end
 end
 
-
 % colorbar
 A = subfigure([], Grid, [numel(AllTasks)+1, 2], [1, 2], false, '', Pixels);
-% shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
-
 plotColorbar('Divergent', CLims_Diff, Format.Labels.t, Pixels)
 
-
-% se color by row
+% fix colormaps
 Fig = gcf;
 Pos = [];
 for Indx_Ch = 1:numel(Fig.Children)
@@ -138,10 +136,8 @@ for Indx_Ch = 1:numel(Fig.Children)
     end
 end
 
-
 % save
 saveFig(strjoin({TitleTag, 'All_Topographies'}, '_'), Paths.Paper, Format)
-
 
 
 
