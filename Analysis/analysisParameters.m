@@ -158,7 +158,8 @@ Format.Labels.Frequency = 'Frequency (Hz)';
 Format.Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'}; % for M2S task
 Format.Labels.Amplitude = 'Amplitude (\muV)';
 Format.Labels.Time = 'Time (s)';
-Format.Labels.ES = "t-values";
+Format.Labels.ES = "Hedge's G";
+Format.Labels.t = 't-values';
 Format.Labels.Correct = '% Correct';
 Format.Labels.RT = 'RT (s)';
 
