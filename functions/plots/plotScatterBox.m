@@ -24,8 +24,6 @@ end
 %%% plot boxplots
 hold on
 boxplot(Data, 'BoxStyle', 'outline', 'Colors', BoxColor, 'Symbol', '')
-% boxplot(Data, 'BoxStyle', 'filled', 'Widths', .5, 'Colors', BoxColor, 'Symbol', '')
-
 
 %%% plot scatter of participants
 for Indx_T = 1:Dims(2)
