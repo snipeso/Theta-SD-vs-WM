@@ -97,7 +97,7 @@ Indx = 1; % tally of axes
 %%% change in means
 for Indx_Ch = 1:numel(ChLabels)
     
-    subfigure([], Grid, [2, Indx_Ch], [2, 1], Pixels.Letters{Indx}, Pixels);
+    subfigure([], Grid, [2, Indx_Ch], [2, 1], true, Pixels.Letters{Indx}, Pixels);
     Indx = Indx+1;
     
     Data = squeeze(bData(:, :, :, Indx_Ch, Indx_B));
@@ -124,7 +124,7 @@ Data = squeeze(bData(:, 1, :, 1, Indx_B));
 MEANS = nanmean(Data);
 [~, Order] = sort(MEANS, 'descend');
 
-subfigure([], Grid, [1, Indx_Ch+1], [1, Grid(2)-Indx_Ch], Pixels.Letters{Indx}, Pixels);
+subfigure([], Grid, [1, Indx_Ch+1], [1, Grid(2)-Indx_Ch], true, Pixels.Letters{Indx}, Pixels);
 Indx = Indx+1;
 plotScatterBox(Data(:, Order), TaskLabels(Order), StatsP, ...
     Format.Colors.AllTasks(Order, :), [], Pixels);
@@ -133,7 +133,7 @@ title('Baseline Front Means', 'FontSize', Pixels.TitleSize)
 
 
 % effect sizes
-subfigure([], Grid, [2, Indx_Ch+1], [1, Grid(2)-Indx_Ch], Pixels.Letters{Indx}, Pixels);
+subfigure([], Grid, [2, Indx_Ch+1], [1, Grid(2)-Indx_Ch], true, Pixels.Letters{Indx}, Pixels);
 
 Data = squeeze(bData(:, :, :, 2, Indx_B)); % for middle channels
 Stats = plotES(Data, 'horizontal', true, Format.Colors.AllTasks, TaskLabels, ...
@@ -149,6 +149,8 @@ text(X(1)+diff(X)/2, YLim(2)*1.2, 'Center Effect Sizes', ...
 % save
 saveFig(strjoin({TitleTag, 'Means'}, '_'), Paths.Paper, Format)
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

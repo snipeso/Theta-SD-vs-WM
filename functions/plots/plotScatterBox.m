@@ -47,7 +47,7 @@ plotHangmanStars(Stats, 1:Dims(2), YLims, BoxColor, Format)
 
 
 xticklabels(XLabels)
-set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize, 'Units', 'normalized')
+set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize, 'Units', 'normalized', 'TickLength', [0 0])
 % axis square
 box off
 
