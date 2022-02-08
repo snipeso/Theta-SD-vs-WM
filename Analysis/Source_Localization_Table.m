@@ -58,8 +58,6 @@ fmTheta = reshape(nanmean(mtrx_cortex, 4), Dims(1), Dims(2), 1, Dims(4));
 load(fullfile(TablePath, File_sdTheta), 'mtrx_cortex')
 sdTheta = reshape(nanmean(mtrx_cortex, 4), Dims(1), Dims(2), 1, Dims(4));
 
-
-
 % keep together for the following loops
 Theta = cat(3, AllTheta, fmTheta, sdTheta);
 

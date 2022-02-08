@@ -19,8 +19,8 @@ Labels = string(Labels);
 TextColor = repmat([0 0 0], numel(x), 1);
 
 if any(Data(:) < 0) % colormap is divergent
-    Q = quantile(Data(:), .90);
-    Top = Data(:) > Q;
+    Q = quantile(abs(Data(:)), .90);
+    Top = abs(Data(:)) > Q;
     TextColor(Top, :) = repmat([1 1 1], nnz(Top), 1);
     if ~isempty(Mask)
         TextColor(~Mask(:), :) = repmat([.5 .5 .5], nnz(~Mask(:)), 1);

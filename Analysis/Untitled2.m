@@ -1,39 +1,54 @@
 
-Data = [EEG.data(20, 406*fs:416*fs), EEG2.data(108, 750*fs:760*fs-1)];
+figure('units','centimeters','position',[0 4 Pixels.W Pixels.H])
 
-% 20 s
-AllPoints = numel(Data);
-F = 1:0.05:20;
-
-[FFT, Freqs] = pwelch(Data, hanning(AllPoints), 0, F, fs);
+% all tasks
 
 figure
-plot(Freqs, FFT, 'Color', 'k', 'LineWidth', 2)
-hold on
+plotExcelTable(tValues(:, Keep)', Sig(:, Keep)', Areas(Keep), ...
+    Labels,  't values', Pixels)
+
+plotSpaghettiOs
 
 
-% 5 s
-Points = 5*fs;
-[FFT, Freqs] = pwelch(Data, hanning(Points), 0, F, fs);
-plot(Freqs, FFT, 'Color', getColors(1, 'rainbow', 'red'), 'LineWidth', 2)
 
+%%
 
-% 5s padding
-AllFFT = nan(4, numel(F));
-St = 1:Points:AllPoints-Points;
-for Indx_S = 1:numel(St)
-    D = [zeros(1, 7*fs), Data(St(Indx_S):St(Indx_S)+Points), zeros(1, 8*fs)];
-    
-    [FFT, Freqs] = pwelch(D, hanning(AllPoints), 0, F, fs);
-    AllFFT(Indx_S, :) = FFT;
+Maps = struct();
+for Indx_C = 1:9
+    Map = interpolateSources(stat_all.(['contrast', num2str(Indx_C)]));
+        
+    Maps(Indx_C).left = Map.left;
+    Maps(Indx_C).right = Map.right;
 end
-plot(Freqs, nanmean(AllFFT), 'Color', getColors(1, 'rainbow', 'yellow'), 'LineWidth', 2)
 
-% 5 s (correct freqs)
-F = 1:0.2:77;
-[FFT, Freqs] = pwelch(Data, hanning(Points), 0, F, fs);
-plot(Freqs, FFT, 'Color', getColors(1, 'rainbow', 'green'), 'LineWidth', 2)
+save('C:\Users\colas\Downloads\stat_addcontrasts.mat', 'stat_all', 'Maps')
 
-legend({'20s (0.05Hz res)', '5s (0.05Hz res)', '5s, 0 padding (0.05Hz res)', '5s (0.2Hz res)'})
-xlim([5 7])
 
+for Indx_C = 1:9
+    Map = Maps(Indx_C);
+   save(['C:\Users\colas\Downloads\stat_addcontrasts', num2str(Indx_C), '.mat'], 'Map') 
+    
+end
+
+
+%%
+
+CLims = [-7 7];
+
+for Indx_C = 1:9
+    figure
+    subplot(2, 2, 1)
+    plotBalloonBrain(Maps(Indx_C), 'left-outside', CLims, false, P.Format)
+    title(cond1{Indx_C})
+    
+        subplot(2, 2, 2)
+    plotBalloonBrain(Maps(Indx_C), 'right-outside', CLims, false, P.Format)
+    title(cond2{Indx_C})
+    
+    
+        subplot(2, 2, 3)
+    plotBalloonBrain(Maps(Indx_C), 'left-inside', CLims, false, P.Format)
+    
+        subplot(2, 2, 4)
+    plotBalloonBrain(Maps(Indx_C), 'right-inside', CLims, false, P.Format)
+end
