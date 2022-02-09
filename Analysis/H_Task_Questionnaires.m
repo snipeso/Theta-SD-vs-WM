@@ -50,19 +50,22 @@ end
 %%
 % set to nan all answers for a questionnaire when more than 4 participants are missing data
 for Indx_T = 1:numel(AllTasks)
-   for Indx_Q = 1:numel(Questions)
-       NanP = nnz(any(isnan(Answers.(Questions{Indx_Q})(:, :, Indx_T)), 2));
-       
-       if NanP > 4
-           Answers.(Questions{Indx_Q})(:, :, Indx_T) = nan;
-       end
-   end
+    for Indx_Q = 1:numel(Questions)
+        NanP = nnz(any(isnan(Answers.(Questions{Indx_Q})(:, :, Indx_T)), 2));
+        
+        if NanP > 4
+            Answers.(Questions{Indx_Q})(:, :, Indx_T) = nan;
+        end
+    end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure
 %%
 
+Pixels = P.Pixels;
+
+Pixels.PaddingExterior = 90;
 YLim = [-.05 1.05];
 Questions_Order = {'KSS', 'Relaxing', 'Interesting'; ...
     'Focused',  'Difficult', 'Effortful';  ...
@@ -87,16 +90,15 @@ for Indx_G1 = 1:Grid(1)
         Q = Questions_Order{Indx_G1, Indx_G2};
         Data = Answers.(Q);
         L = Labels.(Q);
-       
         
-        Axis = subfigure([], Grid, [Indx_G1 AxesIndexes(Indx_G2)], [], {}, Pixels);
-        shiftaxis(Axis, [], -Pixels.PaddingLabels/2)
+        
+        Axis = subfigure([], Grid, [Indx_G1 AxesIndexes(Indx_G2)], [], true, {}, Pixels);
         
         if strcmp(Q, 'Slept')
             plotSpaghettiOs(Answers.Motivation, Indx_BL, [], TaskLabels, ...
-            Format.Colors.AllTasks, StatsP, Pixels);
-        ylim([-10 -9])
-        axis off
+                Format.Colors.AllTasks, StatsP, Pixels);
+            ylim([-10 -9])
+            axis off
             continue
         end
         
@@ -118,6 +120,40 @@ end
 
 saveFig(strjoin({TitleTag, 'Questionnaires'}, '_'), Paths.Paper, Format)
 
+
+
+%% plot difference for SD across tasks
+
+Grid = [1 4];
+Pixels = P.Pixels;
+YLim = [0 1.2];
+
+Data = Answers.KSS;
+L = Labels.KSS;
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.23])
+subfigure([], Grid, [1 2], [], true, Pixels.Letters{1}, Pixels);
+plotSpaghettiOs(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
+    Format.Colors.AllTasks, StatsP, Pixels);
+legend off
+ylim(YLim)
+yticks(linspace(0, 1, numel(L)))
+yticklabels(L)
+% title('Average KSS',  'FontSize', Pixels.TitleSize)
+
+
+Data = squeeze(Data(:, 3, :));
+
+MEANS = nanmean(Data);
+[~, Order] = sort(MEANS, 'descend');
+subfigure([], Grid, [1 3], [1 2], true, Pixels.Letters{2}, Pixels);
+Stats = plotScatterBox(Data(:, Order), TaskLabels(Order), StatsP, ...
+    Format.Colors.AllTasks(Order, :), [], Pixels); % TODO CHECK CODE
+% title('SD KSS', 'FontSize', Pixels.TitleSize)
+ylim(YLim)
+yticks(linspace(0, 1, numel(L)))
+set(gca, 'YTickLabel',[],'YGrid', 'on')
+
+saveFig(strjoin({TitleTag, 'KSS'}, '_'), Paths.Paper, Format)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
