@@ -6,6 +6,7 @@ function Stats = plotConfettiSpaghetti(Data, XLabels, YLabels, YLims, Colors, St
 
 Dims = size(Data);
 
+
 XPoints = 1:Dims(2);
 
 % set x axis
@@ -53,7 +54,7 @@ if TotGroups == Dims(1) % if there's one color per participant, so no special gr
     % conduct stats
     if ~isempty(StatsP)
         Stats = Pairwise(Data, StatsP);
-        plotHangmanStars(Stats, XPoints, YLims, Format.Colors.SigStar, Format)
+        plotHangmanStars(Stats, XPoints, YLims, Format.Colors.SigStar, StatsP, Format)
     end
 elseif  TotGroups == 1 
       plot(nanmean(Data, 1), 'o-', 'LineWidth', Format.LW, 'Color', ColorGroups,  'MarkerFaceColor', ColorGroups)

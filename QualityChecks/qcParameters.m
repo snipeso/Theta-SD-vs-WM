@@ -29,6 +29,7 @@ else
 end
 
 Paths.Preprocessed = fullfile(Core, 'Preprocessed');
+Paths.Paper = 'C:\Users\colas\Dropbox\Research\Publications and Presentations\Sleep\Paper1\Figures';
 
 Paths.Datasets = 'G:\LSM\Data\Raw';
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
@@ -266,5 +267,48 @@ StatsP.FreqBin = 1; % # of frequencies to bool in spectrums stats
 StatsP.ttest.dep = 'pdep';
 
 P.StatsP = StatsP;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Alternative Format for Pixels
+
+Pixels = Format;
+
+% final figure size in pixels
+% lettering for figures
+Pixels.Letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+Pixels.Numerals = {'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'};
+
+Pixels.xPadding = 25; % border & distance between main figures
+Pixels.yPadding = 25;
+Pixels.xPaddingMinor = 25;
+Pixels.yPaddingMinor = 25;
+Pixels.PaddingExterior = 40;
+Pixels.LetterSize = 30;
+Pixels.TopoRes = 300;
+Pixels.TitleSize = 22;
+Pixels.FontSize = 18;
+Pixels.BarSize = 15;
+Pixels.PaddingLabels = Pixels.FontSize*2;
+Pixels.W = 42; % width of reference "paper"
+Pixels.H = 60; % width of reference "paper"
+Pixels.LW = 3;
+Pixels.ScatterSize = 100;
+Pixels.Topo.Sig = 3;
+Pixels.OSize = 10; % Spaghetti O
+
+
+Format_PPT = Format;
+Format_PPT.Steps.Divergent = 40;
+Format_PPT.BarSize = 25;
+Format_PPT.TopoRes = 500;
+
+
+P.Format_PPT = Format_PPT;
+P.Pixels = Pixels;
+P.Format = Format;
+P.Channels = Channels;
+P.Bands = Bands;
+
 
 

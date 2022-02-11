@@ -17,7 +17,7 @@ Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
-
+Pixels = P.Pixels;
 TitleTag = strjoin({'RemovedChannels'}, '_');
 
 
@@ -233,4 +233,47 @@ Data = 100*(squeeze(sum(sum(sum(AllCh==0, 2),3), 4))./squeeze(sum(sum(sum(~isnan
 for Indx_P = 1:numel(Participants)
 disp([Participants{Indx_P}, ' channels removed: ', num2str(Data(Indx_P)), '%'])  
 end
+
+
+
+
+%% in isolation, just get average components removed per person
+
+Data = AllCh;
+Data(:, :, :, [17 49 48 56 107 113 119 126 127 ]) = [];
+RM = nansum(Data == 0, 4);
+Keep = nansum(Data == 1, 4);
+
+MEAN = nanmean(RM(:));
+STD  = nanstd(RM(:));
+disp(['Total number of removed channels per recording, on average: ', num2str(round(MEAN)) '; STD: ', num2str(round(STD)) ])
+
+
+Tasks = {'STM', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
+for Indx_T = 1:6
+    MEAN = nanmean(RM(:, :, Indx_T), 'all');
+    STD = nanstd(RM(:, :, Indx_T), 0, 'all');
+    disp(['For ', Tasks{Indx_T}, ': ' num2str(round(MEAN)) '; STD: ', num2str(round(STD))])
+    
+end
+
+%%
+
+Grid = [1 3];
+YLim = [0 20];
+
+figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.25])
+for Indx_S = 1:3
+     subfigure([], Grid, [1, Indx_S], [], true, {}, Pixels);
+plotConfettiSpaghetti(squeeze(RM(:, Indx_S, :)), TaskLabels, {}, [], Format.Colors.Participants, StatsP, Pixels);
+title(Sessions.Labels{Indx_S})
+ylim(YLim)
+if Indx_S== 1
+   ylabel('# removed channels') 
+end
+end
+
+% save
+saveFig('QC_removed_channels', Paths.Paper, Format)
+
 
