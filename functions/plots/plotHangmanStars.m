@@ -1,4 +1,4 @@
-function plotHangmanStars(Stats, XPoints, YLims, Colors, Format)
+function plotHangmanStars(Stats, XPoints, YLims, Colors, StatsP, Format)
 % function that plots all the pairwise comparisons in Stats.p, with a
 % single line for each effect. Sorted from bottom to top by total number of
 % significant comparisons.
@@ -10,10 +10,7 @@ LW = 1;
 
 nGroups = size(Stats.p, 1);
 
-pValues = nan(size(Stats.p));
-
-pValues(Stats.trend==1) = .01;
-pValues(Stats.sig==1) = Stats.p(Stats.sig==1);
+pValues = Stats.pFDR;
 
 
 % mirror p-values
@@ -41,12 +38,12 @@ for Indx = 1:nGroups % go from most to least significant
     [~, G_Indx] = max(MostSig);
     
     % identify other groups that are significantly different
-    X = XPoints(~isnan(pValues_mirror(G_Indx, :)));
-    if isempty(X)
+    X_Minor = XPoints(~isnan(pValues_mirror(G_Indx, :)) & pValues_mirror(G_Indx, :) < StatsP.Trend);
+    if isempty(X_Minor)
         continue
     end
     
-    X = [X, G_Indx];
+    X_All = [X_Minor, G_Indx];
     
     % identify color of line
     if size(Colors, 1) == nGroups
@@ -61,14 +58,14 @@ for Indx = 1:nGroups % go from most to least significant
     YHeight = YHeight+Increase;
     
     % plot main horizontal bar
-    plot(X, YHeight*ones(size(X)),  '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
+    plot(X_All, YHeight*ones(size(X_All)),  '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
     
     % plot main post
     plot([XPoints(G_Indx), XPoints(G_Indx)], [YHeight-Increase*.75, YHeight], ...
         '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)
     
     
-    for x = X
+    for x = X_Minor
         % plot minor posts
         plot([x, x], [YHeight-Increase*.2, YHeight], ...
                '-o',  'MarkerFaceColor', C, 'MarkerSize', .5, 'LineWidth', LW, 'Color', C)

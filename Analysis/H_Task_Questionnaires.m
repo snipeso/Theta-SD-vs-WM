@@ -142,12 +142,12 @@ yticklabels(L)
 
 
 Data = squeeze(Data(:, 3, :));
-
 MEANS = nanmean(Data);
 [~, Order] = sort(MEANS, 'descend');
 subfigure([], Grid, [1 3], [1 2], true, Pixels.Letters{2}, Pixels);
 Stats = plotScatterBox(Data(:, Order), TaskLabels(Order), StatsP, ...
-    Format.Colors.AllTasks(Order, :), [], Pixels); % TODO CHECK CODE
+    Format.Colors.AllTasks(Order, :), [0 1], Pixels); % TODO CHECK CODE
+
 % title('SD KSS', 'FontSize', Pixels.TitleSize)
 ylim(YLim)
 yticks(linspace(0, 1, numel(L)))

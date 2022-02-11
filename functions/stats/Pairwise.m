@@ -46,14 +46,13 @@ switch nDims
             h(Indexes_long) = sig;
             Stats.sig = h;
           
-            % identify trending values
-           sig = pValues_fdr < StatsP.Trend;
-            h = nan(Dims(2));
-            h(Indexes_long) = sig;
-            Stats.trend = h;
+
             
             Stats.crit_p = crit_p;
-            Stats.pFDR = pValues_fdr;
+            
+            FDR = nan(Dims(2));
+            FDR(Indexes_long) = pValues_fdr;
+            Stats.pFDR = FDR;
         end
         
         

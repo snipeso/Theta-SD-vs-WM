@@ -41,7 +41,7 @@ set(findobj(gca,'LineStyle','--'),'LineStyle','-') % make whiskers solid line
 set(findobj(gca,'LineStyle','-'),'LineWidth',Format.LW/2) % make all lines quite thick
 
 %%% plot pairwise significances
-plotHangmanStars(Stats, 1:Dims(2), YLims, BoxColor, Format)
+plotHangmanStars(Stats, 1:Dims(2), YLims, BoxColor, StatsP, Format)
 
 
 xticklabels(XLabels)
