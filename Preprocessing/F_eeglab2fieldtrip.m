@@ -1,4 +1,4 @@
-
+% This script converts data to fieldtrip datastructure for source localization.
 close all
 clc
 clear
@@ -41,7 +41,8 @@ for Indx_T = 1:numel(allTasks)
     Files = deblank(cellstr(ls(Source)));
     Files(~contains(Files, '.set')) = [];
     
-    % randomize files list [???]
+    % randomize files list [???] 
+    % --> ElIAS: does this still need to be adjusted?
     nFiles = numel(Files);
     
     for Indx_F = 1:nFiles

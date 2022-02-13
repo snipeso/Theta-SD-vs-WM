@@ -18,7 +18,9 @@ RefreshAnswers = false;
 
 Task = 'Match2Sample';
 WelchWindow = 8; % duration of pWelch window; if larger than epoch window, will 0pad
-EpochWindow = 2; % duration of each epoch
+EpochWindow = 2; % duration of each epoch 
+% --> ELIAS: You mention in your paper a 2s hanning window, is this correct
+% like this?
 
 % triggers
 Stim_Trig = {'S  3'};

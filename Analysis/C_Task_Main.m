@@ -1,6 +1,6 @@
 % This script hosts the main analyses for the paper regarding the task
 % comparison. % It runs a 2 way anova between task and session to determine
-% if there's an interaction. If not, will plot eta-squared for T and S to
+% if there's an interaction. If not, will plot eta-squared for Task and Session to
 % determine which had a larger effect. If yes, will plot cohen's d for each
 % task SD-BL to show which has the largest effects. Does this seperately
 % for generic frontspot and generic backspot. Does this also for all bands,

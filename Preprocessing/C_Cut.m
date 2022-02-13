@@ -1,14 +1,13 @@
 %%% Instructions:
 %%% This script calls the commands to help you mark the data that contains
 %%% noise.
-%%% Run each section one at a time (click on it so it turns yellow, then click "run
-%%% section" in the above tool bar). Each section explains how it works.
-%%% Numbered sections have to happen first, and in their order, other
-%%% sections include additional functions you can call from the editor.
+%%% Below, additional functions are provided you can call from the editor.
+
+%%% ELIAS: I guess this information was for me ;)
 
 
 %% Section 1: Choose a file
-%%% Choose the folder you want to edit, change the variable Folder.Data
+%%% Choose the folder you want to edit, change the variable Source_Folder
 %%% accordingly (this should be a folder in the folder "LightFiltering",
 %%% and is onerm the tasks, like "MWT").
 %%% If you want to clean a specific file, set the variable Filename
@@ -48,7 +47,7 @@ if exist('Filename', 'var') && size(Filename, 1)==1
     
 elseif exist('Filename', 'var') && size(Filename, 1)>1
     Filename = char(Filename(randperm(size(Filename, 1), 1), :));
-     FN = split(Filename, '_');
+    FN = split(Filename, '_');
     Folder = FN{2};
     
     Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Folder);
