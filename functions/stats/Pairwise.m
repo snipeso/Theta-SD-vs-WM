@@ -1,7 +1,5 @@
 function Stats = Pairwise(Data, StatsP)
-% Data is a P x w/e matrix, and here t-tests are returned. If "Corrected"
-% is specified, conducts FDR correction on the p values. pvalues, tvalues
-% and df are saved as S x S matrix
+% If Data is a P x S matrix, stats are done pairwise for all conditions.
 
 Dims = size(Data);
 

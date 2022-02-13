@@ -10,10 +10,10 @@ Dims = size(Data);
 
 % indicate whether Clabels get included in plot
 if isempty(CLabels)
-    CMarker = 'off';
+    HV = 'off';
     Legend = {};
 else
-    CMarker = 'on';
+    HV = 'on';
     Legend = CLabels;
 end
 
@@ -26,35 +26,10 @@ Trend = ['p<', TrendAlpha(2:end)];
 
 
 %%% Get stats
-
-% get all p-values
-pValues = nan(Dims(2), Dims(3));
-tValues = pValues;
-df = pValues;
-CI = nan(Dims(2), Dims(3), 2);
-pValues_fdr = pValues; % for alpha = .05
-
-for Indx_S = 1:Dims(2)
-    for Indx_T = 1:Dims(3)
-        D = squeeze(Data(:, Indx_S, Indx_T));
-        BL = squeeze(Data(:, Indx_BL, Indx_T));
-        [~, pValues(Indx_S, Indx_T), CI(Indx_S, Indx_T, :), stats] = ttest(D(:)-BL(:));
-        df(Indx_S, Indx_T) = stats.df;
-        tValues(Indx_S, Indx_T) = stats.tstat;
-    end
-end
-
-% apply fdr correction
-Indx = 1:Dims(2);
-notBL = Indx~=Indx_BL;
-
-[Sig, crit_p, ~,  pValues_fdr(notBL, :)] = fdr_bh(pValues(notBL, :), StatsP.Alpha, StatsP.ttest.dep);
-
-% save to stats struct
-Stats.pValues = pValues;
-Stats.p_fdr =  pValues_fdr;
-Stats.crit_p = crit_p;
-Stats.sig = Sig(:);
+Data1 = squeeze(Data(:, Indx_BL, :));
+Data2 = Data;
+Data2(:, Indx_BL, :) = [];
+Stats = pairedttest(Data1, Data2, StatsP);
 
 
 
@@ -71,7 +46,7 @@ for Indx_T = 1:Dims(3)
     C = Colors(Indx_T, :);
     
     Mean = squeeze(nanmean(Data(:, :, Indx_T), 1));
-    plot(Mean, 'Color', C,  'LineWidth', Format.LW, 'HandleVisibility', CMarker);
+    plot(Mean, 'Color', C,  'LineWidth', Format.LW, 'HandleVisibility', HV);
 end
 
 
