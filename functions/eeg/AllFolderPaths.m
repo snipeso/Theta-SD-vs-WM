@@ -38,4 +38,4 @@ end
 IgnoreFolders = [IgnoreFolders, TemplateFolder];
 Datasets(contains(string(Datasets), IgnoreFolders), :) = []; % ignores template structure
 
-Datasets = string(deblank(Datasets));
+Datasets = deblank(string(Datasets));
