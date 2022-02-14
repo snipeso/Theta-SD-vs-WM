@@ -9,10 +9,10 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Tasks = {'Fixation'}; % select this if you only need to filter one folder
-Tasks = allTasks;
+Tasks = {'Sleep'}; % select this if you only need to filter one folder
+% Tasks = allTasks;
 
-Destination_Formats = {'ICA'}; % chooses which filtering to do
+Destination_Formats = {'Cutting'}; % chooses which filtering to do
 % options: 'Scoring', 'Cutting', 'ICA', 'Power'
 
 Refresh = false; % redo files that are already in destination folder
@@ -36,12 +36,12 @@ for Indx_DF = 1:numel(Destination_Formats)
     
     
     for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
-        parfor Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
+        for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
             
             %%%%%%%%%%%%%%%%%%%%%%%%
             %%% Check if data exists
             
-            Path = fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, Folders.Subfolders{Indx_F});
+            Path = fullfile(Paths.Datasets, deblank(Folders.Datasets{Indx_D}), Folders.Subfolders{Indx_F});
             
             % skip rest if folder not found
             if ~exist(Path, 'dir')
@@ -74,9 +74,9 @@ for Indx_DF = 1:numel(Destination_Formats)
             Filename_SET = Content(SET, :);
             
             % set up destination location
-            Destination = fullfile(Paths.Preprocessed, Destination_Format, 'SET', Task);
+            Destination = fullfile(Paths.Preprocessed, Destination_Format, 'MAT', Task);
             Filename_Core = join([Folders.Datasets{Indx_D}, Levels(:)', Destination_Format], '_');
-            Filename_Destination = [Filename_Core{1}, '.set'];
+            Filename_Destination = [Filename_Core{1}, '.mat'];
             
             % create destination folder
             if ~exist(Destination, 'dir')
@@ -119,11 +119,12 @@ for Indx_DF = 1:numel(Destination_Formats)
             EEG.filtering = Parameters.(Destination_Format);
             
             % save EEG
-            pop_saveset(EEG, 'filename', Filename_Destination, ...
-                'filepath', Destination, ...
-                'check', 'on', ...
-                'savemode', 'onefile', ...
-                'version', '7.3');
+%             pop_saveset(EEG, 'filename', Filename_Destination, ...
+%                 'filepath', Destination, ...
+%                 'check', 'on', ...
+%                 'savemode', 'onefile', ...
+%                 'version', '7.3');
+save(fullfile(Destination, Filename_Destination), '-v7.3')
         end
         
         disp(['************** Finished ',  Folders.Datasets{Indx_D}, '***************'])

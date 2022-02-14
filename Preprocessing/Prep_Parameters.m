@@ -17,6 +17,8 @@ if exist( 'D:\Data\Raw', 'dir')
     Core = 'D:\Data\';
 elseif exist( 'F:\Data\Raw', 'dir')
     Core = 'F:\Data\';
+elseif exist('D:\LSM\Data\Raw', 'dir')
+    Core = 'D:\LSM\Data\';
 else
     error('no data disk!')
 end
