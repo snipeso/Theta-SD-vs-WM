@@ -36,5 +36,4 @@ for Indx_Sp = 1:Tot
         case 'c'
             caxis(NewLims)
     end
-    
 end

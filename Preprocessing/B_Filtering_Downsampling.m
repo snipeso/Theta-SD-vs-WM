@@ -9,10 +9,10 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Tasks = {'Fixation'}; % select this if you only need to filter one folder
-Tasks = allTasks;
+Tasks = {'Sleep'}; % select this if you only need to filter one folder
+% Tasks = allTasks;
 
-Destination_Formats = {'ICA'}; % chooses which filtering to do
+Destination_Formats = {'Cutting'}; % chooses which filtering to do
 % options: 'Scoring', 'Cutting', 'ICA', 'Power'
 
 Refresh = false; % redo files that are already in destination folder
@@ -36,7 +36,7 @@ for Indx_DF = 1:numel(Destination_Formats)
     
     
     for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
-        parfor Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
+        for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
             
             %%%%%%%%%%%%%%%%%%%%%%%%
             %%% Check if data exists

@@ -1,4 +1,4 @@
-function bubbleTopo(Color, Chanlocs, Size, Type, Labels, Format)
+function bubbleTopo(Data, Chanlocs, Size, Type, Labels, Format)
 % plots topoplot as a circle per channel.
 % if labels, mark label indexes
 
@@ -15,7 +15,7 @@ switch Type
         
         [x, y] = pol2cart(Theta, Radius);
         
-        scatter(x, y, Size, Color, 'filled')
+        scatter(x, y, Size, Data, 'filled')
         if ~isempty(Labels)
             hold on
             if numel(Labels) == numel(Chanlocs)
@@ -34,7 +34,7 @@ switch Type
         X = [Chanlocs.X];
         Y = [Chanlocs.Y];
         Z = [Chanlocs.Z];
-        scatter3(X, Y, Z, Size, Color, 'filled')
+        scatter3(X, Y, Z, Size, Data, 'filled')
         
         if  ~isempty(Labels)
             hold on
@@ -50,7 +50,7 @@ title('')
 
 set(findall(gca, 'type', 'text'), 'visible', 'on')
 
-Dims = size(Color);
+Dims = size(Data);
 
 if Dims(2) ~=3 % if not a color triplet
     Colormap = Format.Colormap.Linear;
