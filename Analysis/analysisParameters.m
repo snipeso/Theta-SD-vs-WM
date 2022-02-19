@@ -29,6 +29,18 @@ P.Nights = {'Baseline', 'NightPre', 'NightPost'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Locations
 
+% if eeglab has not run, run it so all the subdirectories get added
+if ~exist('topoplot', 'file')
+    eeglab
+    close all
+end
+
+% same for plotting scripts, saved to a different repo (https://github.com/snipeso/chart)
+if ~exist('addchARTpaths.m', 'file')
+    addpath('C:\Users\colas\Projects\chART')
+    addchARTpaths()
+end
+
 
 if exist( 'D:\Data\Raw', 'dir')
     Core = 'D:\Data\';
@@ -63,81 +75,35 @@ addpath(fullfile(Paths.Analysis, 'functions','questionnaires'))
 run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
 
 
-% if eeglab has not run, run it so all the subdirectories get added
-if ~exist('topoplot', 'file')
-    eeglab
-    close all
-end
-
 P.Paths = Paths;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plotting settings
 
 
-Format.FontName = 'Tw Cen MT'; % use something else for papers
-
-% plot sizes depending on which screen I'm using
+% plot sizes depending on which screen being used
 Pix = get(0,'screensize');
-if Pix(3) < 2000
-    Format.FontSize = 12;
-    Format.TitleSize = 15;
-    Format.BarSize = 10;
-    Format.TopoRes = 150;
-    Format.LW = 2;
-    Format.Topo.Sig = 2; % marker size
-    Format.ScatterSize = 70; % TODO: seperate features for small or big screen
-    Format.OSize = 5; % Spaghetti O
-    
+if Pix(3) < 2000   
+    Format = getProperties({'LSM', 'SmallScreen'});    
 else
-    Format.FontSize = 25;
-    Format.TitleSize = 30;
-    Format.BarSize = 18;
-    Format.TopoRes = 300;
-    Format.LW = 4;
-    Format.Topo.Sig = 5; % marker size
-    Format.ScatterSize = 200; % TODO: seperate features for small or big screen
-    Format.OSize = 20; % Spaghetti O
+    Format = getProperties({'LSM', 'LargeScreen'});
 end
 
-
-%%% colors and colormaps
-
-% colormaps
-Format.Colormap.Linear = flip(colorcet('L17'));
-Format.Colormap.Monochrome = colorcet('L2');
-Format.Colormap.Divergent = colorcet('D1A');
-Format.Colormap.Rainbow = unirainbow;
-
-% discrete color steps for topoplot colormaps
-Format.Steps.Linear = 20;
-Format.Steps.Divergent = 28;
-Format.Steps.Monochrome = 20;
-
-Format.Colorbar = 'west'; % location
-
-Format.Alpha.Participants = .3; % transparency when plotting all participants together
-Format.Alpha.Channels = .15; % transparency when plotting all participants together
-Format.Alpha.Patch = .4;
-
 % task colors
-Format.Colors.AllTasks = getColors(6, 'rainbow');
+Format.Color.AllTasks = getColors(6, 'rainbow');
 for Indx_T = 1:numel(P.AllTasks)
-    Format.Colors.Tasks.(P.AllTasks{Indx_T}) = Format.Colors.AllTasks(Indx_T, :);
+    Format.Color.Tasks.(P.AllTasks{Indx_T}) = Format.Color.AllTasks(Indx_T, :);
 end
 
 % colors for levels in M2S task
-Format.Colors.Levels = flip(getColors([1 3], 'rainbow', 'red')); % M2S red
-Format.Colors.spEpochs = getColors([1 2], 'rainbow', 'green'); % speech green
+Format.Color.Levels = flip(getColors([1 3], 'rainbow', 'red')); % M2S red
+Format.Color.spEpochs = getColors([1 2], 'rainbow', 'green'); % speech green
 
 % other colors
-Format.Colors.SigStar = [0 0 0];
-Format.Colors.Participants = reduxColormap(Format.Colormap.Rainbow, numel(P.Participants));
-Format.Colors.Generic = [.5 .5 .5];
-Format.Colors.Background = [1 1 1];
+Format.Color.Participants = reduxColormap(Format.Colormap.Rainbow, numel(P.Participants));
 
 % colors + shades for all the tasks
-Format.Colors.Sessions = getColors([numel(P.AllTasks), 3], 'rainbow');
+Format.Color.Sessions = getColors([numel(P.AllTasks), 3], 'rainbow');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -230,40 +196,14 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Alternative Format for Pixels
 
-Pixels = Format;
-
-% final figure size in pixels
-% lettering for figures
-Pixels.Letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-Pixels.Numerals = {'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'};
-
-Pixels.xPadding = 25; % border & distance between main figures
-Pixels.yPadding = 25;
-Pixels.xPaddingMinor = 25;
-Pixels.yPaddingMinor = 25;
-Pixels.PaddingExterior = 40;
-Pixels.LetterSize = 30;
-Pixels.TopoRes = 300;
-Pixels.TitleSize = 22;
-Pixels.FontSize = 18;
-Pixels.BarSize = 15;
-Pixels.PaddingLabels = Pixels.FontSize*2;
-Pixels.W = 42; % width of reference "paper"
-Pixels.H = 60; % width of reference "paper"
-Pixels.LW = 3;
-Pixels.ScatterSize = 100;
-Pixels.Topo.Sig = 3;
-Pixels.OSize = 10; % Spaghetti O
+Manuscript = getProperties({'LSM', 'Manuscript'});
+Powerpoint =  getProperties({'LSM', 'Powerpoint'});
+Poster =  getProperties({'LSM', 'Poster'});
 
 
-Format_PPT = Format;
-Format_PPT.Steps.Divergent = 40;
-Format_PPT.BarSize = 25;
-Format_PPT.TopoRes = 500;
-
-
-P.Format_PPT = Format_PPT;
-P.Pixels = Pixels;
+P.Manuscript = Manuscript;
+P.Powerpoint = Powerpoint;
+P.Poster = Poster;
 P.Format = Format;
 P.Channels = Channels;
 P.Bands = Bands;
