@@ -15,11 +15,15 @@ Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 Bands = P.Bands;
-Format = P.Format;
 Sessions = P.Sessions;
 StatsP = P.StatsP;
 Channels = P.Channels;
-Pixels = P.Pixels;
+Format = P.Format;
+Manuscript = P.Manuscript;
+Poster = P.Poster;
+Powerpoint = P.Powerpoint;
+Labels = P.Labels;
+
 
 Duration = 4;
 WelchWindow = 8;
@@ -61,9 +65,9 @@ CLims = [-1 2];
 
 Grid = [7 3];
 Indx_B = 2; % theta
-Pixels.PaddingExterior = 90;
+Manuscript.PaddingExterior = 90;
 Sessions.Labels = {'Baseline', 'Sleep Restriction', 'Sleep Deprivation'};
-figure('units','centimeters','position',[0 4 Pixels.W*.7 Pixels.H])
+figure('units','centimeters','position',[0 4 Manuscript.W*.7 Manuscript.H])
 
 Indx = 1; % tally of axes
 
@@ -72,29 +76,28 @@ for Indx_T = 1:numel(AllTasks)
     BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
     
     % plot
-    A = subfigure([], Grid, [Indx_T, 1], [], false, '', Pixels); Indx = Indx+1;
-    shiftaxis(A, Pixels.xPadding, Pixels.yPadding)
+    A = subfigure([], Grid, [Indx_T, 1], [], false, '', Manuscript); Indx = Indx+1;
+    shiftaxis(A, Manuscript.xPadding, Manuscript.yPadding)
     
-    plotTopo(nanmean(BL, 1), Chanlocs, CLims, '', 'Linear', Pixels);
-    set(A.Children, 'LineWidth', 1)
+    plotTopoplot(nanmean(BL, 1), [], Chanlocs, CLims, Labels.zPower, 'Linear', Manuscript)
     colorbar off
     
     if Indx_T == 1
-        title(Sessions.Labels{1}, 'FontSize', Pixels.LetterSize)
+        title(Sessions.Labels{1}, 'FontSize', Manuscript.LetterSize)
     end
     
     X = get(gca, 'XLim');
     Y = get(gca, 'YLim');
     text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, TaskLabels{Indx_T}, ...
-        'FontSize', Pixels.LetterSize, 'FontName', Pixels.FontName, ...
+        'FontSize', Manuscript.LetterSize, 'FontName', Manuscript.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center', 'Rotation', 90);
 end
 
 % colorbar
-A = subfigure([], Grid, [Indx_T+1, 1], [], false, '', Pixels);
-Pixels.Colorbar = 'north';
-Pixels.BarSize = Pixels.FontSize;
-plotColorbar('Linear', CLims, Pixels.Labels.zPower, Pixels)
+A = subfigure([], Grid, [Indx_T+1, 1], [], false, '', Manuscript);
+Manuscript.Colorbar = 'north';
+Manuscript.BarSize = Manuscript.FontSize;
+plotColorbar('Linear', CLims, Manuscript.Labels.zPower, Manuscript)
 
 
 %%% Change from baseline
@@ -104,26 +107,26 @@ for Indx_S = [2,3]
         SD = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
         
         % plot
-        A = subfigure([], Grid, [Indx_T, Indx_S], [], false, '', Pixels); Indx = Indx+1;
-    shiftaxis(A, Pixels.xPadding, Pixels.yPadding)
+        A = subfigure([], Grid, [Indx_T, Indx_S], [], false, '', Manuscript); Indx = Indx+1;
+        shiftaxis(A, Manuscript.xPadding, Manuscript.yPadding)
         
-        Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Pixels);
+        Stats = topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Manuscript, Labels);
         set(A.Children, 'LineWidth', 1)
         colormap(gca, Format.Colormap.Divergent)
         
         if Indx_T == 1
-            title(Sessions.Labels{Indx_S}, 'FontSize', Pixels.LetterSize)
+            title(Sessions.Labels{Indx_S}, 'FontSize', Manuscript.LetterSize)
         end
         
         % save stats
-         Title = strjoin({'Task_Topo', TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, 'vs', 'BL'}, '_');
+        Title = strjoin({'Task_Topo', TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, 'vs', 'BL'}, '_');
         saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
     end
 end
 
 % colorbar
-A = subfigure([], Grid, [numel(AllTasks)+1, 2], [1, 2], false, '', Pixels);
-plotColorbar('Divergent', CLims_Diff, Format.Labels.t, Pixels)
+A = subfigure([], Grid, [numel(AllTasks)+1, 2], [1, 2], false, '', Manuscript);
+plotColorbar('Divergent', CLims_Diff, Format.Labels.t, Manuscript)
 
 % fix colormaps
 Fig = gcf;
@@ -147,15 +150,39 @@ saveFig(strjoin({TitleTag, 'All_Topographies'}, '_'), Paths.Paper, Format)
 %%% Presentation figures
 
 %%
-Format_PPT = P.Format_PPT;
-
 Indx_B = 2;
 
 for Indx_T = 1:numel(AllTasks)
     figure('units','centimeters','position',[0 0 20 15])
     BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
     SD = squeeze(bData(:, 3, Indx_T, :, Indx_B));
-    plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format_PPT);
+    topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Powerpoint, Labels);
     saveFig(strjoin({TitleTag, AllTasks{Indx_T}, 'sdTheta'}, '_'), Results, Format)
     
 end
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Figure for GRC conference poster
+
+%%
+
+
+
+Indx_B = 2;
+
+for Indx_T = 1:numel(AllTasks)
+    figure('units','centimeters','position',[0 0 20 20])
+    BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
+    SD = squeeze(bData(:, 3, Indx_T, :, Indx_B));
+    topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Poster, Labels);
+    colorbar off
+    saveFig(strjoin({'Topoplot', AllTasks{Indx_T}, 'sdTheta'}, '_'), Paths.Poster, Poster)
+end
+
+
+
+
+
+

@@ -55,8 +55,9 @@ Paths.Preprocessed = fullfile(Core, 'Preprocessed');
 
 Paths.Datasets = 'G:\LSM\Data\Raw';
 Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
-Paths.Results = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and tables end up
+Paths.PaperResults = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and tables end up
 Paths.Paper = 'C:\Users\colas\Dropbox\Research\Publications and Presentations\Sleep\Paper1\Figures';
+Paths.Poster = 'C:\Users\colas\Dropbox\Research\Publications and Presentations\Sleep\Gordon2022\Figures';
 Paths.PaperStats =  'C:\Users\colas\Dropbox\Research\Publications and Presentations\Sleep\Paper1\Stats';
 Paths.Scoring = fullfile(Core, 'Scoring');
 
@@ -89,22 +90,33 @@ else
     Format = getProperties({'LSM', 'LargeScreen'});
 end
 
-% task colors
-Format.Color.AllTasks = getColors(6, 'rainbow');
-for Indx_T = 1:numel(P.AllTasks)
-    Format.Color.Tasks.(P.AllTasks{Indx_T}) = Format.Color.AllTasks(Indx_T, :);
-end
 
-% colors for levels in M2S task
-Format.Color.Levels = flip(getColors([1 3], 'rainbow', 'red')); % M2S red
-Format.Color.spEpochs = getColors([1 2], 'rainbow', 'green'); % speech green
+Manuscript = getProperties({'LSM', 'Manuscript'});
+Powerpoint =  getProperties({'LSM', 'Powerpoint'});
+Poster =  getProperties({'LSM', 'Poster'});
 
-% other colors
-Format.Color.Participants = reduxColormap(Format.Colormap.Rainbow, numel(P.Participants));
 
-% colors + shades for all the tasks
-Format.Color.Sessions = getColors([numel(P.AllTasks), 3], 'rainbow');
+P.Manuscript = Manuscript;
+P.Powerpoint = Powerpoint;
+P.Poster = Poster;
+P.Format = Format;
 
+
+
+Labels.logBands = [1 2 4 8 16 32]; % x markers for plot on log scale
+Labels.Bands = [1 4 8 15 25 35 40]; % normal scale
+Labels.FreqLimits = [1 40];
+Labels.zPower = 'PSD z-scored';
+Labels.Power = 'PSD Amplitude (\muV^2/Hz)';
+Labels.Frequency = 'Frequency (Hz)';
+Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'}; % for M2S task
+Labels.Amplitude = 'Amplitude (\muV)';
+Labels.Time = 'Time (s)';
+Labels.ES = "Hedge's G";
+Labels.t = 't-values';
+Labels.Correct = '% Correct';
+Labels.RT = 'RT (s)';
+P.Labels = Labels;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Power/EEG information
@@ -114,20 +126,6 @@ Bands.Theta = [4 8];
 Bands.Alpha = [8 12];
 Bands.Beta = [15 25];
 Bands.Gamma = [25 35];
-
-Format.Labels.logBands = [1 2 4 8 16 32]; % x markers for plot on log scale
-Format.Labels.Bands = [1 4 8 15 25 35 40]; % normal scale
-Format.Labels.FreqLimits = [1 40];
-Format.Labels.zPower = 'PSD z-scored';
-Format.Labels.Power = 'PSD Amplitude (\muV^2/Hz)';
-Format.Labels.Frequency = 'Frequency (Hz)';
-Format.Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'}; % for M2S task
-Format.Labels.Amplitude = 'Amplitude (\muV)';
-Format.Labels.Time = 'Time (s)';
-Format.Labels.ES = "Hedge's G";
-Format.Labels.t = 't-values';
-Format.Labels.Correct = '% Correct';
-Format.Labels.RT = 'RT (s)';
 
 %%% Channels and Regions of Interest (ROI)
 Channels = struct();
@@ -192,21 +190,9 @@ for Indx = 1:numel(Channels.Standard_10_20_Titles)
     Channels.Standard_10_20_All = cat(2, Channels.Standard_10_20_All, Channels.Standard_10_20.(Channels.Standard_10_20_Titles{Indx}));
 end
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Alternative Format for Pixels
-
-Manuscript = getProperties({'LSM', 'Manuscript'});
-Powerpoint =  getProperties({'LSM', 'Powerpoint'});
-Poster =  getProperties({'LSM', 'Poster'});
-
-
-P.Manuscript = Manuscript;
-P.Powerpoint = Powerpoint;
-P.Poster = Poster;
-P.Format = Format;
 P.Channels = Channels;
 P.Bands = Bands;
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
