@@ -184,10 +184,11 @@ Channels.Standard_10_20.Oz = 75;
 Channels.Standard_10_20.O1 = 70;
 Channels.Standard_10_20.O2 = 83;
 
-Channels.Standard_10_20_Titles = fieldnames(Channels.Standard_10_20);
-Channels.Standard_10_20_All = [];
-for Indx = 1:numel(Channels.Standard_10_20_Titles)
-    Channels.Standard_10_20_All = cat(2, Channels.Standard_10_20_All, Channels.Standard_10_20.(Channels.Standard_10_20_Titles{Indx}));
+Titles = fieldnames(Channels.Standard_10_20);
+Channels.Standard_10_20_All = {};
+for Indx = 1:numel(Titles)
+    Channels.Standard_10_20_All{Indx, 2} = Channels.Standard_10_20.(Titles{Indx});
+     Channels.Standard_10_20_All{Indx, 1} = Titles{Indx};
 end
 
 P.Channels = Channels;
