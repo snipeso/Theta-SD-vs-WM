@@ -1,5 +1,5 @@
 % Scripts for plotting figures based on trial data of the Short Term Memory
-% (STM, aka Match2Sample aka M2S task). 
+% (STM, aka Match2Sample aka M2S task).
 
 clear
 close all
@@ -66,7 +66,7 @@ bchData = bandData(chData, Freqs, Bands, 'last');
 chData = smoothFreqs(chData, Freqs, 'last', SmoothFactor);
 
 
-%%
+
 Folder = fullfile(Paths.Data, 'EEG', 'Source', 'Figure');
 
 % source space fmTheta
@@ -112,10 +112,9 @@ Areas = replace(Areas, '_', ' ');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
 
-CLims_Diff = [-2 2];
 [nParticipants, nSessions, nTrials, nEpochs, nCh, nFreqs] = size(AllData);
 
-Epochs = Format.Labels.Epochs;
+Epochs = Labels.Epochs;
 Levels = [1 3 6];
 Legend = append('L', string(Levels));
 
@@ -201,7 +200,7 @@ Both =  sig_sdTheta & sig_fmTheta;
 Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 
 subfigure([], [5 3], [5 3], [5, 1], false, Pixels.Letters{Indx}, Pixels);
-    shiftaxis(Axes, [], Pixels.yPadding)
+shiftaxis(Axes, [], Pixels.yPadding)
 
 plotRankChange([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
     { 'Both signficant','Neither significant', 'sdTheta significant'}, 'northwest', Pixels)
@@ -369,7 +368,7 @@ for Indx_Ch = 1:numel(ChLabels)
             X = double(get(gca, 'XLim'));
             Txt= text(X(1)-diff(X)*.25, YLim(1)+diff(YLim)*.5, ChLabels{Indx_Ch}, ...
                 'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
-                'FontWeight', 'Bold', 'Rotation', 90, 'HorizontalAlignment', 'Center'); 
+                'FontWeight', 'Bold', 'Rotation', 90, 'HorizontalAlignment', 'Center');
         else
             ylabel ''
         end
@@ -394,6 +393,147 @@ saveFig(strjoin({'M2S_Spectrums', Epochs{Indx_E}}, '_'), Paths.Paper, Format)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% powerpoint figures
+
+%% plot grid
+
+Grid = [2 2];
+CLims_Diff = [-7 7];
+PlotPatch = true;
+Powerpoint = P.Powerpoint;
+Powerpoint.Figure.Padding = 5;
+
+Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
+Locations = [1 1; 1 2; 2 1; 2 2];
+
+figure('units','centimeters','position',[0 0 35 30])
+for Indx_F = 1:4
+    subfigure([], Grid, Locations(Indx_F, :), [], false, '', Powerpoint);
+    plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
+    padAxis('x', .75)
+end
+
+saveFig('fmTheta_square', Paths.Powerpoint, Format)
+
+
+figure('units','centimeters','position',[0 0 35 30])
+for Indx_F = 1:4
+    subfigure([], Grid, Locations(Indx_F, :), [], false, '', Powerpoint);
+    plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
+    padAxis('x', .75)
+end
+
+saveFig('sdTheta_square', Paths.Powerpoint, Format)
+
+
+
+%% plot vertical
+
+Grid = [4 1];
+CLims_Diff = [-7 7];
+PlotPatch = true;
+Powerpoint = P.Powerpoint;
+Powerpoint.Figure.Padding = 5;
+Powerpoint.Axes.yPadding = 5;
+Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
+
+figure('units','centimeters','position',[0 0 15 40])
+for Indx_F = 1:4
+    subfigure([], Grid, [Indx_F, 1], [], false, '', Powerpoint);
+    plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
+end
+
+saveFig('fmTheta_vertical', Paths.Powerpoint, Format)
+
+
+figure('units','centimeters','position',[0 0 15 40])
+for Indx_F = 1:4
+    subfigure([], Grid, [Indx_F, 1], [], false, '', Powerpoint);
+    plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
+end
+
+saveFig('sdTheta_vertical', Paths.Powerpoint, Format)
+
+
+
+
+
+%% plot horizontal
+
+
+Grid = [1 4];
+CLims_Diff = [-7 7];
+PlotPatch = true;
+Powerpoint = P.Powerpoint;
+Powerpoint.Figure.Padding = 5;
+Powerpoint.Axes.xPadding = 5;
+Powerpoint.Axes.yPadding = 15;
+Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
+
+figure('units','centimeters','position',[0 0 50 10])
+for Indx_F = 1:4
+    subfigure([], Grid, [1, Indx_F], [], false, '', Powerpoint);
+    plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
+
+end
+
+saveFig('fmTheta_horizontal', Paths.Powerpoint, Format)
+
+
+figure('units','centimeters','position',[0 0 50 10])
+for Indx_F = 1:4
+    subfigure([], Grid, [1, Indx_F], [], false, '', Powerpoint);
+    plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
+
+end
+
+saveFig('sdTheta_horizontal', Paths.Powerpoint, Format)
+
+
+
+
+
+
+
+%%
+%%% plot change based on table data
+
+Powerpoint = P.Powerpoint;
+
+% decide which labels to show
+KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L', 'Precuneus R',  ...
+    'Frontal Sup Medial L', 'Supp Motor Area L' , 'Cuneus R', 'Frontal Med Orb L',  ...
+   'Frontal Mid Orb L', 'Frontal Mid R', ...
+    'Cingulum Mid L','Occipital Sup R'   };
+
+Labels = Areas;
+Labels(~(ismember(Areas, KeepAreaLabels))) = {''};
+
+% colors depends on sig status
+Colors = repmat([.7 .7 .7], size(t_fmTheta, 1), 1); % non significant in gray
+Colors(sig_fmTheta, :) = repmat(getColors([1 1], 'rainbow', 'blue'), nnz(sig_fmTheta), 1);
+Colors(sig_sdTheta, :) = repmat(getColors([1 1], 'rainbow', 'red'), nnz(sig_sdTheta), 1);
+Both =  sig_sdTheta & sig_fmTheta;
+Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
+
+figure('units','centimeters','position',[0 0 20 20])
+plotLadder([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, Labels, Colors, ...
+    { 'Both signficant','Neither significant', 'sdTheta significant'}, 'northwest', Powerpoint)
+set(legend, 'position', [0.2544    0.7999    0.3585    0.0926])
+ylim([-3.5 7.15])
+xlim([.5 2.2])
+
+% save
+saveFig('fmTheta_vs_sdTheta_t-changes', Paths.Powerpoint, Powerpoint)
+
+
+
+
+
+
 
 %% plot confetti spaghetti of fmTheta vs sdTheta
 
