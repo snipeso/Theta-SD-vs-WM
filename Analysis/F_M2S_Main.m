@@ -493,11 +493,6 @@ end
 saveFig('sdTheta_horizontal', Paths.Powerpoint, Format)
 
 
-
-
-
-
-
 %%
 %%% plot change based on table data
 
@@ -531,7 +526,36 @@ saveFig('fmTheta_vs_sdTheta_t-changes', Paths.Powerpoint, Powerpoint)
 
 
 
+%%
 
+Indx_E = 2;
+Indx_B = 2;
+figure('units','centimeters','position',[0 0 20 15])
+N1 = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
+N3 = squeeze(bData(:, 1, 2, Indx_E, :, Indx_B));
+
+topoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Powerpoint, P.Labels);
+
+saveFig('fmTheta_sources',  Paths.Powerpoint, Powerpoint)
+
+
+figure('units','centimeters','position',[0 0 20 15])
+BL = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
+SD = squeeze(bData(:, 3, 1, Indx_E, :, Indx_B));
+topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Powerpoint, P.Labels);
+
+saveFig('sdTheta_sources',  Paths.Powerpoint, Powerpoint)
+
+
+%%
+
+figure('units','centimeters','position',[0 0 10 20])
+Powerpoint.Text.LegendSize = 25;
+plotColorbar('Divergent', CLims_Diff, P.Labels.t, Powerpoint)
+saveFig('Colorbar', Paths.Powerpoint, Powerpoint)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -554,42 +578,7 @@ title('sdTheta')
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Presentation figures
 
-%%
-
-Format_PPT = P.Format_PPT;
-CLims_Diff = [-1.6 1.6];
-
-Indx_E = 2;
-Indx_B = 2;
-figure('units','centimeters','position',[0 0 20 15])
-BL = squeeze(tData(:, 1, 1, Indx_E, :, Indx_B));
-SD = squeeze(tData(:, 1, 2, Indx_E, :, Indx_B));
-plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format_PPT);
-h = colorbar;
-ylabel(h,  Pixels.Labels.ES, 'FontName', Format_PPT.FontName, 'FontSize', Format_PPT.BarSize)
-h.TickLength = 0;
-caxis(CLims_Diff)
-
-set(gca, 'FontName', Format.FontName, 'FontSize', Format_PPT.BarSize)
-
-saveFig(strjoin({TitleTag, 'fmTheta'}, '_'), Main_Results, Format)
-
-
-figure('units','centimeters','position',[0 0 20 15])
-BL = squeeze(nanmean(bData(:, 1, :, Indx_E, :, Indx_B), 3));
-SD = squeeze(nanmean(bData(:, 3, :, Indx_E, :, Indx_B), 3));
-plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format_PPT);
-h = colorbar;
-ylabel(h,  Pixels.Labels.ES, 'FontName', Format_PPT.FontName, 'FontSize', Format_PPT.BarSize)
-h.TickLength = 0;
-caxis(CLims_Diff)
-
-set(gca, 'FontName', Format.FontName, 'FontSize', Format_PPT.BarSize)
-
-saveFig(strjoin({TitleTag, 'sdTheta'}, '_'), Main_Results, Format)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -178,3 +178,86 @@ for Indx_T = 1:numel(AllTasks)
 end
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Plots for powerpoints
+
+%% plot grid
+
+
+Grid = [2 2];
+CLims_Diff = [-7 7];
+PlotPatch = true;
+Powerpoint = P.Powerpoint;
+Powerpoint.Figure.Padding = 5;
+
+Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
+Locations = [1 1; 1 2; 2 1; 2 2];
+
+for Indx_T = 1:numel(AllTasks)
+    figure('units','centimeters','position',[0 0 35 30])
+    for Indx_F = 1:4
+        subfigure([], Grid, Locations(Indx_F, :), [], false, '', Powerpoint);
+        plotBalloonBrain(Maps(Indx_T), Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
+        padAxis('x', .75)
+    end
+    
+    saveFig([TaskLabels{Indx_T}, '_square'], Paths.Powerpoint, Format)
+end
+
+
+%% plot vertical
+
+Grid = [4 1];
+CLims_Diff = [-7 7];
+PlotPatch = true;
+Powerpoint = P.Powerpoint;
+Powerpoint.Figure.Padding = 5;
+Powerpoint.Axes.yPadding = 5;
+Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
+
+
+for Indx_T = 1:numel(AllTasks)
+    figure('units','centimeters','position',[0 0 15 40])
+    for Indx_F = 1:4
+        subfigure([], Grid, [Indx_F, 1], [], false, '', Powerpoint);
+        plotBalloonBrain(Maps(Indx_T), Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
+    end
+    
+    saveFig([TaskLabels{Indx_T}, '_vertical'], Paths.Powerpoint, Format)
+    
+end
+
+
+
+%% plot horizontal
+
+
+
+
+Grid = [1 4];
+CLims_Diff = [-7 7];
+PlotPatch = true;
+Powerpoint = P.Powerpoint;
+Powerpoint.Figure.Padding = 5;
+Powerpoint.Axes.xPadding = 5;
+Powerpoint.Axes.yPadding = 15;
+Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
+
+for Indx_T = 1:numel(AllTasks)
+    figure('units','centimeters','position',[0 0 50 10])
+    for Indx_F = 1:4
+        subfigure([], Grid, [1, Indx_F], [], false, '', Powerpoint);
+        plotBalloonBrain(Maps(Indx_T), Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
+        
+    end
+    
+    saveFig([TaskLabels{Indx_T}, '_horizontal'], Paths.Powerpoint, Format)
+    
+end
+
+
+
+
+
