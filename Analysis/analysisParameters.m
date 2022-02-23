@@ -58,8 +58,10 @@ Paths.Data  = fullfile(Core, 'Final'); % where data gets saved once its been tur
 Paths.PaperResults = fullfile(Core, 'Results', 'Theta-SD-vs-WM'); % where figures and tables end up
 Paths.Paper = 'C:\Users\colas\Dropbox\Research\Publications and Presentations\Sleep\Paper1\Figures';
 Paths.Poster = 'C:\Users\colas\Dropbox\Research\Publications and Presentations\Sleep\Gordon2022\Figures';
+Paths.Powerpoint = 'C:\Users\colas\Dropbox\Research\Projects\HuberSleepLab\LSM\Repeat Figures\MatlabFigures';
 Paths.PaperStats =  'C:\Users\colas\Dropbox\Research\Publications and Presentations\Sleep\Paper1\Stats';
 Paths.Scoring = fullfile(Core, 'Scoring');
+Paths.Results = fullfile(Core, 'Results\Theta-SD-vs-WM');
 
 % get path where these scripts were saved
 Paths.Analysis = mfilename('fullpath');

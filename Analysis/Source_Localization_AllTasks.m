@@ -18,7 +18,6 @@ Paths = P.Paths;
 Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
-Format = P.Format;
 Format = P.Manuscript;
 Poster = P.Poster;
 Powerpoint = P.Powerpoint;

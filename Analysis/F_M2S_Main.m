@@ -13,11 +13,13 @@ Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 Bands = P.Bands;
-Format = P.Format;
 Sessions = P.Sessions;
 StatsP = P.StatsP;
 Channels = P.Channels;
-Pixels = P.Pixels;
+Format = P.Manuscript;
+Poster = P.Poster;
+Powerpoint = P.Powerpoint;
+Labels = P.Labels;
 
 SmoothFactor = 1; % in Hz, range to smooth over
 
