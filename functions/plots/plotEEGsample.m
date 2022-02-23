@@ -9,7 +9,7 @@ function plotEEGsample(EEG, Start, Stop, HighlightChannels, HighlightColors, plo
 EEG = pop_select(EEG, 'time', [Start, Stop]);
 HighlightChannels = labels2indexes(HighlightChannels, EEG.chanlocs);
 
-if isempty(HighlightColors)
+if isempty(HighlightColors) && ~isempty(HighlightChannels)
     HighlightColors = getColors(numel(HighlightChannels));
 end
 
@@ -27,12 +27,17 @@ else
 end
 
 
+if ~isempty(Channels)
 YLabels = cell(1, nCh);
 LabelIndexes = labels2indexes([Channels{:, 2}], EEG.chanlocs);
 YLabels(LabelIndexes) = Channels(:, 1);
+else
+    YLabels = [];
+end
 
 Data = double(EEG.data);
 
 figure('units', 'normalized', 'outerposition', [0 0 1 1])
+subfigure([], [1 1], [1 1], [], true, '', PlotProps)
 plotEpoch(Data, t, HighlightChannels, HighlightColors, YLabels, Events, Scale, PlotProps)
 xlabel('Time (s)')
