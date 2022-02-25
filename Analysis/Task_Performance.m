@@ -7,7 +7,9 @@ Paths = P.Paths;
 Participants = P.Participants;
 Sessions = P.Sessions;
 Format = P.Format;
-Pixels = P.Pixels;
+Manuscript = P.Manuscript;
+StatsP = P.StatsP;
+Labels = P.Labels;
 
 nParticipants = numel(Participants);
 nSessions = numel(Sessions.Labels);
@@ -89,31 +91,33 @@ end
 
 %% plot data
 
-Pixels.PaddingExterior = 30; % reduce because of subplots
+clc
+
+Manuscript.Figure.Padding = 30; % reduce because of subplots
 Grid = [2, 2];
 Indx_B = 2; % theta
 Indx = 1;
 YLims = [-.3 1];
 
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.4])
-
+figure('units','centimeters','position',[0 0 Manuscript.Figure.Width Manuscript.Figure.Height*.4])
 
 %%% M2S
 miniGrid = [1 3];
 
-Space = subaxis(Grid, [1 1], [], Pixels.Letters{Indx}, Pixels);
+Space = subaxis(Grid, [1 1], [], Manuscript.Indexes.Letters{Indx}, Manuscript);
 Indx= Indx+1;
 
 for Indx_L = 1:nLevels
     Data = squeeze(M2S_Correct(:, :, Indx_L));
     
-    subfigure(Space, miniGrid, [1, Indx_L], [], {}, Pixels);
+    subfigure(Space, miniGrid, [1, Indx_L], [], true, {}, Manuscript);
+    Stats = data2D(Data, Sessions.Labels, [], [35 100], ...
+        repmat(Format.Color.Tasks.Match2Sample, nParticipants, 1), StatsP, Manuscript);
     
-    plotConfettiSpaghetti(Data, Sessions.Labels, [], [35 100], ...
-        repmat(Format.Colors.Tasks.Match2Sample, nParticipants, 1), StatsP, Pixels);
+    dispStat(Stats, [1 3], ['M2S L',  num2str(Levels(Indx_L))])
     
     if Indx_L ==1
-        ylabel(Format.Labels.Correct)
+        ylabel(Labels.Correct)
     end
     
     title(['Level ', num2str(Levels(Indx_L))])
@@ -123,69 +127,98 @@ end
 %%% LAT
 miniGrid = [1 3];
 
-Space = subaxis(Grid, [1 2], [], Pixels.Letters{Indx}, Pixels);
+% RTs
+Space = subaxis(Grid, [1 2], [], Manuscript.Indexes.Letters{Indx}, Manuscript);
 Indx= Indx+1;
 
 
-subfigure(Space, miniGrid, [1, 1], [], {}, Pixels);
-plotConfettiSpaghetti(LAT_RT, Sessions.Labels, [], [], ...
-    repmat(Format.Colors.Tasks.LAT, nParticipants, 1), StatsP, Pixels);
+subfigure(Space, miniGrid, [1, 1], [],true, {}, Manuscript);
+Stats = data2D(LAT_RT, Sessions.Labels, [], [], ...
+    repmat(Format.Color.Tasks.LAT, nParticipants, 1), StatsP, Manuscript);
 ylabel('Seconds')
 title('Reaction Times')
 
+dispStat(Stats, [1 3], 'LAT RTs')
 
-subfigure(Space, miniGrid, [1, 2], [], {}, Pixels);
-plotConfettiSpaghetti(LAT_Correct, Sessions.Labels, [], [], ...
-    repmat(Format.Colors.Tasks.LAT, nParticipants, 1), StatsP, Pixels);
+
+% correct
+subfigure(Space, miniGrid, [1, 2], [], true, {}, Manuscript);
+Stats = data2D(LAT_Correct, Sessions.Labels, [], [], ...
+    repmat(Format.Color.Tasks.LAT, nParticipants, 1), StatsP, Manuscript);
 title('Correct')
 ylabel('%')
 
-subfigure(Space, miniGrid, [1, 3], [], {}, Pixels);
-plotConfettiSpaghetti(LAT_Lapses, Sessions.Labels, [], [], ...
-    repmat(Format.Colors.Tasks.LAT, nParticipants, 1), StatsP, Pixels);
+disp('LAT Correct:')
+disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
+    ', p < ', num2str(Stats.p(1, 3), '%.3f'), ', g = ', num2str(Stats.hedgesg(1, 3), '%.2f'), ')'])
+
+
+% lapses
+subfigure(Space, miniGrid, [1, 3], [], true, {}, Manuscript);
+Stats = data2D(LAT_Lapses, Sessions.Labels, [], [], ...
+    repmat(Format.Color.Tasks.LAT, nParticipants, 1), StatsP, Manuscript);
 title('Lapses')
 ylabel('%')
+
+disp('LAT lapses:')
+disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
+    ', p < ', num2str(Stats.p(1, 3), '%.3f'), ', g = ', num2str(Stats.hedgesg(1, 3), '%.2f'), ')'])
 
 
 %%% PVT
 miniGrid = [1 2];
 
-Space = subaxis(Grid, [2 1], [], Pixels.Letters{Indx}, Pixels);
+Space = subaxis(Grid, [2 1], [], Manuscript.Indexes.Letters{Indx}, Manuscript);
 Indx= Indx+1;
 
-subfigure(Space, miniGrid, [1, 1], [], {}, Pixels);
-plotConfettiSpaghetti(PVT_RT, Sessions.Labels, [], [], ...
-    repmat(Format.Colors.Tasks.PVT, nParticipants, 1), StatsP, Pixels);
+% RTs
+subfigure(Space, miniGrid, [1, 1], [], true, {}, Manuscript);
+Stats = data2D(PVT_RT, Sessions.Labels, [], [], ...
+    repmat(Format.Color.Tasks.PVT, nParticipants, 1), StatsP, Manuscript);
 ylabel('Seconds')
 title('Reaction Times')
 
+dispStat(Stats, [1 3], 'PVT RTs')
 
-subfigure(Space, miniGrid, [1, 2], [], {}, Pixels);
-plotConfettiSpaghetti(PVT_Lapses, Sessions.Labels, [], [], ...
-    repmat(Format.Colors.Tasks.PVT, nParticipants, 1), StatsP, Pixels);
+
+% lapses
+subfigure(Space, miniGrid, [1, 2], [], true, {}, Manuscript);
+Stats = data2D(PVT_Lapses, Sessions.Labels, [], [], ...
+    repmat(Format.Color.Tasks.PVT, nParticipants, 1), StatsP, Manuscript);
 title('Lapses')
 ylabel('#')
 
-
+disp('PVT lapses:')
+disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
+    ', p < ', num2str(Stats.p(1, 3), '%.3f'), ', g = ', num2str(Stats.hedgesg(1, 3), '%.2f'), ')'])
 
 %%% SpFT
 miniGrid = [1 2];
 
-Space = subaxis(Grid, [2 2], [], Pixels.Letters{Indx}, Pixels);
+Space = subaxis(Grid, [2 2], [], Manuscript.Indexes.Letters{Indx}, Manuscript);
 Indx= Indx+1;
 
-subfigure(Space, miniGrid, [1, 1], [], {}, Pixels);
-plotConfettiSpaghetti(SpFT_Correct, Sessions.Labels, [], [], ...
-    repmat(Format.Colors.Tasks.SpFT, nParticipants, 1), StatsP, Pixels);
+% correct
+subfigure(Space, miniGrid, [1, 1], [], true, {}, Manuscript);
+Stats = data2D(SpFT_Correct, Sessions.Labels, [], [], ...
+    repmat(Format.Color.Tasks.SpFT, nParticipants, 1), StatsP, Manuscript);
 ylabel('Words/s')
 title('Correct Words')
 
+disp('SpFT correct:')
+disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
+    ', p < ', num2str(Stats.p(1, 3), '%.3f'), ', g = ', num2str(Stats.hedgesg(1, 3), '%.2f'), ')'])
 
-subfigure(Space, miniGrid, [1, 2], [], {}, Pixels);
-plotConfettiSpaghetti(SpFT_Incorrect, Sessions.Labels, [], [], ...
-    repmat(Format.Colors.Tasks.SpFT, nParticipants, 1), StatsP, Pixels);
+
+% mistakes
+subfigure(Space, miniGrid, [1, 2], [], true, {}, Manuscript);
+Stats = data2D(SpFT_Incorrect, Sessions.Labels, [], [], ...
+    repmat(Format.Color.Tasks.SpFT, nParticipants, 1), StatsP, Manuscript);
 title('Mistakes')
 ylabel('Words/s')
 
+disp('SpFT mistakes:')
+disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
+    ', p < ', num2str(Stats.p(1, 3), '%.3f'), ', g = ', num2str(Stats.hedgesg(1, 3), '%.2f'), ')'])
 
 saveFig('Behavior', Paths.Paper, Format)
