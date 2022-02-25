@@ -51,6 +51,11 @@ switch nDims
             FDR = nan(Dims(2));
             FDR(Indexes_long) = pValues_fdr;
             Stats.pFDR = FDR;
+            
+            % get effect sizes
+            G = hedgesG(Data, StatsP);
+            Stats.hedgesg = G.hedgesg;
+            
         end
         
         
