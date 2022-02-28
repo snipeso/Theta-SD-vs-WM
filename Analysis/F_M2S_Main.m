@@ -756,3 +756,50 @@ for Indx_S = 1:nSessions
     end
     close all
 end
+
+
+
+%% replicate Mauerer 2015
+
+% average data into ROIs
+chData = tData(:, :, :, :, labels2indexes(16, Chanlocs), :);
+
+% save it into bands
+bchData = bandData(chData, Freqs, Bands, 'last');
+
+%%
+% compare log change in theta L3 - L1 with behavior change
+L1_behavior = sum(squeeze(AllTrials.correct(:, 1, :)) & squeeze(AllTrials.level(:, 1, :) == 1), 2)/40;
+L3_behavior = sum(squeeze(AllTrials.correct(:, 1, :)) & squeeze(AllTrials.level(:, 1, :) == 3), 2)/40;
+
+
+L1 = squeeze(bchData(:, 1, 1, 2, 1, 2));
+L3 = squeeze(bchData(:, 1, 2, 2, 1, 2));
+
+Be = L3_behavior-L1_behavior;
+Br = log(L3)-log(L1);
+
+figure
+scatter(Be, Br)
+
+[r, p] = corr(Be, Br);
+disp(['r = ', num2str(r, '%.2f'), ', p = ', num2str(p,  '%.3f')])
+
+
+
+%% compare L1 drop in performance from BL to SD, and increase in theta
+BL_behavior = sum(squeeze(AllTrials.correct(:, 1, :)) & squeeze(AllTrials.level(:, 1, :) == 1), 2)/40;
+SD_behavior = sum(squeeze(AllTrials.correct(:, 3, :)) & squeeze(AllTrials.level(:, 3, :) == 1), 2)/40;
+
+
+BL = squeeze(bchData(:, 1, 1, 2, 1, 2));
+SD = squeeze(bchData(:, 3, 1, 2, 1, 2));
+
+Be = SD_behavior-BL_behavior;
+Br = log(SD)-log(BL);
+
+figure
+scatter(Be, Br)
+
+[r, p] = corr(Be, Br);
+disp(['r = ', num2str(r, '%.2f'), ', p = ', num2str(p,  '%.3f')])
