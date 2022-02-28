@@ -17,7 +17,7 @@ Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 Bands = P.Bands;
-Pixels = P.Pixels;
+Manuscript = P.Manuscript;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,21 +89,21 @@ Sig = pValues <.05;
 
 Grid = [1 10];
 
-figure('units','centimeters','position',[0 4 Pixels.W Pixels.H])
+figure('units','centimeters','position',[0 4 Manuscript.W Manuscript.H])
 
 % all tasks
-subfigure([], Grid, [1, 2], [1 Grid(2)-4], true, '', Pixels);
+subfigure([], Grid, [1, 2], [1 Grid(2)-4], true, '', Manuscript);
 plotExcelTable(tValues(1:numel(TaskLabels), Keep)', Sig(1:numel(TaskLabels), Keep)', Areas(Keep), ...
-    TaskLabels,  't values', Pixels)
+    TaskLabels,  't values', Manuscript)
 colorbar off
 
 % sdTheta vs fmTheta comparison
-A = subfigure([], Grid, [1, Grid(2)-2], [1 3], true, '', Pixels);
+A = subfigure([], Grid, [1, Grid(2)-2], [1 3], true, '', Manuscript);
 plotExcelTable(tValues(end-1:end, Keep)', Sig(end-1:end, Keep)', [], ...
-    {'fmTheta', 'sdTheta'},  't values', Pixels)
+    {'fmTheta', 'sdTheta'},  't values', Manuscript)
 
 % save
-saveFig(['SourceTable_',ValueType], Paths.Paper, Pixels)
+saveFig(['SourceTable_',ValueType], Paths.Paper, Manuscript)
 
 
 
@@ -125,8 +125,14 @@ end
 TTop = T(logical(T.Top), :);
 figure;
 plotExcelTable(table2array(TTop(:, 1:6)), [], TTop.Areas, ...
-    TaskLabels,  't values', Pixels)
+    TaskLabels,  't values', Manuscript)
 
 
 writetable(T, fullfile(Paths.PaperStats, 'BigTable_Sources.csv'))
+
+
+
+%% plot spectrums for all areas
+
+
 

@@ -66,6 +66,7 @@ bchData = bandData(chData, Freqs, Bands, 'last');
 chData = smoothFreqs(chData, Freqs, 'last', SmoothFactor);
 
 
+%%
 
 Folder = fullfile(Paths.Data, 'EEG', 'Source', 'Figure');
 

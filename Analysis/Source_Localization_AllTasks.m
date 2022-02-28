@@ -67,7 +67,7 @@ Grid = [7, 4];
 CLims = [-7 7];
 Format.Figure.Padding = 90;
 plotPatch = true;
-figure('units','centimeters','position',[0 4 Format.Figure.Width Format.Figure.Height])
+figure('units','centimeters','position',[0 0 Format.Figure.Width Format.Figure.Height])
 
 
 for Indx_T = 1:numel(AllTasks)
@@ -75,7 +75,7 @@ for Indx_T = 1:numel(AllTasks)
     % plot each face
     subfigure([], Grid, [Indx_T, 1], [], false, '', Format);
     plotBalloonBrain(Maps(Indx_T), 'left-outside', CLims, false, Format)
-    
+    if Indx_T ~=1; title ''; end
     
     % plot task labels
     Z = get(gca, 'ZLim');
@@ -86,18 +86,21 @@ for Indx_T = 1:numel(AllTasks)
     % plot all other balloon sides
     subfigure([], Grid, [Indx_T, 2], [], false, '', Format);
     plotBalloonBrain(Maps(Indx_T), 'right-outside', CLims, false, Format)
+    if Indx_T ~=1; title ''; end
     
     subfigure([], Grid, [Indx_T, 3], [], false, '', Format);
     plotBalloonBrain(Maps(Indx_T), 'left-inside', CLims, plotPatch, Format)
+    if Indx_T ~=1; title ''; end
     
     subfigure([], Grid, [Indx_T, 4], [], false, '', Format);
     plotBalloonBrain(Maps(Indx_T), 'right-inside', CLims, plotPatch, Format)
+    if Indx_T ~=1; title ''; end
 end
 
 % colorbar
 A = subfigure([], Grid, [numel(AllTasks)+1, 1], [1, 4], false, '', Format);
 
-Format.Colorbar.Position = 'north';
+Format.Colorbar.Location = 'north';
 Format.Text.LegendSize = Format.Text.AxisSize;
 plotColorbar('Divergent', CLims, Labels.t, Format)
 
