@@ -1,4 +1,4 @@
-function topoDiff(Data1, Data2, Chanlocs, CLims, StatsP, PlotProps, Labels)
+function Stats = topoDiff(Data1, Data2, Chanlocs, CLims, StatsP, PlotProps, Labels)
 % topoDiff(Data1, Data2, Chanlocs, CLims, StatsP, PlotProps)
 %
 % plots the t-values (color) and significant channels (white dots) of
