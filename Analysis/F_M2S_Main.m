@@ -114,7 +114,7 @@ Areas = replace(Areas, '_', ' ');
 
 [nParticipants, nSessions, nTrials, nEpochs, nCh, nFreqs] = size(AllData);
 
-Epochs = AreaLabels.Epochs;
+Epochs = Labels.Epochs;
 Levels = [1 3 6];
 Legend = append('L', string(Levels));
 
@@ -127,7 +127,7 @@ Legend = append('L', string(Levels));
 Format = P.Manuscript;
 Format.External.EEGLAB.MarkerSize = 3;
 Format.Axes.yPadding = 15;
-Format.Axes.xPadding = 15;
+Format.Axes.xPadding = 20;
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 CLims_Diff = [-7 7];
@@ -154,7 +154,6 @@ title('fmTheta', 'FontSize', Format.Text.TitleSize)
 % balloon brains fmTheta
 for Indx_F = 1:4
     Axes = subfigure(Space, miniGrid, [Indx_F+1 1], [], false, Format.Indexes.Numerals{Indx}, Format); Indx = Indx+1;
-%     shiftaxis(Axes, Format.xPadding/2, Format.yPadding)
     plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Format)
     title ''
 end
@@ -176,10 +175,9 @@ title('sdTheta', 'FontSize', Format.Text.TitleSize)
 % balloon sdTheta
 for Indx_F = 1:4
     Axes = subfigure(Space, miniGrid, [Indx_F+1 1], [], false, Format.Indexes.Numerals{Indx}, Format); Indx = Indx+1;
-%     shiftaxis(Axes, Format.xPadding/2, Format.yPadding)
     plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Format)
+    title ''
 end
-
 
 % colorbar
 subfigure([], Grid, [1 3], [], false, '', Format);
@@ -206,13 +204,11 @@ Both =  sig_sdTheta & sig_fmTheta;
 Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 
 subfigure([], [5 3], [5 3], [5, 1], false, Format.Indexes.Letters{3}, Format);
-% shiftaxis(Axes, [], Format.yPadding)
-
 plotLadder([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, AreaLabels, Colors, ...
     { 'Both signficant','Neither significant', 'sdTheta significant'}, 'northwest', Format)
 set(legend, 'position', [ 0.7144    0.8449    0.1317    0.0566])
-ylim([-3.5 7.15])
-xlim([.5 2.2])
+ylim([-3.5 7.25])
+xlim([.65 2.2])
 
 % save
 saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
@@ -220,14 +216,15 @@ saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper
 
 %% M2S theta changes for each session
 
-Format = P.Pixels;
+Format = P.Manuscript;
+Format.External.EEGLAB.MarkerSize = 3;
 
 CLims_Diff = [-7 7];
 Grid = [1 5];
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 
-figure('units','centimeters','position',[0 0 Format.W Format.H*.35])
+figure('units','centimeters','position',[0 0 Format.Figure.Width Format.Figure.Height*.35])
 Indx = 1; % tally of axes
 
 %%% fmTheta by session
@@ -236,7 +233,6 @@ miniGrid = [2 3];
 Space = subaxis(Grid, [1, 1], [1 3], Format.Indexes.Letters{Indx}, Format); Indx = Indx+1;
 
 for Indx_L =  2:numel(Levels)
-    
     for Indx_S = 1:nSessions
         
         N1 = squeeze(bData(:, Indx_S, 1, Indx_E, :, Indx_B));
@@ -244,18 +240,19 @@ for Indx_L =  2:numel(Levels)
         
         % plot
         A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], false, {}, Format);
-        shiftaxis(A, Format.PaddingLabels/2, [])
-        Stats = plotTopoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Format);
+        shiftaxis(A, Format.Axes.xPadding/2, [])
+        Stats = topoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, Format, Labels);
+        colorbar off
         
         if Indx_L == 2 % only title for top row
-            title(Sessions.Labels{Indx_S}, 'FontName', Format.FontName, 'FontSize', Format.TitleSize)
+            title(Sessions.Labels{Indx_S}, 'FontName', Format.Text.FontName, 'FontSize', Format.Text.TitleSize)
         end
         
         if Indx_S ==1 % left labels of rows
             X = get(gca, 'XLim');
             Y = get(gca, 'YLim');
             text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
-                'FontSize', Format.TitleSize, 'FontName', Format.FontName, ...
+                'FontSize', Format.Text.TitleSize, 'FontName', Format.Text.FontName, ...
                 'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
         end
         
@@ -269,7 +266,7 @@ end
 %%% mean changes in ROIs
 miniGrid = [4, 1];
 YLims = [-.2; -.5; -.2];
-YLims = [YLims, YLims + [1.4; .7; .7]];
+YLims = [YLims, YLims + [1.8; .8; .8]];
 
 Space = subaxis(Grid, [1, 4], [], Format.Indexes.Letters{Indx}, Format);
 Indx = Indx+1;
@@ -283,36 +280,41 @@ for Indx_Ch = 1:numel(ChLabels)
         Height = 1;
     end
     
+    if Indx_Ch >1
+        L = '';
+    else
+        L = Legend;
+    end
+    
+    
     % plot
     A = subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], true, {}, Format);
-    shiftaxis(A, [], Format.PaddingLabels/2)
-    Stats = plotSpaghettiOs(Data, 1, Sessions.Labels, Legend, ...
-        Format.Colors.Levels, StatsP, Format);
+    shiftaxis(A, [], Format.Axes.yPadding/2)
+    Stats = data3D(Data, 1, Sessions.Labels, L, ...
+        Format.Color.Levels, StatsP, Format);
     A.TickLength = [0 0];
     ylim(YLims(Indx_Ch, :))
     yticks(-1:.2:2)
-    ylabel(Format.Labels.zPower)
-    
+    ylabel(Labels.zPower)
     if Indx_Ch >1
         legend off
-    else
-        legend(Legend)
     end
     
     if Indx_Ch ~= numel(ChLabels)
         xticklabels('')
     end
     
-    title(ChLabels{Indx_Ch}, 'FontName', Format.FontName, 'FontSize', Format.TitleSize)
+    title(ChLabels{Indx_Ch}, 'FontSize', Format.Text.TitleSize)
 end
+
 
 
 %%% SD vs BL by level
 miniGrid = [3 1];
-Format.Topo.Sig = 2;
+Format.External.EEGLAB.MarkerSize = 2;
 Space = subaxis(Grid, [1 5], [], Format.Indexes.Letters{Indx}, Format);
 
-Space(1) = Space(1) - Format.xPadding;
+% Space(1) = Space(1) - Format.Axes.xPadding;
 for Indx_L =  1:numel(Levels)
     
     BL = squeeze(bData(:, 1, Indx_L, Indx_E, :, Indx_B));
@@ -320,19 +322,23 @@ for Indx_L =  1:numel(Levels)
     
     % plot
     A = subfigure(Space, miniGrid, [Indx_L 1], [], false, {}, Format);
-    Stats = plotTopoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format);
-    title(Legend{Indx_L}, 'FontName', Format.FontName, 'FontSize', Format.TitleSize)
+    Stats = topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format, Labels);
+    shiftaxis(A, Format.Axes.xPadding, [])
+    colorbar off
+    title(Legend{Indx_L}, 'FontSize', Format.Text.TitleSize)
     
     % save stats
     Title = strjoin({Legend{Indx_L}, 'SDvsBL', 'Topo'}, '_');
     saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
 end
 
+
 %%% plot colorbar
+Space(1) = Space(1) - Format.Axes.xPadding;
 A = subfigure(Space, miniGrid, [3 2], [3, 1], false, {}, Format);
-plotColorbar('Divergent', CLims_Diff, Format.Labels.ES, Format)
-shiftaxis(A, Format.PaddingLabels, [])
-colormap(reduxColormap(Format.Colormap.Divergent, Format.Steps.Divergent))
+plotColorbar('Divergent', CLims_Diff, Labels.ES, Format)
+shiftaxis(A, Format.Axes.xPadding, [])
+colormap(reduxColormap(Format.Color.Maps.Divergent, Format.Color.Steps.Divergent))
 
 
 % save
@@ -343,13 +349,13 @@ saveFig(strjoin({TitleTag, 'M2S_Topographies'}, '_'), Paths.Paper, Format)
 
 %% plot spectrum
 
-Format = P.Pixels;
-Format.PaddingExterior = 90;
+Format = P.Manuscript;
+% Format.PaddingExterior = 90;
 Grid = [numel(ChLabels), nSessions];
 YLim = [-.8 3.1];
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 Format.W Format.H*.47])
+figure('units','centimeters','position',[0 0 Format.Figure.Width Format.Figure.Height*.47])
 Indx = 1; % tally of axes
 
 
@@ -359,7 +365,7 @@ for Indx_Ch = 1:numel(ChLabels)
         
         % plot
         subfigure([], Grid, [Indx_Ch, Indx_S], [], true, '', Format); Indx = Indx+1;
-        plotSpectrumDiff(Data, Freqs, 1, {'L1', 'L3', 'L6'}, Format.Colors.Levels, Log, Format, StatsP);
+        plotSpectrumDiff(Data, Freqs, 1, {'L1', 'L3', 'L6'}, Format.Color.Levels, Log, Format, StatsP);
         ylim(YLim)
         xlim(log([1 40]))
         
@@ -483,7 +489,7 @@ figure('units','centimeters','position',[0 0 50 10])
 for Indx_F = 1:4
     subfigure([], Grid, [1, Indx_F], [], false, '', Powerpoint);
     plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
-
+    
 end
 
 saveFig('fmTheta_horizontal', Paths.Powerpoint, Format)
@@ -493,7 +499,7 @@ figure('units','centimeters','position',[0 0 50 10])
 for Indx_F = 1:4
     subfigure([], Grid, [1, Indx_F], [], false, '', Powerpoint);
     plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
-
+    
 end
 
 saveFig('sdTheta_horizontal', Paths.Powerpoint, Format)
@@ -507,7 +513,7 @@ Powerpoint = P.Powerpoint;
 % decide which labels to show
 KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L', 'Precuneus R',  ...
     'Frontal Sup Medial L', 'Supp Motor Area L' , 'Cuneus R', 'Frontal Med Orb L',  ...
-   'Frontal Mid Orb L', 'Frontal Mid R', ...
+    'Frontal Mid Orb L', 'Frontal Mid R', ...
     'Cingulum Mid L','Occipital Sup R'   };
 
 AreaLabels = Areas;
