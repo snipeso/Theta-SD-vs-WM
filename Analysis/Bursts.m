@@ -1,6 +1,6 @@
-% clear
-% clc
-% close all
+clear
+clc
+close all
 % 
 P = analysisParameters();
 
@@ -9,7 +9,8 @@ Bands = P.Bands;
 Format = P.Format;
 
 
-Filename = 'P10_Match2Sample_Baseline_Clean.set';
+Filename = 'P12_LAT_Session2Comp_Clean.set';
+% Filename = 'P01_Standing_BaselinePost_Clean.set';
 
 Levels = split(Filename, '_');
 Task = Levels{2};

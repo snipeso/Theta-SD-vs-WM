@@ -26,7 +26,7 @@ plot(t, Data(ProtoChannelIndx, :), 'Color', Colors, 'LineWidth', 3)
 ylim([MidY-Range, MidY+Range])
 title('EEG')
 xlabel('Time (s)')
-set(gca, 'FontName', Format.FontName, 'FontSize', 14)
+set(gca, 'FontName', Format.Text.FontName, 'FontSize', Format.Text.AxisSize)
 % axes('YColor','none');
 % ax1 = gca;                   % gca = get current axis
 % ax1.YAxis.Visible = 'off';
@@ -41,14 +41,21 @@ Subplots = [5 6 9 10];
 for Indx_B = 1:numel(Subplots)
     subplot(3, 4, Subplots(Indx_B))
     topoplot(bData(:, Indx_B), EEG.chanlocs, 'style', 'map', 'headrad', 'rim', ...
-        'whitebk', 'on', 'maplimits', 'minmax', 'gridscale', Format.TopoRes, ...
+        'whitebk', 'on', 'maplimits', 'minmax', 'gridscale', Format.External.EEGLAB.TopoRes, ...
          'electrodes', 'on', 'emarker2', {[ProtoChannelIndx],'.',Colors, 20});
     colorbar
-    title(BandLabels{Indx_B}, 'FontName', Format.FontName,  'FontSize', 14)
+    title(BandLabels{Indx_B}, 'FontName', Format.Text.FontName,  'FontSize', Format.Text.AxisSize)
 end
 
-colormap(reduxColormap(Format.Colormap.Linear, Format.Steps.Linear))
+colormap(reduxColormap(Format.Color.Maps.Linear, Format.Color.Steps.Linear))
 
+
+FreqTicks = [];
+for Indx_B = 1:numel(BandLabels)
+   FreqTicks = [FreqTicks, Bands.(BandLabels{Indx_B})]; 
+end
+
+FreqTicks = unique(FreqTicks);
 
 % plot frequencies
 subplot(3, 4, [7 8 11 12])
@@ -58,8 +65,8 @@ plot(Freqs, FFT(:, ProtoChannelIndx), 'Color', Colors, 'LineWidth', 3)
 xlim([1 35])
 xlabel('Frequency (Hz)')
 ylabel('Power')
-set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', Format.Labels.Bands, ...
-    'FontName', Format.FontName)
+set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', FreqTicks, ...
+    'FontName', Format.Text.FontName)
 Title = strjoin({num2str(Start), num2str(Window), num2str(ProtoChannel)}, '_');
-set(gca, 'FontName', Format.FontName , 'FontSize', 14)
+set(gca, 'FontName', Format.Text.FontName , 'FontSize', Format.Text.AxisSize)
 
