@@ -1,4 +1,4 @@
-function plotSpectrum(Data, Freqs, LineLabels, Colors, Alpha, LineWidth, Log, Format)
+function plotSpectrum(Data, Freqs, LineLabels, Colors, Alpha, LineWidth, Log, PlotProps, Labels)
 %  plotSpectrum(Data, Freqs, LineLabels, Colors, Alpha, LineWidth, Format)
 
 % plot spectrums, but without any statistics. Data is n x Freq
@@ -7,15 +7,15 @@ Dims = size(Data);
 hold on
 
 if Log
-    XLim = Format.Labels.FreqLimits;
+    XLim = Labels.FreqLimits;
     plotFreqs = log(Freqs);
     
     % plot thin lines marking the theta range
-    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Format.Labels.logBands), ...
-        'FontName', Format.FontName, 'FontSize', Format.FontSize)
+    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Labels.logBands), ...
+        'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize)
     
-    xticks(log(Format.Labels.logBands))
-    xticklabels(Format.Labels.logBands)
+    xticks(log(Labels.logBands))
+    xticklabels(Labels.logBands)
     xlim(log(XLim))
     
 else
@@ -23,8 +23,8 @@ else
     plotFreqs = Freqs;
     
     % plot thin lines marking the theta range
-    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', Format.Labels.Bands, ...
-        'FontName', Format.FontName, 'FontSize', Format.FontSize)
+    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', Labels.Bands, ...
+        'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize)
     
     xlim(XLim)
 end
@@ -44,8 +44,8 @@ Min = min(Data(:, F(1):F(2)), [], 'all');
 Max =  max(Data(:, F(1):F(2)), [], 'all');
 
 ylim([Min Max])
-ylabel(Format.Labels.zPower)
-xlabel(Format.Labels.Frequency)
+ylabel(Labels.zPower)
+xlabel(Labels.Frequency)
 
 
 if ~isempty(LineLabels)
