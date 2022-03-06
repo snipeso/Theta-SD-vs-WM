@@ -2,6 +2,8 @@ function Table = sleepArchitecture(Matrix, Variables, Nights)
 % creates a pretty table for publication with all the sleep infos and
 % stats.
 % Matrix is a P x N x V, Labels is 1 x V, and nights is 1 x N
+% NB: instead of the +- symbol, I have a dollar sign, so you can find and
+% replace.
 
 % get averages and variances
 Means = squeeze(nanmean(Matrix, 1));
@@ -26,6 +28,5 @@ for Indx_V = 1:numel(Variables)
         end
     end
 end
-
 
 Table = Table(:, [1 2 5 7 3 4 6]);

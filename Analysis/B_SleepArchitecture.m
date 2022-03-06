@@ -1,9 +1,12 @@
-% scripts for looking at sleep scoring
-
+% Scripts for looking at sleep scoring. Saves a table in the Stats folder
+% of the paper.
 
 clear
 clc
 close all
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Load and set parameters
 
 P = analysisParameters();
 
@@ -17,12 +20,10 @@ Sessions = P.Sessions;
 StatsP = P.StatsP;
 Nights = P.Nights;
 
-
 Variables = {'wake',  'n1', 'n2', 'n3', 'rem',};
 sqVariables = {'sol', 'sd', 'waso', 'se', 'rol'};
 
 TableLabels = {'Wake (min)', 'N1', 'N2', 'N3' 'REM', 'SOL', 'SD', 'WASO', 'SE', 'ROL'};
-
 
 Results = fullfile(Paths.Results, 'Sleep');
 if ~exist(Results, 'dir')
@@ -30,7 +31,9 @@ if ~exist(Results, 'dir')
 end
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% gather data from everyone
+
 Variables_Matrix = nan(numel(Participants), numel(Nights)+1, numel(Variables));
 sqVariables_Matrix = nan(numel(Participants), numel(Nights)+1, numel(Variables));
 
@@ -56,9 +59,7 @@ for Indx_P = 1:numel(Participants)
         end
     end
     
-    % get MWT data
-    
-    
+    %%% get MWT data (for potential future reference)
     Folder = strjoin({Participants{Indx_P}, 'MWT', 'Main'}, '_');
     Path = fullfile(Paths.Scoring, 'MWT', Folder);
     
@@ -78,7 +79,7 @@ for Indx_P = 1:numel(Participants)
     end
 end
 
-%%
+%% create and save table with all sleep architecture things
 
 % join variables
 Matrix = cat(3, Variables_Matrix(:, 1:numel(Nights), :), sqVariables_Matrix(:, 1:numel(Nights), :));
@@ -92,20 +93,7 @@ disp(Table)
 writetable(Table, fullfile(P.Paths.PaperStats, 'Sleep_Architecture.csv'));
 
 
-%% create table with MWT
-Matrix = cat(3, Variables_Matrix(:, [1 3 4], :), sqVariables_Matrix(:, [1 3 4], :));
-Labels = [Variables, sqVariables];
-
-
-% create table
-Table = sleepArchitecture(Matrix, TableLabels, {'BL', 'Recovery', 'MWT'});
-disp(Table)
-
-writetable(Table, fullfile(Results, 'Sleep_Architecture_MWT.csv'));
-
-
-
-%% Display change from baseline as average %
+%% Display change from baseline as average
 clc
 
 for Indx_V = 1:numel(Variables)

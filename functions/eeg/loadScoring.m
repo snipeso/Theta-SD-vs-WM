@@ -1,5 +1,14 @@
 function [Percent, Minutes, SleepQuality] = loadScoring(Filepath)
-
+% [Percent, Minutes, SleepQuality] = loadScoring(Filepath)
+%
+% Creates struct with all the sleep architecture summary values as a
+% percent of the whole night, in absolute minutes, and key scores.
+% Percent / Minutes of wake, REM sleep, N1, N2 and N3 deep sleep.
+% Sleep quality includes:
+% - sleep onset latency (sol)
+% - sleep duration (sd)
+% - wake after sleep onset(waso)
+% - rem onset latency (rol)
 
 EL = 20; % epoch length in seconds
 
