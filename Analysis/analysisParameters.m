@@ -20,11 +20,25 @@ Sessions.SpFT = {'Baseline', 'Session1', 'Session2'};
 Sessions.Game = {'Baseline', 'Session1', 'Session2'};
 Sessions.Music = {'Baseline', 'Session1', 'Session2'};
 Sessions.Labels = {'BL', 'SR', 'SD'};
-
 P.Sessions = Sessions;
 
 P.Nights = {'Baseline', 'NightPre', 'NightPost'};
 
+
+Labels.logBands = [1 2 4 8 16 32]; % x markers for plot on log scale
+Labels.Bands = [1 4 8 15 25 35 40]; % normal scale
+Labels.FreqLimits = [1 40];
+Labels.zPower = 'PSD z-scored';
+Labels.Power = 'PSD Amplitude (\muV^2/Hz)';
+Labels.Frequency = 'Frequency (Hz)';
+Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'}; % for M2S task
+Labels.Amplitude = 'Amplitude (\muV)';
+Labels.Time = 'Time (s)';
+Labels.ES = "Hedge's G";
+Labels.t = 't-values';
+Labels.Correct = '% Correct';
+Labels.RT = 'RT (s)';
+P.Labels = Labels;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Locations
@@ -82,6 +96,9 @@ P.Paths = Paths;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plotting settings
+% These use chART (https://github.com/snipeso/chART) plots. Each figure
+% takes a struct that holds all the parameters for plotting (e.g. font
+% names, sizes, etc). These are premade in chART, but can be customized.
 
 
 % plot sizes depending on which screen being used
@@ -92,33 +109,15 @@ else
     Format = getProperties({'LSM', 'LargeScreen'});
 end
 
-
 Manuscript = getProperties({'LSM', 'Manuscript'});
 Powerpoint =  getProperties({'LSM', 'Powerpoint'});
 Poster =  getProperties({'LSM', 'Poster'});
 
-
-P.Manuscript = Manuscript;
-P.Powerpoint = Powerpoint;
+P.Manuscript = Manuscript; % for papers
+P.Powerpoint = Powerpoint; % for presentations
 P.Poster = Poster;
-P.Format = Format;
+P.Format = Format; % plots just to view data
 
-
-
-Labels.logBands = [1 2 4 8 16 32]; % x markers for plot on log scale
-Labels.Bands = [1 4 8 15 25 35 40]; % normal scale
-Labels.FreqLimits = [1 40];
-Labels.zPower = 'PSD z-scored';
-Labels.Power = 'PSD Amplitude (\muV^2/Hz)';
-Labels.Frequency = 'Frequency (Hz)';
-Labels.Epochs = {'Encoding', 'Retention1', 'Retention2', 'Probe'}; % for M2S task
-Labels.Amplitude = 'Amplitude (\muV)';
-Labels.Time = 'Time (s)';
-Labels.ES = "Hedge's G";
-Labels.t = 't-values';
-Labels.Correct = '% Correct';
-Labels.RT = 'RT (s)';
-P.Labels = Labels;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Power/EEG information
@@ -197,18 +196,6 @@ P.Channels = Channels;
 P.Bands = Bands;
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Durations for FFT
-
-Durations.Match2Sample =  [-2, -4, 1 2 4 6 8, 10, 12, 15, 20];
-Durations.LAT =  [-2, -4, 1 2 4 6 8, 10];
-Durations.PVT =  [-2, -4, 1 2 4 6 8];
-Durations.SpFT =  [-2, 1 2 4];
-Durations.Game =  [-2, -4, 1 2 4 6 8];
-Durations.Music =  [-2, 1 2 4];
-
-P.Durations = Durations;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Stats parameters

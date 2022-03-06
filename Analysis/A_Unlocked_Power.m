@@ -14,7 +14,6 @@ Paths = P.Paths;
 Bands = P.Bands;
 Format = P.Format;
 Channels = P.Channels;
-Durations = P.Durations;
 Tasks = P.AllTasks;
 
 Refresh = false;
@@ -23,6 +22,14 @@ Overlap = .75; % overlap of hanning windows for FFT
 
 EEG_Triggers.Start = 'S  1';
 EEG_Triggers.End = 'S  2';
+
+% durations to loop through for each task
+Durations.Match2Sample =  [-2, -4, 1 2 4 6 8, 10, 12, 15, 20];
+Durations.LAT =  [-2, -4, 1 2 4 6 8, 10];
+Durations.PVT =  [-2, -4, 1 2 4 6 8];
+Durations.SpFT =  [-2, 1 2 4];
+Durations.Game =  [-2, -4, 1 2 4 6 8];
+Durations.Music =  [-2, 1 2 4];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,7 +116,7 @@ for Indx_T = 1:numel(Tasks)
             
             % plot it
             Title = replace([Filename_Core, ' ',Tag], '_', ' ');
-            PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Channels, Title, Format)
+            PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Channels, Title, Format, Labels)
             
             % save
             save(fullfile(Destination, Filename), 'Power', 'Freqs', 'Chanlocs', 'Duration')
