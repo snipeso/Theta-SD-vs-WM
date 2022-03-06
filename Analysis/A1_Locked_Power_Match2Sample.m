@@ -18,9 +18,7 @@ RefreshAnswers = false;
 
 Task = 'Match2Sample';
 WelchWindow = 8; % duration of pWelch window; if larger than epoch window, will 0pad
-EpochWindow = 2; % duration of each epoch 
-% --> ELIAS: You mention in your paper a 2s hanning window, is this correct
-% like this?
+EpochWindow = 2; % duration of each epoch (Retention window is split in 2, so all epochs are the same length)
 
 % triggers
 Stim_Trig = {'S  3'};
@@ -90,6 +88,7 @@ for Indx_F = 1:numel(Files)
     EEG = pop_select(EEG, 'nochannel', labels2indexes(P.Channels.Remove, EEG.chanlocs));
     
     Chanlocs = EEG.chanlocs;
+    
     %%% get power
     
     % epoch trials
