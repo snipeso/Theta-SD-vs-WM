@@ -1,16 +1,24 @@
-function Stats = data2D(Data, XLabels, YLabels, YLims, Colors, StatsP, PlotProps)
-% Stats = data2D(Data, XLabels, YLabels, YLims, Colors, StatsP, PlotProps)
+function Stats = data2D(PlotType, Data, XLabels, YLabels, YLims, Colors, StatsP, PlotProps)
+% Stats = data2D(PlotType, Data, XLabels, YLabels, YLims, Colors, StatsP, PlotProps)
 
-% Plots a confettiSpaghetti plot of Data (P x S). and returns pairwise comparisons of all groups TOCHECK
+% PlotType is a string, either 'box' or 'line', and plots data as either a
+% series of boxplots or a line plot for each participant.
 
 if ~isempty(StatsP)
- Stats = Pairwise(Data, StatsP);
+    Stats = Pairwise(Data, StatsP);
 else
     Stats = [];
     % TODO: plot stars for group comparison
 end
 
-plotConfettiSpaghetti(Data, Stats, XLabels, Colors, PlotProps)
+switch PlotType
+    case 'line'
+        plotConfettiSpaghetti(Data, Stats, XLabels, Colors, PlotProps)
+    case 'box'
+        plotScatterBox(Data, Stats, XLabels, Colors, YLims, PlotProps)
+    otherwise
+        error('Unknown plot type')
+end
 
 
 % set y axis
