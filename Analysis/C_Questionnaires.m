@@ -13,8 +13,8 @@ Paths = P.Paths;
 Participants = P.Participants;
 
 Sessions = P.Sessions;
-AllTasks = P.AllTasks; %ELIAS: {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
-TaskLabels = P.TaskLabels; %{'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
+AllTasks = P.AllTasks;
+TaskLabels = P.TaskLabels;
 StatsP = P.StatsP;
 
 TitleTag = 'C_Questionnaires';
