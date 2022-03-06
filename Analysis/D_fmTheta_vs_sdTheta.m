@@ -386,7 +386,7 @@ for Indx_Ch = 1:numel(ChLabels)
 end
 
 % save
-saveFig(strjoin({'M2S_Spectrums', Epochs{Indx_E}}, '_'), Paths.Paper, Format)
+saveFig(strjoin({TitleTag, 'Spectrums', Epochs{Indx_E}}, '_'), Paths.Paper, Format)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
