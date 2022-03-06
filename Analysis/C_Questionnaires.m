@@ -13,7 +13,7 @@ Paths = P.Paths;
 Participants = P.Participants;
 
 Sessions = P.Sessions;
-AllTasks = P.AllTasks; %ELIAS: {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'}; 
+AllTasks = P.AllTasks; %ELIAS: {'Match2Sample', 'LAT', 'PVT', 'SpFT', 'Game', 'Music'};
 TaskLabels = P.TaskLabels; %{'STM', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 StatsP = P.StatsP;
 
@@ -156,7 +156,7 @@ for Indx_G1 = 1:Grid(1)
         title([Format.Indexes.Letters{Indx}, ': ' Titles{Indx_G1, Indx_G2}], 'FontSize', Format.Text.TitleSize)
         Indx = Indx+1;
         
-                % 2 way repeated measures anova with factors Session and Task
+        % 2 way repeated measures anova with factors Session and Task
         Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
         TitleStats = strjoin({TitleTag, Titles{Indx_G1, Indx_G2}, 'rmANOVA'}, '_');
         saveStats(Stats, 'rmANOVA', Paths.PaperStats, TitleStats, StatsP)
@@ -164,55 +164,5 @@ for Indx_G1 = 1:Grid(1)
 end
 
 saveFig(strjoin({TitleTag, 'All'}, '_'), Paths.Paper, Format)
-
-
-
-
-%% ANOVA
-Effects = -3:.5:3;
-
-for Indx_Q = 1:numel(Questions)-1
-    Data = Answers.(Questions{Indx_Q});
-    Results = fullfile(Main_Results, Questions{Indx_Q});
-    
-    % 2 way repeated measures anova with factors Session and Task
-    Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
-    
-    % eta2 comparison for task and session to determine which has larger impact
-    Title = strjoin({Questions{Indx_Q}, '2 way RANOVA Effect Sizes'}, ' ');
-    
-    figure('units','normalized','outerposition',[0 0 .3 .4])
-    plotANOVA2way(Stats, FactorLabels, StatsP, Format)
-    title(Title, 'FontSize', Format.TitleSize)
-    saveFig(strjoin({TitleTag, 'eta2', Questions{Indx_Q}}, '_'), Results, Format)
-    
-    % if interaction, identify which task has the largest increase
-    P = Stats.ranovatbl.(StatsP.ANOVA.pValue);
-    Interaction = P(7);
-    if Interaction < StatsP.Alpha
-        
-        % get hedge's g stats (because <50 participants)
-        BL = Data(:, 1, :);
-        BL = permute(repmat(BL, 1, 2, 1), [1 3 2]);
-        
-        SD = permute(Data(:, 2:3, :), [1 3 2]);
-        StatsH = hedgesG(BL, SD, StatsP);
-        
-        figure('units','normalized','outerposition',[0 0 .2 .6])
-        
-        % plot effect size lines
-        hold on
-        for E = Effects
-            plot( [0, numel(TaskLabels)+1], [E, E], 'Color', [.9 .9 .9], 'HandleVisibility', 'off')
-        end
-        
-        plotUFO(StatsH.hedgesg, StatsH.hedgesgCI, TaskLabels, {'SR-BL', 'SD-BL'}, ...
-            Format.Colors.AllTasks, 'vertical', Format)
-        title(strjoin({Questions{Indx_Q}, 'Hedges g'}, ' '), 'FontSize', Format.TitleSize)
-        xlabel('Hedges g')
-        
-        saveFig(strjoin({TitleTag, 'hedgesg', Questions{Indx_Q} }, '_'), Results, Format)
-    end
-end
 
 
