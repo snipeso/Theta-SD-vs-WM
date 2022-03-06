@@ -11,14 +11,12 @@ P = analysisParameters();
 
 Paths = P.Paths;
 Participants = P.Participants;
-
 Sessions = P.Sessions;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 StatsP = P.StatsP;
 
 TitleTag = 'C_Questionnaires';
-
 FactorLabels = {'Session', 'Task'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,12 +142,12 @@ for Indx_G1 = 1:Grid(1)
             continue
         end
         
+        data3D(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
+            Format.Color.AllTasks, StatsP, Format);
+        
         ylim(YLim)
         yticks(linspace(0, 1, numel(L)))
         yticklabels(L)
-        
-        data3D(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
-            Format.Color.AllTasks, StatsP, Format);
         
         legend off
         
