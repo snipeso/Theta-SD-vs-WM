@@ -92,18 +92,19 @@ PlotProps = P.Manuscript;
 
 Grid = [1 10];
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width*1.1 PlotProps.Figure.Height])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height])
 
 % all tasks
-subfigure([], Grid, [1, 2], [1 Grid(2)-4], true, '', PlotProps);
+subfigure([], Grid, [1, 3], [1 Grid(2)-4], false, '', PlotProps);
 plotExcelTable(tValues(1:numel(TaskLabels), Keep)', Sig(1:numel(TaskLabels), Keep)', Areas(Keep), ...
     TaskLabels,  't values', PlotProps)
 colorbar off
 
 % sdTheta vs fmTheta comparison
-A = subfigure([], Grid, [1, Grid(2)-2], [1 3], true, '', PlotProps);
+A = subfigure([], Grid, [1, Grid(2)-1], [1 2], false, '', PlotProps);
 plotExcelTable(tValues(end-1:end, Keep)', Sig(end-1:end, Keep)', [], ...
     {'fmTheta', 'sdTheta'},  't values', PlotProps)
+colorbar off
 
 % save
 saveFig([TitleTag, '_', ValueType], Paths.Paper, PlotProps)

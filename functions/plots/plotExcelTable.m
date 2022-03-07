@@ -14,7 +14,7 @@ plotStatsMatrix(Data, xLabels, yLabels, [], cLabel, PlotProps)
 
 %%% insert text within each cell
 x = repmat(1:Dims(2), Dims(1), 1);
-y =  repmat(1:Dims(1), Dims(2), 1)';
+y = repmat(1:Dims(1), Dims(2), 1)';
 
 
 Labels = num2str(Data(:), '%.2f');
@@ -36,10 +36,11 @@ end
 hold on
 textscatter(x(:), y(:), string(Labels), 'ColorData', TextColor, ...
     'FontName', PlotProps.Text.FontName, 'TextDensityPercentage', 100, ...
-    'FontSize', PlotProps.Text.AxisSize)
+    'FontSize', PlotProps.Text.AxisSize, 'FontWeight', 'bold')
 
 h=gca; h.YAxis.TickLength = [0 0];
 h.XAxis.TickLength = [0 0];
 h.XAxis.FontWeight = 'bold';
+h.XAxis.FontSize = PlotProps.Text.TitleSize;
 
 set(gca, 'XAxisLocation','top')
