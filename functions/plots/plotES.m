@@ -1,4 +1,4 @@
-function Stats = plotES(Data, Orientation, Sort, Colors, xLabels, Legend, Format, StatsP)
+function Stats = plotES(Data, Orientation, Sort, Colors, xLabels, Legend, PlotProps, StatsP, Labels)
 % plot effects sizes as ines with circle in middle
 % Data is a P x S x T matrix
 
@@ -6,8 +6,6 @@ Effects = 0:.5:3; % lines to plot
 
 % get hedge's g stats (because <50 participants)
 Dims = size(Data);
-
-
 
 if Dims(2) == 3
     
@@ -32,10 +30,10 @@ end
 
 if Sort
 plotUFO(Stats.hedgesg(Order, :), Stats.hedgesgCI(Order, :, :), xLabels(Order), Legend, ...
-    Colors(Order, :), Orientation, Format)
+    Colors(Order, :), Orientation, PlotProps)
 else
     plotUFO(Stats.hedgesg, Stats.hedgesgCI, xLabels, Legend, ...
-    Colors, Orientation, Format)
+    Colors, Orientation, PlotProps)
 end
 
-ylabel(Format.Labels.ES)
+ylabel(Labels.ES)
