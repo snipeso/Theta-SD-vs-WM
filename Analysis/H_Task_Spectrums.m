@@ -100,23 +100,29 @@ end
 
 set(gcf, 'Color', 'w')
 
-saveFig('Spectrums_AllP', Paths.Paper, PlotProps)
+saveFig([TitleTag, '_zscored'], Paths.Paper, PlotProps)
 
 
 
 %% Same as above, but raw values
+PlotProps = P.Manuscript;
 
+xLog = false;
+Indx_Ch = 1;
+Grid = [2 3];
+xLims = [2 10];
 yLims = [0 60];
 
-figure('units','centimeters','position',[0 0 PlotProps.W PlotProps.H*.47])
+Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
+
+
+figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.47])
 for Indx_T = 1:numel(AllTasks)
-    Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
-    subfigure([], Grid, Coordinates(Indx_T, :), [], '', PlotProps);
-    %     Indx = Indx+1;
+     Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
     
-    
-    plotSpectrumFlames(Data, Freqs, xLog, xLims, PlotProps)
-    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.LetterSize)
+    subfigure([], Grid, Coordinates(Indx_T, :), [], true, '', PlotProps);
+    plotSpectrumMountains(Data, Freqs, xLog, xLims, PlotProps, Labels)
+    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
     ylim(yLims)
     
     if Indx_T <= 3 % only x labels for bottom row
@@ -124,38 +130,38 @@ for Indx_T = 1:numel(AllTasks)
     end
     
     if Indx_T == 1 || Indx_T == 4 % only y labels for left-most plots
-        ylabel(PlotProps.Labels.Power)
+        ylabel(Labels.Power)
     end
 end
 
 set(gcf, 'Color', 'w')
 
-saveFig('Spectrums_AllP_RAW', Paths.Paper, PlotProps)
+saveFig([TitleTag, '_raw'], Paths.Paper, PlotProps)
 
 
 %% Plot spectrums as ch x task, shade indicating task block
 
+PlotProps = P.Manuscript;
+
 % format variables
-PlotProps.xPadding = 10; % smaller distance than default because no labels
-PlotProps.yPadding = 10;
+PlotProps.Axes.xPadding = 10; % smaller distance than default because no labels
+PlotProps.Axes.yPadding = 10;
 
 Grid = [numel(ChLabels),numel(AllTasks)];
 YLim = [-1 3.5];
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 PlotProps.W PlotProps.H*.47])
-Indx = 1; % tally of axes
+figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.47])
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
         Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
         
         %%% plot
-        Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], [], '', PlotProps);
-        Indx = Indx+1;
+        subfigure([], Grid, [Indx_Ch, Indx_T], [], true, '', PlotProps);
         Stats = plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(PlotProps.Colors.Sessions(:, :, Indx_T)), Log, PlotProps, StatsP);
         
-        Title = strjoin({'Task_Spectrum', TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, '_');
+        Title = strjoin({TitleTag, 'Task_Spectrum', TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, '_');
         saveStats(Stats, 'Spectrum', Paths.PaperStats, Title, StatsP)
         
         set(gca, 'FontSize', PlotProps.FontSize, 'YLim', YLim)
