@@ -119,7 +119,7 @@ for Indx_L = 1:nLevels
     Data = squeeze(M2S_Correct(:, :, Indx_L));
     
     subfigure(Space, miniGrid, [1, Indx_L], [], true, {}, Format);
-    Stats = data2D('line', Data, Sessions.Labels, [], [35 100], ...
+    Stats = data2D('line', Data, Sessions.Labels, [], [35 105], ...
         Color, StatsP, Format);
     
     dispStat(Stats, [1 3], ['M2S L',  num2str(Levels(Indx_L))])
@@ -148,7 +148,7 @@ Indx= Indx+1;
 subfigure(Space, miniGrid, [1, 1], [],true, {}, Format);
 Stats = data2D('line', LAT_RT, Sessions.Labels, [], [], Color, StatsP, Format);
 ylabel('Seconds')
-title('RTs')
+title('LAT RTs')
 
 dispStat(Stats, [1 3], 'LAT RTs')
 
@@ -167,7 +167,7 @@ disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)
 % lapses
 subfigure(Space, miniGrid, [1, 3], [], true, {}, Format);
 Stats = data2D('line', LAT_Lapses, Sessions.Labels, [], [], Color, StatsP, Format);
-title('Lapses')
+title('LAT Lapses')
 ylabel('%')
 
 disp('LAT lapses:')
@@ -190,7 +190,7 @@ Indx= Indx+1;
 subfigure(Space, miniGrid, [1, 1], [], true, {}, Format);
 Stats = data2D('line', PVT_RT, Sessions.Labels, [], [], Color, StatsP, Format);
 ylabel('Seconds')
-title('RTs')
+title('PVT RTs')
 
 dispStat(Stats, [1 3], 'PVT RTs')
 
@@ -198,7 +198,7 @@ dispStat(Stats, [1 3], 'PVT RTs')
 % lapses
 subfigure(Space, miniGrid, [1, 2], [], true, {}, Format);
 Stats = data2D('line', PVT_Lapses, Sessions.Labels, [], [], Color, StatsP, Format);
-title('Lapses')
+title('PVT Lapses')
 ylabel('#')
 
 disp('PVT lapses:')
