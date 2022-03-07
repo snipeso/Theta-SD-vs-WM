@@ -18,9 +18,6 @@ Paths = P.Paths;
 Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
-Format = P.Manuscript;
-Poster = P.Poster;
-Powerpoint = P.Powerpoint;
 Labels = P.Labels;
 
 Folder = fullfile(Paths.Data, 'EEG', 'Source', 'Figure');
@@ -235,8 +232,6 @@ end
 
 
 %% plot horizontal
-
-
 
 
 Grid = [1 4];
