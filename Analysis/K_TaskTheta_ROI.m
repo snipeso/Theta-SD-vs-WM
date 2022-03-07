@@ -44,8 +44,7 @@ Duration = 4;
 WelchWindow = 8;
 
 Tag = ['window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
-TitleTag = strjoin({'Task', 'ANOVA'}, '_');
-% TitleTag = strjoin({'RAW', 'Task', 'ANOVA'}, '_');
+TitleTag = 'F_TaskTheta_ROI';
 
 Main_Results = fullfile(Paths.Results, 'Task_ANOVA', strjoin({TASKTYPE, Tag}, '_'), ROI);
 if ~exist(Main_Results, 'dir')
