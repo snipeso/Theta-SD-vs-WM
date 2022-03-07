@@ -17,7 +17,9 @@ Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 Bands = P.Bands;
-Manuscript = P.Manuscript;
+PlotProps = P.Manuscript;
+
+TitleTag = 'G_Sources_Table';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -81,29 +83,30 @@ end
 %%% Plot and save
 
 
+%% Figure TABLOX plot fake excel tables for all areas with at least 1 comparison significant
+
 Keep = ~all(pValues > .05);
 Sig = pValues <.05;
 
-
-%% Figure TABLOX plot fake excel tables for all areas with at least 1 comparison significant
+PlotProps = P.Manuscript;
 
 Grid = [1 10];
 
-figure('units','centimeters','position',[0 4 Manuscript.W Manuscript.H])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.Width*1.1 PlotProps.Figure.Height])
 
 % all tasks
-subfigure([], Grid, [1, 2], [1 Grid(2)-4], true, '', Manuscript);
+subfigure([], Grid, [1, 2], [1 Grid(2)-4], true, '', PlotProps);
 plotExcelTable(tValues(1:numel(TaskLabels), Keep)', Sig(1:numel(TaskLabels), Keep)', Areas(Keep), ...
-    TaskLabels,  't values', Manuscript)
+    TaskLabels,  't values', PlotProps)
 colorbar off
 
 % sdTheta vs fmTheta comparison
-A = subfigure([], Grid, [1, Grid(2)-2], [1 3], true, '', Manuscript);
+A = subfigure([], Grid, [1, Grid(2)-2], [1 3], true, '', PlotProps);
 plotExcelTable(tValues(end-1:end, Keep)', Sig(end-1:end, Keep)', [], ...
-    {'fmTheta', 'sdTheta'},  't values', Manuscript)
+    {'fmTheta', 'sdTheta'},  't values', PlotProps)
 
 % save
-saveFig(['SourceTable_',ValueType], Paths.Paper, Manuscript)
+saveFig([TitleTag, '_', ValueType], Paths.Paper, PlotProps)
 
 
 
@@ -125,10 +128,7 @@ end
 TTop = T(logical(T.Top), :);
 figure;
 plotExcelTable(table2array(TTop(:, 1:6)), [], TTop.Areas, ...
-    TaskLabels,  't values', Manuscript)
+    TaskLabels,  't values', PlotProps)
 
 
 writetable(T, fullfile(Paths.PaperStats, 'BigTable_Sources.csv'))
-
-
-
