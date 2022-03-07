@@ -289,7 +289,9 @@ ylim([2 11])
 % save
 saveFig([TitleTag, '_peaks'], Paths.Paper, PlotProps)
 
-%%
+
+%% extra plot to see change in peak frequency
+
 figure('units','centimeters','position',[0 0 PlotProps.Figure.Width*.6 PlotProps.Figure.Height*.4])
 PlotProps = P.Manuscript;
 PlotProps.Axes.xPadding = 40;
