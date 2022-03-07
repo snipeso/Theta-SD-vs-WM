@@ -32,9 +32,6 @@ if ~exist(Source, 'dir')
     mkdir(Source)
 end
 
-
-
-
 Maps = struct();
 
 for Indx_T = 1:numel(TaskLabels)
@@ -56,7 +53,7 @@ end
 %%% Plot
 
 
-%% % plot inflated hemispheres for all tasks
+%% Figure SORZ plot inflated hemispheres for all tasks
 
 Format = P.Manuscript;
 
@@ -130,6 +127,8 @@ load(fullfile(Folder, 'stat_M2S_BS_vs_S2_lvl1.mat'), 'stat')
 
 Mask = stat.mask;
 disp(['sdTheta significant voxels: ', num2str(round(100*nansum(Mask)/nnz(~isnan(Mask)))), '%'])
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

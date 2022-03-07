@@ -32,7 +32,7 @@ ChannelLabels = 'preROI';
 %%% Setup data
 
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
-TitleTag = strjoin({'Task', 'Spectrums', 'Welch', num2str(WelchWindow), 'zScored'}, '_');
+TitleTag = 'H_Task_Spectrums';
 
 Results = fullfile(Paths.Results, 'Task_Spectrums', Tag, ChannelLabels);
 if ~exist(Results, 'dir')
