@@ -144,14 +144,15 @@ saveFig([TitleTag, '_raw'], Paths.Paper, PlotProps)
 PlotProps = P.Manuscript;
 
 % format variables
-PlotProps.Axes.xPadding = 10; % smaller distance than default because no labels
-PlotProps.Axes.yPadding = 10;
+PlotProps.Axes.xPadding = 15; % smaller distance than default because no labels
+PlotProps.Axes.yPadding = 15;
+PlotProps.Figure.Padding = 90;
 
 Grid = [numel(ChLabels),numel(AllTasks)];
 YLim = [-1 3.5];
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.47])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.Width*1.1 PlotProps.Figure.Height*.6])
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
@@ -159,12 +160,12 @@ for Indx_Ch = 1:numel(ChLabels)
         
         %%% plot
         subfigure([], Grid, [Indx_Ch, Indx_T], [], true, '', PlotProps);
-        Stats = plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(PlotProps.Colors.Sessions(:, :, Indx_T)), Log, PlotProps, StatsP);
+        Stats = plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(PlotProps.Color.Sessions(:, :, Indx_T)), Log, PlotProps, StatsP, Labels);
         
         Title = strjoin({TitleTag, 'Task_Spectrum', TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, '_');
         saveStats(Stats, 'Spectrum', Paths.PaperStats, Title, StatsP)
         
-        set(gca, 'FontSize', PlotProps.FontSize, 'YLim', YLim)
+        set(gca, 'FontSize', PlotProps.Text.AxisSize, 'YLim', YLim)
         
         % plot labels/legends only in specific locations
         if Indx_Ch > 1 || Indx_T > 1 % first tile
@@ -173,21 +174,21 @@ for Indx_Ch = 1:numel(ChLabels)
         end
         
         if Indx_T == 1 % first column
-            ylabel(PlotProps.Labels.zPower)
+            ylabel(Labels.zPower)
             X = double(get(gca, 'XLim'));
             text(X(1)-diff(X)*.5, YLim(1)+diff(YLim)*.5, ChLabels{Indx_Ch}, ...
-                'FontSize', PlotProps.LetterSize, 'FontName', PlotProps.FontName, ...
+                'FontSize', PlotProps.Text.TitleSize, 'FontName', PlotProps.Text.FontName, ...
                 'FontWeight', 'Bold', 'Rotation', 90, 'HorizontalAlignment', 'Center');
         else
             ylabel ''
         end
         
         if Indx_Ch == 1 % first row
-            title(TaskLabels{Indx_T}, 'FontSize', PlotProps.LetterSize, 'Color', 'k')
+            title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize, 'Color', 'k')
         end
         
         if Indx_Ch == numel(ChLabels) % last row
-            xlabel(PlotProps.Labels.Frequency)
+            xlabel(Labels.Frequency)
         else
             xlabel ''
         end
@@ -195,7 +196,7 @@ for Indx_Ch = 1:numel(ChLabels)
 end
 
 % save
-saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Paths.Paper, PlotProps)
+saveFig(strjoin({TitleTag, 'averages'}, '_'), Paths.Paper, PlotProps)
 
 
 

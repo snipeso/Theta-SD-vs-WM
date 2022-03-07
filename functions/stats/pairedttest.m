@@ -113,5 +113,7 @@ elseif numel(Dims1) == 2 && numel(Dims2) == 3 % D
     Stats.p = p;
     Stats.p_fdr =  pValues_fdr;
     Stats.crit_p = crit_p;
-    Stats.sig = Sig(:);
+    Stats.sig = Sig;
+    Stats.t = t_values;
+    Stats.df = df;
 end
