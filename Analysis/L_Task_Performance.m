@@ -93,8 +93,8 @@ end
 
 clc
 Format = P.Manuscript;
-Format.Figure.Padding = 30; % reduce because of subplots
-Grid = [2, 2];
+% Format.Figure.Padding = 30; % reduce because of subplots
+Grid = [2, 5];
 Indx_B = 2; % theta
 Indx = 1;
 YLims = [-.3 1];
@@ -112,7 +112,7 @@ else
     Color = Format.Color.Participants;
 end
 
-Space = subaxis(Grid, [1 1], [], Format.Indexes.Letters{Indx}, Format);
+Space = subaxis(Grid, [1 1], [1 3], Format.Indexes.Letters{Indx}, Format);
 Indx= Indx+1;
 
 for Indx_L = 1:nLevels
@@ -128,8 +128,39 @@ for Indx_L = 1:nLevels
         ylabel(Labels.Correct)
     end
     
-    title(['L', num2str(Levels(Indx_L))])
+    title(['L', num2str(Levels(Indx_L))], 'FontSize', Format.Text.TitleSize)
 end
+
+
+%%% PVT
+miniGrid = [1 2];
+if strcmp(Colors, 'Task')
+    Color = repmat(Format.Color.Tasks.PVT, nParticipants, 1);
+else
+    Color = Format.Color.Participants;
+end
+
+Space = subaxis(Grid, [1 4], [1 2], Format.Indexes.Letters{Indx}, Format);
+Indx= Indx+1;
+
+% RTs
+subfigure(Space, miniGrid, [1, 1], [], true, {}, Format);
+Stats = data2D('line', PVT_RT, Sessions.Labels, [], [], Color, StatsP, Format);
+ylabel('Seconds')
+title('PVT RTs',  'FontSize', Format.Text.TitleSize)
+
+dispStat(Stats, [1 3], 'PVT RTs')
+
+
+% lapses
+subfigure(Space, miniGrid, [1, 2], [], true, {}, Format);
+Stats = data2D('line', PVT_Lapses, Sessions.Labels, [], [], Color, StatsP, Format);
+title('PVT Lapses',  'FontSize', Format.Text.TitleSize)
+ylabel('#')
+
+disp('PVT lapses:')
+disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
+    ', p < ', num2str(Stats.p(1, 3), '%.3f'), ', g = ', num2str(Stats.hedgesg(1, 3), '%.2f'), ')'])
 
 
 %%% LAT
@@ -141,14 +172,14 @@ else
 end
 
 % RTs
-Space = subaxis(Grid, [1 2], [], Format.Indexes.Letters{Indx}, Format);
+Space = subaxis(Grid, [2 1], [1 3], Format.Indexes.Letters{Indx}, Format);
 Indx= Indx+1;
 
 
 subfigure(Space, miniGrid, [1, 1], [],true, {}, Format);
 Stats = data2D('line', LAT_RT, Sessions.Labels, [], [], Color, StatsP, Format);
 ylabel('Seconds')
-title('LAT RTs')
+title('LAT RTs',  'FontSize', Format.Text.TitleSize)
 
 dispStat(Stats, [1 3], 'LAT RTs')
 
@@ -156,7 +187,7 @@ dispStat(Stats, [1 3], 'LAT RTs')
 % correct
 subfigure(Space, miniGrid, [1, 2], [], true, {}, Format);
 Stats = data2D('line', LAT_Correct, Sessions.Labels, [], [], Color, StatsP, Format);
-title('Correct')
+title('Correct',  'FontSize', Format.Text.TitleSize)
 ylabel('%')
 
 disp('LAT Correct:')
@@ -167,43 +198,13 @@ disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)
 % lapses
 subfigure(Space, miniGrid, [1, 3], [], true, {}, Format);
 Stats = data2D('line', LAT_Lapses, Sessions.Labels, [], [], Color, StatsP, Format);
-title('LAT Lapses')
+title('LAT Lapses',  'FontSize', Format.Text.TitleSize)
 ylabel('%')
 
 disp('LAT lapses:')
 disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
     ', p < ', num2str(Stats.p(1, 3), '%.3f'), ', g = ', num2str(Stats.hedgesg(1, 3), '%.2f'), ')'])
 
-
-%%% PVT
-miniGrid = [1 2];
-if strcmp(Colors, 'Task')
-    Color = repmat(Format.Color.Tasks.PVT, nParticipants, 1);
-else
-    Color = Format.Color.Participants;
-end
-
-Space = subaxis(Grid, [2 1], [], Format.Indexes.Letters{Indx}, Format);
-Indx= Indx+1;
-
-% RTs
-subfigure(Space, miniGrid, [1, 1], [], true, {}, Format);
-Stats = data2D('line', PVT_RT, Sessions.Labels, [], [], Color, StatsP, Format);
-ylabel('Seconds')
-title('PVT RTs')
-
-dispStat(Stats, [1 3], 'PVT RTs')
-
-
-% lapses
-subfigure(Space, miniGrid, [1, 2], [], true, {}, Format);
-Stats = data2D('line', PVT_Lapses, Sessions.Labels, [], [], Color, StatsP, Format);
-title('PVT Lapses')
-ylabel('#')
-
-disp('PVT lapses:')
-disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
-    ', p < ', num2str(Stats.p(1, 3), '%.3f'), ', g = ', num2str(Stats.hedgesg(1, 3), '%.2f'), ')'])
 
 %%% SpFT
 miniGrid = [1 2];
@@ -213,14 +214,14 @@ else
     Color = Format.Color.Participants;
 end
 
-Space = subaxis(Grid, [2 2], [], Format.Indexes.Letters{Indx}, Format);
+Space = subaxis(Grid, [2 4], [1 2], Format.Indexes.Letters{Indx}, Format);
 Indx= Indx+1;
 
 % correct
 subfigure(Space, miniGrid, [1, 1], [], true, {}, Format);
 Stats = data2D('line', SpFT_Correct, Sessions.Labels, [], [], Color, StatsP, Format);
 ylabel('Words/s')
-title('Correct Words')
+title('Correct Words',  'FontSize', Format.Text.TitleSize)
 
 disp('SpFT correct:')
 disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
@@ -230,7 +231,7 @@ disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)
 % mistakes
 subfigure(Space, miniGrid, [1, 2], [], true, {}, Format);
 Stats = data2D('line', SpFT_Incorrect, Sessions.Labels, [], [], Color, StatsP, Format);
-title('Mistakes')
+title('Mistakes',  'FontSize', Format.Text.TitleSize)
 ylabel('Words/s')
 
 disp('SpFT mistakes:')
