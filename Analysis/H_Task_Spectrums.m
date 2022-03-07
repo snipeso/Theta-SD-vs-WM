@@ -118,7 +118,7 @@ Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid i
 
 figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.47])
 for Indx_T = 1:numel(AllTasks)
-     Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
+    Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
     
     subfigure([], Grid, Coordinates(Indx_T, :), [], true, '', PlotProps);
     plotSpectrumMountains(Data, Freqs, xLog, xLims, PlotProps, Labels)
@@ -200,7 +200,7 @@ saveFig(strjoin({TitleTag, 'averages'}, '_'), Paths.Paper, PlotProps)
 
 
 
-%% peak frequency in the game
+%% peak frequency and prominence
 clc
 Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(ChLabels));
 Prominence = Peaks;
@@ -225,7 +225,7 @@ for Indx_T = 1:numel(AllTasks)
     disp(['BL Mean: ', num2str(Stats.mean1), ' STD: ', num2str(Stats.std1) ])
     disp(['SD Mean: ', num2str(Stats.mean2), ' STD: ', num2str(Stats.std2) ])
     disp(['p: ', num2str(Stats.p), ' t: ', num2str(Stats.t) ' g: ', num2str(Stats.hedgesg)])
-    Title = strjoin({'ThetaPeak', TaskLabels{Indx_T}, ChLabels{Ch_Indx}}, '_');
+    Title = strjoin({TitleTag, 'Peaks', TaskLabels{Indx_T}, ChLabels{Ch_Indx}}, '_');
     saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
     
     
@@ -239,7 +239,7 @@ for Indx_T = 1:numel(AllTasks)
     disp(['BL Mean: ', num2str(Stats.mean1), ' STD: ', num2str(Stats.std1) ])
     disp(['SD Mean: ', num2str(Stats.mean2), ' STD: ', num2str(Stats.std2) ])
     disp(['p: ', num2str(Stats.p), ' t: ', num2str(Stats.t) ' g: ', num2str(Stats.hedgesg)])
-    Title = strjoin({'ThetaProminence', TaskLabels{Indx_T}, ChLabels{Ch_Indx}}, '_');
+    Title = strjoin({TitleTag, 'Prominence', TaskLabels{Indx_T}, ChLabels{Ch_Indx}}, '_');
     saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
     disp('****')
 end
@@ -248,12 +248,12 @@ end
 %%
 Grid = [2 2];
 YLims = [0 8];
-figure('units','centimeters','position',[0 0 PlotProps.W PlotProps.H*.5])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.5])
 
 % BL Prom
 Data = squeeze(Prominence(:, 1, :, 1));
 subfigure([], Grid, [1 1], [], PlotProps.Letters{1}, PlotProps);
-Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [0 6], PlotProps.Colors.Participants, StatsP, PlotProps);
+data2D(Data, TaskLabels, [], [0 6], PlotProps.Colors.Participants, StatsP, PlotProps);
 title('BL Prominence', 'FontSize', PlotProps.TitleSize)
 ylim(YLims)
 ylabel(PlotProps.Labels.zPower)
