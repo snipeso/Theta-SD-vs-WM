@@ -14,13 +14,12 @@ Paths = P.Paths;
 Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
-Format = P.Format;
 Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
-Pixels = P.Pixels;
+PlotProps = P.Manuscript;
+Labels = P.Labels;
 
-PeakRange = [3 15];
 SmoothFactor = 1; % in Hz, range to smooth over
 
 Duration = 4;
@@ -70,26 +69,24 @@ StatsP.FreqBin = diff(Freqs(1:2));
 
 %% plot spectrum changes for all participants for each task
 
+PlotProps = P.Manuscript;
+
 xLog = false;
 Indx_Ch = 1;
 Grid = [2 3];
 xLims = [2 10];
-yLims = [-1.5 6.4];
+yLims = [-1.5 6.5];
 
 Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
 
-% Pixels.xPadding = 10; % smaller distance than default because no labels
-% Pixels.yPadding = 10;
 
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.47])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.47])
 for Indx_T = 1:numel(AllTasks)
     Data = squeeze(chData(:, [1, 3], Indx_T, Indx_Ch, :));
     
-    subfigure([], Grid, Coordinates(Indx_T, :), [], '', Pixels);
-    %     Indx = Indx+1;
-    
-    plotSpectrumFlames(Data, Freqs, xLog, xLims, Pixels)
-    title(TaskLabels{Indx_T}, 'FontSize', Pixels.LetterSize)
+    subfigure([], Grid, Coordinates(Indx_T, :), [], true, '', PlotProps);
+    plotSpectrumMountains(Data, Freqs, xLog, xLims, PlotProps, Labels)
+    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
     ylim(yLims)
     
     if Indx_T <= 3 % only x labels for bottom row
@@ -97,13 +94,13 @@ for Indx_T = 1:numel(AllTasks)
     end
     
     if Indx_T == 1 || Indx_T == 4 % only y labels for left-most plots
-        ylabel(Pixels.Labels.zPower)
+        ylabel(Labels.zPower)
     end
 end
 
 set(gcf, 'Color', 'w')
 
-saveFig('Spectrums_AllP', Paths.Paper, Format)
+saveFig('Spectrums_AllP', Paths.Paper, PlotProps)
 
 
 
@@ -111,15 +108,15 @@ saveFig('Spectrums_AllP', Paths.Paper, Format)
 
 yLims = [0 60];
 
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.47])
+figure('units','centimeters','position',[0 0 PlotProps.W PlotProps.H*.47])
 for Indx_T = 1:numel(AllTasks)
     Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
-    subfigure([], Grid, Coordinates(Indx_T, :), [], '', Pixels);
+    subfigure([], Grid, Coordinates(Indx_T, :), [], '', PlotProps);
     %     Indx = Indx+1;
     
     
-    plotSpectrumFlames(Data, Freqs, xLog, xLims, Pixels)
-    title(TaskLabels{Indx_T}, 'FontSize', Pixels.LetterSize)
+    plotSpectrumFlames(Data, Freqs, xLog, xLims, PlotProps)
+    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.LetterSize)
     ylim(yLims)
     
     if Indx_T <= 3 % only x labels for bottom row
@@ -127,26 +124,26 @@ for Indx_T = 1:numel(AllTasks)
     end
     
     if Indx_T == 1 || Indx_T == 4 % only y labels for left-most plots
-        ylabel(Pixels.Labels.Power)
+        ylabel(PlotProps.Labels.Power)
     end
 end
 
 set(gcf, 'Color', 'w')
 
-saveFig('Spectrums_AllP_RAW', Paths.Paper, Format)
+saveFig('Spectrums_AllP_RAW', Paths.Paper, PlotProps)
 
 
 %% Plot spectrums as ch x task, shade indicating task block
 
 % format variables
-Pixels.xPadding = 10; % smaller distance than default because no labels
-Pixels.yPadding = 10;
+PlotProps.xPadding = 10; % smaller distance than default because no labels
+PlotProps.yPadding = 10;
 
 Grid = [numel(ChLabels),numel(AllTasks)];
 YLim = [-1 3.5];
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.47])
+figure('units','centimeters','position',[0 0 PlotProps.W PlotProps.H*.47])
 Indx = 1; % tally of axes
 
 for Indx_Ch = 1:numel(ChLabels)
@@ -154,14 +151,14 @@ for Indx_Ch = 1:numel(ChLabels)
         Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
         
         %%% plot
-        Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], [], '', Pixels);
+        Axes(Indx) = subfigure([], Grid, [Indx_Ch, Indx_T], [], '', PlotProps);
         Indx = Indx+1;
-        Stats = plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Pixels, StatsP);
+        Stats = plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(PlotProps.Colors.Sessions(:, :, Indx_T)), Log, PlotProps, StatsP);
         
         Title = strjoin({'Task_Spectrum', TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, '_');
         saveStats(Stats, 'Spectrum', Paths.PaperStats, Title, StatsP)
         
-        set(gca, 'FontSize', Pixels.FontSize, 'YLim', YLim)
+        set(gca, 'FontSize', PlotProps.FontSize, 'YLim', YLim)
         
         % plot labels/legends only in specific locations
         if Indx_Ch > 1 || Indx_T > 1 % first tile
@@ -170,21 +167,21 @@ for Indx_Ch = 1:numel(ChLabels)
         end
         
         if Indx_T == 1 % first column
-            ylabel(Format.Labels.zPower)
+            ylabel(PlotProps.Labels.zPower)
             X = double(get(gca, 'XLim'));
             text(X(1)-diff(X)*.5, YLim(1)+diff(YLim)*.5, ChLabels{Indx_Ch}, ...
-                'FontSize', Pixels.LetterSize, 'FontName', Format.FontName, ...
+                'FontSize', PlotProps.LetterSize, 'FontName', PlotProps.FontName, ...
                 'FontWeight', 'Bold', 'Rotation', 90, 'HorizontalAlignment', 'Center');
         else
             ylabel ''
         end
         
         if Indx_Ch == 1 % first row
-            title(TaskLabels{Indx_T}, 'FontSize', Pixels.LetterSize, 'Color', 'k')
+            title(TaskLabels{Indx_T}, 'FontSize', PlotProps.LetterSize, 'Color', 'k')
         end
         
         if Indx_Ch == numel(ChLabels) % last row
-            xlabel(Format.Labels.Frequency)
+            xlabel(PlotProps.Labels.Frequency)
         else
             xlabel ''
         end
@@ -192,7 +189,7 @@ for Indx_Ch = 1:numel(ChLabels)
 end
 
 % save
-saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Paths.Paper, Format)
+saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Paths.Paper, PlotProps)
 
 
 
@@ -244,67 +241,67 @@ end
 %%
 Grid = [2 2];
 YLims = [0 8];
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.5])
+figure('units','centimeters','position',[0 0 PlotProps.W PlotProps.H*.5])
 
 % BL Prom
 Data = squeeze(Prominence(:, 1, :, 1));
-subfigure([], Grid, [1 1], [], Pixels.Letters{1}, Pixels);
-Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [0 6], Format.Colors.Participants, StatsP, Pixels);
-title('BL Prominence', 'FontSize', Pixels.TitleSize)
+subfigure([], Grid, [1 1], [], PlotProps.Letters{1}, PlotProps);
+Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [0 6], PlotProps.Colors.Participants, StatsP, PlotProps);
+title('BL Prominence', 'FontSize', PlotProps.TitleSize)
 ylim(YLims)
-ylabel(Pixels.Labels.zPower)
+ylabel(PlotProps.Labels.zPower)
 
 % SD Prom
 Data = squeeze(Prominence(:, 3, :, 1));
-subfigure([], Grid, [1 2], [], Pixels.Letters{2}, Pixels);
-Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], Format.Colors.Participants, StatsP, Pixels);
-title('SD Prominence',  'FontSize', Pixels.TitleSize)
+subfigure([], Grid, [1 2], [], PlotProps.Letters{2}, PlotProps);
+Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], PlotProps.Colors.Participants, StatsP, PlotProps);
+title('SD Prominence',  'FontSize', PlotProps.TitleSize)
 ylim(YLims)
 
 % BL Peaks
 Data = squeeze(Peaks(:, 1, :, 1));
-subfigure([], Grid, [2 1], [], Pixels.Letters{3}, Pixels);
-Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], Format.Colors.Participants, StatsP, Pixels);
-title('BL Peaks', 'FontSize', Pixels.TitleSize)
+subfigure([], Grid, [2 1], [], PlotProps.Letters{3}, PlotProps);
+Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], PlotProps.Colors.Participants, StatsP, PlotProps);
+title('BL Peaks', 'FontSize', PlotProps.TitleSize)
 ylim([2 11])
-ylabel(Pixels.Labels.Frequency)
+ylabel(PlotProps.Labels.Frequency)
 
 % SD Peaks
 Data = squeeze(Peaks(:, 2, :, 1));
-subfigure([], Grid, [2 2], [], Pixels.Letters{4}, Pixels);
-Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], Format.Colors.Participants, StatsP, Pixels);
-title('SD Peaks', 'FontSize', Pixels.TitleSize)
+subfigure([], Grid, [2 2], [], PlotProps.Letters{4}, PlotProps);
+Stats = plotConfettiSpaghetti(Data, TaskLabels, [], [], PlotProps.Colors.Participants, StatsP, PlotProps);
+title('SD Peaks', 'FontSize', PlotProps.TitleSize)
 ylim([2 11])
 
 
 % save
-saveFig('TaskPeaks', Paths.Paper, Format)
+saveFig('TaskPeaks', Paths.Paper, PlotProps)
 
 %%
-figure('units','centimeters','position',[0 0 Pixels.W*.6 Pixels.H*.4])
-Pixels.xPadding = 40;
+figure('units','centimeters','position',[0 0 PlotProps.W*.6 PlotProps.H*.4])
+PlotProps.xPadding = 40;
 % plot change in prominence for all data
 Data = squeeze(Prominence(:, :, :, 1));
-subfigure([], [1 2], [1 1], [], Pixels.Letters{1}, Pixels);
-plotSpaghettiOs(Data, 1, Sessions.Labels, TaskLabels, Format.Colors.AllTasks, StatsP, Format)
-ylabel(Pixels.Labels.zPower)
+subfigure([], [1 2], [1 1], [], PlotProps.Letters{1}, PlotProps);
+plotSpaghettiOs(Data, 1, Sessions.Labels, TaskLabels, PlotProps.Colors.AllTasks, StatsP, PlotProps)
+ylabel(PlotProps.Labels.zPower)
 ylim([0 4])
 title('Prominence')
 
 Data = squeeze(Peaks(:, :, :, 1));
-subfigure([], [1 2], [1 2], [], Pixels.Letters{2}, Pixels);
-plotSpaghettiOs(Data, 1, Sessions.Labels, TaskLabels, Format.Colors.AllTasks, StatsP, Format)
+subfigure([], [1 2], [1 2], [], PlotProps.Letters{2}, PlotProps);
+plotSpaghettiOs(Data, 1, Sessions.Labels, TaskLabels, PlotProps.Colors.AllTasks, StatsP, PlotProps)
 legend off
-ylabel(Pixels.Labels.Frequency)
+ylabel(PlotProps.Labels.Frequency)
 ylim([4 8])
 title('Frequency')
 
 % save
-saveFig('TaskPeaks', Paths.Results, Format)
+saveFig('TaskPeaks', Paths.Results, PlotProps)
 
 %%
 
-Pixels.xPadding = 25;
+PlotProps.xPadding = 25;
 %% Overlap of all participants' spectrums for subset of tasks, with raw data for reference TODO: remove
 
 Log = true;
@@ -314,12 +311,12 @@ S = [1 3];
 YLim = [0 60];
 Grid = [3 2];
 
-Pixels.xPadding = 20;
-Pixels.yPadding = 50; % larger distance than default because no labels
+PlotProps.xPadding = 20;
+PlotProps.yPadding = 50; % larger distance than default because no labels
 
 TaskIndx = [5 2];
 
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.75])
+figure('units','centimeters','position',[0 0 PlotProps.W PlotProps.H*.75])
 
 % plot raw data
 LetterIndx = 1;
@@ -327,15 +324,15 @@ for Indx_S = 1:numel(S)
     
     Data = squeeze(chDataRaw(:, S(Indx_S), TaskIndx(1), Indx_Ch, :));
     
-    subfigure([], Grid, [1, Indx_S], [], Pixels.Letters{LetterIndx}, Pixels);
+    subfigure([], Grid, [1, Indx_S], [], PlotProps.Letters{LetterIndx}, PlotProps);
     LetterIndx = LetterIndx+1;
-    plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-        Format.Alpha.Participants, Pixels.LW, Log, Pixels)
-    ylabel(Format.Labels.Power)
+    plotSpectrum(Data, Freqs, Participants, PlotProps.Colors.Participants, ...
+        PlotProps.Alpha.Participants, PlotProps.LW, Log, PlotProps)
+    ylabel(PlotProps.Labels.Power)
     legend off
-    set(gca, 'FontSize', Pixels.FontSize, 'YLim', YLim)
+    set(gca, 'FontSize', PlotProps.FontSize, 'YLim', YLim)
     title(strjoin({Tasks{1}, Sessions.Labels{S(Indx_S)}, ChLabels{Indx_Ch}}, ' '), ...
-        'FontSize', Pixels.TitleSize)
+        'FontSize', PlotProps.TitleSize)
 end
 
 YLim = [-1.5 5.5];
@@ -347,19 +344,19 @@ for Indx_T = 1:numel(Tasks)
         
         Data = squeeze(chData(:, Indx_S,  TaskIndx(Indx_T), Indx_Ch, :));
         
-        subfigure([], Grid, [1+Indx_T, Indx_S], [], Pixels.Letters{LetterIndx}, Pixels);
+        subfigure([], Grid, [1+Indx_T, Indx_S], [], PlotProps.Letters{LetterIndx}, PlotProps);
         LetterIndx = LetterIndx+1;
-        plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-            Format.Alpha.Participants, Pixels.LW, Log, Pixels)
+        plotSpectrum(Data, Freqs, Participants, PlotProps.Colors.Participants, ...
+            PlotProps.Alpha.Participants, PlotProps.LW, Log, PlotProps)
         legend off
-        set(gca, 'FontSize', Pixels.FontSize, 'YLim', YLim)
+        set(gca, 'FontSize', PlotProps.FontSize, 'YLim', YLim)
         title(strjoin({Tasks{Indx_T}, Sessions.Labels{S(Indx_S)}, ChLabels{Indx_Ch}}, ' '), ...
-            'FontSize', Pixels.TitleSize)
+            'FontSize', PlotProps.TitleSize)
         
     end
 end
 
-saveFig(strjoin({TitleTag, 'Participants'}, '_'), Paths.Paper, Format)
+saveFig(strjoin({TitleTag, 'Participants'}, '_'), Paths.Paper, PlotProps)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -370,12 +367,12 @@ saveFig(strjoin({TitleTag, 'Participants'}, '_'), Paths.Paper, Format)
 
 %% Plot map of clusters
 
-PlotChannelMap(Chanlocs, ChannelStruct, getColors(3), Format)
-saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, Format)
+PlotChannelMap(Chanlocs, ChannelStruct, getColors(3), PlotProps)
+saveFig(strjoin({TitleTag, 'Channel', 'Map'}, '_'), Results, PlotProps)
 
 
 %% Plot spectrums as task x ch coloring all channels
-Format.Labels.Bands = [1 4 8 12 35];
+PlotProps.Labels.Bands = [1 4 8 12 35];
 
 Log = true;
 figure('units','normalized','outerposition',[0 0 .8 1])
@@ -385,29 +382,29 @@ for Indx_Ch = 1:numel(ChLabels)
         Data = squeeze(chData(:, :, Indx_T, Indx_Ch, :));
         
         nexttile
-        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(Format.Colors.Sessions(:, :, Indx_T)), Log, Format, StatsP);
+        plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(PlotProps.Colors.Sessions(:, :, Indx_T)), Log, PlotProps, StatsP);
         set(gca, 'FontSize', 14)
         if Indx_Ch > 1 || Indx_T > 1
             legend off
         end
         if Indx_T ==1
-            ylabel(Format.Labels.zPower)
+            ylabel(PlotProps.Labels.zPower)
         else
             ylabel ''
         end
         if Indx_Ch == numel(ChLabels)
-            xlabel(Format.Labels.Frequency)
+            xlabel(PlotProps.Labels.Frequency)
         else
             xlabel ''
         end
-        title(strjoin({ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', Format.Pixels.FontSize, 'Color', 'k')
+        title(strjoin({ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', PlotProps.Pixels.FontSize, 'Color', 'k')
         
     end
 end
 setLimsTiles(numel(ChLabels)*numel(AllTasks), 'y');
 
 % save
-saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Results, Format)
+saveFig(strjoin({TitleTag, 'All', 'Sessions', 'Channels'}, '_'), Results, PlotProps)
 
 %% plot all tasks, split by session, one fig for each ch
 
@@ -420,12 +417,12 @@ for Indx_Ch =  1:numel(ChLabels)
         Data = squeeze(chData(:, Indx_S, :, Indx_Ch, :));
         
         nexttile
-        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, Format.Colors.AllTasks, Log, Format, StatsP);
+        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels, PlotProps.Colors.AllTasks, Log, PlotProps, StatsP);
         legend off
         title(strjoin({ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, ' '))
     end
     setLimsTiles(numel(Sessions.Labels), 'y');
-    saveFig(strjoin({TitleTag, 'Channel', 'Tasks', ChLabels{Indx_Ch}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, 'Channel', 'Tasks', ChLabels{Indx_Ch}}, '_'), Results, PlotProps)
     
 end
 
@@ -439,7 +436,7 @@ for Indx_S = 2:3
         Data = SD - BL;
         
         subplot(2, numel(ChLabels), Indx)
-        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels,Format.Colors.AllTasks, Log, Format, StatsP);
+        plotSpectrumDiff(Data, Freqs, numel(TaskLabels), TaskLabels,PlotProps.Colors.AllTasks, Log, PlotProps, StatsP);
         title(strjoin({ChLabels{Indx_Ch}, Sessions.Labels{Indx_S}}, ' '))
         legend off
         
@@ -447,7 +444,7 @@ for Indx_S = 2:3
     end
 end
 setLims(2,  numel(ChLabels), 'y');
-saveFig(strjoin({TitleTag, 'DiffSpectrums'}, '_'), Results, Format)
+saveFig(strjoin({TitleTag, 'DiffSpectrums'}, '_'), Results, PlotProps)
 
 
 
@@ -483,7 +480,7 @@ clc
 
 BubbleSize = 50;
 PeakPlotRange = [4 13];
-Colormap = reduxColormap(Format.Colormap.Rainbow, numel(PeakPlotRange(1)+1:PeakPlotRange(2)));
+Colormap = reduxColormap(PlotProps.Colormap.Rainbow, numel(PeakPlotRange(1)+1:PeakPlotRange(2)));
 
 for Indx_T = 1:numel(AllTasks)
     figure('units','normalized','outerposition',[0 0 .5 .5])
@@ -492,24 +489,24 @@ for Indx_T = 1:numel(AllTasks)
         Data = squeeze(nanmean(Peaks(:, Indx_S, Indx_T, :), 1));
         
         subplot(2, numel(Sessions.Labels), Indx_S)
-        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', [], Format)
+        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', [], PlotProps)
         caxis(PeakPlotRange)
         colormap(Colormap)
         title(strjoin({Sessions.Labels{Indx_S}, TaskLabels{Indx_T}}, ' '))
         
         Data = squeeze(nanmean(DiffPeaks(:, Indx_S, Indx_T, :), 1));
         subplot(2, numel(Sessions.Labels), numel(Sessions.Labels)+Indx_S)
-        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', [], Format)
+        bubbleTopo(Data, Chanlocs, BubbleSize, '2D', [], PlotProps)
         caxis(PeakPlotRange)
         colormap(Colormap)
         if Indx_S == 1
-            title(strjoin({Sessions.Labels{Indx_S},  TaskLabels{Indx_T}, 'vs Rest'}, ' '), 'FontSize', Format.TitleSize)
+            title(strjoin({Sessions.Labels{Indx_S},  TaskLabels{Indx_T}, 'vs Rest'}, ' '), 'FontSize', PlotProps.TitleSize)
         else
-            title(strjoin({Sessions.Labels{Indx_S},  TaskLabels{Indx_T}, 'vs BL'}, ' '), 'FontSize', Format.TitleSize)
+            title(strjoin({Sessions.Labels{Indx_S},  TaskLabels{Indx_T}, 'vs BL'}, ' '), 'FontSize', PlotProps.TitleSize)
         end
     end
     
-    saveFig(strjoin({TitleTag, 'PeakFreqTopo', AllTasks{Indx_T}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, 'PeakFreqTopo', AllTasks{Indx_T}}, '_'), Results, PlotProps)
 end
 
 
@@ -579,7 +576,7 @@ for Indx_T = 1:numel(AllTasks)
     subplot(3, 1, 1)
     Data = squeeze(chPeaks(:, 1, Indx_T, :));
     Stats = plotConfettiSpaghetti(Data, ChLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, StatsP, Format);
+        PlotProps.Colors.Participants, StatsP, PlotProps);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'BL', TaskLabels{Indx_T}}, ' '))
     
@@ -587,7 +584,7 @@ for Indx_T = 1:numel(AllTasks)
     subplot(3, 1, 2)
     Data = squeeze(chPeaks(:, 3, Indx_T, :));
     Stats = plotConfettiSpaghetti(Data, ChLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, StatsP, Format);
+        PlotProps.Colors.Participants, StatsP, PlotProps);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'SD', TaskLabels{Indx_T}}, ' '))
     
@@ -595,12 +592,12 @@ for Indx_T = 1:numel(AllTasks)
     subplot(3, 1, 3)
     Data = squeeze(DiffchPeaks(:, 3, Indx_T, :));
     Stats = plotConfettiSpaghetti(Data, ChLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, StatsP, Format);
+        PlotProps.Colors.Participants, StatsP, PlotProps);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'SD-BL', TaskLabels{Indx_T}}, ' '))
     
     
-    saveFig(strjoin({TitleTag, 'PeakFreq', 'Channel', AllTasks{Indx_T}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, 'PeakFreq', 'Channel', AllTasks{Indx_T}}, '_'), Results, PlotProps)
 end
 
 
@@ -615,12 +612,12 @@ for Indx_Ch = 1:numel(ChLabels)
         subplot(1, numel(AllTasks), Indx_T)
         Data = cat(2, squeeze(chPeaks(:, [1 3], Indx_T, Indx_Ch)),  squeeze(DiffchPeaks(:, 3, Indx_T, Indx_Ch)));
         Stats = plotConfettiSpaghetti(Data, {'BL', 'SD', 'SD-BL'}, PeakRange(1):3:PeakRange(2), PeakRange,...
-            Format.Colors.Participants, StatsP, Format);
+            PlotProps.Colors.Participants, StatsP, PlotProps);
         ylabel('Peak Frequency (Hz)')
         title(strjoin({TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, ' '))
     end
     setLims(1,  numel(AllTasks), 'y');
-    saveFig(strjoin({TitleTag, 'PeakFreq', 'Session', ChLabels{Indx_Ch}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, 'PeakFreq', 'Session', ChLabels{Indx_Ch}}, '_'), Results, PlotProps)
 end
 
 
@@ -636,7 +633,7 @@ for Indx_Ch = 1:numel(ChLabels)
     subplot(3, 1, 1)
     Data = squeeze(chPeaks(:, 1, :, Indx_Ch));
     Stats = plotConfettiSpaghetti(Data, TaskLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, StatsP, Format);
+        PlotProps.Colors.Participants, StatsP, PlotProps);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'BL', ChLabels{Indx_Ch}}, ' '))
     
@@ -644,7 +641,7 @@ for Indx_Ch = 1:numel(ChLabels)
     subplot(3, 1, 2)
     Data = squeeze(chPeaks(:, 3, :, Indx_Ch));
     Stats = plotConfettiSpaghetti(Data, TaskLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, StatsP, Format);
+        PlotProps.Colors.Participants, StatsP, PlotProps);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'SD', ChLabels{Indx_Ch}}, ' '))
     
@@ -653,12 +650,12 @@ for Indx_Ch = 1:numel(ChLabels)
     subplot(3, 1, 3)
     Data = squeeze(DiffchPeaks(:, 3, :, Indx_Ch));
     Stats = plotConfettiSpaghetti(Data, TaskLabels, PeakRange(1):3:PeakRange(2), PeakRange,...
-        Format.Colors.Participants, StatsP, Format);
+        PlotProps.Colors.Participants, StatsP, PlotProps);
     ylabel('Peak Frequency (Hz)')
     title(strjoin({'SD-BL', ChLabels{Indx_Ch}}, ' '))
     
     
-    saveFig(strjoin({TitleTag, 'PeakFreq', 'Tasks', ChLabels{Indx_Ch}}, '_'), Results, Format)
+    saveFig(strjoin({TitleTag, 'PeakFreq', 'Tasks', ChLabels{Indx_Ch}}, '_'), Results, PlotProps)
 end
 
 
@@ -692,12 +689,12 @@ T = triu(T) + triu(T)'; % fills in lower half of matrix, for symmetry
 T(1:size(T, 1)+1:numel(T)) = 0; % set diagonal values to 0;
 
 PlotCorrMatrix_AllSessions(T, repmat(Labels, 3, 1), {'BL', 'SD', 'SD-BL'},  ...
-    numel(Labels), Format)
+    numel(Labels), PlotProps)
 title('tValues of peak differences by channel, session and task')
 colorbar
-colormap(Format.Colormap.Divergent)
+colormap(PlotProps.Colormap.Divergent)
 caxis([-15 15])
-saveFig(strjoin({TitleTag, 'PeakFreq', 'All'}, '_'), Results, Format)
+saveFig(strjoin({TitleTag, 'PeakFreq', 'All'}, '_'), Results, PlotProps)
 
 
 
@@ -716,14 +713,14 @@ for Indx_Ch =  1:numel(ChLabels)
             
             subplot(numel(Sessions.Labels), 1, Indx_S)
             % TODO: plot peaks! so can inspect where peak came from
-            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-                Format.Alpha.Participants, Format.LW, Log, Format)
+            plotSpectrum(Data, Freqs, Participants, PlotProps.Colors.Participants, ...
+                PlotProps.Alpha.Participants, PlotProps.LW, Log, PlotProps)
             legend off
             title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '))
         end
         setLims(numel(Sessions.Labels), 1, 'y');
         
-        saveFig(strjoin({TitleTag, 'Channel', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+        saveFig(strjoin({TitleTag, 'Channel', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, PlotProps)
         pause(.5)
         close
     end
@@ -741,15 +738,15 @@ for Indx_Ch =  1:numel(ChLabels)
             Data = squeeze(chDataRaw(:, Indx_S, Indx_T, Indx_Ch, :));
             
             subplot(numel(Sessions.Labels), 1, Indx_S)
-            plotSpectrum(Data, Freqs, Participants, Format.Colors.Participants, ...
-                Format.Alpha.Participants, Format.LW, Log, Format)
-            title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '), 'FontSize', Format.TitleSize)
+            plotSpectrum(Data, Freqs, Participants, PlotProps.Colors.Participants, ...
+                PlotProps.Alpha.Participants, PlotProps.LW, Log, PlotProps)
+            title(strjoin({TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, ChLabels{Indx_Ch}}, ' '), 'FontSize', PlotProps.TitleSize)
             legend off
-            ylabel(Format.Labels.Power)
+            ylabel(PlotProps.Labels.Power)
         end
         setLims(numel(Sessions.Labels), 1, 'y');
         
-        saveFig(strjoin({TitleTag, 'Channel', 'AllP', 'RAW', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+        saveFig(strjoin({TitleTag, 'Channel', 'AllP', 'RAW', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, PlotProps)
         pause(.5)
         close
     end
@@ -771,7 +768,7 @@ end
 % see if that super peaky theta in game is consistent or not
 
 close all
-Colors = [Format.Colors.Dark1; Format.Colors.Red;   Format.Colors.Light1; 0.67 0.67 0.67];
+Colors = [PlotProps.Colors.Dark1; PlotProps.Colors.Red;   PlotProps.Colors.Light1; 0.67 0.67 0.67];
 Alpha = 1;
 
 for Indx_Ch = 1:numel(ChLabels)
@@ -790,20 +787,20 @@ for Indx_Ch = 1:numel(ChLabels)
             Peaks = cat(1, Peaks', PeaksDiff);
             
             nexttile
-            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD', 'SD-BL'}, Colors, Alpha, Format)
+            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD', 'SD-BL'}, Colors, Alpha, PlotProps)
             title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '))
             xlim(PeakRange)
             set(gca, 'FontSize', 13)
         end
         setLimsTiles(4, 5, 'y');
-        saveFig(strjoin({TitleTag, 'PeaksSpectrums', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+        saveFig(strjoin({TitleTag, 'PeaksSpectrums', 'AllP', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, PlotProps)
     end
 end
 
 
 close all
 %% Plot individual differences in spectrum with raw data
-Colors = [Format.Colors.Dark1; Format.Colors.Red;  Format.Colors.Light1; 0.67 0.67 0.67];
+Colors = [PlotProps.Colors.Dark1; PlotProps.Colors.Red;  PlotProps.Colors.Light1; 0.67 0.67 0.67];
 
 Alpha = 1;
 
@@ -818,8 +815,8 @@ for Indx_Ch = 1:numel(ChLabels)
             Peaks = squeeze(chPeaksRAW(Indx_P, :, Indx_T, Indx_Ch));
             
             nexttile
-            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD'}, Colors, Alpha, Format)
-            title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', Format.TitleSize)
+            plotSpectrumPeaks(Spectrum, Peaks, Freqs, {'BL', 'SR', 'SD'}, Colors, Alpha, PlotProps)
+            title(strjoin({Participants{Indx_P}, ChLabels{Indx_Ch}, TaskLabels{Indx_T}}, ' '), 'FontSize', PlotProps.TitleSize)
             xlim(PeakRange)
             
             F_Indx = dsearchn(Freqs', PeakRange');
@@ -828,7 +825,7 @@ for Indx_Ch = 1:numel(ChLabels)
             padAxis('y')
             set(gca, 'FontSize', 20)
         end
-        saveFig(strjoin({TitleTag, 'PeaksSpectrums', 'AllP', 'RAW', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, Format)
+        saveFig(strjoin({TitleTag, 'PeaksSpectrums', 'AllP', 'RAW', ChLabels{Indx_Ch}, AllTasks{Indx_T}}, '_'), Results, PlotProps)
     end
 end
 

@@ -44,6 +44,7 @@ end
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure EXAZ
+
 PlotProps = P.Manuscript;
 PlotProps.Axes.yPadding = 40;
 PlotProps.Axes.xPadding = 30;
