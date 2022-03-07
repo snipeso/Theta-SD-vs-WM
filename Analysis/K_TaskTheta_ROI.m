@@ -21,12 +21,10 @@ ROI = 'preROI';
 P = analysisParameters();
 
 Paths = P.Paths;
-Participants = P.Participants;
 Bands = P.Bands;
 Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
-PlotProps = P.Manuscript;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 Labels = P.Labels;
