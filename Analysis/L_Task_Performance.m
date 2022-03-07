@@ -67,7 +67,7 @@ PVT_Lapses = nansum(squeeze(PVT.Tally) == 2, 3);
 
 
 
-%%
+
 %%% SpFT
 Answers_Path = fullfile(Source_Tables, 'SpFT_AllAnswers.mat');
 load(Answers_Path, 'Answers')
@@ -89,7 +89,7 @@ for Indx_P = 1:nParticipants
 end
 
 
-%% plot data
+%% Suppl. Figure BEHZ
 
 clc
 
@@ -111,7 +111,7 @@ for Indx_L = 1:nLevels
     Data = squeeze(M2S_Correct(:, :, Indx_L));
     
     subfigure(Space, miniGrid, [1, Indx_L], [], true, {}, Manuscript);
-    Stats = data2D(Data, Sessions.Labels, [], [35 100], ...
+    Stats = data2D('line', Data, Sessions.Labels, [], [35 100], ...
         repmat(Format.Color.Tasks.Match2Sample, nParticipants, 1), StatsP, Manuscript);
     
     dispStat(Stats, [1 3], ['M2S L',  num2str(Levels(Indx_L))])
@@ -120,7 +120,7 @@ for Indx_L = 1:nLevels
         ylabel(Labels.Correct)
     end
     
-    title(['Level ', num2str(Levels(Indx_L))])
+    title(['L', num2str(Levels(Indx_L))])
 end
 
 
@@ -133,17 +133,17 @@ Indx= Indx+1;
 
 
 subfigure(Space, miniGrid, [1, 1], [],true, {}, Manuscript);
-Stats = data2D(LAT_RT, Sessions.Labels, [], [], ...
+Stats = data2D('line', LAT_RT, Sessions.Labels, [], [], ...
     repmat(Format.Color.Tasks.LAT, nParticipants, 1), StatsP, Manuscript);
 ylabel('Seconds')
-title('Reaction Times')
+title('RTs')
 
 dispStat(Stats, [1 3], 'LAT RTs')
 
 
 % correct
 subfigure(Space, miniGrid, [1, 2], [], true, {}, Manuscript);
-Stats = data2D(LAT_Correct, Sessions.Labels, [], [], ...
+Stats = data2D('line', LAT_Correct, Sessions.Labels, [], [], ...
     repmat(Format.Color.Tasks.LAT, nParticipants, 1), StatsP, Manuscript);
 title('Correct')
 ylabel('%')
@@ -155,7 +155,7 @@ disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)
 
 % lapses
 subfigure(Space, miniGrid, [1, 3], [], true, {}, Manuscript);
-Stats = data2D(LAT_Lapses, Sessions.Labels, [], [], ...
+Stats = data2D('line', LAT_Lapses, Sessions.Labels, [], [], ...
     repmat(Format.Color.Tasks.LAT, nParticipants, 1), StatsP, Manuscript);
 title('Lapses')
 ylabel('%')
@@ -173,17 +173,17 @@ Indx= Indx+1;
 
 % RTs
 subfigure(Space, miniGrid, [1, 1], [], true, {}, Manuscript);
-Stats = data2D(PVT_RT, Sessions.Labels, [], [], ...
+Stats = data2D('line', PVT_RT, Sessions.Labels, [], [], ...
     repmat(Format.Color.Tasks.PVT, nParticipants, 1), StatsP, Manuscript);
 ylabel('Seconds')
-title('Reaction Times')
+title('RTs')
 
 dispStat(Stats, [1 3], 'PVT RTs')
 
 
 % lapses
 subfigure(Space, miniGrid, [1, 2], [], true, {}, Manuscript);
-Stats = data2D(PVT_Lapses, Sessions.Labels, [], [], ...
+Stats = data2D('line', PVT_Lapses, Sessions.Labels, [], [], ...
     repmat(Format.Color.Tasks.PVT, nParticipants, 1), StatsP, Manuscript);
 title('Lapses')
 ylabel('#')
@@ -200,7 +200,7 @@ Indx= Indx+1;
 
 % correct
 subfigure(Space, miniGrid, [1, 1], [], true, {}, Manuscript);
-Stats = data2D(SpFT_Correct, Sessions.Labels, [], [], ...
+Stats = data2D('line', SpFT_Correct, Sessions.Labels, [], [], ...
     repmat(Format.Color.Tasks.SpFT, nParticipants, 1), StatsP, Manuscript);
 ylabel('Words/s')
 title('Correct Words')
@@ -212,7 +212,7 @@ disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)
 
 % mistakes
 subfigure(Space, miniGrid, [1, 2], [], true, {}, Manuscript);
-Stats = data2D(SpFT_Incorrect, Sessions.Labels, [], [], ...
+Stats = data2D('line', SpFT_Incorrect, Sessions.Labels, [], [], ...
     repmat(Format.Color.Tasks.SpFT, nParticipants, 1), StatsP, Manuscript);
 title('Mistakes')
 ylabel('Words/s')
@@ -221,4 +221,4 @@ disp('SpFT mistakes:')
 disp(['(t = ', num2str(Stats.t(1, 3), '%.2f'), ', df = ', num2str(Stats.df(1, 3)), ...
     ', p < ', num2str(Stats.p(1, 3), '%.3f'), ', g = ', num2str(Stats.hedgesg(1, 3), '%.2f'), ')'])
 
-saveFig('Behavior', Paths.Paper, Format)
+saveFig('I_Task_Performance', Paths.Paper, Format)

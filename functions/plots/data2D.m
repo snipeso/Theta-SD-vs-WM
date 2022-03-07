@@ -5,7 +5,7 @@ function Stats = data2D(PlotType, Data, XLabels, YLabels, YLims, Colors, StatsP,
 % series of boxplots or a line plot for each participant.
 
 if ~isempty(StatsP)
-    Stats = Pairwise(Data, StatsP);
+    Stats = pairedttest(Data, [], StatsP);
 else
     Stats = [];
     % TODO: plot stars for group comparison

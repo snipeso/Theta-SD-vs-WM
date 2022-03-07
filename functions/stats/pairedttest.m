@@ -16,13 +16,13 @@ Dims2 = size(Data2);
 
 if isempty(Data2) && numel(Dims1) == 2 % A
     
-    pValues = nan(Dims(2));
-    tValues = nan(Dims(2));
-    CI = nan(Dims(2), Dims(2), 2);
-    df = nan(Dims(2));
+    pValues = nan(Dims1(2));
+    tValues = nan(Dims1(2));
+    CI = nan(Dims1(2), Dims1(2), 2);
+    df = nan(Dims1(2));
     
-    for Indx1 = 1:Dims(2)-1
-        for Indx2 = Indx1+1:Dims(2)
+    for Indx1 = 1:Dims1(2)-1
+        for Indx2 = Indx1+1:Dims1(2)
             [~, p, ci, stats] = ttest(Data1(:, Indx1), Data1(:, Indx2));
             pValues(Indx1, Indx2) = p;
             tValues(Indx1, Indx2) = stats.tstat;
@@ -32,8 +32,8 @@ if isempty(Data2) && numel(Dims1) == 2 % A
     end
     
     % get vector of diamond matrix so can replace things properly
-    Indexes = 1:Dims(2)^2;
-    Indexes = reshape(Indexes, Dims(2), []);
+    Indexes = 1:Dims1(2)^2;
+    Indexes = reshape(Indexes, Dims1(2), []);
     pValues_long = pValues(:);
     Indexes_long = Indexes(:);
     Nans = isnan(pValues_long); % there is probably a more elegant way to do this
@@ -43,17 +43,23 @@ if isempty(Data2) && numel(Dims1) == 2 % A
     % identify still significant values
     [sig, crit_p, ~,  pValues_fdr] = fdr_bh(pValues_long, StatsP.Alpha, StatsP.ttest.dep);
     
-    h = nan(Dims(2));
+    h = nan(Dims1(2));
     h(Indexes_long) = sig;
     Stats.sig = h;
-    Stats.p = p;
+    Stats.t = tValues;
+    Stats.p = pValues;
     Stats.crit_p = crit_p;
+    Stats.df = df;
     
-    FDR = nan(Dims(2));
+    FDR = nan(Dims1(2));
     FDR(Indexes_long) = pValues_fdr;
     Stats.p_fdr = FDR;
     
-elseif isempty(Data2) && numel(Dims2) == 2 % B
+    % get effect sizes
+    G = hedgesG(Data1, StatsP);
+    Stats.hedgesg = G.hedgesg;
+    
+elseif isempty(Data2) && numel(Dims1) == 3 % B
     Stats = struct();
     
 elseif numel(Dims1) == 2 && numel(Dims2) == 2 % C
