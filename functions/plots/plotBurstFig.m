@@ -1,4 +1,4 @@
-function plotBurstFig(EEG, Start, Stop, ProtoChannel, Bands, Space, Log, Color, Pixels)
+function plotBurstFig(EEG, Start, Stop, ProtoChannel, Bands, Space, Log, Color, PlotProps, Labels)
 % plots a burst with a butterfly plot, the specified band's topoplot, and
 % the power spectrum
 
@@ -11,7 +11,7 @@ fs = EEG.srate;
 Data = EEG.data(:, round(Start*fs):round(Stop*fs));
 Points = size(Data,2);
 
-PowerLabel = extractBetween(Pixels.Labels.Power, '(', ')');
+PowerLabel = extractBetween(Labels.Power, '(', ')');
 
 Grid = [2, 6];
 
@@ -19,9 +19,10 @@ ProtoChannelIndx = labels2indexes(ProtoChannel, EEG.chanlocs);
 Window =  Stop-Start;
 t = linspace(0, Window,  Points);
 
+
 %%% plot EEG data butterfly plot
 
-subfigure(Space, Grid, [1, 1], [1, Grid(2)], Pixels.Numerals{1}, Pixels);
+subfigure(Space, Grid, [1, 1], [1, Grid(2)], true, PlotProps.Indexes.Numerals{1}, PlotProps);
 hold on
 
 % every channel
@@ -34,13 +35,13 @@ else
     Colors =  getColors(numel(ProtoChannel));
 end
 for Indx_Ch = 1:numel(ProtoChannel)
-    plot(t, Data(ProtoChannelIndx(Indx_Ch), :), 'Color', Colors(Indx_Ch, :), 'LineWidth', Pixels.LW)
+    plot(t, Data(ProtoChannelIndx(Indx_Ch), :), 'Color', Colors(Indx_Ch, :), 'LineWidth', PlotProps.Line.Width)
 end
 
 ylim(VoltLim)
-xlabel(Pixels.Labels.Time)
-ylabel(extractBetween(Pixels.Labels.Amplitude, '(', ')'))
-set(gca, 'FontName', Pixels.FontName, 'FontSize', Pixels.FontSize)
+xlabel(Labels.Time)
+ylabel(extractBetween(Labels.Amplitude, '(', ')'))
+set(gca, 'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize)
 
 
 %%% get power
@@ -51,62 +52,57 @@ CLims = [min(bData), max(bData)];
 
 
 %%% plot spectrum
-% Space(1) = Space(1)+Pixels.PaddingLabels*1.1;
-Space(3) = Space(3)-Pixels.PaddingLabels*1.1;
-A = subfigure(Space, Grid, [2, 1], [1, Grid(2)-2], Pixels.Numerals{2}, Pixels);
-%  shiftaxis(A, -Pixels.PaddingLabels, [])
+A = subfigure(Space, Grid, [2, 1], [1, Grid(2)-2], true, PlotProps.Indexes.Numerals{2}, PlotProps);
 hold on
-
 if Log
-    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Pixels.Labels.logBands))
+    set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Labels.logBands))
     
     plot(log(Freqs), FFT', 'Color', LineColors)
     
     % plot prototype channels
     for Indx_Ch = 1:numel(ProtoChannel)
         plot(log(Freqs), FFT(:, ProtoChannelIndx(Indx_Ch)), ...
-            'Color', Colors(Indx_Ch, :), 'LineWidth', Pixels.LW)
+            'Color', Colors(Indx_Ch, :), 'LineWidth', PlotProps.Line.Width)
     end
     
-    xticks(log(Pixels.Labels.logBands))
-    xticklabels(Pixels.Labels.logBands)
-    xlim(log(Pixels.Labels.FreqLimits))
+    xticks(log(Labels.logBands))
+    xticklabels(Labels.logBands)
+    xlim(log(Labels.FreqLimits))
     
 else
+    
     % plot all channels
     plot(Freqs, FFT', 'Color', LineColors)
     
     % plot prototype channels
     for Indx_Ch = 1:numel(ProtoChannel)
         plot(Freqs, FFT(:, ProtoChannelIndx(Indx_Ch)), ...
-            'Color', Colors(Indx_Ch, :), 'LineWidth', Pixels.LW)
+            'Color', Colors(Indx_Ch, :), 'LineWidth', PlotProps.Line.Width)
     end
     
-    xlim(Pixels.Labels.FreqLimits)
+    xlim(Labels.FreqLimits)
 end
-xlabel(Pixels.Labels.Frequency)
+
+xlabel(Labels.Frequency)
 ylabel(PowerLabel)
 ylim(AmpLim)
 yticks(AmpLim(1):100:AmpLim(2))
-set(gca, 'XGrid', 'on', 'YGrid', 'on', 'FontName', Pixels.FontName, 'FontSize', Pixels.FontSize)
-
+set(gca, 'XGrid', 'on', 'YGrid', 'on', 'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize)
 
 
 
 %%% plot topoplot
 Colormap = 'Monochrome';
 
-
 % plot topo
-A = subfigure(Space, Grid, [2, 5], [1 2], Pixels.Numerals{3}, Pixels);
-shiftaxis(A, Pixels.PaddingLabels, Pixels.PaddingLabels)
+A = subfigure(Space, Grid, [2, 5], [1 2], false, PlotProps.Indexes.Numerals{3}, PlotProps);
 
 topoplotTEMP(bData(:, 1), EEG.chanlocs, 'style', 'map', 'headrad', 'rim', ...
-    'whitebk', 'on', 'maplimits', CLims, 'gridscale', Pixels.TopoRes, ...
+    'whitebk', 'on', 'maplimits', CLims, 'gridscale', PlotProps.External.EEGLAB.TopoRes, ...
     'electrodes', 'on', 'emarker2', {ProtoChannelIndx,'.',Colors});
 set(A.Children, 'LineWidth', 1)
 
 xlim([-.55 .55])
 ylim([-.55 .6])
 
-colormap(reduxColormap(Pixels.Colormap.(Colormap), Pixels.Steps.(Colormap)))
+colormap(reduxColormap(PlotProps.Color.Maps.(Colormap), PlotProps.Color.Steps.(Colormap)))

@@ -8,15 +8,15 @@ P = analysisParameters();
 
 Paths = P.Paths;
 Bands = P.Bands;
-Format = P.Format;
-Pixels = P.Pixels;
+PlotProps = P.Manuscript;
+Labels = P.Labels;
 
 % preselected snippets of data with good examples of theta bursts
 Coordinates = {
-        'P10_Game_Baseline_Clean.set', 280, 6,  Format.Colors.Tasks.Game;
-    'P10_Game_Session2_Clean.set', 581, 6, Format.Colors.Tasks.Game;
-    'P10_LAT_BaselineComp_Clean.set', 536.2, 118, Format.Colors.Tasks.LAT;
-    'P10_LAT_Session2Comp_Clean.set', 244, 118,  Format.Colors.Tasks.LAT;
+        'P10_Game_Baseline_Clean.set', 280, 6,  PlotProps.Color.Tasks.Game;
+    'P10_Game_Session2_Clean.set', 581, 6, PlotProps.Color.Tasks.Game;
+    'P10_LAT_BaselineComp_Clean.set', 536.2, 118, PlotProps.Color.Tasks.LAT;
+    'P10_LAT_Session2Comp_Clean.set', 244, 118,  PlotProps.Color.Tasks.LAT;
     };
 
 Titles = { 'Baseline Game', 'Sleep Deprivation Game', 'Baseline LAT', 'Sleep Deprivation LAT',};
@@ -44,11 +44,12 @@ end
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure EXAZ
-
-Pixels.PaddingExterior = 30;
-
+PlotProps = P.Manuscript;
+PlotProps.Axes.yPadding = 40;
+PlotProps.Axes.xPadding = 30;
+PlotProps.Axes.labelPadding = 45;
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.5])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.6])
 
 B.Theta = Bands.Theta;
 
@@ -67,17 +68,17 @@ for Indx_E = 1:size(Coordinates, 1)
     Stop = Start + 2;
 
     % make subplots
-    Space = subaxis(Grid, CornerLocations(Indx_E, :), [], Pixels.Letters{Indx_E}, Pixels);
-        Title = text(.5, 1, Titles{Indx_E}, 'FontSize', Pixels.TitleSize, 'FontName', Format.FontName, ...
+    Space = subaxis(Grid, CornerLocations(Indx_E, :), [], PlotProps.Indexes.Letters{Indx_E}, PlotProps);
+        Title = text(.5, 1, Titles{Indx_E}, 'FontSize', PlotProps.Text.TitleSize, 'FontName', PlotProps.Text.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
     
-    plotBurstFig(AllEEG(Indx_E), Start, Stop, Coordinates{Indx_E, 3}, B, Space, Log,  Coordinates{Indx_E, 4}, Pixels);
+    plotBurstFig(AllEEG(Indx_E), Start, Stop, Coordinates{Indx_E, 3}, B, Space, Log,  Coordinates{Indx_E, 4}, PlotProps, Labels);
     
     Axis.Units = 'normalized';
     Title.Units = 'normalized';
 end
 
-saveFig('ExampleTheta', Paths.Paper, Format)
+saveFig('ExampleTheta', Paths.Paper, PlotProps)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,12 +87,13 @@ saveFig('ExampleTheta', Paths.Paper, Format)
 %%% Presentation
 
 %% 
+
 % preselected snippets of data with good examples of theta bursts
 Coordinates = {
-    'EO.set', 308.3, 22, Format.Colors.Tasks.PVT, 'Beta';
-    'EC2.set', 324, 90,  Format.Colors.Tasks.Match2Sample, 'Alpha';
-    'fmTheta.set', 581.3, 6,  Format.Colors.Tasks.Music, 'Theta';
-    'N3_clean.set', 343.15, 11, Format.Colors.Tasks.Game, 'Delta';
+    'EO.set', 308.3, 22, PlotProps.Color.Tasks.PVT, 'Beta';
+    'EC2.set', 324, 90,  PlotProps.Color.Tasks.Match2Sample, 'Alpha';
+    'fmTheta.set', 581.3, 6,  PlotProps.Color.Tasks.Music, 'Theta';
+    'N3_clean.set', 343.15, 11, PlotProps.Color.Tasks.Game, 'Delta';
     };
 
 Results = fullfile(Paths.Results, 'Bursts', 'Presentation');
@@ -117,15 +119,16 @@ end
 
 %%
 YLims = [-160 110];
+PlotProps = P.Powerpoint;
 
 for Indx_B = 1:size(Coordinates, 1)
     Fig = figure('units','centimeters','position',[0 0 30 10]);
     
     Start = Coordinates{Indx_B, 2};
     plotWaves(AllEEG(Indx_B), Start, Start+2, Coordinates{Indx_B, 3}, ...
-        Coordinates{Indx_B, 4}, Format);
+        Coordinates{Indx_B, 4}, PlotProps);
     ylim(YLims)
     
-    saveFig(Coordinates{Indx_B, end}, Results, Format)
+    saveFig(Coordinates{Indx_B, end}, Results, PlotProps)
     
 end
