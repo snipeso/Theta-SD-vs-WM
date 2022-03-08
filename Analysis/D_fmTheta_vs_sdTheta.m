@@ -11,14 +11,10 @@ clc
 P = analysisParameters();
 
 Paths = P.Paths;
-Participants = P.Participants;
-AllTasks = P.AllTasks;
-TaskLabels = P.TaskLabels;
 Bands = P.Bands;
 Sessions = P.Sessions;
 StatsP = P.StatsP;
 Channels = P.Channels;
-Poster = P.Poster;
 Labels = P.Labels;
 
 SmoothFactor = 1; % in Hz, range to smooth over for spectrums
@@ -113,9 +109,9 @@ Legend = append('L', string(Levels));
 %% Figure LOCZ showing fmTheta vs sdTheta
 
 Format = P.Manuscript;
-Format.External.EEGLAB.MarkerSize = 3; % tiny for this plot
-Format.Axes.yPadding = 15;
-Format.Axes.xPadding = 20;
+Format.External.EEGLAB.MarkerSize = 2; % tiny for this plot
+% Format.Axes.yPadding = 15;
+% Format.Axes.xPadding = 20;
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 CLims_Diff = [-7 7];
@@ -125,7 +121,7 @@ miniGrid = [5, 1];
 
 Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
 
-figure('units','centimeters','position',[0 0 Format.Figure.Width Format.Figure.Height*.5])
+figure('units','centimeters','position',[0 0 Format.Figure.Width Format.Figure.Height*.55])
 
 %%% fmTheta
 N1 = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
@@ -169,8 +165,7 @@ end
 
 % colorbar
 subfigure([], Grid, [1 3], [], false, '', Format);
-Format.Text.LegendSize = Format.Text.AxisSize;
-plotColorbar('Divergent', CLims_Diff, Labels.ES, Format)
+plotColorbar('Divergent', CLims_Diff, Labels.t, Format)
 
 
 %%% plot change based on table data
@@ -193,26 +188,25 @@ Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 
 subfigure([], [5 3], [5 3], [5, 1], false, Format.Indexes.Letters{3}, Format);
 plotLadder([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, AreaLabels, Colors, ...
-    { 'Both signficant','Neither significant', 'sdTheta significant'}, 'northwest', Format)
+    {'Neither significant',  'Both signficant', 'sdTheta significant'}, 'northwest', Format)
 set(legend, 'position', [ 0.7144    0.8449    0.1317    0.0566])
 ylim([-3.5 7.25])
 xlim([.65 2.2])
 
 % save
-saveFig(strjoin({TitleTag, 'fmTheta_vs_sdTheta_topographies'}, '_'), Paths.Paper, Format)
+saveFig(strjoin({TitleTag, 'sources'}, '_'), Paths.Paper, Format)
 
 
 %% Figure M2SZ theta changes for each session
 
 Format = P.Manuscript;
-Format.External.EEGLAB.MarkerSize = 3;
 
 CLims_Diff = [-7 7];
 Grid = [1 5];
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 
-figure('units','centimeters','position',[0 0 Format.Figure.Width Format.Figure.Height*.35])
+figure('units','centimeters','position',[0 0 Format.Figure.Width Format.Figure.Height*.4])
 Indx = 1; % tally of axes
 
 %%% fmTheta by session
@@ -324,7 +318,7 @@ end
 %%% plot colorbar
 Space(1) = Space(1) - Format.Axes.xPadding;
 A = subfigure(Space, miniGrid, [3 2], [3, 1], false, {}, Format);
-plotColorbar('Divergent', CLims_Diff, Labels.ES, Format)
+plotColorbar('Divergent', CLims_Diff, Labels.t, Format)
 shiftaxis(A, Format.Axes.xPadding, [])
 colormap(reduxColormap(Format.Color.Maps.Divergent, Format.Color.Steps.Divergent))
 
