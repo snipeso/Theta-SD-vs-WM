@@ -54,7 +54,7 @@ Grid = [7 3];
 Indx_B = 2; % theta
 Format.Figure.Padding = 90;
 Sessions.Labels = {'Baseline', 'Sleep Restriction', 'Sleep Deprivation'};
-figure('units','centimeters','position',[0 4 Format.Figure.Width*.7 Format.Figure.Height])
+figure('units','centimeters','position',[0 0 Format.Figure.Width*.8 Format.Figure.Height])
 
 Indx = 1; % tally of axes
 
@@ -70,13 +70,13 @@ for Indx_T = 1:numel(AllTasks)
     colorbar off
     
     if Indx_T == 1
-        title(Sessions.Labels{1}, 'FontSize', Format.Indexes.LetterSize)
+        title(Sessions.Labels{1}, 'FontSize', Format.Text.TitleSize)
     end
     
     X = get(gca, 'XLim');
     Y = get(gca, 'YLim');
     text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, TaskLabels{Indx_T}, ...
-        'FontSize', Format.Indexes.LetterSize, 'FontName', Format.Text.FontName, ...
+        'FontSize', Format.Text.TitleSize, 'FontName', Format.Text.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center', 'Rotation', 90);
 end
 
@@ -98,11 +98,12 @@ for Indx_S = [2,3]
         shiftaxis(A, Format.Axes.xPadding, Format.Axes.yPadding)
         
         Stats = topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format, Labels);
+        colorbar off
         set(A.Children, 'LineWidth', 1)
         colormap(gca, Format.Color.Maps.Divergent)
         
         if Indx_T == 1
-            title(Sessions.Labels{Indx_S}, 'FontSize', Format.Text.LetterSize)
+            title(Sessions.Labels{Indx_S}, 'FontSize', Format.Text.TitleSize)
         end
         
         % save stats
