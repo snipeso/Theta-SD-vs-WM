@@ -160,7 +160,7 @@ for Indx_Ch = 1:numel(ChLabels)
         
         %%% plot
         subfigure([], Grid, [Indx_Ch, Indx_T], [], true, '', PlotProps);
-        Stats = plotSpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(PlotProps.Color.Sessions(:, :, Indx_T)), Log, PlotProps, StatsP, Labels);
+        Stats = SpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(PlotProps.Color.Sessions(:, :, Indx_T)), Log, PlotProps, StatsP, Labels);
         
         Title = strjoin({TitleTag, 'Task_Spectrum', TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, '_');
         saveStats(Stats, 'Spectrum', Paths.PaperStats, Title, StatsP)
