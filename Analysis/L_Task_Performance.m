@@ -187,7 +187,7 @@ dispStat(Stats, [1 3], 'LAT RTs')
 % correct
 subfigure(Space, miniGrid, [1, 2], [], true, {}, Format);
 Stats = data2D('line', LAT_Correct, Sessions.Labels, [], [], Color, StatsP, Format);
-title('Correct',  'FontSize', Format.Text.TitleSize)
+title('LAT Correct',  'FontSize', Format.Text.TitleSize)
 ylabel('%')
 
 disp('LAT Correct:')

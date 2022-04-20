@@ -1,6 +1,5 @@
 function Stats = data2D(PlotType, Data, XLabels, YLabels, YLims, Colors, StatsP, PlotProps)
 % Stats = data2D(PlotType, Data, XLabels, YLabels, YLims, Colors, StatsP, PlotProps)
-
 % PlotType is a string, either 'box' or 'line', and plots data as either a
 % series of boxplots or a line plot for each participant.
 
