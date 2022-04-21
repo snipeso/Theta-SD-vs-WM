@@ -17,6 +17,8 @@ if exist( 'D:\Data\Raw', 'dir')
     Core = 'D:\Data\';
 elseif exist( 'F:\Data\Raw', 'dir')
     Core = 'F:\Data\';
+elseif exist( 'E:\Data\Raw', 'dir')
+    Core = 'E:\Data\';
 elseif exist('D:\LSM\Data\Raw', 'dir')
     Core = 'D:\LSM\Data\';
 else

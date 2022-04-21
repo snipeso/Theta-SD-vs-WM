@@ -43,9 +43,9 @@ if CheckOutput
     
     % plot in time all the components
     tmpdata = eeg_getdatact(EEG, 'component', 1:nComps);
-    eegplot( tmpdata, 'srate', EEG.srate,  'spacing', 5, 'dispchans', 40, ...
+    eegplot(tmpdata, 'srate', EEG.srate,  'spacing', 5, 'dispchans', 40, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)*.97], ...
-        'color',Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
+        'color', Colors, 'limits', [EEG.xmin EEG.xmax]*1000);
 end
 
 %%% merge data with component structure
