@@ -12,7 +12,7 @@ Prep_Parameters
 Tasks = {'Sleep'}; % select this if you only need to filter one folder
 % Tasks = allTasks;
 
-Destination_Formats = {'Cutting'}; % chooses which filtering to do
+Destination_Formats = {'Power', 'ICA'}; % chooses which filtering to do
 % options: 'Scoring', 'Cutting', 'ICA', 'Power'
 
 Refresh = false; % redo files that are already in destination folder
