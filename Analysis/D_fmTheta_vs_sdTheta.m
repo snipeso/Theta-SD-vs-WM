@@ -414,7 +414,39 @@ saveFig(strjoin({TitleTag, 'Spectrums', Epochs{Indx_E}}, '_'), Paths.Paper, Plot
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% grant figures
+
+%%
+CLims = [2 7];
+Grid = [1, 2];
+PlotProps = P.Manuscript;
+
+figure('units','centimeters','position',[0 0 PlotProps.Figure.Width*.5 PlotProps.Figure.Height*.2])
+
+% plot percent change theta
+BL =  squeeze(bData(:, 1, 1, 2, :, 2));
+Cond =  squeeze(bData(:, 1, 2, 2, :, 2));
+Data = (Cond-BL)./BL;
+Axes = subfigure([], Grid, [1 1], [], false, PlotProps.Indexes.Letters{1}, PlotProps); 
+Stats = topoDiff(BL, Cond, Chanlocs, [1 5.5], StatsP, PlotProps, Labels);
+colormap(reduxColormap(bone, 15))
+title('Cognition Theta', 'FontSize',PlotProps.Text.TitleSize)
+colorbar off
+
+
+BL =  squeeze(bData(:, 1, 1, 2, :, 2));
+Cond =  squeeze(bData(:, 3, 1, 2, :, 2));
+Data = (Cond-BL)./BL;
+Axes = subfigure([], Grid, [1 2], [], false, PlotProps.Indexes.Letters{2}, PlotProps); 
+Stats = topoDiff(BL, Cond, Chanlocs, CLims, StatsP, PlotProps, Labels);
+colormap(reduxColormap(bone, 15))
+title('Drowsiness Theta',  'FontSize',PlotProps.Text.TitleSize)
+colorbar off
+saveFig('Topos', 'C:\Users\colas\Dropbox\Research\Projects\HuberSleepLab\CRC grant', PlotProps)
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
