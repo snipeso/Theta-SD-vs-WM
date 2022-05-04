@@ -1,4 +1,4 @@
-function plotEEGsample(EEG, Start, Stop, HighlightChannels, HighlightColors, plotTriggers, Channels, Scale, PlotProps)
+function EEG = plotEEGsample(EEG, Start, End, HighlightChannels, HighlightColors, plotTriggers, Channels, Scale, PlotProps)
 % plot a little window of EEG data.
 
 % Channels is a Ch x 2 cell array, with the first colunm indicating the
@@ -6,7 +6,7 @@ function plotEEGsample(EEG, Start, Stop, HighlightChannels, HighlightColors, plo
 % channels. This can be found in P.Channels.Standard_10_20_All;
 
 
-EEG = pop_select(EEG, 'time', [Start, Stop]);
+EEG = pop_select(EEG, 'time', [Start, End]);
 HighlightChannels = labels2indexes(HighlightChannels, EEG.chanlocs);
 
 if isempty(HighlightColors) && ~isempty(HighlightChannels)
@@ -37,7 +37,7 @@ end
 
 Data = double(EEG.data);
 
-figure('units', 'normalized', 'outerposition', [0 0 1 1])
-subfigure([], [1 1], [1 1], [], true, '', PlotProps)
+% figure('units', 'normalized', 'outerposition', [0 0 1 1])
+% subfigure([], [1 1], [1 1], [], true, '', PlotProps)
 plotEpoch(Data, t, HighlightChannels, HighlightColors, YLabels, Events, Scale, PlotProps)
 xlabel('Time (s)')
