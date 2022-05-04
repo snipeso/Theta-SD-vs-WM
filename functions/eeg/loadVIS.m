@@ -1,5 +1,6 @@
 function [BadData, strScores] = loadVIS(Filepath)
-% Script for reading a VIS file in a folder, and 
+% Script for reading a VIS file in a folder (Huber Sleep Lab scoring
+% files). Based off of internal scripts that have existed for decades.
 
 
 Content = getContent(Filepath);

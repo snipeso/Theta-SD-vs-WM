@@ -1,6 +1,5 @@
 function [AllData, Freqs, Chanlocs, AllTrials] = loadM2Spower(P, Source)
-% load all power from main tasks.
-% Results in variable "AllData": P x S x T x E x Ch x F; and Chanlocs and Freqs
+% load "locked" power from short term memory task.
 
 Task = 'Match2Sample';
 

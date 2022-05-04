@@ -1,4 +1,4 @@
-function bubbleTopo(Color, Chanlocs, Size, Type, Labels, Format)
+function bubbleTopo(Data, Chanlocs, Size, Type, Labels, Format)
 % plots topoplot as a circle per channel.
 % if labels, mark label indexes
 
@@ -15,14 +15,14 @@ switch Type
         
         [x, y] = pol2cart(Theta, Radius);
         
-        scatter(x, y, Size, Color, 'filled')
+        scatter(x, y, Size, Data, 'filled')
         if ~isempty(Labels)
             hold on
             if numel(Labels) == numel(Chanlocs)
-                  textscatter(x, y, Labels, 'ColorData', TextColor, 'FontName', Format.FontName, 'TextDensityPercentage', 100)
+                  textscatter(x, y, Labels, 'ColorData', TextColor, 'FontName', Format.Text.FontName, 'TextDensityPercentage', 100)
             else
                 
-                textscatter(x, y, {Chanlocs.labels}, 'ColorData', TextColor, 'FontName', Format.FontName)
+                textscatter(x, y, {Chanlocs.labels}, 'ColorData', TextColor, 'FontName', Format.Text.FontName)
             end
         end
         axis square
@@ -34,23 +34,23 @@ switch Type
         X = [Chanlocs.X];
         Y = [Chanlocs.Y];
         Z = [Chanlocs.Z];
-        scatter3(X, Y, Z, Size, Color, 'filled')
+        scatter3(X, Y, Z, Size, Data, 'filled')
         
         if  ~isempty(Labels)
             hold on
-            textscatter3(X, Y, Z, {Chanlocs.labels}, 'ColorData', TextColor, 'FontName', Format.FontName)
+            textscatter3(X, Y, Z, {Chanlocs.labels}, 'ColorData', TextColor, 'FontName', Format.Text.FontName)
         end
         view(0, 90)
         axis vis3d
         set(gca,'DataAspectRatio',[1 1 1.2])
 end
 
-set(gca, 'visible', 'off', 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+set(gca, 'visible', 'off', 'FontName', Format.Text.FontName, 'FontSize', Format.Text.AxisSize)
 title('')
 
 set(findall(gca, 'type', 'text'), 'visible', 'on')
 
-Dims = size(Color);
+Dims = size(Data);
 
 if Dims(2) ~=3 % if not a color triplet
     Colormap = Format.Colormap.Linear;

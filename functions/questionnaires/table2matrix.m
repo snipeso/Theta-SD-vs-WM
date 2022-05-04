@@ -37,9 +37,7 @@ for Indx_P = 1:numel(Participants)
 end
 
 
-
 %%% gather labels
-
 Labels = Table.qLabels(find(QuestionIndexes, 1));
 Labels = replace(Labels, '//', '-');
 Labels = split(Labels, '-');

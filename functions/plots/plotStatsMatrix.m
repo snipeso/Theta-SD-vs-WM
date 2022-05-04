@@ -1,4 +1,4 @@
-function plotStatsMatrix(Data, yLabels, xLabels, Grid, CLabel, Format)
+function plotStatsMatrix(Data, yLabels, xLabels, Grid, CLabel, PlotProps)
 % plots a grid of colored rectangles based on values of Data. 
 
 imagesc(Data)
@@ -7,16 +7,16 @@ Range = [min(Data(:)), max(Data(:))];
 
 if ~isempty(CLabel)
     h = colorbar;
-    ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+    ylabel(h, CLabel, 'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize)
 end
 
 if Range(1) < 0
     Lim = max(abs(Range));
     Range = [-Lim, Lim];
-    colormap(Format.Colormap.Divergent)
+    colormap(PlotProps.Color.Maps.Divergent)
     caxis(Range)
 else
-    colormap(Format.Colormap.Linear)
+    colormap(PlotProps.Color.Maps.Linear)
     caxis(Range)
 end
 
@@ -26,10 +26,7 @@ yticks(1:nYLabels)
 yticklabels(yLabels)
 
 
-
-
 % axis square
-set(gca, 'FontName', Format.FontName)
 xticks(1:numel(xLabels))
 xticklabels(xLabels)
 
@@ -47,4 +44,4 @@ if ~isempty(Grid)
     end
 end
 
-set(gca, 'FontSize', Format.FontSize)
+set(gca, 'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize)

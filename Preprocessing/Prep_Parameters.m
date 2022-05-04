@@ -11,7 +11,6 @@ Paths = struct(); % I make structs of variables so they don't flood the workspac
 Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
-Paths.Datasets ='D:\LSM\Data\Raw'; % where the raw data is saved (split by participant)
 
 if exist( 'D:\Data\Raw', 'dir')
     Core = 'D:\Data\';
@@ -24,7 +23,7 @@ elseif exist('D:\LSM\Data\Raw', 'dir')
 else
     error('no data disk!')
 end
-
+Paths.Datasets = fullfile(Core, 'Raw');
 Paths.Preprocessed = fullfile(Core, 'Preprocessed');
 Paths.Final = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
 

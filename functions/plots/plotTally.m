@@ -1,4 +1,4 @@
-function Tally = plotTally(Data, XLabels, CLabels, Colors, Order, Format)
+function Tally = plotTally(Data, XLabels, CLabels, Colors, Order, PlotProps)
 % plot stacked bar plot for representing tally of answers. Data is a P x S
 % x T matrix, and a bar is made for every S. Labels should be the same
 % number of unique items being tallied, and colors the same number as
@@ -11,7 +11,7 @@ Categories(isnan(Categories)) = [];
 Tally = nan(Dims(1), Dims(2), numel(Categories));
 
 if isempty(Colors)
-    Colors = reduxColormap(Format.Colormap.Rainbow, numel(Categories));
+    Colors = reduxColormap(PlotProps.Color.Maps.Rainbow, numel(Categories));
 end
 
 for Indx_C = 1:numel(Categories)
@@ -50,7 +50,7 @@ for Indx = 1:size(Colors, 1)
     h(Indx).CData = Colors(Indx, :);
 end
 
-set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+set(gca, 'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize)
 
 
 set(gca,'TickLength',[0 0])

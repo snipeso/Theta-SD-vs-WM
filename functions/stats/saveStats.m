@@ -38,10 +38,10 @@ switch Type
         T.mean_diff = Stats.mean_diff;
         T.std_diff = Stats.std_diff;
         
-         writetable(T, fullfile(Destination,  [Title, '.csv']));
-       
+        writetable(T, fullfile(Destination,  [Title, '.csv']));
+        
     case 'Pairwise' % pairwise t-tests between all the conditions from Pairwise
-         T = table();
+        T = table();
         T.t = Stats.t;
         T.p = Stats.p;
         T.sig = Stats.sig; % fdr corrected
@@ -49,30 +49,31 @@ switch Type
         T.CI_low = Stats.CI(:, 1);
         T.CI_high = Stats.CI(:, 2);
         T = Stats.p;
-          writematrix(T, fullfile(Destination,  [Title, '_pValues.csv']));
-                  T = Stats.t;
-          writematrix(T, fullfile(Destination,  [Title, '_tValues.csv']));
-           T = Stats.df;
-          writematrix(T, fullfile(Destination,  [Title, '_df.csv']));
-           T = squeeze(Stats.CI(:, :, 1));
-          writematrix(T, fullfile(Destination,  [Title, '_CIlow.csv']));
-            T = squeeze(Stats.CI(:, :, 2));
-          writematrix(T, fullfile(Destination,  [Title, '_CIhigh.csv']));
-             T = Stats.sig;
-          writematrix(T, fullfile(Destination,  [Title, '_fdr.csv']));
-             
+        writematrix(T, fullfile(Destination,  [Title, '_pValues.csv']));
+        T = Stats.t;
+        writematrix(T, fullfile(Destination,  [Title, '_tValues.csv']));
+        T = Stats.df;
+        writematrix(T, fullfile(Destination,  [Title, '_df.csv']));
+        T = squeeze(Stats.CI(:, :, 1));
+        writematrix(T, fullfile(Destination,  [Title, '_CIlow.csv']));
+        T = squeeze(Stats.CI(:, :, 2));
+        writematrix(T, fullfile(Destination,  [Title, '_CIhigh.csv']));
+        T = Stats.sig;
+        writematrix(T, fullfile(Destination,  [Title, '_fdr.csv']));
+        
     case 'Spectrum'
-            Variables = {'pvalues', 'p_fdr', 'sig', 'tvalues', 'df'};
-          T = table();
-          T.freqs = Stats.freqs';
-          
-          for Indx_L = 1:numel(Stats.lines)
-              for Indx_V = 1:numel(Variables)
-                  T.([Variables{Indx_V}, '_', Stats.lines{Indx_L}]) = reshape(Stats.(Variables{Indx_V})(Indx_L, :), [], 1);
-              end
-          end
-          
-           writetable(T, fullfile(Destination,  [Title, '.csv']));
+        Variables = {'p', 'p_fdr', 'sig', 't', 'df'};
+        T = table();
+        T.freqs = Stats.freqs';
+        
+        for Indx_L = 1:numel(Stats.lines)
+            for Indx_V = 1:numel(Variables)
+                T.([Variables{Indx_V}, '_', Stats.lines{Indx_L}]) = ...
+                    reshape(Stats.(Variables{Indx_V})(Indx_L, :), [], 1);
+            end
+        end
+        
+        writetable(T, fullfile(Destination,  [Title, '.csv']));
     otherwise
         error('dont know this stats')
 end

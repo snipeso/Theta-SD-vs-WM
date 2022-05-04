@@ -25,6 +25,11 @@ Answers.isRight = strcmp(AllAnswers.hemifield, 'right');
 
 Answers.RT(Answers.RT<.1) = nan;
 
+% Classify as lapse, late, or correct response
+Answers.Type = nan(size(Answers.RT));
+Answers.Type(Answers.RT <= .5) = 3;
+Answers.Type(Answers.RT <= 1 & Answers.RT > .5) = 2;
+Answers.Type(isnan(Answers.RT)) = 1;
 
 % convert coordinates into radius and angle
 Coordinates = cell2mat(AllAnswers.coordinates');

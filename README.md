@@ -48,14 +48,7 @@ Scripts used to create the results in the paper (and more). Some scripts will pl
 1. Modify **analysisParameters.m**. so that filepaths are correct. Like for preprocessing, this is (now a function) that indicates the parameters in common across scripts. Now the bulk is related to plotting and such.
 2. Run **A_Unlocked_Power.m** and the **A1_Locked_Power...** scripts to get the power spectrum data from the clean .set files created by the preprocessing. These are saved in *Final>Unlocked* and *Final>Locked* respectively. "Unlocked" refers to power that is not locked to any particular event, and just takes a certain number of minutes of data, whereas "Locked" takes epochs specific to the underlying task, which is why there's a seperate one for each task.
 3. Run the scripts used for the paper. These don't actually have to be run in order
-    - **B_Example_Bursts.m** plots the the little example bursts of EEG data
-    - **C_Task_Main.m** plots the figure showing averages of theta in the three ROIs (regions of interest) across all tasks. 
-    - **D_Task_Topographies.m** plots the topographies of theta in all the tasks, and how they change with sleep deprivation. Other bands can be plotted further down in the script.
-    - **E_Task_Spectrums.m** plots the spectrums for each ROI and each task. 
-    - **F_M2S_Main.m** plots all the figures related to the match to sample (M2S) short term memory task (STM in the paper).
-    - **G_SpFT_Topographies.m** plots the figure showing the changes in theta in the Speech Fluency Task (SpFT).
-    - **H_Task_Questionnaires.m** plots the questionnaire data of all the tasks.
-    - **K_Sleep_Architecture.m** analyzes sleep architecture.
+    - 
 
 Other lettered scripts are from the supplementary material, or not published at all. 
 

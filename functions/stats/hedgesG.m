@@ -52,6 +52,8 @@ elseif nargin == 3 % if two matrices are provided
         
         
     end
+else
+    error('Too few inputs')
 end
 
 Stats.hedgesg = gValues;
