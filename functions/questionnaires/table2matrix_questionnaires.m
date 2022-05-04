@@ -1,4 +1,4 @@
-function [Answers, Labels] = table2matrix(Table, Participants, Sessions, qID, Column)
+function [Answers, Labels] = table2matrix_questionnaires(Table, Participants, Sessions, qID, Column)
 % pulls out all the answers to a specific question in a table, and sorts it
 % into a P x S matrix.
 
@@ -30,7 +30,7 @@ for Indx_P = 1:numel(Participants)
         if isa(Ans, 'double') || isa(Ans, 'single')
             Answers(Indx_P, Indx_S) = Ans;
         else
-            Answers(Indx_P, Indx_S) = Ans;
+            Answers{Indx_P, Indx_S} = Ans;
         end
         
     end
