@@ -12,12 +12,12 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Data_Type = 'Power';
+Data_Type = 'Waves';
 
-allTasks  = {'Fixation', 'Standing', 'Oddball'}; % which tasks to convert (for now)
+allTasks  = {'LAT'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
-CheckOutput = true; % manually verify if selection was good at the end
+CheckOutput = false; % manually verify if selection was good at the end
 
 % % %%% emergency code if I need to fix a specific file
 % Filename = 'P09_Match2Sample_Session2_ICA_Components.set';
@@ -56,7 +56,8 @@ load('StandardChanlocs128.mat', 'StandardChanlocs')
 load('Cz.mat', 'CZ')
 
 Source_Comps = fullfile(Paths.Preprocessed, ICA_Folder, Component_Folder, Task);
-Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
+Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'MAT', Task);
+% Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
 Destination = fullfile(Paths.Preprocessed, Destination_Folder, Data_Type, Task);
 
@@ -65,6 +66,7 @@ if ~exist(Destination, 'dir')
 end
 
 Files = deblank(cellstr(ls(Source_Comps)));
+% Files(~contains(Files, '.mat')) = [];
 Files(~contains(Files, '.set')) = [];
 
 % randomize files list
@@ -82,9 +84,10 @@ for Indx_F = 1:nFiles % loop through files in source folder
     end
     
     Filename_Core = extractBefore(Filename_Comps, '_ICA_Components');
-    Filename_Data = [Filename_Core, '_' Data_Type, '.set'];
-    
-    Filename_Destination = [Filename_Core, '_Clean.set'];
+    Filename_Data = [Filename_Core, '_' Data_Type, '.mat'];
+% Filename_Data = [Filename_Core, '_' Data_Type, '.set'];
+%     Filename_Destination = [Filename_Core, '_Clean.set'];
+    Filename_Destination = [Filename_Core, '_Clean.mat'];
     Filename_Cuts =  [Filename_Core, '_Cuts.mat'];
     
     % skip if file already exists or data doesn't exist yet
@@ -98,7 +101,9 @@ for Indx_F = 1:nFiles % loop through files in source folder
     
     %%% Get data ready
     % load data
-    Data = pop_loadset('filepath', Source_Data, 'filename', Filename_Data); % this is the data where you want to remove the components
+%     Data = pop_loadset('filepath', Source_Data, 'filename', Filename_Data);
+    load(fullfile(Source_Data, Filename_Data), 'EEG')
+    Data = EEG;
     clc
     EEG = pop_loadset('filepath', Source_Comps, 'filename', Filename_Comps); % this is the data where components were generated (and save the bad ones)
     clc % hide filename

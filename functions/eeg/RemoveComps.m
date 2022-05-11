@@ -201,15 +201,20 @@ if strcmp(xEEG, 'y') || strcmp(xEEG, 'auto')
     NewEEG = pop_interp(NewEEG, FinalChanlocs);
 
     % save new dataset
-    pop_saveset(NewEEG, 'filename', Filename_Destination, ...
-        'filepath', Destination, ...
-        'check', 'on', ...
-        'savemode', 'onefile', ...
-        'version', '7.3');
+    %     pop_saveset(NewEEG, 'filename', Filename_Destination, ...
+    %         'filepath', Destination, ...
+    %         'check', 'on', ...
+    %         'savemode', 'onefile', ...
+    %         'version', '7.3');
+    EEG = NewEEG;
+    save(fullfile(Destination, Filename_Destination), 'EEG', '-v7.3')
     close all
     clc
+    clear EEG
     disp(['***********', 'Finished ', Filename_Destination, '***********'])
-    disp(['bad ch: ', num2str(BC)])
+    if exist('BC', 'var')
+        disp(['bad ch: ', num2str(BC)])
+    end
 end
 
 % determine what happens next

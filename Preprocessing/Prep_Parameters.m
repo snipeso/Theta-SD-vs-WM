@@ -11,19 +11,20 @@ Paths = struct(); % I make structs of variables so they don't flood the workspac
 Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
-
-if exist( 'D:\Data\Raw', 'dir')
-    Core = 'D:\Data\';
-elseif exist( 'F:\Data\Raw', 'dir')
-    Core = 'F:\Data\';
-elseif exist( 'E:\Data\Raw', 'dir')
-    Core = 'E:\Data\';
-elseif exist('D:\LSM\Data\Raw', 'dir')
-    Core = 'D:\LSM\Data\';
-else
-    error('no data disk!')
-end
-Paths.Datasets = fullfile(Core, 'Raw');
+ Core1 = 'D:\LSM\Data\';
+ Core ='E:\Data\';
+% if exist( 'D:\Data\Raw', 'dir')
+%     Core = 'D:\Data\';
+% elseif exist( 'F:\Data\Raw', 'dir')
+%     Core = 'F:\Data\';
+% elseif exist( 'E:\Data\Raw', 'dir')
+%     Core = 'E:\Data\';
+% elseif exist('D:\LSM\Data\Raw', 'dir')
+%     Core = 'D:\LSM\Data\';
+% else
+%     error('no data disk!')
+% end
+Paths.Datasets = fullfile(Core1, 'Raw');
 Paths.Preprocessed = fullfile(Core, 'Preprocessed');
 Paths.Final = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
 
