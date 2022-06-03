@@ -37,7 +37,7 @@ Format.Labels.Bands = log(Format.Labels.Bands);
 
 for Indx_P = 1:numel(Participants)
     figure('units','normalized','outerposition',[0 0 1 1])
-    tiledlayout( numel(Sessions.Labels), numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
+    tiledlayout(numel(Sessions.Labels), numel(AllTasks), 'Padding', 'none', 'TileSpacing', 'compact');
     for Indx_S = 1:numel(Sessions.Labels)
         
         for Indx_T = 1:numel(AllTasks)
