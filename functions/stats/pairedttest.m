@@ -58,6 +58,7 @@ if isempty(Data2) && numel(Dims1) == 2 % A
     % get effect sizes
     G = hedgesG(Data1, StatsP);
     Stats.hedgesg = G.hedgesg;
+    Stats.hedgesgCI = G.hedgesgCI;
     
 elseif isempty(Data2) && numel(Dims1) == 3 % B
     Stats = struct();

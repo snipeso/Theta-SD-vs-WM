@@ -104,7 +104,7 @@ for Indx_T = 1:numel(Tasks)
             EEGshort = keepEEG(EEG, D);
             
             Chanlocs = EEGshort.chanlocs;
-            Durtion = size(EEGshort.data, 2)/EEGshort.srate;
+            Duration = size(EEGshort.data, 2)/EEGshort.srate;
             
             % FFT
             nfft = 2^nextpow2(WelchWindow*fs);

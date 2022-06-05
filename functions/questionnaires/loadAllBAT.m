@@ -44,7 +44,7 @@ for Indx_T = 1:numel(Tasks)
             CSV.qID(strcmp(CSV.qID, 'BAT_6')) = {'BAT_1'};
         end
         
-        [Data, L] = table2matrix(CSV, Participants, Sessions.(Tasks{Indx_T}), qID, 'numAnswer');
+        [Data, L] = table2matrix_questionnaires(CSV, Participants, Sessions.(Tasks{Indx_T}), qID, 'numAnswer');
         
         if Indx_T == 1 % just once
             
@@ -60,7 +60,7 @@ for Indx_T = 1:numel(Tasks)
     end
     
     % special case for question on sleep
-    [Data, L] = table2matrix(CSV, Participants, Sessions.(Tasks{Indx_T}), 'BAT_7', 'numAnswer');
+    [Data, L] = table2matrix_questionnaires(CSV, Participants, Sessions.(Tasks{Indx_T}), 'BAT_7', 'numAnswer');
     
     Answers.Slept(:, :, Indx_T) = Data;
     Labels.Slept = L;
