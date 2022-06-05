@@ -3,8 +3,6 @@
 %%% noise.
 %%% Below, additional functions are provided you can call from the editor.
 
-%%% ELIAS: I guess this information was for me ;)
-
 
 %% Section 1: Choose a file
 %%% Choose the folder you want to edit, change the variable Source_Folder
@@ -21,8 +19,8 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
 
-% % Single filename
-Filename = 'P15_LAT_Session2Beam3_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+% Single filename
+Filename = 'P11_Oddball_BaselinePre_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 % % Filename list
 % Filename = [
