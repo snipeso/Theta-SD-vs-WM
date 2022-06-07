@@ -20,7 +20,7 @@ Prep_Parameters
 %%% Parameters
 
 % Single filename
-Filename = 'P11_Oddball_BaselinePre_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+Filename = 'P03_Fixation_MainPre_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 % % Filename list
 % Filename = [

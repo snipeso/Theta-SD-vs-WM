@@ -14,17 +14,17 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks  = {'Fixation', 'Standing', 'Oddball'}; % which tasks to convert (for now)
+allTasks  = {'Oddball', 'Fixation', 'Standing'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
-CheckOutput = true; % manually verify if selection was good at the end
+CheckOutput = false; % manually verify if selection was good at the end
 
 % % %%% emergency code if I need to fix a specific file
 % Filename = 'P09_Match2Sample_Session2_ICA_Components.set';
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;
-% CheckOutput = true; % manually verify if selection was good at the end
+% CheckOutput = true; % manually verify if selection was good at the endP03_Fixation_MainPre
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
@@ -59,7 +59,8 @@ Source_Comps = fullfile(Paths.Preprocessed, ICA_Folder, Component_Folder, Task);
 % Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'MAT', Task);
 Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
-Destination = fullfile(Paths.Preprocessed, Destination_Folder, Data_Type, Task);
+% Destination = fullfile(Paths.Preprocessed, Destination_Folder, Data_Type, Task);
+Destination = fullfile(Paths.Preprocessed, Destination_Folder, 'Waves', Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
@@ -86,9 +87,9 @@ for Indx_F = 1:nFiles % loop through files in source folder
     Filename_Core = extractBefore(Filename_Comps, '_ICA_Components');
 
     Filename_Data = [Filename_Core, '_' Data_Type, '.set'];
-    Filename_Destination = [Filename_Core, '_Clean.set'];
+%     Filename_Destination = [Filename_Core, '_Clean.set'];
     %     Filename_Data = [Filename_Core, '_' Data_Type, '.mat'];
-    %     Filename_Destination = [Filename_Core, '_Clean.mat'];
+        Filename_Destination = [Filename_Core, '_Clean.mat'];
 
     Filename_Cuts =  [Filename_Core, '_Cuts.mat'];
 
