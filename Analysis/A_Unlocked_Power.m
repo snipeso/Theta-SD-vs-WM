@@ -14,7 +14,8 @@ Paths = P.Paths;
 Bands = P.Bands;
 Format = P.Format;
 Channels = P.Channels;
-Tasks = P.AllTasks;
+% Tasks = P.AllTasks;
+Tasks = {'Fixation', 'Standing', 'Oddball'};
 
 Refresh = false;
 WelchWindow = 8; % duration of window to do FFT
@@ -30,7 +31,9 @@ Durations.PVT =  [-2, -4, 1 2 4 6 8];
 Durations.SpFT =  [-2, 1 2 4];
 Durations.Game =  [-2, -4, 1 2 4 6 8];
 Durations.Music =  [-2, 1 2 4];
-
+Durations.Fixation = [5];
+Durations.Standing = [5];
+Durations.Oddball = [5];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Calculate power for minutes of the recording

@@ -27,6 +27,14 @@ switch PlotType
         plotConfettiSpaghetti(Data, Stats, XLabels, Colors, PlotProps)
     case 'box'
         plotScatterBox(Data, Stats, XLabels, Colors, YLims, PlotProps)
+    case 'grid'
+        Data = Stats.t;
+        Data = tril(-Data.') + triu(Data, 1);
+        p = Stats.p_fdr;
+        p = tril(p.') + triu(p, 1);
+%         Data(p<StatsP.Trend) = 0;
+        Data(isnan(Data)) = 0;
+        plotStatsMatrix(Data, XLabels, XLabels, [], 't values', PlotProps)
     otherwise
         error('Unknown plot type')
 end

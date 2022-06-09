@@ -45,3 +45,4 @@ if ~isempty(Grid)
 end
 
 set(gca, 'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize)
+axis square

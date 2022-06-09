@@ -14,7 +14,8 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks  = {'Oddball', 'Fixation', 'Standing'}; % which tasks to convert (for now)
+allTasks  = {'Standing'}; % which tasks to convert (for now)
+% allTasks  = {'Fixation', 'Oddball',  'Standing'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
 CheckOutput = false; % manually verify if selection was good at the end

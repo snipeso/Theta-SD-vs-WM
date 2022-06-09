@@ -60,6 +60,8 @@ if exist( 'D:\Data\Raw', 'dir')
     Core = 'D:\Data\';
 elseif exist( 'F:\Data\Raw', 'dir')
     Core = 'F:\Data\';
+elseif exist( 'E:\Data\Raw', 'dir')
+    Core = 'E:\Data\';
 else
     error('no data disk!')
 end
@@ -103,8 +105,8 @@ P.Paths = Paths;
 
 % plot sizes depending on which screen being used
 Pix = get(0,'screensize');
-if Pix(3) < 2000   
-    Format = getProperties({'LSM', 'SmallScreen'});    
+if Pix(3) < 2000
+    Format = getProperties({'LSM', 'SmallScreen'});
 else
     Format = getProperties({'LSM', 'LargeScreen'});
 end
@@ -189,7 +191,7 @@ Titles = fieldnames(Channels.Standard_10_20);
 Channels.Standard_10_20_All = {};
 for Indx = 1:numel(Titles)
     Channels.Standard_10_20_All{Indx, 2} = Channels.Standard_10_20.(Titles{Indx});
-     Channels.Standard_10_20_All{Indx, 1} = Titles{Indx};
+    Channels.Standard_10_20_All{Indx, 1} = Titles{Indx};
 end
 
 P.Channels = Channels;
