@@ -5,15 +5,15 @@ BandLabels = fieldnames(Bands);
 
 Data = 10*log(Power);
 bData = bandData(Data, Freqs, Bands, 'last');
-chData = meanChData(Power, Chanlocs, Channels.Peaks, 1);
+chData = meanChData(Power, Chanlocs, Channels.preROI, 1);
  
-ChLabels = fieldnames(Channels.Peaks);
+ChLabels = fieldnames(Channels.preROI);
 
 figure('units','normalized','outerposition',[0 0 .7 .5])
 
 % plot spectrum of hotspots
 subplot(2, numel(BandLabels), 1:numel(BandLabels))
-plotSpectrum(chData, Freqs, ChLabels, getColors(numel(ChLabels)), 1, 3, PlotProps, Labels)
+plotSpectrum(chData, Freqs, ChLabels, getColors(numel(ChLabels)), 1, 3, true, PlotProps, Labels)
 set(gca, 'FontSize', PlotProps.Text.AxisSize)
 title(Title, 'FontSize', PlotProps.Text.TitleSize)
 
