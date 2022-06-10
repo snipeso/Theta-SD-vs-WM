@@ -16,7 +16,7 @@ Format = P.Format;
 Channels = P.Channels;
 Labels = P.Labels;
 % Tasks = P.AllTasks;
-Tasks = {'Fixation', 'Standing', 'Oddball'};
+Tasks = { 'Standing', 'Oddball'};
 
 Refresh = false;
 WelchWindow = 8; % duration of window to do FFT

@@ -20,7 +20,7 @@ Prep_Parameters
 %%% Parameters
 
 % Single filename
-Filename = 'P08_Standing_Main5_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+Filename = 'P12_Standing_MainPre_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 % % Filename list
 % Filename = [
