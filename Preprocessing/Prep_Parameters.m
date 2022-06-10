@@ -11,7 +11,7 @@ Paths = struct(); % I make structs of variables so they don't flood the workspac
 Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
- Core1 = 'D:\LSM\Data\';
+ Core1 = 'G:\LSM\Data\';
  Core ='E:\Data\';
 % if exist( 'D:\Data\Raw', 'dir')
 %     Core = 'D:\Data\';
