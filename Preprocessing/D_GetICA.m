@@ -10,7 +10,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Tasks = {'Match2Sample'}; % select this if you only need to filter one folder
+Tasks = {'Fixation', 'Standing', 'Oddball'}; % select this if you only need to filter one folder
 Refresh = false;
 
 Source_Cuts_Folder = 'Cuts'; % 'Cuts'

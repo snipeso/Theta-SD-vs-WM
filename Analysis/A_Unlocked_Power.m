@@ -14,7 +14,9 @@ Paths = P.Paths;
 Bands = P.Bands;
 Format = P.Format;
 Channels = P.Channels;
-Tasks = P.AllTasks;
+Labels = P.Labels;
+% Tasks = P.AllTasks;
+Tasks = { 'Standing', 'Oddball'};
 
 Refresh = false;
 WelchWindow = 8; % duration of window to do FFT
@@ -30,7 +32,9 @@ Durations.PVT =  [-2, -4, 1 2 4 6 8];
 Durations.SpFT =  [-2, 1 2 4];
 Durations.Game =  [-2, -4, 1 2 4 6 8];
 Durations.Music =  [-2, 1 2 4];
-
+Durations.Fixation = [5];
+Durations.Standing = [5];
+Durations.Oddball = [5];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Calculate power for minutes of the recording
@@ -114,15 +118,15 @@ for Indx_T = 1:numel(Tasks)
             Power = Power';
             Freqs = Freqs';
             
-            % plot it
-            Title = replace([Filename_Core, ' ',Tag], '_', ' ');
-            PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Channels, Title, Format, Labels)
+%             % plot it
+%             Title = replace([Filename_Core, ' ',Tag], '_', ' ');
+%             PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Channels, Title, Format, Labels)
             
             % save
             save(fullfile(Destination, Filename), 'Power', 'Freqs', 'Chanlocs', 'Duration')
-            Filename_Figure = strjoin({Filename_Core, Tag, 'Welch.jpg'}, '_');
-            saveas(gcf,fullfile(Destination, Filename_Figure))
-            close
+%             Filename_Figure = strjoin({Filename_Core, Tag, 'Welch.jpg'}, '_');
+%             saveas(gcf,fullfile(Destination, Filename_Figure))
+%             close
         end
         disp(['*************finished ',Filename '*************'])
     end

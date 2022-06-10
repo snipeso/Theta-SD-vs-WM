@@ -12,9 +12,10 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Data_Type = 'Waves';
+Data_Type = 'Power';
 
-allTasks  = {'LAT'}; % which tasks to convert (for now)
+allTasks  = {'Standing'}; % which tasks to convert (for now)
+% allTasks  = {'Fixation', 'Oddball',  'Standing'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
 CheckOutput = false; % manually verify if selection was good at the end
@@ -24,7 +25,7 @@ CheckOutput = false; % manually verify if selection was good at the end
 % FN = split(Filename, '_');
 % Task = FN{2};
 % Refresh = true;
-% CheckOutput = true; % manually verify if selection was good at the end
+% CheckOutput = true; % manually verify if selection was good at the endP03_Fixation_MainPre
 
 Component_Folder = 'Components'; % 'Components';
 Destination_Folder = 'Clean'; % 'Clean'
@@ -56,10 +57,11 @@ load('StandardChanlocs128.mat', 'StandardChanlocs')
 load('Cz.mat', 'CZ')
 
 Source_Comps = fullfile(Paths.Preprocessed, ICA_Folder, Component_Folder, Task);
-Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'MAT', Task);
-% Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
+% Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'MAT', Task);
+Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
-Destination = fullfile(Paths.Preprocessed, Destination_Folder, Data_Type, Task);
+% Destination = fullfile(Paths.Preprocessed, Destination_Folder, Data_Type, Task);
+Destination = fullfile(Paths.Preprocessed, Destination_Folder, 'Waves', Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
@@ -74,22 +76,24 @@ nFiles = numel(Files);
 Files = Files(randperm(nFiles));
 
 for Indx_F = 1:nFiles % loop through files in source folder
-    
+
     %%% get filenames
-    
+
     if ~exist('Filename', 'var') || isempty(Filename)
         Filename_Comps = Files{Indx_F};
     else
         Filename_Comps = Filename;
     end
-    
+
     Filename_Core = extractBefore(Filename_Comps, '_ICA_Components');
-    Filename_Data = [Filename_Core, '_' Data_Type, '.mat'];
-% Filename_Data = [Filename_Core, '_' Data_Type, '.set'];
+
+    Filename_Data = [Filename_Core, '_' Data_Type, '.set'];
 %     Filename_Destination = [Filename_Core, '_Clean.set'];
-    Filename_Destination = [Filename_Core, '_Clean.mat'];
+    %     Filename_Data = [Filename_Core, '_' Data_Type, '.mat'];
+        Filename_Destination = [Filename_Core, '_Clean.mat'];
+
     Filename_Cuts =  [Filename_Core, '_Cuts.mat'];
-    
+
     % skip if file already exists or data doesn't exist yet
     if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
         continue
@@ -97,33 +101,33 @@ for Indx_F = 1:nFiles % loop through files in source folder
         disp(['***********', 'No data for ', Filename_Destination, '***********'])
         continue
     end
-    
-    
+
+
     %%% Get data ready
     % load data
-%     Data = pop_loadset('filepath', Source_Data, 'filename', Filename_Data);
-    load(fullfile(Source_Data, Filename_Data), 'EEG')
-    Data = EEG;
+        Data = pop_loadset('filepath', Source_Data, 'filename', Filename_Data);
+%     load(fullfile(Source_Data, Filename_Data), 'EEG')
+%     Data = EEG;
     clc
     EEG = pop_loadset('filepath', Source_Comps, 'filename', Filename_Comps); % this is the data where components were generated (and save the bad ones)
     clc % hide filename
-    
-    
+
+
     % interpolate bad snippets
     [Data, TMPREJ] = cleanCuts(Data, fullfile(Source_Cuts, Filename_Cuts));
-    
+
     % add CZ
     Data.data(end+1, :) = zeros(1, size(Data.data, 2));
     Data.chanlocs(end+1) = CZ;
-    
+
     % rereference to average
     Data = pop_reref(Data, []);
-    
+
     %%% interface for selecting components
     RemoveComps
     if Break % this is important to let the script loop when running automatically on all the files
         break
     end
-    
+
 end
 disp(Task)
