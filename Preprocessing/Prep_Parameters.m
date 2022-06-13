@@ -27,6 +27,7 @@ Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 Paths.Datasets = fullfile(Core1, 'Raw');
 Paths.Preprocessed = fullfile(Core, 'Preprocessed');
 Paths.Final = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
+Paths.Core = Core;
 
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis, 'functions','general'))
@@ -56,6 +57,7 @@ Folders.Ignore = {'CSVs', 'other', 'Lazy', 'P00', 'Applicants'};
 EEG_Channels = struct();
 EEG_Channels.notEEG = [49, 56, 107, 113, 126, 127];
 EEG_Channels.notSourceLoc = [EEG_Channels.notEEG, 48, 119, 17];
+EEG_Channels.Edges = [EEG_Channels.notEEG, 48, 63, 68, 73, 81, 88, 94, 99, 119, 125, 128, 8, 25, 17];
 
 allTasks = {'Fixation', 'Oddball', 'Standing', 'MWT', ...
     'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % which tasks to convert (for now)
