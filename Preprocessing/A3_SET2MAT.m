@@ -19,8 +19,8 @@ Folders.Subfolders(~contains(Folders.Subfolders, Type)) = [];
 Folders.Subfolders(~contains(Folders.Subfolders, 'EEG')) = [];
 
 %%% loop through all EEG folders, and convert whatever files possible
-for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
-    for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
+for Indx_D = 1 %:size(Folders.Datasets, 1) % loop through participants
+    for Indx_F = 1:3 %size(Folders.Subfolders, 1) % loop through all subfolders
         
         % get path
         Path = fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, Folders.Subfolders{Indx_F});
@@ -54,6 +54,7 @@ for Indx_D = 1:size(Folders.Datasets, 1) % loop through participants
         % load EEG
         EEG = pop_loadset('filepath', Path, 'filename', char(Filename_SET));
         
+        EEG = pop_resample(EEG, 200);
         
         % save
         try

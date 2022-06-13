@@ -14,7 +14,7 @@ Prep_Parameters
 
 Data_Type = 'Power';
 
-allTasks  = {'Standing'}; % which tasks to convert (for now)
+allTasks  = {'Music'}; % which tasks to convert (for now)
 % allTasks  = {'Fixation', 'Oddball',  'Standing'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
