@@ -20,7 +20,8 @@ Prep_Parameters
 %%% Parameters
 
 % Single filename
-Filename = 'P12_Standing_MainPre_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+Filename = 'P16_TV_TV4_Cutting.mat'; % choose this if you want to clean a specific file P07_Standing_Main8
+Source_Folder = 'MAT'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 
 % % Filename list
 % Filename = [
@@ -28,7 +29,6 @@ Filename = 'P12_Standing_MainPre_Cutting.set'; % choose this if you want to clea
 % ];
 
 
-Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'Cuts'; % location where to save cuts
 ifExists = 'SET';
 allTasks = { 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % comment out if you want all possible files
