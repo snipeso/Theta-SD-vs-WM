@@ -5,8 +5,7 @@ close all
 Prep_Parameters
 
 Task = 'TV';
-Refresh = true;
-t_Epochs = 20; % seconds
+Refresh = false;
 BadChannel_Threshold = .33; % proportion of bad epochs before it gets counted as a bad channel
 BadWindow_Threshold = .1; % proportion of bad channels before its counted as a bad window
 
@@ -18,6 +17,7 @@ if ~exist(Destination, 'dir')
 end
 
 Content = getContent(Source);
+Content(~contains(Content, '.mat')) = [];
 
 for Indx_F = 1:numel(Content)
 
@@ -32,7 +32,7 @@ for Indx_F = 1:numel(Content)
         continue
     end
 
-    load(fullfile(Source, Filename), 'artndxn')
+    load(fullfile(Source, Filename), 'artndxn', 'scoringlen')
     artndxn = double(artndxn);
 
     % load EEG data
@@ -42,7 +42,7 @@ for Indx_F = 1:numel(Content)
     fs = EEG.srate;
     Chanlocs = EEG.chanlocs;
 
-    Epoch_Edges = 1:t_Epochs*fs:nPoints;
+    Epoch_Edges = 1:scoringlen*fs:nPoints;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% identify what type of artifact

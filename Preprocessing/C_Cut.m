@@ -20,7 +20,7 @@ Prep_Parameters
 %%% Parameters
 
 % Single filename
-Filename = 'P01_TV_TV1_Cutting.mat'; % choose this if you want to clean a specific file P07_Standing_Main8
+Filename = 'P16_TV_TV4_Cutting.mat'; % choose this if you want to clean a specific file P07_Standing_Main8
 Source_Folder = 'MAT'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 
 % % Filename list
