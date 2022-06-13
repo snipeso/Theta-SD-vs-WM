@@ -14,3 +14,5 @@ else
     m.badchans = Ch;
 end
     
+
+m.badchans = unique(m.badchans);

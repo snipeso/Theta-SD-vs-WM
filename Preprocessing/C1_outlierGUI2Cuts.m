@@ -79,7 +79,7 @@ for Indx_F = 1:numel(Content)
 
     %%% bad channels
     BadEpochs = sum(artndxn==0, 2, 'omitnan');
-    badchans = find(BadEpochs./size(artndxn, 2) >= BadChannel_Threshold);
+    badchans = find(BadEpochs./size(artndxn, 2) >= BadChannel_Threshold)';
 
     artndxn(badchans, :) = nan;
 
@@ -91,7 +91,7 @@ for Indx_F = 1:numel(Content)
     cutData = nan(nChannels, nPoints);
     for Indx_Ch = 1:nChannels
         for Indx_P = 1:size(artndxn, 2)
-            if ~BadSnippets
+            if ~BadSnippets(Indx_Ch, Indx_P)
                 continue
             end
             Points = Epoch_Edges(Indx_P):Epoch_Edges(Indx_P+1); % all points in the epoch
