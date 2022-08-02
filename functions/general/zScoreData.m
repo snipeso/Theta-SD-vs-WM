@@ -10,6 +10,26 @@ disp('************* z-scoring data *************')
 Dims = ndims(Data); % probs wrong
 
 switch Dimentions
+    case 'first'
+           switch Dims 
+               case 2
+        for Indx_P = 1:size(Data, 1)
+                Row = Data(Indx_P,:);
+                Mean = mean(Row(:), 'omitnan');
+                Std = std(Row(:), 'omitnan');
+                Data(Indx_P, :) = (Row-Mean)./Std;
+        end
+
+               case 5
+                           for Indx_P = 1:size(Data, 1)
+                Row = Data(Indx_P, :, :, :, :);
+                Mean = mean(Row(:), 'omitnan');
+                Std = std(Row(:), 'omitnan');
+                Data(Indx_P, :, :, :, :) = (Row-Mean)./Std;
+        end
+
+           end
+
     case 'last'
         for Indx_P = 1:size(Data, 1)
             for Indx_L = 1:size(Data, Dims)
@@ -29,7 +49,7 @@ switch Dimentions
                         Mean = nanmean(Row(:));
                         Std = nanstd(Row(:));
                         Data(Indx_P, :, :, :, Indx_L) = (Row-Mean)./Std;
-                        
+
                     case 6
                         Row = Data(Indx_P,:, :, :, :, Indx_L);
                         Mean = nanmean(Row(:));
@@ -59,7 +79,7 @@ switch Dimentions
                         Mean = nanmean(Row(:));
                         Std = nanstd(Row(:));
                         Data(Indx_P, :, :, Indx_L, :) = (Row-Mean)./Std;
-                        
+
                     case 6
                         Row = Data(Indx_P,:, :, :, Indx_L, :);
                         Mean = nanmean(Row(:));
