@@ -5,7 +5,7 @@ close all
 Prep_Parameters
 
 Task = 'TV';
-Refresh = false;
+Refresh = true;
 BadChannel_Threshold = .33; % proportion of bad epochs before it gets counted as a bad channel
 BadWindow_Threshold = .1; % proportion of bad channels before its counted as a bad window
 
@@ -39,10 +39,10 @@ for Indx_F = 1:numel(Content)
     Filename_EEG = replace(Filename, '_artndxn', '');
     load(fullfile(Paths.Preprocessed, 'Cutting', 'MAT', Task, Filename_EEG), 'EEG')
     [nChannels, nPoints] = size(EEG.data);
-    fs = EEG.srate;
+   srate = EEG.srate;
     Chanlocs = EEG.chanlocs;
 
-    Epoch_Edges = 1:scoringlen*fs:nPoints;
+    Epoch_Edges = 1:scoringlen*srate:nPoints;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% identify what type of artifact
@@ -100,7 +100,7 @@ for Indx_F = 1:numel(Content)
     end
 
     %%% save to cuts
-    save(fullfile(Destination, Filename_Destination), 'badchans', 'cutData', 'TMPREJ')
+    save(fullfile(Destination, Filename_Destination), 'badchans', 'cutData', 'TMPREJ', 'srate')
     disp(['Finished ', Filename])
 end
 

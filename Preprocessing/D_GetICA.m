@@ -10,7 +10,7 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'Fixation', 'Standing', 'Oddball'}; % select this if you only need to filter one folder
+Tasks = {'TV'}; % select this if you only need to filter one folder
 Refresh = false;
 
 Source_Cuts_Folder = 'Cuts'; % 'Cuts'
@@ -29,7 +29,8 @@ for Indx_T = 1:numel(Tasks)
     Task = Tasks{Indx_T};
     
     % get files and paths
-    Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Task);
+%     Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Task);
+ Source = fullfile(Paths.Preprocessed, 'ICA', 'MAT', Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
     Destination = fullfile(Paths.Preprocessed, 'ICA', Destination_Folder, Task);
     
@@ -38,14 +39,15 @@ for Indx_T = 1:numel(Tasks)
     end
     
     Files = deblank(cellstr(ls(Source)));
-    Files(~contains(Files, '.set')) = [];
+%     Files(~contains(Files, '.set')) = [];
+ Files(~contains(Files, '.mat')) = [];
     
     for Indx_F = 1:numel(Files) % loop through files in target folder
         
         % get filenames
         Filename_Source = Files{Indx_F};
         Filename_Cuts =  [extractBefore(Filename_Source,'_ICA'), '_Cuts.mat'];
-        Filename_Destination = [extractBefore(Filename_Source,'.set'), '_Components.set'];
+        Filename_Destination = [extractBefore(Filename_Source,'.'), '_Components.set'];
         
         % skip if file already exists
         if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
@@ -57,7 +59,8 @@ for Indx_T = 1:numel(Tasks)
         end
         
         % load dataset
-        EEG = pop_loadset('filepath', Source, 'filename', Filename_Source);
+%         EEG = pop_loadset('filepath', Source, 'filename', Filename_Source);
+load(fullfile(Source, Filename_Source))
         
         % convert to double
         EEG.data = double(EEG.data);

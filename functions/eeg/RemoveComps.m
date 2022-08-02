@@ -205,8 +205,10 @@ if strcmp(xEEG, 'y') || strcmp(xEEG, 'auto')
 %             'check', 'on', ...
 %             'savemode', 'onefile', ...
 %             'version', '7.3');
-    EEG = NewEEG;
-    save(fullfile(Destination, Filename_Destination), 'EEG', '-v7.3')
+
+        EEG = NewEEG;
+        save(fullfile(Destination, Filename_Destination), 'EEG', '-v7.3')
+    
     close all
     clc
     clear EEG
