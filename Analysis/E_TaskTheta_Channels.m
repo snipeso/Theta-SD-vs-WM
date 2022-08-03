@@ -52,9 +52,9 @@ CLims = [-1 2];
 Format = P.Manuscript;
 Grid = [7 3];
 Indx_B = 2; % theta
-Format.Figure.Padding = 90;
+Format.Figure.Padding = 20;
 Sessions.Labels = {'Baseline', 'Sleep Restriction', 'Sleep Deprivation'};
-figure('units','centimeters','position',[0 0 Format.Figure.Width*.8 Format.Figure.Height])
+figure('units','centimeters','position',[0 0 Format.Figure.W3*.8 Format.Figure.Height])
 
 Indx = 1; % tally of axes
 
@@ -99,7 +99,6 @@ for Indx_S = [2,3]
         
         Stats = topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format, Labels);
         colorbar off
-        set(A.Children, 'LineWidth', 1)
         colormap(gca, Format.Color.Maps.Divergent)
         
         if Indx_T == 1
