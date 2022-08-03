@@ -46,7 +46,6 @@ for Indx_T = 1:numel(AllTasks)
     end
 end
 
-
 Labels.KSS(7:9) = {'Sleepy, but no effort to keep awake', 'Sleepy, some effort to keep awake', 'Fighting sleep'}; % Fix
 
 
@@ -54,20 +53,23 @@ Labels.KSS(7:9) = {'Sleepy, but no effort to keep awake', 'Sleepy, some effort t
 %%% Paper Figure
 
 
-%% Figure KSSR plots changes in subjective sleepiness
+%% Figure 3
+
+%%% A: KSS
 
 Grid = [1 4];
 Format = P.Manuscript;
-Format.SigStar.Shift = .1;
 YLim = [0 1.3];
-Indx_BL = 1;
+Indx_BL = 1; % which is the baseline session to statistically compare to
 
 Data = Answers.KSS;
 L = Labels.KSS;
+
 figure('units','centimeters','position',[0 0 Format.Figure.W3 Format.Figure.Height*.3])
 subfigure([], Grid, [1 2], [], true, Format.Indexes.Letters{1}, Format);
 data3D(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
     Format.Color.AllTasks, StatsP, Format);
+
 legend off
 ylim(YLim)
 yticks(linspace(0, 1, numel(L)))
@@ -75,11 +77,6 @@ yticklabels(L)
 X = xlim;
 text(X(1)+diff(X)/2, YLim(2), 'KSS', 'FontSize', Format.Text.TitleSize, ...
     'FontName', Format.Text.FontName, 'FontWeight', 'bold', 'HorizontalAlignment', 'center')
-
-
-Data = squeeze(Data(:, 3, :));
-MEANS = nanmean(Data);
-[~, Order] = sort(MEANS, 'descend');
 
 % adjust axis position because reasons
 PosA = get(gca, 'position');
@@ -90,17 +87,23 @@ PosA(3) = PosA(3)-Shift;
 set(gca, 'position', PosA)
 Tick = get(gca, 'TickLength');
 
+
+%%% B: Sleep deprivation KSS
+
+% sort data by mean
+Data = squeeze(Data(:, 3, :));
+MEANS = mean(Data, 'omitnan');
+[~, Order] = sort(MEANS, 'descend');
+
 subfigure([], Grid, [1 3], [1 2], true, Format.Indexes.Letters{2}, Format);
 data2D('box', Data(:, Order), TaskLabels(Order), [], [], Format.Color.AllTasks(Order, :), ...
     StatsP, Format);
 
 ylim(YLim)
 yticks(linspace(0, 1, numel(L)))
-
 X = xlim;
 text(X(1)+diff(X)/2, YLim(2), 'SD KSS', 'FontSize', Format.Text.TitleSize, ...
     'FontName', Format.Text.FontName, 'FontWeight', 'bold', 'HorizontalAlignment', 'center')
-
 
 
 % match position of second axis to the same as first
@@ -117,12 +120,13 @@ saveFig(strjoin({TitleTag, 'KSS'}, '_'), Paths.Paper, Format)
 
 
 
-%% Plot all questions in Supplementary Figure QUEZ and get stats for Table SUP_QUEZ_TBL
+%% Figure 3-1
 
 Format = P.Manuscript;
 Format.Axes.yPadding = 25;
 Format.Axes.xPadding = 16;
 Format.Figure.Padding = 45;
+Grid = [3, 6];
 
 YLim = [-.05 1.05];
 Questions_Order = {'KSS', 'Relaxing', 'Interesting'; ...
@@ -132,7 +136,6 @@ Titles = {'Subjective Sleepiness', 'Relaxing', 'Engaging'; ...
     'Focus', 'Subjective Difficulty', 'Effort'; ...
     'Subjective Performance', 'Motivation', 'Slept',};
 
-Grid = [3, 6];
 
 figure('units','centimeters','position',[0 0 Format.Figure.Width*1.2 Format.Figure.Height*.9])
 
