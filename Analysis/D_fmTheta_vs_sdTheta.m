@@ -58,6 +58,8 @@ chData = smoothFreqs(chData, Freqs, 'last', SmoothFactor);
 
 Folder = fullfile(Paths.Data, 'EEG', 'Source', 'Figure');
 
+%%
+
 % source space fmTheta
 load(fullfile(Folder, 'stat_M2S_lvl3_vs_lvl1.mat'), 'stat')
 fmTheta_Map = interpolateSources(stat);
@@ -109,7 +111,6 @@ Legend = append('L', string(Levels));
 %% Figure LOCZ showing fmTheta vs sdTheta
 
 PlotProps = P.Manuscript;
-PlotProps.External.EEGLAB.MarkerSize = 2; % tiny for this plot
 % Format.Axes.yPadding = 15;
 % Format.Axes.xPadding = 20;
 Indx_E = 2; % retention 1 period
@@ -121,7 +122,7 @@ miniGrid = [5, 1];
 
 Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.55])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.6])
 
 %%% fmTheta
 N1 = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
@@ -141,7 +142,6 @@ for Indx_F = 1:4
     plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, PlotProps)
     title ''
 end
-
 
 
 %%% sdTheta
@@ -166,7 +166,9 @@ end
 % colorbar
 subfigure([], Grid, [1 3], [], false, '', PlotProps);
 plotColorbar('Divergent', CLims_Diff, Labels.t, PlotProps)
-
+Pos = get(gca, 'Position');
+Pos(1) = Pos(1)-Pos(1)*.05;
+set(gca, 'position', Pos)
 
 %%% plot change based on table data
 
@@ -189,9 +191,12 @@ Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 subfigure([], [5 3], [5 3], [5, 1], false, PlotProps.Indexes.Letters{3}, PlotProps);
 plotLadder([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, AreaLabels, Colors, ...
     {'Neither significant',  'Both signficant', 'sdTheta significant'}, 'northwest', PlotProps)
-set(legend, 'position', [ 0.7144    0.8449    0.1317    0.0566])
+set(legend, 'position', [0.6302    0.8123    0.2219    0.0865])
 ylim([-3.5 7.25])
 xlim([.65 2.2])
+Pos = get(gca, 'position');
+Pos(1) = Pos(1)+Pos(1)*.05;
+set(gca, 'position', Pos)
 
 % save
 saveFig(strjoin({TitleTag, 'sources'}, '_'), Paths.Paper, PlotProps)

@@ -55,6 +55,10 @@ if ~exist('addchARTpaths.m', 'file')
     addchARTpaths()
 end
 
+if ~exist('ft_sourceinterpolate', 'file')
+    addpath('C:\Users\colas\Documents\MATLAB\fieldtrip-20210606')
+    addpath('C:\Users\colas\Documents\MATLAB\fieldtrip-20210606\plotting\private')
+end
 
 if exist( 'D:\Data\Raw', 'dir')
     Core = 'D:\Data\';
