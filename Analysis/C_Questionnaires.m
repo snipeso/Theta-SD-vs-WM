@@ -89,7 +89,6 @@ PosA(1) = PosA(1)+Shift;
 PosA(3) = PosA(3)-Shift;
 set(gca, 'position', PosA)
 Tick = get(gca, 'TickLength');
-h=gca; h.YAxis.TickLength = [0 0];
 
 subfigure([], Grid, [1 3], [1 2], true, Format.Indexes.Letters{2}, Format);
 data2D('box', Data(:, Order), TaskLabels(Order), [], [], Format.Color.AllTasks(Order, :), ...
@@ -121,9 +120,9 @@ saveFig(strjoin({TitleTag, 'KSS'}, '_'), Paths.Paper, Format)
 %% Plot all questions in Supplementary Figure QUEZ and get stats for Table SUP_QUEZ_TBL
 
 Format = P.Manuscript;
-Format.Axes.yPadding = 50;
-Format.Axes.xPadding = 35;
-Format.Figure.Padding = 90;
+Format.Axes.yPadding = 25;
+Format.Axes.xPadding = 16;
+Format.Figure.Padding = 45;
 
 YLim = [-.05 1.05];
 Questions_Order = {'KSS', 'Relaxing', 'Interesting'; ...
@@ -135,7 +134,7 @@ Titles = {'Subjective Sleepiness', 'Relaxing', 'Engaging'; ...
 
 Grid = [3, 6];
 
-figure('units','centimeters','position',[0 0 Format.Figure.Width*1.2 Format.Figure.Height*.7])
+figure('units','centimeters','position',[0 0 Format.Figure.Width*1.2 Format.Figure.Height*.9])
 
 AxesIndexes = [2, 4, 6];
 Indx = 1;
