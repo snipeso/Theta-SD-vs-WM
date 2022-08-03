@@ -481,50 +481,6 @@ saveFig(strjoin({TitleTag, 'epochs'}, '_'), Paths.Paper, PlotProps)
 
 
 
-%% Figure 5-2 sdTheta for different epochs
-
-
-PlotProps = P.Manuscript;
-PlotProps.Figure.Padding = 20;
-Indx_S = 1; % baseline
-Indx_B = 2;
-Grid = [3, numel(Epochs)];
-CLims_Diff = [-7 7];
-
-figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
-
-for Indx_E = 1:numel(Epochs)
-    for Indx_L =  1:numel(Levels)
-        N1 = squeeze(bData(:, 1, Indx_L, Indx_E, :, Indx_B));
-        N3 = squeeze(bData(:, 3, Indx_L, Indx_E, :, Indx_B));
-
-        % plot
-        A = subfigure([], Grid, [Indx_L Indx_E], [], false, {}, PlotProps);
-
-        Stats = topoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, PlotProps, Labels);
-        colorbar off
-
-        if Indx_L == 1 % only title for top row
-            title(Epochs{Indx_E}, 'FontName', PlotProps.Text.FontName, ...
-                'FontSize', PlotProps.Text.TitleSize)
-        end
-
-        if Indx_E ==1 % left labels of rows
-            X = get(gca, 'XLim');
-            Y = get(gca, 'YLim');
-            text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, [Legend{Indx_L}], ...
-                'FontSize', PlotProps.Text.TitleSize, 'FontName', PlotProps.Text.FontName, ...
-                'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
-        end
-    end
-end
-
-saveFig(strjoin({TitleTag, 'epochs', 'levels'}, '_'), Paths.Paper, PlotProps)
-
-
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
