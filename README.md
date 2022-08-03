@@ -9,8 +9,8 @@ These were made using the separate repository [chART](https://github.com/snipeso
 
 **Statistics**
 At the bottom of this README you can see the sources of the specific toolboxes, but these are the functions where I actually implement them:
-- [2 way rmANOVA](./functions/stats/anova2way.m)
-- [paired t-tests](.functions/stats/pairedttest.m)
+- [2 way rmANOVA](functions/stats/anova2way.m)
+- [paired t-tests](functions/stats/pairedttest.m)
 
 
 
