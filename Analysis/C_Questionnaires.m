@@ -28,13 +28,6 @@ Filepath = fullfile(P.Paths.Data, 'Questionnaires');
 
 Questions = fieldnames(Answers);
 
-Main_Results = fullfile(Paths.Results, 'Task_Questionnaires');
-if ~exist(Main_Results, 'dir')
-    for Indx_Q = 1:numel(Questions)
-        mkdir(fullfile(Main_Results, Questions{Indx_Q}))
-    end
-end
-
 % set to nan all answers for a questionnaire when more than 4 participants are missing data
 for Indx_T = 1:numel(AllTasks)
     for Indx_Q = 1:numel(Questions)
@@ -46,7 +39,9 @@ for Indx_T = 1:numel(AllTasks)
     end
 end
 
-Labels.KSS(7:9) = {'Sleepy, but no effort to keep awake', 'Sleepy, some effort to keep awake', 'Fighting sleep'}; % Fix
+% adjust KSS labels
+Labels.KSS(7:9) = {'Sleepy, but no effort to keep awake', 'Sleepy, some effort to keep awake', ...
+    'Fighting sleep'}; % Fix
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -57,36 +52,37 @@ Labels.KSS(7:9) = {'Sleepy, but no effort to keep awake', 'Sleepy, some effort t
 
 %%% A: KSS
 
+% parameters
 Grid = [1 4];
 Format = P.Manuscript;
 YLim = [0 1.3];
 Indx_BL = 1; % which is the baseline session to statistically compare to
 
+% data & labels
 Data = Answers.KSS;
 L = Labels.KSS;
 
+% plot
 figure('units','centimeters','position',[0 0 Format.Figure.W3 Format.Figure.Height*.3])
 subfigure([], Grid, [1 2], [], true, Format.Indexes.Letters{1}, Format);
 data3D(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
     Format.Color.AllTasks, StatsP, Format);
 
+% adustments
 legend off
 ylim(YLim)
 yticks(linspace(0, 1, numel(L)))
 yticklabels(L)
+
 X = xlim;
-text(X(1)+diff(X)/2, YLim(2), 'KSS', 'FontSize', Format.Text.TitleSize, ...
-    'FontName', Format.Text.FontName, 'FontWeight', 'bold', 'HorizontalAlignment', 'center')
+text(X(1)+diff(X)/2, YLim(2), 'KSS', 'FontSize', Format.Text.TitleSize, ... % title
+    'FontName', Format.Text.FontName, 'FontWeight', 'bold', 'HorizontalAlignment', 'center') 
 
-% adjust axis position because reasons
 PosA = get(gca, 'position');
-
 Shift = PosA(3)*.2;
 PosA(1) = PosA(1)+Shift;
 PosA(3) = PosA(3)-Shift;
-set(gca, 'position', PosA)
-Tick = get(gca, 'TickLength');
-
+set(gca, 'position', PosA) % shift so all text fits in plot
 
 %%% B: Sleep deprivation KSS
 
@@ -95,24 +91,23 @@ Data = squeeze(Data(:, 3, :));
 MEANS = mean(Data, 'omitnan');
 [~, Order] = sort(MEANS, 'descend');
 
+% plot
 subfigure([], Grid, [1 3], [1 2], true, Format.Indexes.Letters{2}, Format);
 data2D('box', Data(:, Order), TaskLabels(Order), [], [], Format.Color.AllTasks(Order, :), ...
     StatsP, Format);
 
+% adjustments
 ylim(YLim)
 yticks(linspace(0, 1, numel(L)))
+
 X = xlim;
-text(X(1)+diff(X)/2, YLim(2), 'SD KSS', 'FontSize', Format.Text.TitleSize, ...
+text(X(1)+diff(X)/2, YLim(2), 'SD KSS', 'FontSize', Format.Text.TitleSize, ... % title
     'FontName', Format.Text.FontName, 'FontWeight', 'bold', 'HorizontalAlignment', 'center')
 
-
-% match position of second axis to the same as first
 PosB = get(gca, 'position');
 PosB([2, 4]) = PosA([2, 4]);
-set(gca, 'position', PosB)
-set(gca, 'TickLength', Tick);
-set(gca, 'YTickLabel',[],'YGrid', 'on')
-h=gca; h.YAxis.TickLength = [0 0];
+set(gca, 'position', PosB) % match position of second axis to the same as first
+
 
 saveFig(strjoin({TitleTag, 'KSS'}, '_'), Paths.Paper, Format)
 
@@ -122,6 +117,7 @@ saveFig(strjoin({TitleTag, 'KSS'}, '_'), Paths.Paper, Format)
 
 %% Figure 3-1
 
+% parameters
 Format = P.Manuscript;
 Format.Axes.yPadding = 25;
 Format.Axes.xPadding = 16;
@@ -129,6 +125,12 @@ Format.Figure.Padding = 45;
 Grid = [3, 6];
 
 YLim = [-.05 1.05];
+
+AxesIndexes = [2, 4, 6];
+Indx = 1;
+Indx_BL = 1;
+
+% labels
 Questions_Order = {'KSS', 'Relaxing', 'Interesting'; ...
     'Focused',  'Difficult', 'Effortful';  ...
     'Performance',   'Motivation',  'Slept',};
@@ -137,20 +139,18 @@ Titles = {'Subjective Sleepiness', 'Relaxing', 'Engaging'; ...
     'Subjective Performance', 'Motivation', 'Slept',};
 
 
-figure('units','centimeters','position',[0 0 Format.Figure.Width*1.2 Format.Figure.Height*.9])
 
-AxesIndexes = [2, 4, 6];
-Indx = 1;
-Indx_BL = 1;
+figure('units','centimeters','position',[0 0 Format.Figure.Width*1.2 Format.Figure.Height*.9])
 
 for Indx_G1 = 1:Grid(1)
     for Indx_G2 = 1:3
         
+        % data & labels
         Q = Questions_Order{Indx_G1, Indx_G2};
         Data = Answers.(Q);
         L = Labels.(Q);
         
-        
+        % plot
         Axis = subfigure([], Grid, [Indx_G1 AxesIndexes(Indx_G2)], [], true, {}, Format);
         
         if strcmp(Q, 'Slept') % hack to have just the legend
@@ -164,16 +164,18 @@ for Indx_G1 = 1:Grid(1)
         data3D(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
             Format.Color.AllTasks, StatsP, Format);
         
+        % adjustments
         ylim(YLim)
         yticks(linspace(0, 1, numel(L)))
         yticklabels(L)
         
         legend off
         
-        title([Format.Indexes.Letters{Indx}, ': ' Titles{Indx_G1, Indx_G2}], 'FontSize', Format.Text.TitleSize)
+        title([Format.Indexes.Letters{Indx}, ': ' Titles{Indx_G1, Indx_G2}], ...
+            'FontSize', Format.Text.TitleSize)
         Indx = Indx+1;
         
-        % 2 way repeated measures anova with factors Session and Task
+        %%% 2 way repeated measures anova with factors Session and Task
         Stats = anova2way(Data, FactorLabels, Sessions.Labels, TaskLabels, StatsP);
         TitleStats = strjoin({TitleTag, Titles{Indx_G1, Indx_G2}, 'rmANOVA'}, '_');
         saveStats(Stats, 'rmANOVA', Paths.PaperStats, TitleStats, StatsP)

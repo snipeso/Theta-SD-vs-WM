@@ -11,5 +11,5 @@ Data2 = Data;
 Data2(:, Indx_BL, :) = [];
 Stats = pairedttest(Data1, Data2, StatsP);
 
-
+%%% plot
 plotSpaghettiOs(Data, Stats, Indx_BL, xLabels, Legend, Colors, PlotProps)

@@ -4,7 +4,6 @@ function Stats = anova2way(Data, FactorLabels, Factor1Labels, Factor2Labels, Sta
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% set up data
 
-
 % remove all data listwise if there are missing values
 
 % remove whole task if missing
@@ -15,7 +14,7 @@ if any(NaNs)
     Data(:, :, NaNs) = [];
 end
 
-NaNs =  any(squeeze(any(isnan(Data), 2)), 2); % WARNING: this won't work with later matlab versions
+NaNs = any(squeeze(any(isnan(Data), 2)), 2); % WARNING: this won't work with later matlab versions
 
 % give warning this is happening
 if any(NaNs)
@@ -23,8 +22,6 @@ if any(NaNs)
     
     Data(NaNs, :, :) = [];
 end
-
-
 
 Dims = size(Data);
 

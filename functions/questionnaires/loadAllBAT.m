@@ -64,7 +64,6 @@ for Indx_T = 1:numel(Tasks)
     
     Answers.Slept(:, :, Indx_T) = Data;
     Labels.Slept = L;
-    
 end
 
 
