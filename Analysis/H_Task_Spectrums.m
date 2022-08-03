@@ -67,9 +67,10 @@ StatsP.FreqBin = diff(Freqs(1:2));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure
 
-%% Figure SPECP plot spectrum changes for all participants for each task
+%% Figure 10 plot spectrum changes for all participants for each task
 
 PlotProps = P.Manuscript;
+PlotProps.Figure.Padding = 20;
 
 xLog = false;
 Indx_Ch = 1;
@@ -80,7 +81,7 @@ yLims = [-1.5 6.5];
 Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
 
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.47])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
 for Indx_T = 1:numel(AllTasks)
     Data = squeeze(chData(:, [1, 3], Indx_T, Indx_Ch, :));
     
@@ -104,8 +105,9 @@ saveFig([TitleTag, '_zscored'], Paths.Paper, PlotProps)
 
 
 
-%% Figure SPECR Same as above, but raw values
+%% Figure 10-1 Same as above, but raw values
 PlotProps = P.Manuscript;
+PlotProps.Figure.Padding = 20;
 
 xLog = false;
 Indx_Ch = 1;
@@ -116,7 +118,7 @@ yLims = [0 60];
 Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
 
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.47])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
 for Indx_T = 1:numel(AllTasks)
     Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
     
@@ -139,20 +141,22 @@ set(gcf, 'Color', 'w')
 saveFig([TitleTag, '_raw'], Paths.Paper, PlotProps)
 
 
-%% Figure SPECZ Plot whole spectrums
+%% Figure 10-2 Plot ROI spectrums and stats
 
 PlotProps = P.Manuscript;
 
 % format variables
-PlotProps.Axes.xPadding = 15; % smaller distance than default because no labels
-PlotProps.Axes.yPadding = 15;
-PlotProps.Figure.Padding = 90;
+PlotProps.Axes.xPadding = 0; % smaller distance than default because no labels
+PlotProps.Axes.yPadding = 5;
+PlotProps.Figure.Padding = 30;
+PlotProps.Text.AxisSize = 8;
+Labels.FreqLimits = [1 40];
 
 Grid = [numel(ChLabels),numel(AllTasks)];
 YLim = [-1 3.5];
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width*1.1 PlotProps.Figure.Height*.6])
+figure('units','centimeters','position', [0 0 PlotProps.Figure.W3*1.2 PlotProps.Figure.Height*.6])
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_T = 1:numel(AllTasks)
@@ -160,13 +164,16 @@ for Indx_Ch = 1:numel(ChLabels)
         
         %%% plot
         subfigure([], Grid, [Indx_Ch, Indx_T], [], true, '', PlotProps);
-        Stats = SpectrumDiff(Data, Freqs, 1, Sessions.Labels, flip(PlotProps.Color.Sessions(:, :, Indx_T)), Log, PlotProps, StatsP, Labels);
+
+        Stats = spectrumDiff(Data, Freqs, 1, Sessions.Labels, ...
+            flip(PlotProps.Color.Sessions(:, :, Indx_T)), Log, PlotProps, StatsP, Labels);
         
         Title = strjoin({TitleTag, 'Task_Spectrum', TaskLabels{Indx_T}, ChLabels{Indx_Ch}}, '_');
         saveStats(Stats, 'Spectrum', Paths.PaperStats, Title, StatsP)
         
         set(gca, 'FontSize', PlotProps.Text.AxisSize, 'YLim', YLim)
-        
+         set(legend, 'ItemTokenSize', [7 7])
+
         % plot labels/legends only in specific locations
         if Indx_Ch > 1 || Indx_T > 1 % first tile
             legend off
@@ -176,11 +183,12 @@ for Indx_Ch = 1:numel(ChLabels)
         if Indx_T == 1 % first column
             ylabel(Labels.zPower)
             X = double(get(gca, 'XLim'));
-            text(X(1)-diff(X)*.5, YLim(1)+diff(YLim)*.5, ChLabels{Indx_Ch}, ...
+            text(X(1)-diff(X)*.35, YLim(1)+diff(YLim)*.5, ChLabels{Indx_Ch}, ...
                 'FontSize', PlotProps.Text.TitleSize, 'FontName', PlotProps.Text.FontName, ...
                 'FontWeight', 'Bold', 'Rotation', 90, 'HorizontalAlignment', 'Center');
         else
             ylabel ''
+            set(gca,'YTickLabel',[]);
         end
         
         if Indx_Ch == 1 % first row
@@ -246,14 +254,14 @@ for Indx_T = 1:numel(AllTasks)
 end
 
 
-%%
+%% Figure 10-3
 Grid = [2 2];
 YLims = [0 8];
 PlotProps = P.Manuscript;
-PlotProps.Axes.yPadding = 40;
-PlotProps.Axes.xPadding = 40;
+PlotProps.Axes.yPadding = 30;
+PlotProps.Axes.xPadding = 20;
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.5])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
 
 % BL Prom
 Data = squeeze(Prominence(:, 1, :, 1));
@@ -269,6 +277,7 @@ subfigure([], Grid, [1 2], [], true, PlotProps.Indexes.Letters{2}, PlotProps);
 Stats = data2D('line',Data, TaskLabels, [], [], PlotProps.Color.Participants, StatsP, PlotProps);
 title('SD Prominence',  'FontSize', PlotProps.Text.TitleSize)
 ylim(YLims)
+ylabel(Labels.zPower)
 
 % BL Peaks
 Data = squeeze(Peaks(:, 1, :, 1));
@@ -284,6 +293,7 @@ subfigure([], Grid, [2 2], [], true, PlotProps.Indexes.Letters{4}, PlotProps);
 Stats = data2D('line',Data, TaskLabels, [], [], PlotProps.Color.Participants, StatsP, PlotProps);
 title('SD Peaks', 'FontSize', PlotProps.Text.TitleSize)
 ylim([2 11])
+ylabel(Labels.Frequency)
 
 
 % save

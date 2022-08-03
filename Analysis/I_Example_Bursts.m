@@ -43,14 +43,14 @@ end
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Paper Figure EXAZ
+%%% Paper Figure 11
 
 PlotProps = P.Manuscript;
-PlotProps.Axes.yPadding = 40;
-PlotProps.Axes.xPadding = 30;
-PlotProps.Axes.labelPadding = 45;
+PlotProps.Axes.yPadding = 20;
+% PlotProps.Axes.xPadding = 30;
+% PlotProps.Axes.labelPadding = 45;
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.6])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.7])
 
 B.Theta = Bands.Theta;
 

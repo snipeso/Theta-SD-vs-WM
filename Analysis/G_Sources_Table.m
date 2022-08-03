@@ -83,16 +83,19 @@ end
 %%% Plot and save
 
 
-%% Figure TABLOX plot fake excel tables for all areas with at least 1 comparison significant
+%% Figure 9: table of significant areas
 
 Keep = ~all(pValues > .05);
 Sig = pValues <.05;
 
 PlotProps = P.Manuscript;
+PlotProps.Text.AxisSize = 10;
+PlotProps.Text.TitleSize = 10;
+PlotProps.Axes.xPadding = 5;
 
 Grid = [1 10];
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height])
 
 % all tasks
 subfigure([], Grid, [1, 3], [1 Grid(2)-4], false, '', PlotProps);

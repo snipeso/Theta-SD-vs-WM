@@ -1,4 +1,5 @@
-function Stats = spectrumDiff(Data, AllFreqs, BL_Indx, LineLabels, Colors, xLog, PlotProps, StatsP, Labels)
+function Stats = spectrumDiff(Data, AllFreqs, BL_Indx, LineLabels, Colors, ...
+    xLog, PlotProps, StatsP, Labels)
 % plots changes in power spectrum, highlighting significant frequencies
 % different from specified BL_Indx. It also marks where the theta range is.
 % Data is a P x S x Freq matrix.
@@ -60,6 +61,8 @@ ylabel(Labels.zPower)
 
 xlim(xLims)
 xlabel(Labels.Frequency)
+h=gca; h.XAxis.TickLength = [0 0];
+h=gca; h.YAxis.TickLength = [0 0];
 
 
 if ~isempty(LineLabels)

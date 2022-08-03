@@ -47,7 +47,7 @@ CLims = [-1 2];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure
-%% All topographies
+%% Figure 7: All topographies
 
 Format = P.Manuscript;
 Grid = [7 3];

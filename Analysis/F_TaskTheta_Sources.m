@@ -59,9 +59,9 @@ Format = P.Manuscript;
 
 Grid = [7, 4];
 CLims = [-7 7];
-Format.Figure.Padding = 90;
+Format.Figure.Padding = 20;
 plotPatch = true;
-figure('units','centimeters','position',[0 0 Format.Figure.Width Format.Figure.Height])
+figure('units','centimeters','position',[0 0 Format.Figure.W3 Format.Figure.Height])
 
 
 for Indx_T = 1:numel(AllTasks)
