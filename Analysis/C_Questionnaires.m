@@ -58,12 +58,13 @@ Labels.KSS(7:9) = {'Sleepy, but no effort to keep awake', 'Sleepy, some effort t
 
 Grid = [1 4];
 Format = P.Manuscript;
+Format.SigStar.Shift = .1;
 YLim = [0 1.3];
 Indx_BL = 1;
 
 Data = Answers.KSS;
 L = Labels.KSS;
-figure('units','centimeters','position',[0 0 Format.Figure.Width Format.Figure.Height*.23])
+figure('units','centimeters','position',[0 0 Format.Figure.W3 Format.Figure.Height*.3])
 subfigure([], Grid, [1 2], [], true, Format.Indexes.Letters{1}, Format);
 data3D(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
     Format.Color.AllTasks, StatsP, Format);
@@ -80,6 +81,15 @@ Data = squeeze(Data(:, 3, :));
 MEANS = nanmean(Data);
 [~, Order] = sort(MEANS, 'descend');
 
+% adjust axis position because reasons
+PosA = get(gca, 'position');
+
+Shift = PosA(3)*.2;
+PosA(1) = PosA(1)+Shift;
+PosA(3) = PosA(3)-Shift;
+set(gca, 'position', PosA)
+Tick = get(gca, 'TickLength');
+h=gca; h.YAxis.TickLength = [0 0];
 
 subfigure([], Grid, [1 3], [1 2], true, Format.Indexes.Letters{2}, Format);
 data2D('box', Data(:, Order), TaskLabels(Order), [], [], Format.Color.AllTasks(Order, :), ...
@@ -93,7 +103,14 @@ text(X(1)+diff(X)/2, YLim(2), 'SD KSS', 'FontSize', Format.Text.TitleSize, ...
     'FontName', Format.Text.FontName, 'FontWeight', 'bold', 'HorizontalAlignment', 'center')
 
 
+
+% match position of second axis to the same as first
+PosB = get(gca, 'position');
+PosB([2, 4]) = PosA([2, 4]);
+set(gca, 'position', PosB)
+set(gca, 'TickLength', Tick);
 set(gca, 'YTickLabel',[],'YGrid', 'on')
+h=gca; h.YAxis.TickLength = [0 0];
 
 saveFig(strjoin({TitleTag, 'KSS'}, '_'), Paths.Paper, Format)
 

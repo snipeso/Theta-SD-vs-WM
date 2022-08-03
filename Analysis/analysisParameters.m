@@ -60,6 +60,8 @@ if exist( 'D:\Data\Raw', 'dir')
     Core = 'D:\Data\';
 elseif exist( 'F:\Data\Raw', 'dir')
     Core = 'F:\Data\';
+    elseif exist( 'E:\Data\Raw', 'dir')
+    Core = 'E:\Data\';
 else
     error('no data disk!')
 end
@@ -112,6 +114,12 @@ end
 Manuscript = getProperties({'LSM', 'Manuscript'});
 Powerpoint =  getProperties({'LSM', 'Powerpoint'});
 Poster =  getProperties({'LSM', 'Poster'});
+
+
+Manuscript.Figure.W1 = 8.5; % one column
+Manuscript.Figure.W2 = 11.6; % column and a half
+Manuscript.Figure.W3 = 17.6;
+Manuscript.Figure.Height = 25;
 
 P.Manuscript = Manuscript; % for papers
 P.Powerpoint = Powerpoint; % for presentations
