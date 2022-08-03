@@ -1,7 +1,7 @@
 % Scripts for plotting figures based on trial data of the Short Term Memory
 % (STM, aka Match2Sample aka M2S task).
 
-clear
+% clear
 close all
 clc
 
@@ -108,7 +108,7 @@ Legend = append('L', string(Levels));
 %%% Paper Figure
 
 
-%% Figure LOCZ showing fmTheta vs sdTheta
+%% Figure 4 showing fmTheta vs sdTheta
 
 PlotProps = P.Manuscript;
 % Format.Axes.yPadding = 15;
@@ -211,7 +211,7 @@ Grid = [1 5];
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.4])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.45])
 Indx = 1; % tally of axes
 
 %%% fmTheta by session
@@ -219,8 +219,10 @@ miniGrid = [2 3];
 
 Space = subaxis(Grid, [1, 1], [1 3], PlotProps.Indexes.Letters{Indx}, PlotProps); Indx = Indx+1;
 
+% Space(2) = Space(2)*2;
+
 for Indx_L =  2:numel(Levels)
-    for Indx_S = 1:nSessions
+    for Indx_S = 1 %:nSessions
         
         N1 = squeeze(bData(:, Indx_S, 1, Indx_E, :, Indx_B));
         N3 = squeeze(bData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
@@ -228,6 +230,10 @@ for Indx_L =  2:numel(Levels)
         % plot
         A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], false, {}, PlotProps);
         shiftaxis(A, PlotProps.Axes.xPadding/2, [])
+
+        if Indx_L==numel(Levels) % shift up a bit for the colobar
+            A.Position(2) =  A.Position(2) + .1; 
+        end
         Stats = topoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, PlotProps, Labels);
         colorbar off
         
@@ -250,12 +256,22 @@ for Indx_L =  2:numel(Levels)
 end
 
 
+%%% plot colorbar
+Space(2) = Space(2) - PlotProps.Axes.xPadding*2;
+A = subfigure(Space, miniGrid, [2 1], [1, 3], false, {}, PlotProps);
+ PlotProps.Colorbar.Location = 'south';
+plotColorbar('Divergent', CLims_Diff, Labels.t, PlotProps)
+shiftaxis(A, PlotProps.Axes.xPadding, [])
+colormap(reduxColormap(PlotProps.Color.Maps.Divergent, PlotProps.Color.Steps.Divergent))
+
 %%% mean changes in ROIs
 miniGrid = [4, 1];
 YLims = [-.2; -.5; -.2];
 YLims = [YLims, YLims + [1.8; .8; .8]];
 
 Space = subaxis(Grid, [1, 4], [], PlotProps.Indexes.Letters{Indx}, PlotProps);
+Space(2) = Space(2)-PlotProps.Axes.yPadding;
+% Space(4) = Space(4)+PlotProps.Axes.yPadding;
 Indx = Indx+1;
 
 for Indx_Ch = 1:numel(ChLabels)
@@ -276,15 +292,21 @@ for Indx_Ch = 1:numel(ChLabels)
     
     % plot
     A = subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], true, {}, PlotProps);
-    shiftaxis(A, [], PlotProps.Axes.yPadding/2)
+%     shiftaxis(A, [], PlotProps.Axes.yPadding/2)
+    shiftaxis(A, PlotProps.Axes.xPadding/2, [])
     Stats = data3D(Data, 1, Sessions.Labels, L, ...
         PlotProps.Color.Levels, StatsP, PlotProps);
+    set(gca, 'FontSize', PlotProps.Text.LegendSize)
+
     A.TickLength = [0 0];
     ylim(YLims(Indx_Ch, :))
     yticks(-1:.2:2)
     ylabel(Labels.zPower)
+
+
     if Indx_Ch >1
         legend off
+        ylabel('')
     end
     
     if Indx_Ch ~= numel(ChLabels)
@@ -292,15 +314,18 @@ for Indx_Ch = 1:numel(ChLabels)
     end
     
     title(ChLabels{Indx_Ch}, 'FontSize', PlotProps.Text.TitleSize)
+   set(legend, 'ItemTokenSize', [5 5])
+
 end
 
 
 
 %%% SD vs BL by level
 miniGrid = [3 1];
-PlotProps.External.EEGLAB.MarkerSize = 2;
 Space = subaxis(Grid, [1 5], [], PlotProps.Indexes.Letters{Indx}, PlotProps);
-
+Space(2) = Space(2)-PlotProps.Axes.yPadding;
+Space(4) = Space(4)+PlotProps.Axes.yPadding;
+ PlotProps.Axes.xPadding = 0;
 % Space(1) = Space(1) - Format.Axes.xPadding;
 for Indx_L =  1:numel(Levels)
     
@@ -310,7 +335,7 @@ for Indx_L =  1:numel(Levels)
     % plot
     A = subfigure(Space, miniGrid, [Indx_L 1], [], false, {}, PlotProps);
     Stats = topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, PlotProps, Labels);
-    shiftaxis(A, PlotProps.Axes.xPadding, [])
+%     shiftaxis(A, PlotProps.Axes.xPadding, PlotProps.Axes.xPadding)
     colorbar off
     title(Legend{Indx_L}, 'FontSize', PlotProps.Text.TitleSize)
     
@@ -318,14 +343,6 @@ for Indx_L =  1:numel(Levels)
     Title = strjoin({TitleTag, Legend{Indx_L}, 'SDvsBL'}, '_');
     saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
 end
-
-
-%%% plot colorbar
-Space(1) = Space(1) - PlotProps.Axes.xPadding*1.55;
-A = subfigure(Space, miniGrid, [3 2], [3, 1], false, {}, PlotProps);
-plotColorbar('Divergent', CLims_Diff, Labels.t, PlotProps)
-shiftaxis(A, PlotProps.Axes.xPadding, [])
-colormap(reduxColormap(PlotProps.Color.Maps.Divergent, PlotProps.Color.Steps.Divergent))
 
 
 % save
