@@ -379,15 +379,16 @@ for Indx_Ch = 1:numel(ChLabels)
 end
 
 
-%% Suppl. Figure SUP_M2SSPEC
+%% Suppl. Figure 5-2
 
 PlotProps = P.Manuscript;
-% Format.PaddingExterior = 90;
+PlotProps.Figure.Padding = 30;
 Grid = [numel(ChLabels), nSessions];
 YLim = [-.8 3.1];
+Indx_E = 2;
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.47])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.6])
 Indx = 1; % tally of axes
 
 
@@ -400,6 +401,7 @@ for Indx_Ch = 1:numel(ChLabels)
         spectrumDiff(Data, Freqs, 1, Legend, PlotProps.Color.Levels, Log, PlotProps, StatsP, Labels);
         ylim(YLim)
         xlim(log([1 40]))
+          set(legend, 'ItemTokenSize', [7 7])
 
         % plot labels/legends only in specific locations
         if Indx_Ch > 1 || Indx_S > 1 % first tile
