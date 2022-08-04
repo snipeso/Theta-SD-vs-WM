@@ -34,9 +34,11 @@ Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % z-score it
+% zData = zScoreData(AllData, 'last');
+zData = AllData;
 
 % average channel data into 2 spots
-chData = meanChData(AllData, Chanlocs, Channels.(ROI), 4);
+chData = meanChData(zData, Chanlocs, Channels.(ROI), 4);
 
 % average frequencies into bands
 bData = bandData(chData, Freqs, Bands, 'last');
@@ -78,6 +80,13 @@ LAT_RT = nanmean(LAT.RT, 3);
 LAT_Correct = 100*(nansum(squeeze(LAT.Tally) == 3, 3)/TotT);
 LAT_Lapses = 100*(nansum(squeeze(LAT.Tally) == 1, 3)/TotT);
 
+%%% PVT
+
+PVT = loadPVTmeta(P, Sessions.PVT, false);
+TotT = size(PVT.RT, 3);
+
+PVT_RT = nanmean(PVT.RT, 3);
+PVT_Lapses = nansum(squeeze(PVT.Tally) == 2, 3);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,7 +106,9 @@ Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
 dTheta = Theta(:, 2) - Theta(:, 1);
 
 Behavior = SpFT_Incorrect(:, [1 3]);
+
 dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
 
 AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
 figure
@@ -125,11 +136,12 @@ B_Indx = 2; % theta
 Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
 dTheta = Theta(:, 2) - Theta(:, 1);
 
-Behavior = LAT_RTs(:, [1 3]);
+Behavior = LAT_RT(:, [1 3]);
 dBehavior = Behavior(:, 2) - Behavior(:, 1);
 
 AxisLabels = {'\DeltaRTs', '\DeltaTheta'};
 Colors = Format.Color.Participants;
+
 
 figure
 Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Colors, Format);
@@ -138,7 +150,27 @@ title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
 
 
 
+%%
 
+%%% Change in theta vs change in RT in PVT
+% prediction: theta will increase more in participants who got a lot worse
+Task_Indx = 2; % speech
+Ch_Indx = 1; % front
+B_Indx = 2; % theta
+
+Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
+dTheta = Theta(:, 2) - Theta(:, 1);
+
+Behavior = PVT_RT(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+AxisLabels = {'\DeltaRTs', '\DeltaTheta'};
+Colors = Format.Color.Participants;
+
+
+figure
+Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Colors, Format);
+title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
 
 
 
