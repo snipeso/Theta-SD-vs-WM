@@ -93,7 +93,8 @@ PVT_Lapses = nansum(squeeze(PVT.Tally) == 2, 3);
 %%
 
 
-Format = P.Manuscript;
+PlotProps = P.Manuscript;
+PlotProps.Axes.xPadding = 20;
 
 %%% Change in theta vs change in # mistakes in Speech task
 % prediction: theta will increase more in cases where speech did not
@@ -101,6 +102,8 @@ Format = P.Manuscript;
 Task_Indx = 4; % speech
 Ch_Indx = 1; % front
 B_Indx = 2; % theta
+Grid = [1 2];
+YLim = [0 3];
 
 Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
 dTheta = Theta(:, 2) - Theta(:, 1);
@@ -111,21 +114,18 @@ dBehavior = Behavior(:, 2) - Behavior(:, 1);
 
 
 AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
-figure
-Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Format.Color.Participants, Format);
-title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
-
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.4])
+subfigure([], Grid,[1 1], [], true, '', PlotProps);
+Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], PlotProps.Color.Participants, PlotProps);
+title(['Speech (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f'), ')'])
+ylim(YLim)
+padAxis('x'); padAxis('y')
 
 
 
 % prediction failed....
 
 
-
-
-
-
-%%
 
 %%% Change in theta vs change in RT in LAT
 % prediction: theta will increase more in participants who got a lot worse
@@ -136,17 +136,19 @@ B_Indx = 2; % theta
 Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
 dTheta = Theta(:, 2) - Theta(:, 1);
 
-Behavior = LAT_RT(:, [1 3]);
+Behavior = LAT_Lapses(:, [1 3]);
 dBehavior = Behavior(:, 2) - Behavior(:, 1);
 
-AxisLabels = {'\DeltaRTs', '\DeltaTheta'};
-Colors = Format.Color.Participants;
+AxisLabels = {'\DeltaLapses', '\DeltaTheta'};
+Colors = PlotProps.Color.Participants;
 
+subfigure([], Grid, [1 2], [], true, '', PlotProps);
+Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Colors, PlotProps);
+title(['LAT (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f'), ')'])
+ylim(YLim)
+padAxis('x'); padAxis('y')
 
-figure
-Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Colors, Format);
-title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
-
+saveFig(strjoin({TitleTag, 'Corr'}, '_'), Paths.Paper, PlotProps)
 
 
 
@@ -165,11 +167,11 @@ Behavior = PVT_RT(:, [1 3]);
 dBehavior = Behavior(:, 2) - Behavior(:, 1);
 
 AxisLabels = {'\DeltaRTs', '\DeltaTheta'};
-Colors = Format.Color.Participants;
+Colors = PlotProps.Color.Participants;
 
 
 figure
-Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Colors, Format);
+Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Colors, PlotProps);
 title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
 
 
