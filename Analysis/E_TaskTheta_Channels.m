@@ -61,18 +61,24 @@ Indx = 1; % tally of axes
 % Baseline averages
 for Indx_T = 1:numel(AllTasks)
     BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
-    
+
+
+    Indx = Indx+1;
+
+    if all(isnan(BL(:)))
+        continue
+    end
     % plot
-    A = subfigure([], Grid, [Indx_T, 1], [], false, '', Format); Indx = Indx+1;
+    A = subfigure([], Grid, [Indx_T, 1], [], false, '', Format);
     shiftaxis(A, Format.Axes.xPadding, Format.Axes.yPadding)
-    
+
     plotTopoplot(nanmean(BL, 1), [], Chanlocs, CLims, Labels.zPower, 'Linear', Format)
     colorbar off
-    
+
     if Indx_T == 1
         title(Sessions.Labels{1}, 'FontSize', Format.Text.TitleSize)
     end
-    
+
     X = get(gca, 'XLim');
     Y = get(gca, 'YLim');
     text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, TaskLabels{Indx_T}, ...
@@ -92,19 +98,23 @@ for Indx_S = [2,3]
     for Indx_T = 1:numel(AllTasks)
         BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
         SD = squeeze(bData(:, Indx_S, Indx_T, :, Indx_B));
-        
+
+        if all(isnan(BL(:)))
+            continue
+        end
+
         % plot
-        A = subfigure([], Grid, [Indx_T, Indx_S], [], false, '', Format); Indx = Indx+1;
+        A = subfigure([], Grid, [Indx_T, Indx_S], [], false, '', Format);
         shiftaxis(A, Format.Axes.xPadding, Format.Axes.yPadding)
-        
+
         Stats = topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Format, Labels);
         colorbar off
         colormap(gca, Format.Color.Maps.Divergent)
-        
+
         if Indx_T == 1
             title(Sessions.Labels{Indx_S}, 'FontSize', Format.Text.TitleSize)
         end
-        
+
         % save stats
         Title = strjoin({'Task_Topo', TaskLabels{Indx_T}, Sessions.Labels{Indx_S}, 'vs', 'BL'}, '_');
         saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
@@ -146,7 +156,7 @@ for Indx_T = 1:numel(AllTasks)
     SD = squeeze(bData(:, 3, Indx_T, :, Indx_B));
     topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, Powerpoint, Labels);
     saveFig(strjoin({TitleTag, AllTasks{Indx_T}, 'sdTheta'}, '_'), Results, Format)
-    
+
 end
 
 

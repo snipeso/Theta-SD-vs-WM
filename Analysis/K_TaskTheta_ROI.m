@@ -29,8 +29,6 @@ AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 Labels = P.Labels;
 
-TASKTYPE = 'Main';
-
 ChLabels = fieldnames(Channels.(ROI));
 BandLabels = fieldnames(Bands);
 FactorLabels = {'Session', 'Task'};
@@ -133,6 +131,47 @@ title('Front Effect Sizes', 'FontSize', PlotProps.Text.TitleSize)
 
 % save
 saveFig(strjoin({TitleTag, 'Means'}, '_'), Paths.Paper, PlotProps)
+
+
+
+%% Plot participants by order
+
+Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
+Indx_Ch = 1;
+Indx_B = 2;
+Grid = [2 3];
+PlotProps = P.Manuscript;
+
+Colors = repmat(getColors(1, '', 'yellow'), numel(P.Participants), 1);
+Colors([1 5 12 end], :) = repmat(getColors(1, '', 'blue'), 4, 1);
+% YLim = [-1.1 3.8];
+YLim = [];
+
+
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
+for Indx_T = 1:numel(AllTasks)
+
+  Data = squeeze(bData(:, :, Indx_T, Indx_Ch, Indx_B));
+    
+    subfigure([], Grid, Coordinates(Indx_T, :), [], true, '', PlotProps);
+Stats = groupDiff(Data, Sessions.Labels, [], YLim, Colors, [], PlotProps);
+  title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
+
+axis tight
+xlim([.5 numel(Sessions.Labels)+.5])
+if Indx_T == 1
+
+    legend({ 'SD First', 'BL First'}, 'location', 'northwest')
+     set(legend, 'ItemTokenSize', [7 7])
+
+end
+if Indx_T < 4
+         set(gca, 'XTickLabel', [])
+end
+
+end
+
+saveFig(strjoin({TitleTag, 'OrderEffect'}, '_'), Paths.Paper, PlotProps)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -9,12 +9,9 @@ P = analysisParameters();
 
 Paths = P.Paths;
 Participants = P.Participants;
-% Sessions.LAT = { 'BaselineComp', 'MainPre', 'Session1Beam', 'Session2Beam1', 'MainPost'};
-% Sessions.PVT = { 'BaselineComp', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
-% SessionLabels = {'BL','Pre', 'S1', 'S2', 'Post'};
-Sessions.LAT = { 'Session2Comp', 'Session2Beam1'};
-Sessions.PVT = { 'Session2Comp', 'Session2Beam'};
-SessionLabels = {'Comp', 'Beam'};
+Sessions.LAT = { 'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'MainPost'};
+Sessions.PVT = { 'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
+SessionLabels = {'BL','Pre', 'S1', 'S2', 'Post'};
 
 AllTasks =  {'LAT', 'PVT'};
 TaskLabels = AllTasks;
@@ -51,11 +48,6 @@ PVT_RT = mean(PVT.RT, 3, 'omitnan');
 PVT_Lapses = sum(squeeze(PVT.Tally) == 2, 3, 'omitnan');
 
 
-
-
-
-
-%%
 
 %%% load EEG
 Bands = P.Bands;
