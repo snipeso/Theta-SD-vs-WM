@@ -36,7 +36,7 @@ Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
 % z-score it
 
 % average channel data into 2 spots
-chData = meanChData(Data, Chanlocs, Channels.(ROI), 4);
+chData = meanChData(AllData, Chanlocs, Channels.(ROI), 4);
 
 % average frequencies into bands
 bData = bandData(chData, Freqs, Bands, 'last');
@@ -44,6 +44,10 @@ bData = bandData(chData, Freqs, Bands, 'last');
 
 
 %%% Load performance
+
+nParticipants = numel(Participants);
+nSessions = numel(Sessions.Labels);
+
 
 % SPFT
 Answers_Path = fullfile(Source_Tables, 'SpFT_AllAnswers.mat');
@@ -76,13 +80,25 @@ LAT_Lapses = 100*(nansum(squeeze(LAT.Tally) == 1, 3)/TotT);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 
 
-
+Format = P.Manuscript;
 
 %%% Change in theta vs change in # mistakes in Speech task
 % prediction: theta will increase more in cases where speech did not
 % improve much
+Task_Indx = 4; % speech
+Ch_Indx = 1; % front
+B_Indx = 2; % theta
+
+Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
+
+Behavior = SpFT_Incorrect(:, [1 3]);
+
+Stats = plotSticksAndStones(Theta, Behavior, {'\DeltaTheta', '\DeltaMistakes'}, ...
+    {}, getColors(1, '', 'green'), Format);
+
 
 
 
