@@ -64,16 +64,16 @@ bData = bandData(chData, Freqs, Bands, 'last');
 
 %% Figure MAGZ Theta changes for ROIs
 PlotProps = P.Manuscript;
-PlotProps.Figure.Padding = 50;
-PlotProps.Axes.yPadding = 40;
-PlotProps.Axes.xPadding = 40;
+PlotProps.Figure.Padding = 20;
+PlotProps.Axes.yPadding = 20;
+PlotProps.Axes.xPadding = 20;
 
 Indx_B = 2; % theta
 Grid = [2, 5];
 YLim = [-.75 1.9];
 Indx_BL = 1; % the reference for SpaghettiO plots
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.4])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.4])
 Indx = 1; % tally of axes
 
 %%% change in means
@@ -89,6 +89,8 @@ for Indx_Ch = 1:numel(ChLabels)
         PlotProps.Color.AllTasks, StatsP, PlotProps);
     ylim(YLim)
     
+     set(legend, 'ItemTokenSize', [5 5])
+
     % plot labels only in specific plots
     if Indx_Ch == 1
         ylabel(Labels.zPower)
@@ -126,6 +128,7 @@ Data = squeeze(bData(:, :, :, 1, Indx_B)); % for front
 Stats = plotES(Data, 'horizontal', true, PlotProps.Color.AllTasks, TaskLabels, ...
     {'SR vs BL', 'SD vs BL'}, PlotProps, StatsP, Labels);
 
+ set(legend, 'ItemTokenSize', [5 5], 'location', 'northeast')
 title('Front Effect Sizes', 'FontSize', PlotProps.Text.TitleSize)
 
 % save

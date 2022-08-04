@@ -260,12 +260,15 @@ end
 %%
 
 Grid = [1 3];
-YLim = [0 20];
+YLim = [0 22];
+PlotProps = P.Manuscript;
 
-figure('units','centimeters','position',[0 0 Pixels.W Pixels.H*.25])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.25])
 for Indx_S = 1:3
-     subfigure([], Grid, [1, Indx_S], [], true, {}, Pixels);
-plotConfettiSpaghetti(squeeze(RM(:, Indx_S, :)), TaskLabels, {}, [], Format.Colors.Participants, StatsP, Pixels);
+     subfigure([], Grid, [1, Indx_S], [], true, {}, PlotProps);
+
+     data2D('line', squeeze(RM(:, Indx_S, :)), TaskLabels, {}, [], ...
+         PlotProps.Color.Participants, StatsP, PlotProps);
 title(Sessions.Labels{Indx_S})
 ylim(YLim)
 if Indx_S== 1
@@ -274,6 +277,6 @@ end
 end
 
 % save
-saveFig('QC_removed_channels', Paths.Paper, Format)
+saveFig('QC_removed_channels', Paths.Paper, PlotProps)
 
 
