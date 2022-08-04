@@ -69,6 +69,7 @@ for Indx_P = 1:nParticipants
     end
 end
 
+
 % LAT
 LAT = loadLATmeta(P, Sessions.LAT, false);
 TotT = size(LAT.RT, 3);
@@ -93,26 +94,51 @@ Ch_Indx = 1; % front
 B_Indx = 2; % theta
 
 Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
+dTheta = Theta(:, 2) - Theta(:, 1);
 
 Behavior = SpFT_Incorrect(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
 
-Stats = plotSticksAndStones(Theta, Behavior, {'\DeltaTheta', '\DeltaMistakes'}, ...
-    {}, getColors(1, '', 'green'), Format);
-
-
-
-
-
+AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
+figure
+Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Format.Color.Participants, Format);
+title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
 
 
 
 
+% prediction failed....
 
 
 
 
+
+
+%%
 
 %%% Change in theta vs change in RT in LAT
 % prediction: theta will increase more in participants who got a lot worse
+Task_Indx = 2; % speech
+Ch_Indx = 1; % front
+B_Indx = 2; % theta
+
+Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
+dTheta = Theta(:, 2) - Theta(:, 1);
+
+Behavior = LAT_RTs(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+AxisLabels = {'\DeltaRTs', '\DeltaTheta'};
+Colors = Format.Color.Participants;
+
+figure
+Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Colors, Format);
+title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
+
+
+
+
+
+
 
 
