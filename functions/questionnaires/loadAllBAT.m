@@ -67,7 +67,7 @@ for Indx_T = 1:numel(Tasks)
 end
 
 % set to nan all answers for a questionnaire when more than 4 participants are missing data
-for Indx_T = 1:numel(AllTasks)
+for Indx_T = 1:numel(Tasks)
     for Indx_Q = 1:numel(Titles)
         NanP = nnz(any(isnan(Answers.(Titles{Indx_Q})(:, :, Indx_T)), 2));
         
