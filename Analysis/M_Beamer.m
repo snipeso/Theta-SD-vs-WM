@@ -29,8 +29,23 @@ Filepath = fullfile(P.Paths.Data, 'Questionnaires');
 
 
 %%% Load behavior
+Source_Tables = fullfile(Paths.Data, 'Behavior');
+
+% LAT
+LAT = loadLATmeta(P, Sessions.LAT, false);
+TotT = size(LAT.RT, 3);
+
+LAT_RT = mean(LAT.RT, 3, 'omitnan');
+LAT_Correct = 100*(sum(squeeze(LAT.Tally) == 3, 3, 'omitnan')/TotT);
+LAT_Lapses = 100*(sum(squeeze(LAT.Tally) == 1, 3, 'omitnan')/TotT);
 
 
+% PVT
+PVT = loadPVTmeta(P, Sessions.PVT, false);
+TotT = size(PVT.RT, 3);
+
+PVT_RT = mean(PVT.RT, 3, 'omitnan');
+PVT_Lapses = sum(squeeze(PVT.Tally) == 2, 3, 'omitnan');
 
 
 
@@ -84,6 +99,7 @@ legend off
 % Motivation
 Data = Answers.Motivation;
 L = Labels.Motivation;
+
 A = subfigure([], Grid, [2 1], [1 2], true, '', Format);
 A.Position(1) = A.Position(1)+Shift;
 A.Position(3) = A.Position(3)-Shift;
@@ -96,7 +112,32 @@ legend off
 
 
 
+%%% Behavior
 
+% RTs
+Data = cat(3, LAT_RT, PVT_RT);
+
+A = subfigure([], Grid, [1 3], [1 2], true, '', Format);
+A.Position(1) = A.Position(1)+Shift/2;
+A.Position(3) = A.Position(3)-Shift;
+data3D(Data, Indx_BL, SessionLabels, TaskLabels, TaskColors, StatsP, Format);
+legend off
+set(gca, 'XTickLabel', [])
+ylabel('seconds')
+title('C: RTs', 'FontSize', Format.Text.TitleSize)
+
+
+% Lapses
+Data = cat(3, LAT_Lapses, PVT_Lapses);
+
+A = subfigure([], Grid, [2 3], [1 2], true, '', Format);
+A.Position(1) = A.Position(1)+Shift/2;
+A.Position(3) = A.Position(3)-Shift;
+data3D(Data, Indx_BL, SessionLabels, TaskLabels, TaskColors, StatsP, Format);
+legend off
+ylabel('#')
+ylim([0 25])
+title('D: Lapses', 'FontSize', Format.Text.TitleSize)
 
 
 
