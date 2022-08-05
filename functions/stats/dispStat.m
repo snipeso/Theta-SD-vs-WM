@@ -1,6 +1,9 @@
 function dispStat(Stats, P, Label)
 % displays as string a statistic of interest
 
+if isempty(Stats)
+    return
+end
 
 Fieldnames = fieldnames(Stats);
 

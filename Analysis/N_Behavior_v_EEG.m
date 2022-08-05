@@ -176,3 +176,28 @@ title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
 
 
 
+%% Speech corr with coloring
+
+
+Task_Indx = 4; % speech
+Ch_Indx = 1; % front
+B_Indx = 2; % theta
+Grid = [1 2];
+YLim = [0 3];
+
+Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
+dTheta = Theta(:, 2) - Theta(:, 1);
+
+Behavior = SpFT_Incorrect(:, [1 3]);
+
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+ Color = repmat(getColors(1, '', 'yellow'), nParticipants, 1);
+        Color([1 5 12 end], :) = repmat(getColors(1, '', 'blue'), 4, 1);
+
+AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
+figure
+Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Color, PlotProps);
+title(['Speech (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f'), ')'])
+padAxis('x'); padAxis('y')
+
