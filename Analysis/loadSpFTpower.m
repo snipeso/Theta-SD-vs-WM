@@ -1,5 +1,6 @@
 function [AllData, Freqs, Chanlocs, AllTrials] = loadSpFTpower(P, Source)
-
+% Produces a P x S x T x E x Ch x F matrix. T is the trial, E is the epoch,
+% first reading then speaking.
 
 Task = 'SpFT';
 
