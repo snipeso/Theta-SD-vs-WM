@@ -84,20 +84,13 @@ end
 
 
 % LAT
-LAT = loadLATmeta(P, Sessions.LAT, false);
-TotT = size(LAT.RT, 3);
+[~, LAT_RT, Types, TotT] = loadBehavior(Participants, Sessions.LAT, 'LAT', Paths, false);
+LAT_Lapses = 100*(squeeze(Types(:, :, 1))./TotT);
+LAT_Correct = 100*(squeeze(Types(:, :, 3))./TotT);
 
-LAT_RT = nanmean(LAT.RT, 3);
-LAT_Correct = 100*(nansum(squeeze(LAT.Tally) == 3, 3)/TotT);
-LAT_Lapses = 100*(nansum(squeeze(LAT.Tally) == 1, 3)/TotT);
-
-%%% PVT
-
-PVT = loadPVTmeta(P, Sessions.PVT, false);
-TotT = size(PVT.RT, 3);
-
-PVT_RT = nanmean(PVT.RT, 3);
-PVT_Lapses = nansum(squeeze(PVT.Tally) == 2, 3);
+% PVT
+[~, PVT_RT, Types, ~] = loadBehavior(Participants, Sessions.PVT, 'PVT', Paths, false);
+PVT_Lapses = squeeze(Types(:, :, 1));
 
 
 
