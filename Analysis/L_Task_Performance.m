@@ -1,6 +1,9 @@
 % all task performance things together just for the sake of the paper
 % figure.
 
+clear
+clc
+close all
 
 P = analysisParameters();
 Paths = P.Paths;
@@ -49,22 +52,15 @@ end
 
 %%% LAT
 
-LAT = loadLATmeta(P, Sessions.LAT, false);
-TotT = size(LAT.RT, 3);
-
-LAT_RT = nanmean(LAT.RT, 3);
-LAT_Correct = 100*(nansum(squeeze(LAT.Tally) == 3, 3)/TotT);
-LAT_Lapses = 100*(nansum(squeeze(LAT.Tally) == 1, 3)/TotT);
+[~, LAT_RT, Types, TotT] = loadBehavior(Participants, Sessions.LAT, 'LAT', Paths, false);
+LAT_Lapses = 100*(squeeze(Types(:, :, 1))./TotT);
+LAT_Correct = 100*(squeeze(Types(:, :, 3))./TotT);
 
 
 %%% PVT
 
-PVT = loadPVTmeta(P, Sessions.PVT, false);
-TotT = size(PVT.RT, 3);
-
-PVT_RT = nanmean(PVT.RT, 3);
-PVT_Lapses = nansum(squeeze(PVT.Tally) == 2, 3);
-
+[~, PVT_RT, Types, ~] = loadBehavior(Participants, Sessions.PVT, 'PVT', Paths, false);
+PVT_Lapses = squeeze(Types(:, :, 1));
 
 
 
@@ -101,7 +97,7 @@ Indx_B = 2; % theta
 Indx = 1;
 YLims = [-.3 1];
 StatsP = P.StatsP;
-Colors = 'Participants'; % either 'Task' or 'Participants' or 'Order'
+Colors = 'Order'; % either 'Task' or 'Participants' or 'Order'
 
 
 figure('units','centimeters','position',[0 0 Format.Figure.W3*1.2 Format.Figure.Height*.5])
@@ -135,6 +131,8 @@ for Indx_L = 1:nLevels
     if Indx_L ==1
         ylabel(Labels.Correct)
     end
+    padAxis('y')
+
 
     title(['L', num2str(Levels(Indx_L))], 'FontSize', Format.Text.TitleSize)
 end
@@ -154,6 +152,7 @@ subfigure(Space, miniGrid, [1, 1], [], true, {}, Format);
 Stats = data2D('line', PVT_RT, Sessions.Labels, [], [], Color, StatsP, Format);
 ylabel('Seconds')
 title('PVT RTs',  'FontSize', Format.Text.TitleSize)
+padAxis('y')
 
 dispStat(Stats, [1 3], 'PVT RTs')
 
@@ -182,6 +181,7 @@ subfigure(Space, miniGrid, [1, 1], [],true, {}, Format);
 Stats = data2D('line', LAT_RT, Sessions.Labels, [], [], Color, StatsP, Format);
 ylabel('Seconds')
 title('LAT RTs',  'FontSize', Format.Text.TitleSize)
+padAxis('y')
 
 dispStat(Stats, [1 3], 'LAT RTs')
 
@@ -191,6 +191,7 @@ subfigure(Space, miniGrid, [1, 2], [], true, {}, Format);
 Stats = data2D('line', LAT_Correct, Sessions.Labels, [], [], Color, StatsP, Format);
 title('LAT Correct',  'FontSize', Format.Text.TitleSize)
 ylabel('%')
+padAxis('y')
 
 dispStat(Stats, [1 3], 'LAT Correct:')
 
@@ -219,6 +220,7 @@ subfigure(Space, miniGrid, [1, 1], [], true, {}, Format);
 Stats = data2D('line', SpFT_Correct, Sessions.Labels, [], [], Color, StatsP, Format);
 ylabel('Words/s')
 title('Correct Words',  'FontSize', Format.Text.TitleSize)
+padAxis('y')
 
 dispStat(Stats, [1 3], 'SpFT Correct:')
 
@@ -228,6 +230,7 @@ subfigure(Space, miniGrid, [1, 2], [], true, {}, Format);
 Stats = data2D('line', SpFT_Incorrect, Sessions.Labels, [], [], Color, StatsP, Format);
 title('Mistakes',  'FontSize', Format.Text.TitleSize)
 ylabel('Words/s')
+padAxis('y')
 
 dispStat(Stats, [1 3], 'SpFT mistakes:')
 
