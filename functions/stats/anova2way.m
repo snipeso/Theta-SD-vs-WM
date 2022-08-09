@@ -95,9 +95,10 @@ nBoot = StatsP.ANOVA.nBoot;
 
 Stats.effects = EffectSizes;
 Stats.effects.table = Table;
+Stats.labels = [FactorLabels, strjoin(FactorLabels, ':')];
 
 
 %%% show relevant tables
-disp(Summary)
-disp(ranovatbl)
+% disp(Summary)
+% disp(ranovatbl)
 

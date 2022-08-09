@@ -13,6 +13,7 @@ CompSessions = P.Sessions;
 BeamSessions.LAT = { 'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'MainPost'};
 BeamSessions.PVT = { 'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
 BeamSessionLabels = {'BL','Pre', 'S1', 'S2', 'Post'};
+CompSessionLabels = {'BL', 'S1', 'S2'};
 
 AllTasks =  {'LAT', 'PVT'};
 TaskLabels = AllTasks;
@@ -60,39 +61,35 @@ Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 
 
 Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
-[AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
-
-% z-score it
-zData = zScoreData(AllData, 'last');
-
-% save it into bands
-bData = bandData(zData, Freqs, Bands, 'last');
-
-Channels = P.Channels;
-ROI = 'preROI';
-% average channel data into 2 spots
-chData = meanChData(zData, Chanlocs, Channels.(ROI), 4);
-
-% average frequencies into bands
-bchData_B = bandData(chData, Freqs, Bands, 'last');
-
+[AllData_B, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % computer sessions
 P.Sessions = CompSessions;
 P.Sessions.Labels = {'BL', 'S1', 'S2'};
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
+% merge matrices
+AllData_C = nan(size(AllData_B));
+AllData_C(:, [1 3 4], :, :, :) = AllData;
+
+AllData = cat(6, AllData_C, AllData_B);
+AllData = permute(AllData, [1 2 3 6 4 5]);
+
 % z-score it
 zData = zScoreData(AllData, 'last');
 
-% save it into bands
-bData = bandData(zData, Freqs, Bands, 'last');
 
+Channels = P.Channels;
+ROI = 'preROI';
 % average channel data into 2 spots
-chData = meanChData(zData, Chanlocs, Channels.(ROI), 4);
+chData = meanChData(zData, Chanlocs, Channels.(ROI), 5);
 
 % average frequencies into bands
-bchData_C = bandData(chData, Freqs, Bands, 'last');
+bchData = bandData(chData, Freqs, Bands, 'last');
+
+
+
+
 
 CLims_Diff = [-7 7];
 
@@ -101,8 +98,9 @@ CLims_Diff = [-7 7];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Figures for paper
 
-
 %% Figure 13
+clc
+
 
 Grid = [2 3];
 Format = P.Manuscript;
@@ -115,8 +113,7 @@ Shift = .08;
 YLim = [-0.05 1.1];
 
 % KSS
-Data = BeamAnswers.KSS;
-L = Labels.KSS;
+Data_B = BeamAnswers.KSS;
 
 figure('units','centimeters','position',[0 0 Format.Figure.W3 Format.Figure.Height*.5])
 A = subfigure([], Grid, [1 1], [], true, Format.Indexes.Letters{1}, Format);
@@ -124,11 +121,13 @@ A.Position(1) = A.Position(1)+Shift;
 A.Position(3) = A.Position(3)-Shift;
 A.Position(4) = A.Position(4)-Shift/2;
 
-hold on
-plot([1 3 4], squeeze(mean(CompAnswers.KSS(:, :, 1), 'omitnan')), ':', 'LineWidth', 1, 'Color', TaskColors(1, :), 'HandleVisibility','on')
-plot([1 3 4], squeeze(mean(CompAnswers.KSS(:, :, 2), 'omitnan')), ':', 'LineWidth', 1, 'Color', TaskColors(2, :), 'HandleVisibility', 'off')
+Data_C = squeeze(mean(CompAnswers.KSS, 'omitnan'));
 
-data3D(Data, Indx_BL, BeamSessionLabels, TaskLabels, TaskColors, StatsP, Format);
+hold on
+plot([1 3 4], Data_C(:, 1), ':', 'LineWidth', 1, 'Color', TaskColors(1, :), 'HandleVisibility','on')
+plot([1 3 4], Data_C(:, 2), ':', 'LineWidth', 1, 'Color', TaskColors(2, :), 'HandleVisibility', 'off')
+
+data3D(Data_B, Indx_BL, BeamSessionLabels, TaskLabels, TaskColors, StatsP, Format);
 ylim(YLim)
 set(gca, 'XTickLabel', [])
 yticks(linspace(0, 1, 9))
@@ -211,17 +210,17 @@ title('Lapses', 'FontSize', Format.Text.TitleSize)
 Indx_B = 2;
 Titles = {'Front Theta', 'Center Theta'};
 FigLabels = P.Labels;
-YLim = [-.5 1.4];
+YLim = [-.6 1.45];
 
 for Indx_Ch = [1 2]
 
-    Data_B = squeeze(bchData_B(:, :, :, Indx_Ch, Indx_B));
-    Data_C = squeeze(mean(bchData_C(:, :, :, Indx_Ch, Indx_B), 'omitnan'));
+    Data_B = squeeze(bchData(:, :, :, 2, Indx_Ch, Indx_B));
+    Data_C = squeeze(mean(bchData(:, [1 3 4], :, 1, Indx_Ch, Indx_B), 'omitnan'));
 
     A = subfigure([], Grid, [Indx_Ch 3], [], true, Format.Indexes.Letters{4+Indx_Ch}, Format);
-A.Position(1) = A.Position(1)+Shift/2;
-A.Position(3) = A.Position(3)-Shift/2;
-A.Position(4) = A.Position(4)-Shift/2;
+    A.Position(1) = A.Position(1)+Shift/2;
+    A.Position(3) = A.Position(3)-Shift/2;
+    A.Position(4) = A.Position(4)-Shift/2;
 
     hold on
     plot([1 3 4], Data_C(:, 1), ':', 'LineWidth', 1, 'Color', TaskColors(1, :), 'HandleVisibility','on')
@@ -238,6 +237,57 @@ A.Position(4) = A.Position(4)-Shift/2;
     title(Titles{Indx_Ch}, 'FontSize', Format.Text.TitleSize)
 end
 
-
-
 saveFig([TitleTag, 'v2'], Paths.Paper, Format)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Statistics
+
+
+%% 2-way ANOVAs for each variable
+clc
+
+FactorLabels = {'Session', 'Task', 'Condition'};
+ConditionLabels = {'Comp', 'Beam'};
+ChLabels = {'Front', 'Center'};
+
+% KSS
+Data = cat(4, CompAnswers.KSS, BeamAnswers.KSS(:, [1 3 4], :));
+Stats = anova3way(Data, FactorLabels);
+dispStat(Stats, FactorLabels, 'KSS:')
+
+% motivation
+Data = cat(4, CompAnswers.Motivation, BeamAnswers.Motivation(:, [1 3 4], :));
+Stats = anova3way(Data, FactorLabels);
+dispStat(Stats, FactorLabels, 'Motivation:')
+
+% RTs
+Data = cat(4, cat(3, LAT_RT_C, PVT_RT_C),  cat(3, LAT_RT_B(:, [1 3 4]), PVT_RT_B(:, [1 3 4])));
+Stats = anova3way(Data, FactorLabels);
+dispStat(Stats, FactorLabels, 'RTs:')
+
+% Lapses
+Data = cat(4, cat(3, LAT_Lapses_C, PVT_Lapses_C),  cat(3, LAT_Lapses_B(:, [1 3 4]), ...
+    PVT_Lapses_B(:, [1 3 4])));
+Stats = anova3way(Data, FactorLabels);
+dispStat(Stats, FactorLabels, 'Lapses:')
+
+
+% EEG
+for Indx_Ch = [1 2]
+
+    Data = squeeze(bchData(:, [1 3 4], :, :, Indx_Ch, Indx_B));
+    Stats = anova3way(Data, FactorLabels);
+    dispStat(Stats, FactorLabels, [ChLabels{Indx_Ch}, ':'])
+
+end
+
+
+
+
+
+
+
+
+
