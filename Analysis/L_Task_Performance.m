@@ -100,7 +100,8 @@ Grid = [2, 5];
 Indx_B = 2; % theta
 Indx = 1;
 YLims = [-.3 1];
-Colors = 'Order'; % either 'Task' or 'Participants' or 'Order'
+StatsP = P.StatsP;
+Colors = 'Participants'; % either 'Task' or 'Participants' or 'Order'
 
 
 figure('units','centimeters','position',[0 0 Format.Figure.W3*1.2 Format.Figure.Height*.5])

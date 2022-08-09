@@ -8,7 +8,7 @@ end
 Fieldnames = fieldnames(Stats);
 
 if any(strcmp(Fieldnames, 't')) % paired t-test
-    
+
     disp('*')
     disp(Label)
     disp(['(t = ', num2str(Stats.t(P(1), P(2)), '%.2f'), ', df = ', num2str(Stats.df(P(1), P(2))), ...
@@ -16,9 +16,9 @@ if any(strcmp(Fieldnames, 't')) % paired t-test
     disp('*')
 elseif any(strcmp(Fieldnames, 'ranovatbl')) % 2 way rmANOVA
     Positions = [3, 5, 7]; % Session, Task, Interaction
-    
+
     disp('Interpreting eta: .01 is small; .06 is medium; .14 is large')
-        disp('*')
+    disp('*')
     disp(Label)
     for Indx = 1:3
         p = Stats.ranovatbl.pValueGG(Positions(Indx));
@@ -26,11 +26,27 @@ elseif any(strcmp(Fieldnames, 'ranovatbl')) % 2 way rmANOVA
         DF2 = Stats.ranovatbl.DF(Positions(Indx)+1);
         F = Stats.ranovatbl.F(Positions(Indx));
         eta = Stats.effects.eta2(Indx);
-        
 
-    disp(['F(', num2str(DF1), ', ', num2str(DF2), ') = ', num2str(F, '%.2f'), ...
-        ', p = ', num2str(p, '%.3f'), ', eta2 = ', num2str(eta, '%.3f'), ')'])
+
+        disp(['F(', num2str(DF1), ', ', num2str(DF2), ') = ', num2str(F, '%.2f'), ...
+            ', p = ', num2str(p, '%.3f'), ', eta2 = ', num2str(eta, '%.3f'), ')'])
 
     end
-        disp('*')
+    disp('*')
+elseif any(strcmp(Fieldnames, 'r')) % correlation
+
+    disp('*')
+    disp(Label)
+    P = num2str(Stats.p, '%.3f');
+    R = num2str(Stats.r, '%.2f');
+    if strcmp(R(1), '-')
+        Sign = R(1);
+    else
+        Sign = '';
+    end
+
+    disp(['r(', num2str(Stats.df), ') = ', [Sign, '.', extractAfter(R, '.')], ...
+        ', p = ', P(2:end)])
+    disp('*')
+
 end

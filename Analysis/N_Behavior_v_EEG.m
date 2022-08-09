@@ -1,6 +1,9 @@
 %%% Here I test specific hypotheses about a link between theta and
 %%% behavior.
 
+clear
+clc
+close all
 
 
 ROI = 'preROI';
@@ -10,13 +13,14 @@ P = analysisParameters();
 Paths = P.Paths;
 Bands = P.Bands;
 Sessions = P.Sessions;
+Participants = P.Participants;
 Channels = P.Channels;
 StatsP = P.StatsP;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 Labels = P.Labels;
 
-TitleTag = 'F_TaskTheta_ROI';
+TitleTag = 'N_Behavior_vs_EEG';
 
 
 
@@ -49,25 +53,32 @@ bData = bandData(chData, Freqs, Bands, 'last');
 
 nParticipants = numel(Participants);
 nSessions = numel(Sessions.Labels);
+Source_Tables = fullfile(Paths.Data, 'Behavior');
 
 
-% SPFT
-Answers_Path = fullfile(Source_Tables, 'SpFT_AllAnswers.mat');
+%%% M2S
+
+Answers_Path = fullfile(Source_Tables, 'Match2Sample_AllAnswers.mat');
 load(Answers_Path, 'Answers')
-SpFT = Answers;
+M2S = Answers;
 
-SpFT_Correct = nan(nParticipants, nSessions); % percent correct
-SpFT_Incorrect = SpFT_Correct;
 
+Levels = unique(M2S.level);
+nLevels = numel(Levels);
+
+% load data
+M2S_Correct = nan(nParticipants, nSessions, nLevels); % percent correct
 for Indx_P = 1:nParticipants
     for Indx_S = 1:nSessions
-            T = SpFT(strcmp(SpFT.Participant, Participants{Indx_P}) & ...
-                strcmp(SpFT.Session, Sessions.SpFT{Indx_S}), :);
-            C = nanmean(T.Correct);
-            IC =  nanmean(T.Incorrect);
-            
-            SpFT_Correct(Indx_P, Indx_S) = C/10;
-            SpFT_Incorrect(Indx_P, Indx_S) = IC/10;
+        for Indx_L = 1:nLevels
+            T = M2S(strcmp(M2S.Participant, Participants{Indx_P}) & ...
+                strcmp(M2S.Session, Sessions.Match2Sample{Indx_S}) & ...
+                M2S.level == Levels(Indx_L), :);
+            Tot = size(T, 1);
+            C = nnz(T.correct==1);
+
+            M2S_Correct(Indx_P, Indx_S, Indx_L) = 100*C/Tot;
+        end
     end
 end
 
@@ -88,6 +99,33 @@ TotT = size(PVT.RT, 3);
 PVT_RT = nanmean(PVT.RT, 3);
 PVT_Lapses = nansum(squeeze(PVT.Tally) == 2, 3);
 
+
+
+% SPFT
+Answers_Path = fullfile(Source_Tables, 'SpFT_AllAnswers.mat');
+load(Answers_Path, 'Answers')
+SpFT = Answers;
+
+SpFT_Correct = nan(nParticipants, nSessions); % percent correct
+SpFT_Incorrect = SpFT_Correct;
+
+for Indx_P = 1:nParticipants
+    for Indx_S = 1:nSessions
+        T = SpFT(strcmp(SpFT.Participant, Participants{Indx_P}) & ...
+            strcmp(SpFT.Session, Sessions.SpFT{Indx_S}), :);
+        C = nanmean(T.Correct);
+        IC =  nanmean(T.Incorrect);
+
+        SpFT_Correct(Indx_P, Indx_S) = C/10;
+        SpFT_Incorrect(Indx_P, Indx_S) = IC/10;
+    end
+end
+
+%%% Load questionnaire data
+Filepath = fullfile(P.Paths.Data, 'Questionnaires');
+[Answers, Labels] = loadAllBAT(Filepath, Participants, Sessions, AllTasks);
+
+Questions = fieldnames(Answers);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -176,6 +214,144 @@ title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
 
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Statstics
+
+%% Behavior vs EEG
+clc
+
+Ch_Indx = 1;
+
+AllTheta = squeeze(bData(:, [1 3], :, Ch_Indx, B_Indx));
+
+
+%%% STM
+% Pass, since no sgnificant change with session
+
+
+%%% LAT
+Task_Indx = 2;
+Theta = squeeze(AllTheta(:, :, Task_Indx));
+dTheta = Theta(:, 2) - Theta(:, 1);
+
+% correct
+Behavior = LAT_Correct(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'LAT %Correct:')
+
+% lapses
+Behavior = LAT_Lapses(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'LAT %Lapses:')
+
+% RT
+Behavior = LAT_RT(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'LAT RTs:')
+
+
+%%% PVT
+Task_Indx = 3;
+Theta = squeeze(AllTheta(:, :, Task_Indx));
+dTheta = Theta(:, 2) - Theta(:, 1);
+
+% lapses
+Behavior = PVT_Lapses(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'PVT %Lapses:')
+
+% RTs
+Behavior = PVT_RT(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'PVT RTs:')
+
+
+%%% SpFT
+Task_Indx = 4;
+Theta = squeeze(AllTheta(:, :, Task_Indx));
+dTheta = Theta(:, 2) - Theta(:, 1);
+
+% Correct
+Behavior = SpFT_Correct(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'Speech %Correct:')
+
+% Incorrect
+Behavior = SpFT_Incorrect(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'Speech %Mistakes:')
+
+
+
+%% Behavior vs Questionnaires
+
+Question = 'KSS';
+
+%%% SpFT
+Task_Indx = 4;
+Questionnaire = squeeze(Answers.(Question)(:, [1 3], Task_Indx));
+dQuestionnaire = Questionnaire(:, 2) - Questionnaire(:, 1);
+
+% Correct
+Behavior = SpFT_Correct(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dQuestionnaire);
+dispStat(Stats, [], 'Speech %Correct:')
+
+% Incorrect
+Behavior = SpFT_Incorrect(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dQuestionnaire);
+dispStat(Stats, [], 'Speech %Mistakes:')
+
+
+
+%% Questionnaires vs theta
+
+Question = 'KSS';
+PlotProps = P.Manuscript;
+
+B_Indx = 2;
+Ch_Indx = 1;
+% AllTheta = squeeze(bData(:, [1 3], :, Ch_Indx, B_Indx));
+AllTheta = log(squeeze(bData(:, [1 3], :, Ch_Indx, B_Indx)));
+
+for Indx_T = 1:numel(AllTasks)
+
+    Theta = squeeze(AllTheta(:, :, Indx_T));
+    dTheta = Theta(:, 2) - Theta(:, 1);
+
+    Questionnaire = squeeze(Answers.(Question)(:, [1 3], Indx_T));
+%     dQuestionnaire = Questionnaire(:, 2) - Questionnaire(:, 1);
+dQuestionnaire = Questionnaire(:, 2);
+
+    Stats = correlation(dBehavior, dQuestionnaire);
+    dispStat(Stats, [], [TaskLabels{Indx_T}, ' ', Question, ' vs ', BandLabels{B_Indx}])
+
+    figure
+plotCorrelations(dQuestionnaire, dTheta, {Question, BandLabels{B_Indx}}, [], ...
+    PlotProps.Color.Participants, PlotProps);
+title(TaskLabels{Indx_T})
+end
+
+
 %% Speech corr with coloring
 
 
@@ -193,8 +369,8 @@ Behavior = SpFT_Incorrect(:, [1 3]);
 
 dBehavior = Behavior(:, 2) - Behavior(:, 1);
 
- Color = repmat(getColors(1, '', 'yellow'), nParticipants, 1);
-        Color([1 5 12 end], :) = repmat(getColors(1, '', 'blue'), 4, 1);
+Color = repmat(getColors(1, '', 'yellow'), nParticipants, 1);
+Color([1 5 12 end], :) = repmat(getColors(1, '', 'blue'), 4, 1);
 
 AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
 figure
@@ -253,7 +429,7 @@ Behavior = SpFT_Incorrect(:, [1 3]);
 dBehavior = Behavior(:, 2) - Behavior(:, 1);
 
 Color = repmat(getColors(1, '', 'yellow'), nParticipants, 1);
-        Color([1 5 12 end], :) = repmat(getColors(1, '', 'blue'), 4, 1);
+Color([1 5 12 end], :) = repmat(getColors(1, '', 'blue'), 4, 1);
 
 AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
 
