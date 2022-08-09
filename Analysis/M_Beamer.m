@@ -35,27 +35,19 @@ Filepath = fullfile(P.Paths.Data, 'Questionnaires');
 Source_Tables = fullfile(Paths.Data, 'Behavior');
 
 % LAT
-LAT = loadLATmeta(P, BeamSessions.LAT, false);
-TotT = size(LAT.RT, 3);
-LAT_RT_B = mean(LAT.RT, 3, 'omitnan');
-LAT_Lapses_B = 100*(sum(squeeze(LAT.Tally) == 1, 3, 'omitnan')/TotT);
+[~, LAT_RT_B, Types, TotT] = loadBehavior(Participants, BeamSessions.LAT, 'LAT', Paths, false);
+LAT_Lapses_B = 100*(squeeze(Types(:, :, 1))./TotT);
 
-LAT = loadLATmeta(P, CompSessions.LAT, false);
-TotT = size(LAT.RT, 3);
-LAT_RT_C = mean(LAT.RT, 3, 'omitnan');
-LAT_Lapses_C = 100*(sum(squeeze(LAT.Tally) == 1, 3, 'omitnan')/TotT);
+[~, LAT_RT_C, Types, TotT] = loadBehavior(Participants, CompSessions.LAT, 'LAT', Paths, false);
+LAT_Lapses_C = 100*(squeeze(Types(:, :, 1))./TotT);
 
 
 % PVT
-PVT = loadPVTmeta(P, BeamSessions.PVT, false);
-PVT_RT_B = mean(PVT.RT, 3, 'omitnan');
-TotT = size(PVT.RT, 3);
-PVT_Lapses_B = 100*(sum(squeeze(PVT.Tally) == 2, 3, 'omitnan'))/TotT;
+[~, PVT_RT_B, Types, TotT] = loadBehavior(Participants, BeamSessions.PVT, 'PVT', Paths, false);
+PVT_Lapses_B = 100*(squeeze(Types(:, :, 1))./TotT);
 
-PVT = loadPVTmeta(P, CompSessions.PVT, false);
-PVT_RT_C = mean(PVT.RT, 3, 'omitnan');
-TotT = size(PVT.RT, 3);
-PVT_Lapses_C = 100*(sum(squeeze(PVT.Tally) == 2, 3, 'omitnan'))/TotT;
+[~, PVT_RT_C, Types, TotT] = loadBehavior(Participants, CompSessions.PVT, 'PVT', Paths, false);
+PVT_Lapses_C = 100*(squeeze(Types(:, :, 1))./TotT);
 
 
 %%% load EEG
