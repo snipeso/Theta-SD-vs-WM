@@ -189,6 +189,7 @@ end
 Grid = [1 3];
 YLim = [0 90];
 PlotProps = P.Manuscript;
+RM(RM==0) = nan;
 
 figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.25])
 for Indx_S = 1:3
