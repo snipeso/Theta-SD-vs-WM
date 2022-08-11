@@ -132,7 +132,7 @@ ylim(YLim)
 set(gca, 'XTickLabel', [])
 yticks(linspace(0, 1, 9))
 yticklabels(["Extremely alert", repmat("", 1, 7), "Fighting sleep"])
-title('KSS', 'FontSize', Format.Text.TitleSize)
+title('Sleepiness', 'FontSize', Format.Text.TitleSize)
 legend off
 legend({'Desk', 'LAT', 'PVT'}, 'location', 'southwest')
 set(legend, 'ItemTokenSize', [7 7])
@@ -247,15 +247,16 @@ saveFig([TitleTag, 'v2'], Paths.Paper, Format)
 
 %% 2-way ANOVAs for each variable
 clc
+Indx_B = 2;
 
 FactorLabels = {'Session', 'Task', 'Condition'};
 ConditionLabels = {'Comp', 'Beam'};
-ChLabels = {'Front', 'Center'};
+ChLabels = {'Front', 'Center', 'Back'};
 
 % KSS
 Data = cat(4, CompAnswers.KSS, BeamAnswers.KSS(:, [1 3 4], :));
 Stats = anova3way(Data, FactorLabels);
-dispStat(Stats, FactorLabels, 'KSS:')
+dispStat(Stats, FactorLabels, 'Sleepiness:')
 
 % motivation
 Data = cat(4, CompAnswers.Motivation, BeamAnswers.Motivation(:, [1 3 4], :));
@@ -275,7 +276,7 @@ dispStat(Stats, FactorLabels, 'Lapses:')
 
 
 % EEG
-for Indx_Ch = [1 2]
+for Indx_Ch = 1:3
 
     Data = squeeze(bchData(:, [1 3 4], :, :, Indx_Ch, Indx_B));
     Stats = anova3way(Data, FactorLabels);
