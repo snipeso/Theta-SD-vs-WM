@@ -1,15 +1,21 @@
-function Stats = correlation(Data1, Data2)
+function Stats = correlation(Data1, Data2, StatsP)
 % get correlations between two P x 1 variables.
 
-Keep = ~(isnan(Data1)|isnan(Data2));
+Dims = size(Data1);
+Stats  = struct();
 
-% [R, P, C1, C2] = corrcoef(Data1(Keep), Data2(Keep));
-% Stats.r = R(2);
-% Stats.p = P(2);
-% Stats.CI = [C1(2), C2(2)];
+Keep = ~(isnan(Data1)|isnan(Data2));
 Stats.df = nnz(Keep)-2;
 
 
-[R, P] = corr(Data1(Keep), Data2(Keep), 'Rows', 'complete', 'type','Spearman');
+[R, P] = corr(Data1, Data2, 'Rows', 'complete', 'type',StatsP.Correlation);
+
+if numel(R)>1
+    PDims = size(P);
+    [Sig, crit_p, ~, adj_P] = fdr_bh(P(:), StatsP.Alpha, StatsP.ttest.dep);
+    Stats.sig = reshape(Sig, PDims(1), PDims(2));
+    Stats.crit_p = crit_p;
+    Stats.p_fdr =  reshape(adj_P, PDims(1), PDims(2));
+end
 Stats.r = R;
 Stats.p = P;

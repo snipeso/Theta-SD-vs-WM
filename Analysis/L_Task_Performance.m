@@ -52,16 +52,16 @@ end
 
 %%% LAT
 
-[~, LAT_RT, Types, TotT] = loadBehavior(Participants, Sessions.LAT, 'LAT', Paths, false);
+[Trials, LAT_RT, Types, TotT] = loadBehavior(Participants, Sessions.LAT, 'LAT', Paths, false);
 LAT_Lapses = 100*(squeeze(Types(:, :, 1))./TotT);
 LAT_Correct = 100*(squeeze(Types(:, :, 3))./TotT);
 
 
+
 %%% PVT
 
-[~, PVT_RT, Types, ~] = loadBehavior(Participants, Sessions.PVT, 'PVT', Paths, false);
+[Trials, PVT_RT, Types, ~] = loadBehavior(Participants, Sessions.PVT, 'PVT', Paths, false);
 PVT_Lapses = squeeze(Types(:, :, 1));
-
 
 
 %%% SpFT
@@ -97,7 +97,7 @@ Indx_B = 2; % theta
 Indx = 1;
 YLims = [-.3 1];
 StatsP = P.StatsP;
-Colors = 'Order'; % either 'Task' or 'Participants' or 'Order'
+Colors = 'Participants'; % either 'Task' or 'Participants' or 'Order'
 
 
 figure('units','centimeters','position',[0 0 Format.Figure.W3*1.2 Format.Figure.Height*.5])
