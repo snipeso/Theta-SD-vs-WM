@@ -50,20 +50,22 @@ bchData = bandData(chData, Freqs, Bands, 'last');
 % average frequencies into bands
 bData = bandData(zData, Freqs, Bands, 'last');
 
-
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Load performance
 
 nParticipants = numel(Participants);
 nSessions = numel(Sessions.Labels);
 Source_Tables = fullfile(Paths.Data, 'Behavior');
 
+Performance = [];
+Performance_Labels = {};
 
 %%% M2S
 
 Answers_Path = fullfile(Source_Tables, 'Match2Sample_AllAnswers.mat');
 load(Answers_Path, 'Answers')
 M2S = Answers;
-
 
 Levels = unique(M2S.level);
 nLevels = numel(Levels);
@@ -84,20 +86,68 @@ for Indx_P = 1:nParticipants
     end
 end
 
+Performance = cat(3, Performance, M2S_Correct);
+Performance_Labels = cat(1, Performance_Labels, append('STM ', string(Levels)));
+
 
 % LAT
 [Trials, LAT_RT, Types, TotT] = loadBehavior(Participants, Sessions.LAT, 'LAT', Paths, false);
-LAT_Lapses = 100*(squeeze(Types(:, :, 1))./TotT);
-LAT_Correct = 100*(squeeze(Types(:, :, 3))./TotT);
-LAT_Late = 100*(squeeze(Types(:, :, 2))./TotT);
-[LAT_top10RT, ~] = tabulateTable(Trials, 'RT', 'top10mean', Participants, Sessions.LAT, []);
 
+Performance = cat(3, Performance, LAT_RT);
+Performance_Labels = cat(1, Performance_Labels, "LAT meanRT");
+
+LAT_Lapses = 100*(squeeze(Types(:, :, 1))./TotT);
+Performance = cat(3, Performance, LAT_Lapses);
+Performance_Labels = cat(1, Performance_Labels, "LAT lapses");
+
+LAT_Correct = 100*(squeeze(Types(:, :, 3))./TotT);
+Performance = cat(3, Performance, LAT_Correct);
+Performance_Labels = cat(1, Performance_Labels, "LAT correct");
+
+LAT_Late = 100*(squeeze(Types(:, :, 2))./TotT);
+Performance = cat(3, Performance, LAT_Late);
+Performance_Labels = cat(1, Performance_Labels, "LAT late");
+
+[LAT_top10RT, ~] = tabulateTable(Trials, 'RT', 'top10mean', Participants, Sessions.LAT, []);
+Performance = cat(3, Performance, LAT_top10RT);
+Performance_Labels = cat(1, Performance_Labels, "LAT top10RT");
+
+[Matrix, ~] = tabulateTable(Trials, 'RT', 'median', Participants, Sessions.LAT, []);
+Performance = cat(3, Performance, Matrix);
+Performance_Labels = cat(1, Performance_Labels, "LAT median");
+
+[Matrix, ~] = tabulateTable(Trials, 'RT', 'bottom10mean', Participants, Sessions.LAT, []);
+Performance = cat(3, Performance, Matrix);
+Performance_Labels = cat(1, Performance_Labels, "LAT bottom10RT");
+
+[Matrix, ~] = tabulateTable(Trials, 'RT', 'std', Participants, Sessions.LAT, []);
+Performance = cat(3, Performance, Matrix);
+Performance_Labels = cat(1, Performance_Labels, "LAT std");
 
 % PVT
 [Trials, PVT_RT, Types, ~] = loadBehavior(Participants, Sessions.PVT, 'PVT', Paths, false);
-PVT_Lapses = squeeze(Types(:, :, 1));
-[PVT_top10RT, ~] = tabulateTable(Trials, 'RT', 'top10mean', Participants, Sessions.PVT, []);
+Performance = cat(3, Performance, PVT_RT);
+Performance_Labels = cat(1, Performance_Labels, "PVT meanRT");
 
+PVT_Lapses = squeeze(Types(:, :, 1));
+Performance = cat(3, Performance, PVT_Lapses);
+Performance_Labels = cat(1, Performance_Labels, "PVT lapses");
+
+[PVT_top10RT, ~] = tabulateTable(Trials, 'RT', 'top10mean', Participants, Sessions.PVT, []);
+Performance = cat(3, Performance, PVT_top10RT);
+Performance_Labels = cat(1, Performance_Labels, "PVT top10RT");
+
+[Matrix, ~] = tabulateTable(Trials, 'RT', 'median', Participants, Sessions.PVT, []);
+Performance = cat(3, Performance, Matrix);
+Performance_Labels = cat(1, Performance_Labels, "PVT median");
+
+[Matrix, ~] = tabulateTable(Trials, 'RT', 'bottom10mean', Participants, Sessions.PVT, []);
+Performance = cat(3, Performance, Matrix);
+Performance_Labels = cat(1, Performance_Labels, "PVT bottom10RT");
+
+[Matrix, ~] = tabulateTable(Trials, 'RT', 'std', Participants, Sessions.PVT, []);
+Performance = cat(3, Performance, Matrix);
+Performance_Labels = cat(1, Performance_Labels, "PVT std");
 
 % SPFT
 Answers_Path = fullfile(Source_Tables, 'SpFT_AllAnswers.mat');
@@ -119,6 +169,13 @@ for Indx_P = 1:nParticipants
     end
 end
 
+Performance = cat(3, Performance, SpFT_Incorrect);
+Performance_Labels = cat(1, Performance_Labels, "Speech mistakes/s");
+Performance = cat(3, Performance, SpFT_Correct);
+Performance_Labels = cat(1, Performance_Labels, "Speech words/s");
+
+Performance(:, 2, :) = [];  % ignore SR condition
+
 %%% Load questionnaire data
 Filepath = fullfile(P.Paths.Data, 'Questionnaires');
 [Answers, Labels] = loadAllBAT(Filepath, Participants, Sessions, AllTasks);
@@ -126,9 +183,84 @@ Filepath = fullfile(P.Paths.Data, 'Questionnaires');
 Questions = fieldnames(Answers);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% plot correlations
+
+
+%% Colors for plots
+
+Colors = nan(numel(Performance_Labels), 3);
+for Indx_P = 1:numel(Performance_Labels)
+Task = extractBefore(Performance_Labels(Indx_P), ' ');    
+if strcmp(Task, 'STM')
+    Task = 'Match2Sample';
+elseif strcmp(Task, 'Speech')
+    Task = 'SpFT';
+end
+Colors(Indx_P, :) = PlotProps.Color.Tasks.(Task);
+end
 %%
 
+%%% identify only measures that show a significant change from BL to SD
 
+Stats = pairedttest(squeeze(Performance(:, 1, :)), squeeze(Performance(:, 2, :)), StatsP);
+
+% [~, Order] = sort(abs(Stats.hedgesg), 'descend');
+Order =1:numel(Performance_Labels);
+
+Data1 = squeeze(Performance(:, 2, Order) - Performance(:, 1, Order));
+
+
+Grid = [1 4];
+Indx_B = 2;
+CLims = [-.75 .75];
+PlotProps = P.Manuscript;
+PlotProps.Figure.Padding = 30;
+PlotProps.Scatter.Size = 15;
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3*1.2 PlotProps.Figure.Height*.65])
+
+ Axes = subfigure([], Grid, [1 1], [], true, PlotProps.Indexes.Letters{1}, PlotProps);
+ Axes.Position(1) = Axes.Position(1)+.08;
+  Axes.Position(3) = Axes.Position(3)-.08;
+    Axes.Position(4) = Axes.Position(4)-.02;
+plotUFO(Stats.hedgesg, Stats.hedgesgCI, Performance_Labels, {}, Colors, 'vertical', PlotProps);
+ set(gca, 'XDir','reverse')
+ xlim([.5 numel(Performance_Labels)+.5])
+ ylabel(P.Labels.ES)
+title('BL vs SD', 'FontSize',PlotProps.Text.TitleSize)
+
+for Indx_Ch = 1:3
+    Data2 = squeeze(bchData(:, 3, :, Indx_Ch, Indx_B)- bchData(:, 1, :, Indx_Ch, Indx_B));
+
+    if Indx_Ch == 1
+         Letter = PlotProps.Indexes.Letters{2};
+    else
+        Letter = '';
+    end
+    Axes = subfigure([], Grid, [1 1+Indx_Ch], [], true,Letter, PlotProps);
+    shiftaxis(Axes, PlotProps.Axes.xPadding, [])
+  Axes.Position(4) = Axes.Position(4)-.02;
+%   Axes.Position(1) = Axes.Position(1)-.02;
+    Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', TaskLabels, StatsP, PlotProps);
+
+    title(ChLabels{Indx_Ch}, 'FontSize', PlotProps.Text.TitleSize)
+    caxis(CLims)
+    colorbar off
+%     if Indx_Ch > 1
+        ylabel('')
+        xlabel('')
+        set(gca, 'YTick', [])
+%     end
+    addRectangles(TaskLabels, Performance_Labels, PlotProps)
+end
+
+
+
+
+
+
+
+
+%%
 PlotProps = P.Manuscript;
 PlotProps.Axes.xPadding = 20;
 
@@ -147,6 +279,7 @@ dTheta = Theta(:, 2) - Theta(:, 1);
 Behavior = SpFT_Incorrect(:, [1 3]);
 
 dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
 
 
 AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
@@ -443,16 +576,16 @@ for Indx_T = 1:numel(AllTasks)
     dTheta = Theta(:, 2) - Theta(:, 1);
 
     Questionnaire = squeeze(Answers.(Question)(:, [1 3], Indx_T));
-%     dQuestionnaire = Questionnaire(:, 2) - Questionnaire(:, 1);
-dQuestionnaire = Questionnaire(:, 2);
+    %     dQuestionnaire = Questionnaire(:, 2) - Questionnaire(:, 1);
+    dQuestionnaire = Questionnaire(:, 2);
 
     Stats = correlation(dBehavior, dQuestionnaire);
     dispStat(Stats, [], [TaskLabels{Indx_T}, ' ', Question, ' vs ', BandLabels{B_Indx}])
 
     figure
-plotCorrelations(dQuestionnaire, dTheta, {Question, BandLabels{B_Indx}}, [], ...
-    PlotProps.Color.Participants, PlotProps);
-title(TaskLabels{Indx_T})
+    plotCorrelations(dQuestionnaire, dTheta, {Question, BandLabels{B_Indx}}, [], ...
+        PlotProps.Color.Participants, PlotProps);
+    title(TaskLabels{Indx_T})
 end
 
 

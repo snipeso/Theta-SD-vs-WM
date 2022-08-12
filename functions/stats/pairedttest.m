@@ -87,6 +87,7 @@ elseif numel(Dims1) == 2 && numel(Dims2) == 2 % C
     stats = mes(Data2, Data1, StatsP.Paired.ES, 'isDep', 1);
     ES = stats.(StatsP.Paired.ES)';
     Stats.(StatsP.Paired.ES) = ES;
+    Stats.([StatsP.Paired.ES, 'CI']) =stats.([StatsP.Paired.ES, 'Ci'])';
 
 elseif numel(Dims1) == 2 && numel(Dims2) == 3 % D
 

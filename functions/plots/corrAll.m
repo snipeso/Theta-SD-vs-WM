@@ -6,7 +6,12 @@ function Stats = corrAll(Data1, Data2, yLabel, yTickLabels, xLabel, xTickLabels,
 
 Stats = correlation(Data1, Data2, StatsP);
 
-imagesc(Stats.r)
+R = Stats.r;
+
+% R(Stats.p>StatsP.Trend) = R(Stats.p>StatsP.Trend)*.2; 
+R(Stats.p>StatsP.Alpha) = R(Stats.p>StatsP.Alpha)*.25; 
+
+imagesc(R)
 ylabel(yLabel)
 yticks(1:numel(yTickLabels))
 yticklabels(yTickLabels)
@@ -18,6 +23,8 @@ xticklabels(xTickLabels)
 Max = max(abs(Stats.r(:)));
 caxis([-Max, Max])
 colormap(PlotProps.Color.Maps.Divergent)
+h=gca; h.XAxis.TickLength = [0 0];
+h.YAxis.TickLength = [0 0];
 % h = colorbar;
 % set(h, 'R values')
 

@@ -91,11 +91,11 @@ for Indx_Ch = 1:3
     end
 end
 
- Axes = subfigure([], Grid,[1 Indx_Ch], [], false, '', PlotProps);
- Axes.Units = 'normalized';
- Axes.Position(1) =  Axes.Position(1)+.08;
- PlotProps.Colorbar.Location = 'eastoutside';
- PlotProps.Color.Steps.Divergent = 100;
+Axes = subfigure([], Grid,[1 Indx_Ch], [], false, '', PlotProps);
+Axes.Units = 'normalized';
+Axes.Position(1) =  Axes.Position(1)+.08;
+PlotProps.Colorbar.Location = 'eastoutside';
+PlotProps.Color.Steps.Divergent = 100;
 plotColorbar('Divergent', CLims, 'R', PlotProps)
 
 
