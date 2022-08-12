@@ -24,13 +24,16 @@ EEG_Triggers.Start = 'S  1';
 EEG_Triggers.End = 'S  2';
 
 % durations to loop through for each task
-Durations.Match2Sample =  [-2, -4, 1 2 4 6 8, 10, 12, 15, 20];
-Durations.LAT =  [-2, -4, 1 2 4 6 8, 10];
-Durations.PVT =  [-2, -4, 1 2 4 6 8];
-Durations.SpFT =  [-2, 1 2 4];
-Durations.Game =  [-2, -4, 1 2 4 6 8];
-Durations.Music =  [-2, 1 2 4];
-
+% Durations.Match2Sample =  [-2, -4, 1 2 4 6 8, 10, 12, 15, 20];
+% Durations.LAT =  [-2, -4, 1 2 4 6 8, 10];
+% Durations.PVT =  [-2, -4, 1 2 4 6 8];
+% Durations.SpFT =  [-2, 1 2 4];
+% Durations.Game =  [-2, -4, 1 2 4 6 8];
+% Durations.Music =  [-2, 1 2 4];
+Durations.Fixation = [4];
+Durations.Oddball = [4];
+Durations.Standing = [4];
+Tasks = fieldnames(Durations);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Calculate power for minutes of the recording
@@ -104,7 +107,7 @@ for Indx_T = 1:numel(Tasks)
             EEGshort = keepEEG(EEG, D);
             
             Chanlocs = EEGshort.chanlocs;
-            Durtion = size(EEGshort.data, 2)/EEGshort.srate;
+            Duration = size(EEGshort.data, 2)/EEGshort.srate;
             
             % FFT
             nfft = 2^nextpow2(WelchWindow*fs);
@@ -114,15 +117,15 @@ for Indx_T = 1:numel(Tasks)
             Power = Power';
             Freqs = Freqs';
             
-            % plot it
-            Title = replace([Filename_Core, ' ',Tag], '_', ' ');
-            PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Channels, Title, Format, Labels)
-            
+%             % plot it
+%             Title = replace([Filename_Core, ' ',Tag], '_', ' ');
+%             PlotSummaryPower(Power, Freqs, Chanlocs, Bands, Channels, Title, Format, Labels)
+%             
             % save
             save(fullfile(Destination, Filename), 'Power', 'Freqs', 'Chanlocs', 'Duration')
-            Filename_Figure = strjoin({Filename_Core, Tag, 'Welch.jpg'}, '_');
-            saveas(gcf,fullfile(Destination, Filename_Figure))
-            close
+%             Filename_Figure = strjoin({Filename_Core, Tag, 'Welch.jpg'}, '_');
+%             saveas(gcf,fullfile(Destination, Filename_Figure))
+%             close
         end
         disp(['*************finished ',Filename '*************'])
     end

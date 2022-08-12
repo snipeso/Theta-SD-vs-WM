@@ -123,8 +123,7 @@ for Indx_L = 1:nLevels
     Data = squeeze(M2S_Correct(:, :, Indx_L));
 
     subfigure(Space, miniGrid, [1, Indx_L], [], true, {}, Format);
-    Stats = data2D('line', Data, Sessions.Labels, [], [35 105], ...
-        Color, StatsP, Format);
+    Stats = data2D('line', Data, Sessions.Labels, [], [35 105], Color, StatsP, Format);
 
     dispStat(Stats, [1 3], ['M2S L',  num2str(Levels(Indx_L))])
 

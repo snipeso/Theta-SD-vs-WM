@@ -208,7 +208,7 @@ title('Lapses', 'FontSize', Format.Text.TitleSize)
 
 %%% EEG
 Indx_B = 2;
-Titles = {'Front Theta', 'Center Theta'};
+Titles = {'Front Theta', 'Center Theta', 'Back Theta'};
 FigLabels = P.Labels;
 YLim = [-.6 1.45];
 
@@ -217,6 +217,9 @@ for Indx_Ch = [1 2]
     Data_B = squeeze(bchData(:, :, :, 2, Indx_Ch, Indx_B));
     Data_C = squeeze(mean(bchData(:, [1 3 4], :, 1, Indx_Ch, Indx_B), 'omitnan'));
 
+    if Indx_Ch ==3
+        Indx_Ch = 2;
+    end
     A = subfigure([], Grid, [Indx_Ch 3], [], true, Format.Indexes.Letters{4+Indx_Ch}, Format);
     A.Position(1) = A.Position(1)+Shift/2;
     A.Position(3) = A.Position(3)-Shift/2;

@@ -45,8 +45,10 @@ zData = AllData;
 chData = meanChData(zData, Chanlocs, Channels.(ROI), 4);
 
 % average frequencies into bands
-bData = bandData(chData, Freqs, Bands, 'last');
+bchData = bandData(chData, Freqs, Bands, 'last');
 
+% average frequencies into bands
+bData = bandData(zData, Freqs, Bands, 'last');
 
 
 %%% Load performance
@@ -84,14 +86,17 @@ end
 
 
 % LAT
-[~, LAT_RT, Types, TotT] = loadBehavior(Participants, Sessions.LAT, 'LAT', Paths, false);
+[Trials, LAT_RT, Types, TotT] = loadBehavior(Participants, Sessions.LAT, 'LAT', Paths, false);
 LAT_Lapses = 100*(squeeze(Types(:, :, 1))./TotT);
 LAT_Correct = 100*(squeeze(Types(:, :, 3))./TotT);
+LAT_Late = 100*(squeeze(Types(:, :, 2))./TotT);
+[LAT_top10RT, ~] = tabulateTable(Trials, 'RT', 'top10mean', Participants, Sessions.LAT, []);
+
 
 % PVT
-[~, PVT_RT, Types, ~] = loadBehavior(Participants, Sessions.PVT, 'PVT', Paths, false);
+[Trials, PVT_RT, Types, ~] = loadBehavior(Participants, Sessions.PVT, 'PVT', Paths, false);
 PVT_Lapses = squeeze(Types(:, :, 1));
-
+[PVT_top10RT, ~] = tabulateTable(Trials, 'RT', 'top10mean', Participants, Sessions.PVT, []);
 
 
 % SPFT
@@ -136,7 +141,7 @@ B_Indx = 2; % theta
 Grid = [1 2];
 YLim = [0 3];
 
-Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
+Theta = squeeze(bchData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
 dTheta = Theta(:, 2) - Theta(:, 1);
 
 Behavior = SpFT_Incorrect(:, [1 3]);
@@ -164,7 +169,7 @@ Task_Indx = 2; % speech
 Ch_Indx = 1; % front
 B_Indx = 2; % theta
 
-Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
+Theta = squeeze(bchData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
 dTheta = Theta(:, 2) - Theta(:, 1);
 
 Behavior = LAT_Lapses(:, [1 3]);
@@ -191,7 +196,7 @@ Task_Indx = 2; % speech
 Ch_Indx = 1; % front
 B_Indx = 2; % theta
 
-Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
+Theta = squeeze(bchData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
 dTheta = Theta(:, 2) - Theta(:, 1);
 
 Behavior = PVT_RT(:, [1 3]);
@@ -214,9 +219,9 @@ title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
 %% Behavior vs EEG
 clc
 
-Ch_Indx = 1;
+Ch_Indx = 3;
 
-AllTheta = squeeze(bData(:, [1 3], :, Ch_Indx, B_Indx));
+AllTheta = squeeze(bchData(:, [1 3], :, Ch_Indx, B_Indx));
 
 
 %%% STM
@@ -235,6 +240,14 @@ dBehavior = Behavior(:, 2) - Behavior(:, 1);
 Stats = correlation(dBehavior, dTheta);
 dispStat(Stats, [], 'LAT %Correct:')
 
+% late
+Behavior = LAT_Late(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'LAT %Late:')
+
+
 % lapses
 Behavior = LAT_Lapses(:, [1 3]);
 dBehavior = Behavior(:, 2) - Behavior(:, 1);
@@ -248,6 +261,13 @@ dBehavior = Behavior(:, 2) - Behavior(:, 1);
 
 Stats = correlation(dBehavior, dTheta);
 dispStat(Stats, [], 'LAT RTs:')
+
+% fastest RTs
+Behavior = LAT_top10RT(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'LAT fast RTs:')
 
 
 %%% PVT
@@ -269,6 +289,12 @@ dBehavior = Behavior(:, 2) - Behavior(:, 1);
 Stats = correlation(dBehavior, dTheta);
 dispStat(Stats, [], 'PVT RTs:')
 
+% fastest RTs
+Behavior = PVT_top10RT(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+Stats = correlation(dBehavior, dTheta);
+dispStat(Stats, [], 'PVT fast RTs:')
 
 %%% SpFT
 Task_Indx = 4;
@@ -288,6 +314,91 @@ dBehavior = Behavior(:, 2) - Behavior(:, 1);
 
 Stats = correlation(dBehavior, dTheta);
 dispStat(Stats, [], 'Speech %Mistakes:')
+
+
+
+%% topography
+
+clc
+AllTheta = squeeze(bData(:, [1 3], :, :, B_Indx));
+CLims_R = [-.7 .7];
+
+%%% STM
+% Pass, since no sgnificant change with session
+
+
+%%% LAT
+Task_Indx = 2;
+Theta = squeeze(AllTheta(:, :, Task_Indx, :));
+dTheta = squeeze(Theta(:, 2, :) - Theta(:, 1, :));
+
+% correct
+Behavior = LAT_Correct(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+figure
+Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
+title('LAT % Correct')
+
+
+% lapses
+Behavior = LAT_Lapses(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+figure
+Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
+title('LAT %Lapses:')
+
+% RT
+Behavior = LAT_RT(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+figure
+Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
+title('LAT RTs:')
+
+% fastest RTs
+Behavior = LAT_top10RT(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+figure
+Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
+title('LAT fastest RTs:')
+
+%%% PVT
+Task_Indx = 3;
+Theta = squeeze(AllTheta(:, :, Task_Indx, :));
+dTheta = squeeze(Theta(:, 2, :) - Theta(:, 1, :));
+
+% lapses
+Behavior = PVT_Lapses(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+figure
+Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
+title('PVT %Lapses')
+
+% fastest RTs
+Behavior = PVT_top10RT(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+figure
+Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
+title('PVT fast RTs')
+
+%%% SpFT
+Task_Indx = 4;
+Theta = squeeze(AllTheta(:, :, Task_Indx, :));
+dTheta = squeeze(Theta(:, 2, :) - Theta(:, 1, :));
+
+% Incorrect
+Behavior = SpFT_Incorrect(:, [1 3]);
+dBehavior = Behavior(:, 2) - Behavior(:, 1);
+
+figure
+Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
+title('Speech %Mistakes')
+
+
+
 
 
 
@@ -324,7 +435,7 @@ PlotProps = P.Manuscript;
 B_Indx = 2;
 Ch_Indx = 1;
 % AllTheta = squeeze(bData(:, [1 3], :, Ch_Indx, B_Indx));
-AllTheta = log(squeeze(bData(:, [1 3], :, Ch_Indx, B_Indx)));
+AllTheta = log(squeeze(bchData(:, [1 3], :, Ch_Indx, B_Indx)));
 
 for Indx_T = 1:numel(AllTasks)
 
@@ -354,7 +465,7 @@ B_Indx = 2; % theta
 Grid = [1 2];
 YLim = [0 3];
 
-Theta = squeeze(bData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
+Theta = squeeze(bchData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
 dTheta = Theta(:, 2) - Theta(:, 1);
 
 

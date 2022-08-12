@@ -36,6 +36,7 @@ Labels.Amplitude = 'Amplitude (\muV)';
 Labels.Time = 'Time (s)';
 Labels.ES = "Hedge's G";
 Labels.t = 't-values';
+Labels.r = 'r-values';
 Labels.Correct = '% Correct';
 Labels.RT = 'RT (s)';
 P.Labels = Labels;
