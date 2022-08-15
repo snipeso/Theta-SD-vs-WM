@@ -9,7 +9,6 @@ P = analysisParameters();
 
 Paths = P.Paths;
 Bands = P.Bands;
-Sessions = P.Sessions;
 StatsP = P.StatsP;
 Channels = P.Channels;
 Labels = P.Labels;
@@ -79,15 +78,16 @@ clc
 
 Indx_B  = 2; % theta
 Indx_S = 1;
+Indx_L = 3;
 Ret = {'Ret1', 'Ret2'};
 StatsP = P.StatsP;
 StatsP.Correlation = 'Pearson';
 PlotProps = P.Manuscript;
 
 % AFZ log difference vs behavioral difference
-AFZ = squeeze(log(bData(:, Indx_S, [1 2], [2 3], labels2indexes(16, Chanlocs), Indx_B)));
+AFZ = squeeze(log(bData(:, Indx_S, [1 Indx_L], [2 3], labels2indexes(16, Chanlocs), Indx_B)));
 
-Data1 = squeeze(Correct(:, Indx_S, 2)-Correct(:, Indx_S, 1));
+Data1 = squeeze(Correct(:, Indx_S, Indx_L)-Correct(:, Indx_S, 1));
 
 for Indx_E = 1:2
     Data2 = squeeze(AFZ(:, 2, Indx_E)-AFZ(:, 1, Indx_E));
@@ -97,13 +97,46 @@ for Indx_E = 1:2
     figure
     Stats = plotCorrelations(Data1, Data2, {'\Delta %Correct', '\Delta Theta'}, ...
         [], PlotProps.Color.Participants, PlotProps, StatsP);
-title(['L1 vs L3 (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.p, '%2.2f'), ')'])
+title(['L1 vs L', num2str(Levels(Indx_L)), ' (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.p, '%2.2f'), ')'])
 
 end
 
-
+% % Check to see if its the correct data
 % figure
 % topoDiff(squeeze(log(bData(:, Indx_S, 1, 2, :, Indx_B))), squeeze(log(bData(:, Indx_S, 2, 2, :, Indx_B))), ...
 %     Chanlocs, [], StatsP, PlotProps, P.Labels);
+
+%% see with correct data parameters
+
+Indx_B = 2;
+StatsP = P.StatsP;
+
+Data1 = squeeze(Correct(:, Indx_S, 2)-Correct(:, Indx_S, 1));
+
+
+Data2 = squeeze(bData(:, 1, [1 2], 2, :, Indx_B));
+Data2 = squeeze(Data2(:, 2, :)-Data2(:, 1, :));
+
+figure
+Stats = topoCorr(Data2, Data1, Chanlocs, [], StatsP, PlotProps, P.Labels);
+
+%% with ROI
+
+Indx_B = 2;
+Indx_Ch = 1;
+Indx_E = 2;
+Indx_S = 1;
+StatsP = P.StatsP;
+% Indx_L = 2;
+Indx_L = 3;
+
+Data1 = squeeze(Correct(:, Indx_S, Indx_L)-Correct(:, Indx_S, 1));
+
+Data2 = squeeze(bchData(:, Indx_S, [1 Indx_L], Indx_E, Indx_Ch, Indx_B));
+Data2 = squeeze(Data2(:, 2, :)-Data2(:, 1, :));
+
+clc
+ Stats = correlation(Data1, Data2, StatsP);
+    dispStat(Stats, [], 'fmTheta vs performance change ROI')
 
 

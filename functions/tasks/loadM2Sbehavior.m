@@ -5,6 +5,8 @@ load(Answers_Path, 'Answers')
 
 Levels = unique(Answers.level);
 nLevels = numel(Levels);
+nParticipants = numel(Participants);
+nSessions = numel(Sessions.Match2Sample);
 
 % load data
 Correct = nan(nParticipants, nSessions, nLevels); % percent correct
