@@ -254,6 +254,7 @@ for Indx_Ch = 1:3
 end
 
 
+saveFig(strjoin({TitleTag, 'Correlations'}, '_'), Paths.Paper, PlotProps)
 
 
 

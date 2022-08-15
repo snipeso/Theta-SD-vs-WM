@@ -64,29 +64,7 @@ Source_Tables = fullfile(Paths.Data, 'Behavior');
 Participants = P.Participants;
 Sessions = P.Sessions;
 
-Answers_Path = fullfile(Source_Tables, 'Match2Sample_AllAnswers.mat');
-load(Answers_Path, 'Answers')
-M2S = Answers;
-
-
-Levels = unique(M2S.level);
-nLevels = numel(Levels);
-
-% load data
-M2S_Correct = nan(nParticipants, nSessions, nLevels); % percent correct
-for Indx_P = 1:nParticipants
-    for Indx_S = 1:nSessions
-        for Indx_L = 1:nLevels
-            T = M2S(strcmp(M2S.Participant, Participants{Indx_P}) & ...
-                strcmp(M2S.Session, Sessions.Match2Sample{Indx_S}) & ...
-                M2S.level == Levels(Indx_L), :);
-            Tot = size(T, 1);
-            C = nnz(T.correct==1);
-            
-            M2S_Correct(Indx_P, Indx_S, Indx_L) = 100*C/Tot;
-        end
-    end
-end
+[Answers, Correct] = loadM2Sbehavior(Source_Tables, Participants, Sessions);
 
 
 
