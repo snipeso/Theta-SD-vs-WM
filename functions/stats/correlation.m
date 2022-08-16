@@ -28,3 +28,4 @@ Stats.df = nnz(Keep)-2;
 end
 Stats.r = R;
 Stats.p = P;
+Stats.df = Dims1(1)-2;

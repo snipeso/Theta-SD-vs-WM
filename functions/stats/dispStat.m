@@ -43,8 +43,16 @@ elseif any(strcmp(Fieldnames, 'r')) % correlation
 
     disp('*')
     disp(Label)
-    pString = num2str(Stats.p, '%.3f');
-    R = num2str(Stats.r, '%.2f');
+    if isempty(P)
+        pValue = Stats.p;
+        rValue = Stats.r;
+    else
+        pValue = Stats.p(P(1), P(2));
+        rValue = Stats.r(P(1), P(2));
+    end
+
+    pString = num2str(pValue, '%.3f');
+    R = num2str(rValue, '%.2f');
     if strcmp(R(1), '-')
         Sign = R(1);
     else

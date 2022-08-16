@@ -188,20 +188,22 @@ Questions = fieldnames(Answers);
 
 %% Colors for plots
 
+PlotProps = P.Manuscript;
+
 Colors = nan(numel(Performance_Labels), 3);
 for Indx_P = 1:numel(Performance_Labels)
-Task = extractBefore(Performance_Labels(Indx_P), ' ');    
-if strcmp(Task, 'STM')
-    Task = 'Match2Sample';
-elseif strcmp(Task, 'Speech')
-    Task = 'SpFT';
-end
-Colors(Indx_P, :) = PlotProps.Color.Tasks.(Task);
+    Task = extractBefore(Performance_Labels(Indx_P), ' ');
+    if strcmp(Task, 'STM')
+        Task = 'Match2Sample';
+    elseif strcmp(Task, 'Speech')
+        Task = 'SpFT';
+    end
+    Colors(Indx_P, :) = PlotProps.Color.Tasks.(Task);
 end
 %%
 
 %%% identify only measures that show a significant change from BL to SD
-
+clc
 Stats = pairedttest(squeeze(Performance(:, 1, :)), squeeze(Performance(:, 2, :)), StatsP);
 
 % [~, Order] = sort(abs(Stats.hedgesg), 'descend');
@@ -218,39 +220,51 @@ PlotProps.Figure.Padding = 30;
 PlotProps.Scatter.Size = 15;
 figure('units','centimeters','position',[0 0 PlotProps.Figure.W3*1.2 PlotProps.Figure.Height*.65])
 
- Axes = subfigure([], Grid, [1 1], [], true, PlotProps.Indexes.Letters{1}, PlotProps);
- Axes.Position(1) = Axes.Position(1)+.08;
-  Axes.Position(3) = Axes.Position(3)-.08;
-    Axes.Position(4) = Axes.Position(4)-.02;
+Axes = subfigure([], Grid, [1 1], [], true, PlotProps.Indexes.Letters{1}, PlotProps);
+Axes.Position(1) = Axes.Position(1)+.08;
+Axes.Position(3) = Axes.Position(3)-.08;
+Axes.Position(4) = Axes.Position(4)-.02;
 plotUFO(Stats.hedgesg, Stats.hedgesgCI, Performance_Labels, {}, Colors, 'vertical', PlotProps);
- set(gca, 'XDir','reverse')
- xlim([.5 numel(Performance_Labels)+.5])
- ylabel(P.Labels.ES)
+set(gca, 'XDir','reverse')
+xlim([.5 numel(Performance_Labels)+.5])
+ylabel(P.Labels.ES)
 title('BL vs SD', 'FontSize',PlotProps.Text.TitleSize)
 
 for Indx_Ch = 1:3
     Data2 = squeeze(bchData(:, 3, :, Indx_Ch, Indx_B)- bchData(:, 1, :, Indx_Ch, Indx_B));
 
     if Indx_Ch == 1
-         Letter = PlotProps.Indexes.Letters{2};
+        Letter = PlotProps.Indexes.Letters{2};
     else
         Letter = '';
     end
     Axes = subfigure([], Grid, [1 1+Indx_Ch], [], true,Letter, PlotProps);
     shiftaxis(Axes, PlotProps.Axes.xPadding, [])
-  Axes.Position(4) = Axes.Position(4)-.02;
-%   Axes.Position(1) = Axes.Position(1)-.02;
+    Axes.Position(4) = Axes.Position(4)-.02;
+    %   Axes.Position(1) = Axes.Position(1)-.02;
     Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', TaskLabels, StatsP, PlotProps);
 
     title(ChLabels{Indx_Ch}, 'FontSize', PlotProps.Text.TitleSize)
     caxis(CLims)
     colorbar off
-%     if Indx_Ch > 1
-        ylabel('')
-        xlabel('')
-        set(gca, 'YTick', [])
-%     end
+    %     if Indx_Ch > 1
+    ylabel('')
+    xlabel('')
+    set(gca, 'YTick', [])
+    %     end
     addRectangles(TaskLabels, Performance_Labels, PlotProps)
+  
+    for Indx_P = 1:numel(Performance_Labels)
+      for Indx_T = 1:numel(TaskLabels)
+
+            if Stats.p(Indx_P, Indx_T) > StatsP.Alpha
+                continue
+            end
+            dispStat(Stats, [Indx_P, Indx_T], [ChLabels{Indx_Ch}, ...
+                Performance_Labels{Indx_P}, ':EEG-', TaskLabels{Indx_T}])
+        end
+    end
+
 end
 
 

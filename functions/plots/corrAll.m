@@ -10,6 +10,8 @@ R = Stats.r;
 
 % R(Stats.p>StatsP.Trend) = R(Stats.p>StatsP.Trend)*.2; 
 R(Stats.p>StatsP.Alpha) = R(Stats.p>StatsP.Alpha)*.25; 
+% R(Stats.p_fdr>StatsP.Trend) = R(Stats.p_fdr>StatsP.Trend)*.2;
+%  R(Stats.p_fdr>StatsP.Alpha) = R(Stats.p_fdr>StatsP.Alpha)*.2;
 
 imagesc(R)
 ylabel(yLabel)

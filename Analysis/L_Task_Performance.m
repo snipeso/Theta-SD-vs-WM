@@ -1,7 +1,7 @@
 % all task performance things together just for the sake of the paper
 % figure.
 
-clear
+% clear
 clc
 close all
 
@@ -34,20 +34,8 @@ Levels = unique(M2S.level);
 nLevels = numel(Levels);
 
 % load data
-M2S_Correct = nan(nParticipants, nSessions, nLevels); % percent correct
-for Indx_P = 1:nParticipants
-    for Indx_S = 1:nSessions
-        for Indx_L = 1:nLevels
-            T = M2S(strcmp(M2S.Participant, Participants{Indx_P}) & ...
-                strcmp(M2S.Session, Sessions.Match2Sample{Indx_S}) & ...
-                M2S.level == Levels(Indx_L), :);
-            Tot = size(T, 1);
-            C = nnz(T.correct==1);
+[~, M2S_Correct] = loadM2Sbehavior(Source_Tables, Participants, Sessions);
 
-            M2S_Correct(Indx_P, Indx_S, Indx_L) = 100*C/Tot;
-        end
-    end
-end
 
 
 %%% LAT
@@ -128,7 +116,7 @@ for Indx_L = 1:nLevels
     dispStat(Stats, [1 3], ['M2S L',  num2str(Levels(Indx_L))])
 
     if Indx_L ==1
-        ylabel(Labels.Correct)
+        ylabel(P.Labels.Correct)
     end
     padAxis('y')
 
