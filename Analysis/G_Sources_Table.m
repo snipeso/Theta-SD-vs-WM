@@ -37,6 +37,7 @@ switch ValueType
         
     case 'median'
         File_All_sdTheta = 'mtrx_all_tasks_median.mat';
+% File_All_sdTheta =  'mtrx_all_tasks_median_noZscore.mat';
         File_fmTheta = 'mtrx_M2S_levels_median.mat';
         File_sdTheta = 'mtrx_M2S_BS_vs_S2_lvl1_median.mat';
         
@@ -46,7 +47,7 @@ end
 
 % theta in all tasks
 load(fullfile(TablePath, File_All_sdTheta), 'cortical_areas', 'mtrx_all_crtx')
-AllTheta = nanmean(mtrx_all_crtx, 5);
+AllTheta = nanmean(mtrx_all_crtx, 5); % average the different frequencies (4-8)
 Areas = cortical_areas;
 Areas = replace(Areas, '_', ' ');
 

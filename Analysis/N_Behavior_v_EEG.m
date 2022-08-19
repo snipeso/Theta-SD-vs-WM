@@ -274,432 +274,126 @@ saveFig(strjoin({TitleTag, 'Correlations'}, '_'), Paths.Paper, PlotProps)
 
 
 
+%% same, but with source localization
 
-%%
 PlotProps = P.Manuscript;
-PlotProps.Axes.xPadding = 20;
+PlotProps.Figure.Padding = 50;
 
-%%% Change in theta vs change in # mistakes in Speech task
-% prediction: theta will increase more in cases where speech did not
-% improve much
-Task_Indx = 4; % speech
-Ch_Indx = 1; % front
-B_Indx = 2; % theta
-Grid = [1 2];
-YLim = [0 3];
+load(fullfile(Paths.Data, 'EEG', 'Source', 'Table', 'mtrx_all_tasks_median_noZscore.mat'))
+AllTheta = mean(mtrx_all_crtx, 5, 'omitnan'); % average the different frequencies (4-8)
+Areas = cortical_areas;
+Areas = replace(Areas, '_', ' ');
 
-Theta = squeeze(bchData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
-dTheta = Theta(:, 2) - Theta(:, 1);
+Data1 = squeeze(Performance(:, 2, Order) - Performance(:, 1, Order));
 
-Behavior = SpFT_Incorrect(:, [1 3]);
 
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
+for Indx_T = 1:numel(TaskLabels)
 
+    Data2 = squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
+figure('units','normalized','outerposition',[0 0 1 .9])
 
+subfigure([], [1 1], [1, 1], [], false, '', PlotProps);
+Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', Areas, StatsP, PlotProps);
 
-AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
-figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.4])
-subfigure([], Grid,[1 1], [], true, '', PlotProps);
-Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], PlotProps.Color.Participants, PlotProps);
-title(['Speech (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f'), ')'])
-ylim(YLim)
-padAxis('x'); padAxis('y')
-
-
-
-% prediction failed....
-
-
-
-%%% Change in theta vs change in RT in LAT
-% prediction: theta will increase more in participants who got a lot worse
-Task_Indx = 2; % speech
-Ch_Indx = 1; % front
-B_Indx = 2; % theta
-
-Theta = squeeze(bchData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
-dTheta = Theta(:, 2) - Theta(:, 1);
-
-Behavior = LAT_Lapses(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-AxisLabels = {'\DeltaLapses', '\DeltaTheta'};
-Colors = PlotProps.Color.Participants;
-
-subfigure([], Grid, [1 2], [], true, '', PlotProps);
-Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Colors, PlotProps);
-title(['LAT (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f'), ')'])
-ylim(YLim)
-padAxis('x'); padAxis('y')
-
-saveFig(strjoin({TitleTag, 'Corr'}, '_'), Paths.Paper, PlotProps)
-
-
-
-%%
-
-%%% Change in theta vs change in RT in PVT
-% prediction: theta will increase more in participants who got a lot worse
-Task_Indx = 2; % speech
-Ch_Indx = 1; % front
-B_Indx = 2; % theta
-
-Theta = squeeze(bchData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
-dTheta = Theta(:, 2) - Theta(:, 1);
-
-Behavior = PVT_RT(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-AxisLabels = {'\DeltaRTs', '\DeltaTheta'};
-Colors = PlotProps.Color.Participants;
-
-
-figure
-Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Colors, PlotProps);
-title(['r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f')])
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Statstics
-
-%% Behavior vs EEG
-clc
-
-Ch_Indx = 3;
-
-AllTheta = squeeze(bchData(:, [1 3], :, Ch_Indx, B_Indx));
-
-
-%%% STM
-% Pass, since no sgnificant change with session
-
-
-%%% LAT
-Task_Indx = 2;
-Theta = squeeze(AllTheta(:, :, Task_Indx));
-dTheta = Theta(:, 2) - Theta(:, 1);
-
-% correct
-Behavior = LAT_Correct(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'LAT %Correct:')
-
-% late
-Behavior = LAT_Late(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'LAT %Late:')
-
-
-% lapses
-Behavior = LAT_Lapses(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'LAT %Lapses:')
-
-% RT
-Behavior = LAT_RT(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'LAT RTs:')
-
-% fastest RTs
-Behavior = LAT_top10RT(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'LAT fast RTs:')
-
-
-%%% PVT
-Task_Indx = 3;
-Theta = squeeze(AllTheta(:, :, Task_Indx));
-dTheta = Theta(:, 2) - Theta(:, 1);
-
-% lapses
-Behavior = PVT_Lapses(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'PVT %Lapses:')
-
-% RTs
-Behavior = PVT_RT(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'PVT RTs:')
-
-% fastest RTs
-Behavior = PVT_top10RT(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'PVT fast RTs:')
-
-%%% SpFT
-Task_Indx = 4;
-Theta = squeeze(AllTheta(:, :, Task_Indx));
-dTheta = Theta(:, 2) - Theta(:, 1);
-
-% Correct
-Behavior = SpFT_Correct(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'Speech %Correct:')
-
-% Incorrect
-Behavior = SpFT_Incorrect(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dTheta);
-dispStat(Stats, [], 'Speech %Mistakes:')
-
-
-
-%% topography
-
-clc
-AllTheta = squeeze(bData(:, [1 3], :, :, B_Indx));
-CLims_R = [-.7 .7];
-
-%%% STM
-% Pass, since no sgnificant change with session
-
-
-%%% LAT
-Task_Indx = 2;
-Theta = squeeze(AllTheta(:, :, Task_Indx, :));
-dTheta = squeeze(Theta(:, 2, :) - Theta(:, 1, :));
-
-% correct
-Behavior = LAT_Correct(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-figure
-Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
-title('LAT % Correct')
-
-
-% lapses
-Behavior = LAT_Lapses(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-figure
-Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
-title('LAT %Lapses:')
-
-% RT
-Behavior = LAT_RT(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-figure
-Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
-title('LAT RTs:')
-
-% fastest RTs
-Behavior = LAT_top10RT(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-figure
-Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
-title('LAT fastest RTs:')
-
-%%% PVT
-Task_Indx = 3;
-Theta = squeeze(AllTheta(:, :, Task_Indx, :));
-dTheta = squeeze(Theta(:, 2, :) - Theta(:, 1, :));
-
-% lapses
-Behavior = PVT_Lapses(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-figure
-Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
-title('PVT %Lapses')
-
-% fastest RTs
-Behavior = PVT_top10RT(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-figure
-Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
-title('PVT fast RTs')
-
-%%% SpFT
-Task_Indx = 4;
-Theta = squeeze(AllTheta(:, :, Task_Indx, :));
-dTheta = squeeze(Theta(:, 2, :) - Theta(:, 1, :));
-
-% Incorrect
-Behavior = SpFT_Incorrect(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-figure
-Stats = topoCorr(dTheta, dBehavior, Chanlocs, CLims_R, StatsP, PlotProps, P.Labels);
-title('Speech %Mistakes')
-
-
-
-
-
-
-%% Behavior vs Questionnaires
-
-Question = 'KSS';
-
-%%% SpFT
-Task_Indx = 4;
-Questionnaire = squeeze(Answers.(Question)(:, [1 3], Task_Indx));
-dQuestionnaire = Questionnaire(:, 2) - Questionnaire(:, 1);
-
-% Correct
-Behavior = SpFT_Correct(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dQuestionnaire);
-dispStat(Stats, [], 'Speech %Correct:')
-
-% Incorrect
-Behavior = SpFT_Incorrect(:, [1 3]);
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Stats = correlation(dBehavior, dQuestionnaire);
-dispStat(Stats, [], 'Speech %Mistakes:')
-
-
-
-%% Questionnaires vs theta
-
-Question = 'KSS';
-PlotProps = P.Manuscript;
-
-B_Indx = 2;
-Ch_Indx = 1;
-% AllTheta = squeeze(bData(:, [1 3], :, Ch_Indx, B_Indx));
-AllTheta = log(squeeze(bchData(:, [1 3], :, Ch_Indx, B_Indx)));
-
-for Indx_T = 1:numel(AllTasks)
-
-    Theta = squeeze(AllTheta(:, :, Indx_T));
-    dTheta = Theta(:, 2) - Theta(:, 1);
-
-    Questionnaire = squeeze(Answers.(Question)(:, [1 3], Indx_T));
-    %     dQuestionnaire = Questionnaire(:, 2) - Questionnaire(:, 1);
-    dQuestionnaire = Questionnaire(:, 2);
-
-    Stats = correlation(dBehavior, dQuestionnaire);
-    dispStat(Stats, [], [TaskLabels{Indx_T}, ' ', Question, ' vs ', BandLabels{B_Indx}])
-
-    figure
-    plotCorrelations(dQuestionnaire, dTheta, {Question, BandLabels{B_Indx}}, [], ...
-        PlotProps.Color.Participants, PlotProps);
-    title(TaskLabels{Indx_T})
+    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
+    caxis(CLims)
+    colorbar off
 end
 
 
-%% Speech corr with coloring
-
-
-Task_Indx = 4; % speech
-Ch_Indx = 1; % front
-B_Indx = 2; % theta
-Grid = [1 2];
-YLim = [0 3];
-
-Theta = squeeze(bchData(:, [1 3], Task_Indx, Ch_Indx, B_Indx));
-dTheta = Theta(:, 2) - Theta(:, 1);
-
-
-Behavior = SpFT_Incorrect(:, [1 3]);
-
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Color = repmat(getColors(1, '', 'yellow'), nParticipants, 1);
-Color([1 5 12 end], :) = repmat(getColors(1, '', 'blue'), 4, 1);
-
-AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
-figure
-Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Color, PlotProps);
-title(['Speech (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f'), ')'])
-padAxis('x'); padAxis('y')
-
-
-
-%% Load speech trials
-
-Window = 2;
-ROI = 'preROI';
-Task = 'SpFT';
-Tag = ['w', num2str(Window)];
-
-Filepath =  fullfile(Paths.Data, 'EEG', 'Locked', Task, Tag);
-[AllData, Freqs, Chanlocs, AllTrials] = loadSpFTpower(P, Filepath);
-
-%%
-% average the individual trials
-tData = squeeze(mean(AllData, 3, 'omitnan'));
-
-% z-score it
-% tData = zScoreData(tData, 'last');
-
-
-% average data into ROIs
-chData = meanChData(tData, Chanlocs, Channels.(ROI), 5);
-
-% save it into bands
-bchData = bandData(chData, Freqs, Bands, 'last');
-
-[nParticipants, nSessions, nTrials, nEpochs, nCh, nFreqs] = size(AllData);
-
-
-%% correlate speech with performance, splitting theta in reading vs speaking
-
-
+%% mroe selective; only take areas that show a significant change with SD
 
 PlotProps = P.Manuscript;
+PlotProps.Figure.Padding = 50;
 
-PlotProps.Figure.Padding = 20;
-PlotProps.Axes.xPadding = 20;
-Task_Indx = 4; % speech
-Ch_Indx = 1; % front
-B_Indx = 2; % theta
-Grid = [1 2];
-YLim = [-.3 1.8];
+load(fullfile(Paths.Data, 'EEG', 'Source', 'Table', 'mtrx_all_tasks_median_noZscore.mat'))
+AllTheta = mean(mtrx_all_crtx, 5, 'omitnan'); % average the different frequencies (4-8)
+Areas = cortical_areas;
+Areas = replace(Areas, '_', ' ');
 
-Theta = squeeze(bchData(:, [1 3], 1, Ch_Indx, B_Indx));
-dTheta = Theta(:, 2) - Theta(:, 1);
-
-Behavior = SpFT_Incorrect(:, [1 3]);
-
-dBehavior = Behavior(:, 2) - Behavior(:, 1);
-
-Color = repmat(getColors(1, '', 'yellow'), nParticipants, 1);
-Color([1 5 12 end], :) = repmat(getColors(1, '', 'blue'), 4, 1);
-
-AxisLabels = {'\Delta # Mistakes/s', '\DeltaTheta'};
-
-figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.4])
-subfigure([], Grid, [1 1], [], true, '', PlotProps);
-Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Color, PlotProps);
-title(['Reading (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f'), ')'])
-ylim(YLim)
-padAxis('x'); padAxis('y')
+Data1 = squeeze(Performance(:, 2, :) - Performance(:, 1, :));
+Stats1 = pairedttest(squeeze(Performance(:, 1, :)), squeeze(Performance(:, 2, :)), StatsP);
+Data1 = Data1(:, Stats1.p<StatsP.Alpha);
 
 
-Theta = squeeze(bchData(:, [1 3], 2, Ch_Indx, B_Indx));
-dTheta = Theta(:, 2) - Theta(:, 1);
+for Indx_T = 1:numel(TaskLabels)
+
+    Data2 = squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
+    Stats2 = pairedttest(squeeze(AllTheta(:, 1, Indx_T, :)), squeeze(AllTheta(:, 2, Indx_T, :)), StatsP);
+Data2 = Data2(:, Stats2.p<StatsP.Alpha);
+
+figure('units','normalized','outerposition',[0 0 1 .9])
+
+subfigure([], [1 1], [1, 1], [], false, '', PlotProps);
+Stats = corrAll(Data1, Data2, '', Performance_Labels(Stats1.p<StatsP.Alpha), 'EEG', Areas(Stats2.p<StatsP.Alpha), StatsP, PlotProps);
+
+    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
+    caxis(CLims)
+    colorbar off
+end
 
 
-subfigure([], Grid, [1 2], [], true, '', PlotProps);
-Stats = plotCorrelations(dBehavior, dTheta, AxisLabels, [], Color, PlotProps);
-title(['Speaking (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.pvalue, '%2.2f'), ')'])
-ylim(YLim)
-padAxis('x'); padAxis('y')
+
+%% plot all tasks together
+
+PlotProps = P.Manuscript;
+PlotProps.Axes.yPadding = 20;
+
+load(fullfile(Paths.Data, 'EEG', 'Source', 'Table', 'mtrx_all_tasks_median_noZscore.mat'))
+AllTheta = mean(mtrx_all_crtx, 5, 'omitnan'); % average the different frequencies (4-8)
+Areas = cortical_areas;
+Areas = replace(Areas, '_', ' ');
+
+Grid = [6 1];
+
+for Indx_P = 1:numel(Performance_Labels)
+    Data1 = squeeze(Performance(:, 2, Indx_P) - Performance(:, 1, Indx_P));
+figure('units','normalized','outerposition',[0 0 1 .5])
+
+    for Indx_T  =1:numel(TaskLabels)
+    Data2 = squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
+
+subfigure([], Grid, [Indx_T, 1], [], true, '', PlotProps);
+Stats = corrAll(Data1, Data2, '', Performance_Labels(Indx_P), 'EEG', Areas, StatsP, PlotProps);
+
+    title([TaskLabels{Indx_T}, ' ', Performance_Labels{Indx_P}], 'FontSize', PlotProps.Text.TitleSize)
+    caxis(CLims)
+    colorbar off
+    end
+end
+
+
+%% take the area with the largest t-values, then correlate those for each outcome measure
+
+PlotProps = P.Manuscript;
+PlotProps.Figure.Padding = 50;
+
+
+% find task with largest change in theta for each area
+Stats2 = pairedttest(squeeze(AllTheta(:, 1, :, :)), squeeze(AllTheta(:, 2, :, :)), StatsP);
+[M, I] = max(abs(Stats2.t));
+
+% assign the difference for that task to that area
+Data2 = nan(numel(Participants), numel(Areas));
+TaskPerArea = cell(numel(Areas), 2);
+for Indx_A = 1:numel(Areas)
+    T = I(Indx_A);
+    Data2(:, Indx_A) = squeeze(AllTheta(:, 2, T, Indx_A)-AllTheta(:, 1, T, Indx_A));
+    TaskPerArea(Indx_A, 1) = Areas(Indx_A);
+    TaskPerArea(Indx_A, 2) = TaskLabels(T);
+end
+
+Data1 = squeeze(Performance(:, 2, :) - Performance(:, 1, :));
+
+figure('units','normalized','outerposition',[0 0 1 .9])
+
+subfigure([], [1 1], [1, 1], [], false, '', PlotProps);
+Stats = corrAll(Data1, Data2, '', Performance_Labels, 'EEG', Areas, StatsP, PlotProps);
+
+    caxis(CLims)
+    colorbar off
+    clc
+disp(TaskPerArea)
+
+
 

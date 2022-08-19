@@ -10,6 +10,8 @@ function Stats = pairedttest(Data1, Data2, StatsP)
 % Data2. Results in a S x 1 array. Used in TopoDiff.
 % D) Data1 = P x T, Data2 = P x S x T: t-tests done between Data1 and every S
 % of Data 2. Results in a S x T matrix. Used in SpaghettiOs.
+% E) Data1 = P x S x T, Data2 = P x S x T: t-tests done for every cell of S
+% x T. 
 
 Dims1 = size(Data1);
 Dims2 = size(Data2);
@@ -124,4 +126,40 @@ elseif numel(Dims1) == 2 && numel(Dims2) == 3 % D
     Stats.sig = Sig;
     Stats.t = t_values;
     Stats.df = df;
+elseif numel(Dims1) == 3 && numel(Dims2) == 3
+
+    % get all p-values
+    p = nan(Dims2(2), Dims2(3));
+    t_values = p;
+    df = p;
+    CI = nan(Dims2(2), Dims2(3), 2);
+
+  for Indx_S = 1:Dims2(2)
+        for Indx_T = 1:Dims2(3)
+            D = squeeze(Data2(:, Indx_S, Indx_T));
+            BL = squeeze(Data1(:, Indx_S, Indx_T));
+            if nnz(~isnan(D)) < 5 || nnz(~isnan(BL)) < 5
+                p(Indx_S, Indx_T) = nan;
+                CI(Indx_S, Indx_T, :) = nan;
+                df = nan;
+                t_values(Indx_S, Indx_T) = nan;
+            else
+                [~, p(Indx_S, Indx_T), CI(Indx_S, Indx_T, :), stats] = ttest(D(:)-BL(:));
+                df(Indx_S, Indx_T) = stats.df;
+                t_values(Indx_S, Indx_T) = stats.tstat;
+            end
+        end
+    end
+
+    % apply fdr correction
+    [Sig, crit_p, ~,  pValues_fdr] = fdr_bh(p, StatsP.Alpha, StatsP.ttest.dep);
+
+    % save to stats struct
+    Stats.p = p;
+    Stats.p_fdr =  pValues_fdr;
+    Stats.crit_p = crit_p;
+    Stats.sig = Sig;
+    Stats.t = t_values;
+    Stats.df = df;
+
 end
