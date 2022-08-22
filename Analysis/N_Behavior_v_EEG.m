@@ -50,7 +50,7 @@ bchData = bandData(chData, Freqs, Bands, 'last');
 % average frequencies into bands
 bData = bandData(zData, Freqs, Bands, 'last');
 
-%%
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Load performance
 
@@ -293,7 +293,7 @@ for Indx_T = 1:numel(TaskLabels)
 figure('units','normalized','outerposition',[0 0 1 .9])
 
 subfigure([], [1 1], [1, 1], [], false, '', PlotProps);
-Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', Areas, StatsP, PlotProps);
+Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', Areas, StatsP, PlotProps, 'Strict');
 
     title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
     caxis(CLims)
@@ -363,37 +363,25 @@ Stats = corrAll(Data1, Data2, '', Performance_Labels(Indx_P), 'EEG', Areas, Stat
 end
 
 
-%% take the area with the largest t-values, then correlate those for each outcome measure
+%% Correlation of task variables with each other
 
-PlotProps = P.Manuscript;
-PlotProps.Figure.Padding = 50;
+Data1 = squeeze(Performance(:, 2, Order) - Performance(:, 1, Order));
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3*1 PlotProps.Figure.Height*.7])
+Stats = corrAll(Data1, Data1, '', Performance_Labels(Order), '', Performance_Labels(Order), StatsP, PlotProps, 'FDR');
+axis square
+colorbar off
 
 
-% find task with largest change in theta for each area
-Stats2 = pairedttest(squeeze(AllTheta(:, 1, :, :)), squeeze(AllTheta(:, 2, :, :)), StatsP);
-[M, I] = max(abs(Stats2.t));
+%% correlation of areas with each other
 
-% assign the difference for that task to that area
-Data2 = nan(numel(Participants), numel(Areas));
-TaskPerArea = cell(numel(Areas), 2);
-for Indx_A = 1:numel(Areas)
-    T = I(Indx_A);
-    Data2(:, Indx_A) = squeeze(AllTheta(:, 2, T, Indx_A)-AllTheta(:, 1, T, Indx_A));
-    TaskPerArea(Indx_A, 1) = Areas(Indx_A);
-    TaskPerArea(Indx_A, 2) = TaskLabels(T);
+
+for Indx_T = 1:numel(TaskLabels)
+Data1 =  squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
+figure('units','normalized','outerposition',[0 0 .5 1])
+Stats = corrAll(Data1, Data1, '', Areas, '', Areas, StatsP, PlotProps, 'FDR');
+axis square
+colorbar off
+title(TaskLabels{Indx_T})
+
+
 end
-
-Data1 = squeeze(Performance(:, 2, :) - Performance(:, 1, :));
-
-figure('units','normalized','outerposition',[0 0 1 .9])
-
-subfigure([], [1 1], [1, 1], [], false, '', PlotProps);
-Stats = corrAll(Data1, Data2, '', Performance_Labels, 'EEG', Areas, StatsP, PlotProps);
-
-    caxis(CLims)
-    colorbar off
-    clc
-disp(TaskPerArea)
-
-
-
