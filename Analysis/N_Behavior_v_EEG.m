@@ -271,8 +271,12 @@ end
 saveFig(strjoin({TitleTag, 'Correlations'}, '_'), Paths.Paper, PlotProps)
 
 
+%% correct everything
 
-
+Data2 = squeeze(bchData(:, 3, :, :, Indx_B)- bchData(:, 1, :, :, Indx_B));
+ Data2 = reshape(Data2, numel(Participants), []);
+ figure
+ Stats = corrAll(Data1, Data2, '', Performance_Labels, '', repmat(TaskLabels, 1, 3), StatsP, PlotProps, 'FDR');
 
 %% same, but with source localization
 
