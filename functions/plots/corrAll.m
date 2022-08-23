@@ -21,6 +21,7 @@ switch Correction
         R(Stats.p>.01) = R(Stats.p>.01)*.2;
     case 'Trend'
         R(Stats.p>StatsP.Trend) = R(Stats.p>StatsP.Trend)*.2;
+    case 'none'
     otherwise
         R(Stats.p>StatsP.Alpha) = R(Stats.p>StatsP.Alpha)*.2;
 end
@@ -49,3 +50,17 @@ ylabel(h, 'R', 'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.A
 
 
 set(gca,'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.LegendSize)
+
+
+
+%%% display as text the correlations
+ for Indx_P = 1:numel(yTickLabels)
+      for Indx_T = 1:numel(xTickLabels)
+
+            if Stats.p(Indx_P, Indx_T) > StatsP.Alpha
+                continue
+            end
+            dispStat(Stats, [Indx_P, Indx_T], [yTickLabels{Indx_P}, ':EEG-', xTickLabels{Indx_T}])
+        end
+    end
+

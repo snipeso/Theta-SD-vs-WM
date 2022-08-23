@@ -214,7 +214,7 @@ Data1 = squeeze(Performance(:, 2, Order) - Performance(:, 1, Order));
 
 Grid = [1 4];
 Indx_B = 2;
-CLims = [-.75 .75];
+CLims = [-1 1];
 PlotProps = P.Manuscript;
 PlotProps.Figure.Padding = 30;
 PlotProps.Scatter.Size = 15;
@@ -230,6 +230,8 @@ xlim([.5 numel(Performance_Labels)+.5])
 ylabel(P.Labels.ES)
 title('BL vs SD', 'FontSize',PlotProps.Text.TitleSize)
 
+Shift = [-.01 .01 .03];
+
 for Indx_Ch = 1:3
     Data2 = squeeze(bchData(:, 3, :, Indx_Ch, Indx_B)- bchData(:, 1, :, Indx_Ch, Indx_B));
 
@@ -241,32 +243,36 @@ for Indx_Ch = 1:3
     Axes = subfigure([], Grid, [1 1+Indx_Ch], [], true,Letter, PlotProps);
     shiftaxis(Axes, PlotProps.Axes.xPadding, [])
     Axes.Position(4) = Axes.Position(4)-.02;
-    %   Axes.Position(1) = Axes.Position(1)-.02;
-    Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', TaskLabels, StatsP, PlotProps);
+    Axes.Position(3) = Axes.Position(3)-.02;
+
+  Axes.Position(1) = Axes.Position(1)-Shift(Indx_Ch);
+
+%       Axes.Position(1) = Axes.Position(1)-.02;
+    disp(['******', ChLabels{Indx_Ch}, '******'])
+    Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', ...
+        TaskLabels, StatsP, PlotProps, 'none');
 
     title(ChLabels{Indx_Ch}, 'FontSize', PlotProps.Text.TitleSize)
     caxis(CLims)
+      
     colorbar off
-    %     if Indx_Ch > 1
+   
     ylabel('')
     xlabel('')
     set(gca, 'YTick', [])
     %     end
     addRectangles(TaskLabels, Performance_Labels, PlotProps)
-  
-    for Indx_P = 1:numel(Performance_Labels)
-      for Indx_T = 1:numel(TaskLabels)
-
-            if Stats.p(Indx_P, Indx_T) > StatsP.Alpha
-                continue
-            end
-            dispStat(Stats, [Indx_P, Indx_T], [ChLabels{Indx_Ch}, ...
-                Performance_Labels{Indx_P}, ':EEG-', TaskLabels{Indx_T}])
-        end
-    end
-
 end
 
+ Axes = subfigure([], [1 12], [1 12], [], true, '', PlotProps);
+ Axes.Units = 'normalized';
+  Axes.Position(4) = Axes.Position(4)+.02;
+    Axes.Position(2) = Axes.Position(2)-.02;
+  Axes.Position(3) = Axes.Position(3)+.1;
+  Axes.Position(1) = Axes.Position(1)-.01;
+ plotColorbar('Divergent', CLims, 'R', PlotProps)
+colormap(PlotProps.Color.Maps.Divergent)
+set(Axes, 'FontSize', PlotProps.Text.LegendSize)
 
 saveFig(strjoin({TitleTag, 'Correlations'}, '_'), Paths.Paper, PlotProps)
 
@@ -275,7 +281,7 @@ saveFig(strjoin({TitleTag, 'Correlations'}, '_'), Paths.Paper, PlotProps)
 
 Data2 = squeeze(bchData(:, 3, :, :, Indx_B)- bchData(:, 1, :, :, Indx_B));
  Data2 = reshape(Data2, numel(Participants), []);
- figure
+ 
  Stats = corrAll(Data1, Data2, '', Performance_Labels, '', repmat(TaskLabels, 1, 3), StatsP, PlotProps, 'FDR');
 
 %% same, but with source localization
@@ -368,7 +374,7 @@ end
 
 
 %% Correlation of task variables with each other
-
+clc
 Data1 = squeeze(Performance(:, 2, Order) - Performance(:, 1, Order));
 figure('units','centimeters','position',[0 0 PlotProps.Figure.W3*1 PlotProps.Figure.Height*.7])
 Stats = corrAll(Data1, Data1, '', Performance_Labels(Order), '', Performance_Labels(Order), StatsP, PlotProps, 'FDR');
