@@ -14,6 +14,11 @@ switch Dimentions
         for Indx_P = 1:size(Data, 1)
             for Indx_L = 1:size(Data, Dims)
                 switch Dims % TODO: figure a more general way to do this
+                    case 2
+                        Row = Data(Indx_P,:);
+                        Mean = nanmean(Row(:));
+                        Std = nanstd(Row(:));
+                        Data(Indx_P, :) = (Row-Mean)./Std;
                     case 3
                         Row = Data(Indx_P,:, Indx_L);
                         Mean = nanmean(Row(:));
