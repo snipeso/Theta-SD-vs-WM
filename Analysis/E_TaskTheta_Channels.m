@@ -90,7 +90,7 @@ end
 subfigure([], Grid, [Indx_T+1, 1], [], false, '', Format);
 Format.Colorbar.Location = 'north';
 Format.Text.LegendSize = Format.Text.AxisSize;
-plotColorbar('Linear', CLims, Labels.zPower, Format)
+plotColorbar('Linear', CLims, ['Theta ' Labels.zPower], Format)
 
 
 %%% Change from baseline

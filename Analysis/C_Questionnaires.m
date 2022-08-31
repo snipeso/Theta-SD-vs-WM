@@ -53,7 +53,9 @@ data3D(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
     Format.Color.AllTasks, StatsP, Format);
 
 % adustments
-legend off
+legend({'' '', '', '', '', '', 'p<.05'})
+set(legend, 'position', [0.36    0.7562    0.11    0.0659],  'ItemTokenSize', [5 5])
+% set(legend, 'position', [0.3452    0.7562    0.1    0.0659])
 ylim(YLim)
 yticks(linspace(0, 1, numel(L)))
 yticklabels(L)
