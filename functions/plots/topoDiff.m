@@ -1,4 +1,4 @@
-function Stats = topoDiff(Data1, Data2, Chanlocs, CLims, StatsP, PlotProps, Labels)
+function Stats = topoDiff(Data1, Data2, Chanlocs, CLims, StatsP, PlotProps)
 % topoDiff(Data1, Data2, Chanlocs, CLims, StatsP, PlotProps)
 %
 % plots the t-values (color) and significant channels (white dots) of
@@ -43,6 +43,6 @@ if isempty(CLims)
     CLims = [-Max Max];
 end
 
-plotTopoplot(Stats.t, Stats, Chanlocs, CLims, Labels.t, 'Divergent', PlotProps)
+plotTopoplot(Stats.t, Stats, Chanlocs, CLims, 't-values', 'Divergent', PlotProps)
 
 
