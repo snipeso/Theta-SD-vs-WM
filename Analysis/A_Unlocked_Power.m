@@ -14,7 +14,6 @@ Paths = P.Paths;
 Bands = P.Bands;
 Format = P.Format;
 Channels = P.Channels;
-Tasks = P.AllTasks;
 
 Refresh = false;
 WelchWindow = 8; % duration of window to do FFT
@@ -30,9 +29,9 @@ EEG_Triggers.End = 'S  2';
 % Durations.SpFT =  [-2, 1 2 4];
 % Durations.Game =  [-2, -4, 1 2 4 6 8];
 % Durations.Music =  [-2, 1 2 4];
-Durations.Fixation = [4];
-Durations.Oddball = [4];
-Durations.Standing = [4];
+Durations.Fixation = [6];
+Durations.Oddball = [6];
+Durations.Standing = [6];
 Tasks = fieldnames(Durations);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
