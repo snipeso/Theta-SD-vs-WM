@@ -19,7 +19,7 @@ allTasks  = {'TV'}; % which tasks to convert (for now)
 % allTasks  = {'Fixation', 'Oddball',  'Standing'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
-CheckOutput = true; % manually verify if selection was good at the end
+CheckOutput = false; % manually verify if selection was good at the end
 
 % % %%% emergency code if I need to fix a specific file
 % Filename = 'P09_Match2Sample_Session2_ICA_Components.set';

@@ -5,7 +5,7 @@ close all
 Prep_Parameters
 
 Task = 'TV';
-Refresh = true;
+Refresh = false;
 BadChannel_Threshold = .33; % proportion of bad epochs before it gets counted as a bad channel
 BadWindow_Threshold = .1; % proportion of bad channels before its counted as a bad window
 
@@ -39,7 +39,7 @@ for Indx_F = 1:numel(Content)
     Filename_EEG = replace(Filename, '_artndxn', '');
     load(fullfile(Paths.Preprocessed, 'Cutting', 'MAT', Task, Filename_EEG), 'EEG')
     [nChannels, nPoints] = size(EEG.data);
-   srate = EEG.srate;
+    srate = EEG.srate;
     Chanlocs = EEG.chanlocs;
 
     Epoch_Edges = 1:scoringlen*srate:nPoints;
@@ -69,7 +69,11 @@ for Indx_F = 1:numel(Content)
     % get start and end timepoints
     [Starts, Ends] = data2windows(Holes); % find continuous bad epochs
     Starts = Epoch_Edges(Starts);
-    Ends = Epoch_Edges(Ends+1);
+    if  any(Ends+1>numel(Epoch_Edges))
+        Ends(Ends+1>numel(Epoch_Edges)) = numel(Epoch_Edges)-1;
+    else
+        Ends = Epoch_Edges(Ends+1);
+    end
 
     % convert to Cuts format
     TMPREJ = zeros(numel(Starts), nChannels+5);
