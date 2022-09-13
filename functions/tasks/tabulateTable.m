@@ -53,15 +53,20 @@ for Indx_P = 1:numel(Participants)
                 Matrix(Indx_P, Indx_S) = std(Data, 'omitnan');
             case 'tabulate'
                 if numel(Things) > 1
-                    Table = tabulate(Data);
 
-                    if isempty(Table)
+                    if isempty(Data)
                         continue
                         %                     elseif iscell(Table)
                         %                         Tots(ismember(Things, Table(:, 1))) = [Table{:, 2}];
                         %                         Matrix(Indx_P, Indx_S, :) = Tots;
                         %
+                    elseif islogical(Data)
+                        Matrix(Indx_P, Indx_S, 1) = nnz(~Data); % false
+                        Matrix(Indx_P, Indx_S, 2) = nnz(Data); % true
+
                     else
+                        Table = tabulate(Data);
+
                         Tots = zeros(numel(Things), 1);
                         Tots(ismember(Things, Table(:, 1))) = Table(:, 2);
                         Matrix(Indx_P, Indx_S, :) = Tots;
