@@ -63,7 +63,7 @@ bData = bandData(chData, Freqs, Bands, 'last');
 %% Figure MAGZ Theta changes for ROIs
 PlotProps = P.Manuscript;
 PlotProps.Figure.Padding = 20;
-PlotProps.Axes.yPadding = 20;
+PlotProps.Axes.yPadding = 25;
 PlotProps.Axes.xPadding = 20;
 
 Indx_B = 2; % theta

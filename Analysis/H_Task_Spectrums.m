@@ -256,44 +256,48 @@ end
 
 %% Figure 10-3
 Grid = [2 2];
-YLims = [0 8];
+
 PlotProps = P.Manuscript;
 PlotProps.Axes.yPadding = 30;
 PlotProps.Axes.xPadding = 20;
 
 figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
 
-% BL Prom
-Data = squeeze(Prominence(:, 1, :, 1));
-subfigure([], Grid, [1 1], [], true, PlotProps.Indexes.Letters{1}, PlotProps);
-data2D('line', Data, TaskLabels, [], [0 6], PlotProps.Color.Participants, StatsP, PlotProps);
-title('BL Prominence', 'FontSize', PlotProps.Text.TitleSize)
-ylim(YLims)
-ylabel(Labels.zPower)
-
-% SD Prom
-Data = squeeze(Prominence(:, 3, :, 1));
-subfigure([], Grid, [1 2], [], true, PlotProps.Indexes.Letters{2}, PlotProps);
-Stats = data2D('line',Data, TaskLabels, [], [], PlotProps.Color.Participants, StatsP, PlotProps);
-title('SD Prominence',  'FontSize', PlotProps.Text.TitleSize)
-ylim(YLims)
-ylabel(Labels.zPower)
-
+YLims_Start = [2 9];
+YLims = [2 11];
 % BL Peaks
 Data = squeeze(Peaks(:, 1, :, 1));
-subfigure([], Grid, [2 1], [], true, PlotProps.Indexes.Letters{3}, PlotProps);
-Stats = data2D('line',Data, TaskLabels, [], [], PlotProps.Color.Participants, StatsP, PlotProps);
-title('BL Peaks', 'FontSize', PlotProps.Text.TitleSize)
-ylim([2 11])
+subfigure([], Grid, [1 1], [], true, PlotProps.Indexes.Letters{1}, PlotProps);
+Stats = data2D('line',Data, TaskLabels, [], YLims_Start, PlotProps.Color.Participants, StatsP, PlotProps);
+title('BL Theta Peak Frequency', 'FontSize', PlotProps.Text.TitleSize)
+ylim(YLims)
 ylabel(Labels.Frequency)
 
 % SD Peaks
 Data = squeeze(Peaks(:, 2, :, 1));
+subfigure([], Grid, [1 2], [], true, PlotProps.Indexes.Letters{2}, PlotProps);
+Stats = data2D('line',Data, TaskLabels, [], YLims_Start, PlotProps.Color.Participants, StatsP, PlotProps);
+title('SD Theta Peak Frequency', 'FontSize', PlotProps.Text.TitleSize)
+ylim(YLims)
+ylabel(Labels.Frequency)
+
+
+YLims = [0 7.8];
+% BL Prom
+Data = squeeze(Prominence(:, 1, :, 1));
+subfigure([], Grid, [2 1], [], true, PlotProps.Indexes.Letters{3}, PlotProps);
+data2D('line', Data, TaskLabels, [], [0 6], PlotProps.Color.Participants, StatsP, PlotProps);
+title('BL Prominence', 'FontSize', PlotProps.Text.TitleSize)
+ylim(YLims)
+ylabel([Labels.zPower])
+
+% SD Prom
+Data = squeeze(Prominence(:, 3, :, 1));
 subfigure([], Grid, [2 2], [], true, PlotProps.Indexes.Letters{4}, PlotProps);
 Stats = data2D('line',Data, TaskLabels, [], [], PlotProps.Color.Participants, StatsP, PlotProps);
-title('SD Peaks', 'FontSize', PlotProps.Text.TitleSize)
-ylim([2 11])
-ylabel(Labels.Frequency)
+title('SD Prominence',  'FontSize', PlotProps.Text.TitleSize)
+ylim(YLims)
+ylabel([Labels.zPower])
 
 
 % save
