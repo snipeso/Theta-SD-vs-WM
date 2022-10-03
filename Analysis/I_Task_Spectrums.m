@@ -1,4 +1,4 @@
-% this script plots the spectrums of EEG for specific channels and how the
+% this script plots the spectrums of EEG for specific ROIs and how the
 % theta peak changes with conditions.
 
 clear
@@ -17,7 +17,6 @@ TaskLabels = P.TaskLabels;
 Sessions = P.Sessions;
 Channels = P.Channels;
 StatsP = P.StatsP;
-PlotProps = P.Manuscript;
 Labels = P.Labels;
 
 SmoothFactor = 1; % in Hz, range to smooth over
@@ -31,7 +30,7 @@ ChannelLabels = 'preROI';
 %%% Setup data
 
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
-TitleTag = 'H_Task_Spectrums';
+TitleTag = 'I_Task_Spectrums';
 
 Results = fullfile(Paths.Results, 'Task_Spectrums', Tag, ChannelLabels);
 if ~exist(Results, 'dir')
@@ -59,89 +58,11 @@ chDataRaw = meanChData(sDataRaw, Chanlocs, ChannelStruct, 4);
 % change frequency bin
 StatsP.FreqBin = diff(Freqs(1:2));
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Plot data
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure
 
-%% Figure 10 plot spectrum changes for all participants for each task
-
-PlotProps = P.Manuscript;
-PlotProps.Figure.Padding = 20;
-
-xLog = false;
-Indx_Ch = 1;
-Grid = [2 3];
-xLims = [2 10];
-yLims = [-1.5 6.5];
-
-Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
-
-
-figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
-for Indx_T = 1:numel(AllTasks)
-    Data = squeeze(chData(:, [1, 3], Indx_T, Indx_Ch, :));
-    
-    subfigure([], Grid, Coordinates(Indx_T, :), [], true, '', PlotProps);
-    plotSpectrumMountains(Data, Freqs, xLog, xLims, PlotProps, Labels)
-    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
-    ylim(yLims)
-    
-    if Indx_T <= 3 % only x labels for bottom row
-        xlabel('')
-    end
-    
-    if Indx_T == 1 || Indx_T == 4 % only y labels for left-most plots
-        ylabel(Labels.zPower)
-    end
-end
-
-set(gcf, 'Color', 'w')
-
-saveFig([TitleTag, '_zscored'], Paths.Paper, PlotProps)
-
-
-
-%% Figure 10-1 Same as above, but raw values
-PlotProps = P.Manuscript;
-PlotProps.Figure.Padding = 20;
-
-xLog = false;
-Indx_Ch = 1;
-Grid = [2 3];
-xLims = [2 10];
-yLims = [0 60];
-
-Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
-
-
-figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
-for Indx_T = 1:numel(AllTasks)
-    Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
-    
-    subfigure([], Grid, Coordinates(Indx_T, :), [], true, '', PlotProps);
-    plotSpectrumMountains(Data, Freqs, xLog, xLims, PlotProps, Labels)
-    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
-    ylim(yLims)
-    
-    if Indx_T <= 3 % only x labels for bottom row
-        xlabel('')
-    end
-    
-    if Indx_T == 1 || Indx_T == 4 % only y labels for left-most plots
-        ylabel(Labels.Power)
-    end
-end
-
-set(gcf, 'Color', 'w')
-
-saveFig([TitleTag, '_raw'], Paths.Paper, PlotProps)
-
-
-%% Figure 10-2 Plot ROI spectrums and stats
+%% Figure 10: task ROI spectrums and stats
 
 PlotProps = P.Manuscript;
 
@@ -208,7 +129,81 @@ saveFig(strjoin({TitleTag, 'averages'}, '_'), Paths.Paper, PlotProps)
 
 
 
-%% Figure PEKZ peak frequency and prominence
+%% Figure 11: front ROI spectrum changes for all participants for each task
+
+PlotProps = P.Manuscript;
+PlotProps.Figure.Padding = 20;
+
+xLog = false;
+Indx_Ch = 1;
+Grid = [2 3];
+xLims = [2 10];
+yLims = [-1.5 6.5];
+
+Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
+
+
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
+for Indx_T = 1:numel(AllTasks)
+    Data = squeeze(chData(:, [1, 3], Indx_T, Indx_Ch, :));
+    
+    subfigure([], Grid, Coordinates(Indx_T, :), [], true, '', PlotProps);
+    plotSpectrumMountains(Data, Freqs, xLog, xLims, PlotProps, Labels)
+    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
+    ylim(yLims)
+    
+    if Indx_T <= 3 % only x labels for bottom row
+        xlabel('')
+    end
+    
+    if Indx_T == 1 || Indx_T == 4 % only y labels for left-most plots
+        ylabel(Labels.zPower)
+    end
+end
+
+set(gcf, 'Color', 'w')
+
+saveFig([TitleTag, '_zscored'], Paths.Paper, PlotProps)
+
+
+
+%% Figure 11-1: Same as above, but raw values
+PlotProps = P.Manuscript;
+PlotProps.Figure.Padding = 20;
+
+xLog = false;
+Indx_Ch = 1;
+Grid = [2 3];
+xLims = [2 10];
+yLims = [0 60];
+
+Coordinates = [1 1; 1 2; 1 3; 2 1; 2 2; 2 3]; % stupd way of dealing with grid indexing
+
+
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.5])
+for Indx_T = 1:numel(AllTasks)
+    Data = squeeze(chDataRaw(:, [1, 3], Indx_T, Indx_Ch, :));
+    
+    subfigure([], Grid, Coordinates(Indx_T, :), [], true, '', PlotProps);
+    plotSpectrumMountains(Data, Freqs, xLog, xLims, PlotProps, Labels)
+    title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
+    ylim(yLims)
+    
+    if Indx_T <= 3 % only x labels for bottom row
+        xlabel('')
+    end
+    
+    if Indx_T == 1 || Indx_T == 4 % only y labels for left-most plots
+        ylabel(Labels.Power)
+    end
+end
+
+set(gcf, 'Color', 'w')
+
+saveFig([TitleTag, '_raw'], Paths.Paper, PlotProps)
+
+
+%% Calculate peak frequency and prominence
 
 clc
 Peaks = nan(numel(Participants), numel(Sessions.Labels), numel(AllTasks), numel(ChLabels));
@@ -254,7 +249,7 @@ for Indx_T = 1:numel(AllTasks)
 end
 
 
-%% Figure 10-3
+%% Figure 12: prominence and peak frequency
 Grid = [2 2];
 
 PlotProps = P.Manuscript;
@@ -268,7 +263,7 @@ YLims = [2 11];
 % BL Peaks
 Data = squeeze(Peaks(:, 1, :, 1));
 subfigure([], Grid, [1 1], [], true, PlotProps.Indexes.Letters{1}, PlotProps);
-Stats = data2D('line',Data, TaskLabels, [], YLims_Start, PlotProps.Color.Participants, StatsP, PlotProps);
+data2D('line',Data, TaskLabels, [], YLims_Start, PlotProps.Color.Participants, StatsP, PlotProps);
 title('BL Theta Peak Frequency', 'FontSize', PlotProps.Text.TitleSize)
 ylim(YLims)
 ylabel(Labels.Frequency)
@@ -276,7 +271,7 @@ ylabel(Labels.Frequency)
 % SD Peaks
 Data = squeeze(Peaks(:, 2, :, 1));
 subfigure([], Grid, [1 2], [], true, PlotProps.Indexes.Letters{2}, PlotProps);
-Stats = data2D('line',Data, TaskLabels, [], YLims_Start, PlotProps.Color.Participants, StatsP, PlotProps);
+data2D('line',Data, TaskLabels, [], YLims_Start, PlotProps.Color.Participants, StatsP, PlotProps);
 title('SD Theta Peak Frequency', 'FontSize', PlotProps.Text.TitleSize)
 ylim(YLims)
 ylabel(Labels.Frequency)

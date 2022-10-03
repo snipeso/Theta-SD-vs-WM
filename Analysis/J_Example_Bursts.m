@@ -47,8 +47,6 @@ end
 
 PlotProps = P.Manuscript;
 PlotProps.Axes.yPadding = 20;
-% PlotProps.Axes.xPadding = 30;
-% PlotProps.Axes.labelPadding = 45;
 Log = true; % whether to plot on log scale or not
 figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.7])
 
@@ -80,56 +78,3 @@ for Indx_E = 1:size(Coordinates, 1)
 end
 
 saveFig('ExampleTheta', Paths.Paper, PlotProps)
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Presentation
-
-%% 
-% 
-% % preselected snippets of data with good examples of theta bursts
-% Coordinates = {
-%     'EO.set', 308.3, 22, PlotProps.Color.Tasks.PVT, 'Beta';
-%     'EC2.set', 324, 90,  PlotProps.Color.Tasks.Match2Sample, 'Alpha';
-%     'fmTheta.set', 581.3, 6,  PlotProps.Color.Tasks.Music, 'Theta';
-%     'N3_clean.set', 343.15, 11, PlotProps.Color.Tasks.Game, 'Delta';
-%     };
-% 
-% Results = fullfile(Paths.Results, 'Bursts', 'Presentation');
-% if ~exist(Results, 'dir')
-%     mkdir(Results)
-% end
-% 
-% % load all EEGs
-% for Indx_E = 1:size(Coordinates, 1)
-%     
-%     Filename = Coordinates{Indx_E, 1};
-%     EEG = pop_loadset('filename', Filename, 'filepath', Path);
-%     try
-%         AllEEG(Indx_E) = EEG;
-%     catch
-%         AllEEG(Indx_E).data = EEG.data;
-%         AllEEG(Indx_E).chanlocs = EEG.chanlocs;
-%         AllEEG(Indx_E).srate = EEG.srate;
-%     end
-% end
-% 
-% 
-% 
-% %%
-% YLims = [-160 110];
-% PlotProps = P.Powerpoint;
-% 
-% for Indx_B = 1:size(Coordinates, 1)
-%     Fig = figure('units','centimeters','position',[0 0 30 10]);
-%     
-%     Start = Coordinates{Indx_B, 2};
-%     plotWaves(AllEEG(Indx_B), Start, Start+2, Coordinates{Indx_B, 3}, ...
-%         Coordinates{Indx_B, 4}, PlotProps);
-%     ylim(YLims)
-%     
-%     saveFig(Coordinates{Indx_B, end}, Results, PlotProps)
-%     
-% end

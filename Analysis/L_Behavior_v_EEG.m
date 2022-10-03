@@ -1,5 +1,4 @@
-%%% Here I test specific hypotheses about a link between theta and
-%%% behavior.
+%%% Here I testthe link between theta and behavior.
 
 clear
 clc
@@ -18,12 +17,11 @@ Channels = P.Channels;
 StatsP = P.StatsP;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
-Labels = P.Labels;
 
 TitleTag = 'N_Behavior_vs_EEG';
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Load EEG
 
 Duration = 4;
@@ -38,7 +36,7 @@ Filepath =  fullfile(Paths.Data, 'EEG', 'Unlocked', Tag);
 [AllData, Freqs, Chanlocs] = loadAllPower(P, Filepath, AllTasks);
 
 % z-score it
-% zData = zScoreData(AllData, 'last');
+% zData = zScoreData(AllData, 'last'); % just to try z-scored, but makes more sense raw
 zData = AllData;
 
 % average channel data into 2 spots
@@ -182,6 +180,8 @@ Filepath = fullfile(P.Paths.Data, 'Questionnaires');
 
 Questions = fieldnames(Answers);
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% plot correlations
 
@@ -220,18 +220,20 @@ PlotProps.Figure.Padding = 30;
 PlotProps.Scatter.Size = 15;
 figure('units','centimeters','position',[0 0 PlotProps.Figure.W3*1.2 PlotProps.Figure.Height*.65])
 
+% A: hedge's g effect sizes for each measure
 Axes = subfigure([], Grid, [1 1], [], true, PlotProps.Indexes.Letters{1}, PlotProps);
 Axes.Position(1) = Axes.Position(1)+.08;
 Axes.Position(3) = Axes.Position(3)-.08;
 Axes.Position(4) = Axes.Position(4)-.02;
+
 plotUFO(Stats.hedgesg, Stats.hedgesgCI, Performance_Labels, {}, Colors, 'vertical', PlotProps);
 set(gca, 'XDir','reverse')
 xlim([.5 numel(Performance_Labels)+.5])
 ylabel(P.Labels.ES)
 title('BL vs SD', 'FontSize',PlotProps.Text.TitleSize)
 
+% B: R values for all correlations
 Shift = [-.01 .01 .03];
-
 for Indx_Ch = 1:3
     Data2 = squeeze(bchData(:, 3, :, Indx_Ch, Indx_B)- bchData(:, 1, :, Indx_Ch, Indx_B));
 
@@ -245,44 +247,48 @@ for Indx_Ch = 1:3
     Axes.Position(4) = Axes.Position(4)-.02;
     Axes.Position(3) = Axes.Position(3)-.02;
 
-  Axes.Position(1) = Axes.Position(1)-Shift(Indx_Ch);
+    Axes.Position(1) = Axes.Position(1)-Shift(Indx_Ch);
 
-%       Axes.Position(1) = Axes.Position(1)-.02;
     disp(['******', ChLabels{Indx_Ch}, '******'])
-    Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', ...
+    corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', ...
         TaskLabels, StatsP, PlotProps, 'none');
 
     title(ChLabels{Indx_Ch}, 'FontSize', PlotProps.Text.TitleSize)
     caxis(CLims)
-      
+
     colorbar off
-   
+
     ylabel('')
     xlabel('')
     set(gca, 'YTick', [])
-    %     end
+
+    % make evident correlations within the same task
     addRectangles(TaskLabels, Performance_Labels, PlotProps)
 end
 
- Axes = subfigure([], [1 12], [1 12], [], true, '', PlotProps);
- Axes.Units = 'normalized';
-  Axes.Position(4) = Axes.Position(4)+.02;
-    Axes.Position(2) = Axes.Position(2)-.02;
-  Axes.Position(3) = Axes.Position(3)+.1;
-  Axes.Position(1) = Axes.Position(1)-.01;
- plotColorbar('Divergent', CLims, 'R', PlotProps)
+Axes = subfigure([], [1 12], [1 12], [], true, '', PlotProps);
+Axes.Units = 'normalized';
+Axes.Position(4) = Axes.Position(4)+.02;
+Axes.Position(2) = Axes.Position(2)-.02;
+Axes.Position(3) = Axes.Position(3)+.1;
+Axes.Position(1) = Axes.Position(1)-.01;
+plotColorbar('Divergent', CLims, 'R', PlotProps)
 colormap(PlotProps.Color.Maps.Divergent)
 set(Axes, 'FontSize', PlotProps.Text.LegendSize)
 
 saveFig(strjoin({TitleTag, 'Correlations'}, '_'), Paths.Paper, PlotProps)
 
 
-%% correct everything
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% play around
+
+%% correlate everything
 
 Data2 = squeeze(bchData(:, 3, :, :, Indx_B)- bchData(:, 1, :, :, Indx_B));
- Data2 = reshape(Data2, numel(Participants), []);
- 
- Stats = corrAll(Data1, Data2, '', Performance_Labels, '', repmat(TaskLabels, 1, 3), StatsP, PlotProps, 'FDR');
+Data2 = reshape(Data2, numel(Participants), []);
+
+Stats = corrAll(Data1, Data2, '', Performance_Labels, '', repmat(TaskLabels, 1, 3), StatsP, PlotProps, 'FDR');
 
 %% same, but with source localization
 
@@ -300,10 +306,10 @@ Data1 = squeeze(Performance(:, 2, Order) - Performance(:, 1, Order));
 for Indx_T = 1:numel(TaskLabels)
 
     Data2 = squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
-figure('units','normalized','outerposition',[0 0 1 .9])
+    figure('units','normalized','outerposition',[0 0 1 .9])
 
-subfigure([], [1 1], [1, 1], [], false, '', PlotProps);
-Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', Areas, StatsP, PlotProps, 'Strict');
+    subfigure([], [1 1], [1, 1], [], false, '', PlotProps);
+    Stats = corrAll(Data1, Data2, '', Performance_Labels(Order), 'EEG', Areas, StatsP, PlotProps, 'Strict');
 
     title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
     caxis(CLims)
@@ -330,12 +336,12 @@ for Indx_T = 1:numel(TaskLabels)
 
     Data2 = squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
     Stats2 = pairedttest(squeeze(AllTheta(:, 1, Indx_T, :)), squeeze(AllTheta(:, 2, Indx_T, :)), StatsP);
-Data2 = Data2(:, Stats2.p<StatsP.Alpha);
+    Data2 = Data2(:, Stats2.p<StatsP.Alpha);
 
-figure('units','normalized','outerposition',[0 0 1 .9])
+    figure('units','normalized','outerposition',[0 0 1 .9])
 
-subfigure([], [1 1], [1, 1], [], false, '', PlotProps);
-Stats = corrAll(Data1, Data2, '', Performance_Labels(Stats1.p<StatsP.Alpha), 'EEG', Areas(Stats2.p<StatsP.Alpha), StatsP, PlotProps);
+    subfigure([], [1 1], [1, 1], [], false, '', PlotProps);
+    Stats = corrAll(Data1, Data2, '', Performance_Labels(Stats1.p<StatsP.Alpha), 'EEG', Areas(Stats2.p<StatsP.Alpha), StatsP, PlotProps);
 
     title(TaskLabels{Indx_T}, 'FontSize', PlotProps.Text.TitleSize)
     caxis(CLims)
@@ -358,17 +364,17 @@ Grid = [6 1];
 
 for Indx_P = 1:numel(Performance_Labels)
     Data1 = squeeze(Performance(:, 2, Indx_P) - Performance(:, 1, Indx_P));
-figure('units','normalized','outerposition',[0 0 1 .5])
+    figure('units','normalized','outerposition',[0 0 1 .5])
 
     for Indx_T  =1:numel(TaskLabels)
-    Data2 = squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
+        Data2 = squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
 
-subfigure([], Grid, [Indx_T, 1], [], true, '', PlotProps);
-Stats = corrAll(Data1, Data2, '', Performance_Labels(Indx_P), 'EEG', Areas, StatsP, PlotProps);
+        subfigure([], Grid, [Indx_T, 1], [], true, '', PlotProps);
+        Stats = corrAll(Data1, Data2, '', Performance_Labels(Indx_P), 'EEG', Areas, StatsP, PlotProps);
 
-    title([TaskLabels{Indx_T}, ' ', Performance_Labels{Indx_P}], 'FontSize', PlotProps.Text.TitleSize)
-    caxis(CLims)
-    colorbar off
+        title([TaskLabels{Indx_T}, ' ', Performance_Labels{Indx_P}], 'FontSize', PlotProps.Text.TitleSize)
+        caxis(CLims)
+        colorbar off
     end
 end
 
@@ -386,12 +392,12 @@ colorbar off
 
 
 for Indx_T = 1:numel(TaskLabels)
-Data1 =  squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
-figure('units','normalized','outerposition',[0 0 .5 1])
-Stats = corrAll(Data1, Data1, '', Areas, '', Areas, StatsP, PlotProps, 'FDR');
-axis square
-colorbar off
-title(TaskLabels{Indx_T})
+    Data1 =  squeeze(AllTheta(:, 2, Indx_T, :)-AllTheta(:, 1, Indx_T, :));
+    figure('units','normalized','outerposition',[0 0 .5 1])
+    Stats = corrAll(Data1, Data1, '', Areas, '', Areas, StatsP, PlotProps, 'FDR');
+    axis square
+    colorbar off
+    title(TaskLabels{Indx_T})
 
 
 end

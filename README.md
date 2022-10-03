@@ -14,9 +14,18 @@ EEG power for all the tasks is calculated in [A_Unlocked_Power.m](Analysis/A_Unl
 ### Plots & tables
 The plots were made using the separate repository [chART](https://github.com/snipeso/chart), with some functions from [EEGLAB](https://sccn.ucsd.edu/eeglab/downloadtoolbox.php).
 
-- Table 1: sleep stages and architecture in [B_SleepArchitecture.m](Analysis/B_SleepArchitecture.m)
-- Figure 3, 3-1: subjective sleepiness ratings in [C_Questionnaires.m](Analysis/C_Questionnaires.m)
-- Figure 4, 4-1, 5: STM sources and topographies of fmTheta and sdTheta in [D_fmTheta_vs_sdTheta.m](Analysis/D_fmTheta_vs_sdTheta.m).
+- **Table 1**: sleep stages and architecture in [B_SleepArchitecture.m](Analysis/B_SleepArchitecture.m)
+- **Figure 3, 3-1**: subjective sleepiness ratings in [C_Questionnaires.m](Analysis/C_Questionnaires.m)
+- **Figure 4, 4-1, 5**: STM sources and topographies of fmTheta and sdTheta in [D_fmTheta_vs_sdTheta.m](Analysis/D_fmTheta_vs_sdTheta.m).
+- **Figure 6**: theta for all tasks and sessions in [E_TaskTheta_ROI.m](Analysis/E_TaskTheta_ROI.m)
+    - Figure 6-2 is in [RemovedComponents.m](QualityChecks/RemovedComponents.m)
+- **Figure 7**: topographies of sdTheta by task in [F_TaskTheta_Channels.m](Analysis/F_TaskTheta_Channels.m)
+- **Figure 8**: inflated brains for theta in all tasks in [G_TaskTheta_Sources.m](Analysis/G_TaskTheta_Sources.m)
+- **Figure 9**: "table" of all t-values for anatomical theta sources in [H_Sources_Table.m](Analysis/H_Sources_Table.m)
+- **Figure 10, 11, 11-1, 12**: spectrum figures in [I_Task_Spectrums.m](Analysis/I_Task_Spectrums.m)
+- **Figure 13**: example burst in [J_Example_Bursts.m](Analysis/J_Example_Bursts.m)
+- **Figure 14, 14-1, 15** performance data in [K_Task_Performance.m](Analysis/K_Task_Performance.m)
+
 
 
 ### Statistics

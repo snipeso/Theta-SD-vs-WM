@@ -9,9 +9,6 @@ P = analysisParameters();
 Paths = P.Paths;
 Participants = P.Participants;
 Sessions = P.Sessions;
-Format = P.Format;
-Format = P.Manuscript;
-StatsP = P.StatsP;
 Labels = P.Labels;
 
 nParticipants = numel(Participants);
@@ -24,30 +21,23 @@ Source_Tables = fullfile(Paths.Data, 'Behavior');
 %% Load data
 
 %%% M2S
-
 Answers_Path = fullfile(Source_Tables, 'Match2Sample_AllAnswers.mat');
 load(Answers_Path, 'Answers')
 M2S = Answers;
 
-
 Levels = unique(M2S.level);
 nLevels = numel(Levels);
 
-% load data
 [~, M2S_Correct] = loadM2Sbehavior(Source_Tables, Participants, Sessions);
 
 
-
 %%% LAT
-
-[Trials, LAT_RT, Types, TotT] = loadBehavior(Participants, Sessions.LAT, 'LAT', Paths, false);
+[~, LAT_RT, Types, TotT] = loadBehavior(Participants, Sessions.LAT, 'LAT', Paths, false);
 LAT_Lapses = 100*(squeeze(Types(:, :, 1))./TotT);
 LAT_Correct = 100*(squeeze(Types(:, :, 3))./TotT);
 
 
-
 %%% PVT
-
 [Trials, PVT_RT, Types, ~] = loadBehavior(Participants, Sessions.PVT, 'PVT', Paths, false);
 PVT_Lapses = squeeze(Types(:, :, 1));
 
@@ -67,13 +57,13 @@ for Indx_P = 1:nParticipants
         C = nanmean(T.Correct);
         IC =  nanmean(T.Incorrect);
 
-        SpFT_Correct(Indx_P, Indx_S) = C/10;
+        SpFT_Correct(Indx_P, Indx_S) = C/10; % 10s was the total time participants had to speak
         SpFT_Incorrect(Indx_P, Indx_S) = IC/10;
     end
 end
 
 
-%% Suppl. Figure BEHZ
+%% Figure 14, 14-1: change in performance for main outcome measures
 
 clc
 Format = P.Manuscript;
@@ -85,7 +75,7 @@ Indx_B = 2; % theta
 Indx = 1;
 YLims = [-.3 1];
 StatsP = P.StatsP;
-Colors = 'Participants'; % either 'Task' or 'Participants' or 'Order'
+Colors = 'Participants'; % either 'Participants' (Figure 14) or 'Order' (14-1)
 
 
 figure('units','centimeters','position',[0 0 Format.Figure.W3*1.2 Format.Figure.Height*.5])

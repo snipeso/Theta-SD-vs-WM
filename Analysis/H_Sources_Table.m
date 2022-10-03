@@ -17,9 +17,8 @@ Participants = P.Participants;
 AllTasks = P.AllTasks;
 TaskLabels = P.TaskLabels;
 Bands = P.Bands;
-PlotProps = P.Manuscript;
 
-TitleTag = 'G_Sources_Table';
+TitleTag = 'H_Sources_Table';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,7 +36,6 @@ switch ValueType
         
     case 'median'
         File_All_sdTheta = 'mtrx_all_tasks_median.mat';
-% File_All_sdTheta =  'mtrx_all_tasks_median_noZscore.mat';
         File_fmTheta = 'mtrx_M2S_levels_median.mat';
         File_sdTheta = 'mtrx_M2S_BS_vs_S2_lvl1_median.mat';
         
@@ -81,9 +79,7 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Plot and save
-
-
+%%% Plot paper figures
 %% Figure 9: table of significant areas
 
 Keep = ~all(pValues > .05);
@@ -113,27 +109,3 @@ colorbar off
 % save
 saveFig([TitleTag, '_', ValueType], Paths.Paper, PlotProps)
 
-
-
-%% get top 5 areas (not counting symmetry) for each task
-clc
-
-T = array2table(tValues', 'VariableNames', [TaskLabels,  {'fmTheta', 'sdTheta'}]);
-T.Areas = Areas';
-T.Top = zeros(size(T, 1), 1);
-
-for Indx_T = 1:Dims(3)
-    T = sortrows(T, Indx_T, 'descend');
-    disp(T(1:5, [Indx_T, end-1]))
-    
-    T.Top(1:5) = 1;
-    
-end
-
-TTop = T(logical(T.Top), :);
-figure;
-plotExcelTable(table2array(TTop(:, 1:6)), [], TTop.Areas, ...
-    TaskLabels,  't values', PlotProps)
-
-
-writetable(T, fullfile(Paths.PaperStats, 'BigTable_Sources.csv'))

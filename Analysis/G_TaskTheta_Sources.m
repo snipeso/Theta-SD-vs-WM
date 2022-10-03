@@ -53,7 +53,7 @@ end
 %%% Plot
 
 
-%% Figure SORZ plot inflated hemispheres for all tasks
+%% Figure 8: inflated hemispheres for all tasks
 
 Format = P.Manuscript;
 
@@ -130,7 +130,8 @@ disp(['sdTheta significant voxels: ', num2str(round(100*nansum(Mask)/nnz(~isnan(
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% GRC poster
 
