@@ -1,9 +1,9 @@
-% This script plots all the tasks' change from baseline
+% This script plots the topographies of all the tasks' change from
+% baseline.
 
 clear
 close all
 clc
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Parameters
@@ -18,8 +18,8 @@ Sessions = P.Sessions;
 StatsP = P.StatsP;
 Labels = P.Labels;
 
-Duration = 4;
-WelchWindow = 8;
+Duration = 4; % in minutes, the amount of data to use for each recording
+WelchWindow = 8; % in seconds
 Tag = [ 'window',num2str(WelchWindow), 's_duration' num2str(Duration),'m'];
 TitleTag = 'E_TaskTheta_Channels';
 
@@ -34,10 +34,6 @@ zData = zScoreData(AllData, 'last');
 
 % save it into bands
 bData = bandData(zData, Freqs, Bands, 'last');
-
-% % % TEMP QUALITY CHECK RAW DATA
-% bData = bandData(AllData, Freqs, Bands, 'last');
-% CLims_Diff = [-1 1];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plot data
@@ -58,16 +54,16 @@ figure('units','centimeters','position',[0 0 Format.Figure.W3*.8 Format.Figure.H
 
 Indx = 1; % tally of axes
 
-% Baseline averages
+% Baseline averages (left column)
 for Indx_T = 1:numel(AllTasks)
     BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
-
 
     Indx = Indx+1;
 
     if all(isnan(BL(:)))
         continue
     end
+
     % plot
     A = subfigure([], Grid, [Indx_T, 1], [], false, '', Format);
     shiftaxis(A, Format.Axes.xPadding, Format.Axes.yPadding)
@@ -93,7 +89,7 @@ Format.Text.LegendSize = Format.Text.AxisSize;
 plotColorbar('Linear', CLims, ['Theta ' Labels.zPower], Format)
 
 
-%%% Change from baseline
+%%% Change from baseline (middle & right column)
 for Indx_S = [2,3]
     for Indx_T = 1:numel(AllTasks)
         BL = squeeze(bData(:, 1, Indx_T, :, Indx_B));
@@ -142,7 +138,8 @@ saveFig(strjoin({TitleTag, 'All_Topographies'}, '_'), Paths.Paper, Format)
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Presentation figures
 

@@ -5,18 +5,19 @@ All EEG was preprocessed using the scripts in Preprocessed/, run in alphabetical
 
 The scripts for the analyses are in Analysis/, and can be run in alphabetical order to reproduce the data in the order in which it appears in the paper.
 
-**DISCLAIMER:** This is NOT a toolbox, and is only being published for the sake of transparency. If you wish to use any of the code you are welcome to, but please cite the paper if you rely on substantial portions of it, especially of methodological relevance.
+**DISCLAIMER:** This is NOT a toolbox, and is only being published for the sake of transparency. If you wish to use any of the code you are welcome to, but please cite the paper if you rely on substantial portions of it, especially if of methodological relevance.
 
 
 ## Quick access
+EEG power for all the tasks is calculated in [A_Unlocked_Power.m](Analysis/A_Unlocked_Power.m), and for the short-term memory task trials in [A1_Locked_Power_Match2Sample.m](Analysis/A1_Locked_Power_Match2Sample.m). The source localization is not included in this repository, and is in the hands of Elena Krugliakova.
 
-### Plots & table
+### Plots & tables
 The plots were made using the separate repository [chART](https://github.com/snipeso/chart), with some functions from [EEGLAB](https://sccn.ucsd.edu/eeglab/downloadtoolbox.php).
 
 - Table 1: sleep stages and architecture in [B_SleepArchitecture.m](Analysis/B_SleepArchitecture.m)
-- Figure 3: subjective sleepiness ratings in [C_Questionnaires.m](Analysis/C_Questionnaires.m)
-    - Figure 3-1 in [C_Questionnaires.m](Analysis/C_Questionnaires.m)
-- Figure 4 
+- Figure 3, 3-1: subjective sleepiness ratings in [C_Questionnaires.m](Analysis/C_Questionnaires.m)
+- Figure 4, 4-1, 5: STM sources and topographies of fmTheta and sdTheta in [D_fmTheta_vs_sdTheta.m](Analysis/D_fmTheta_vs_sdTheta.m).
+
 
 ### Statistics
 At the bottom of this README you can see the sources of the specific toolboxes, but these are the functions where I actually implement them:
