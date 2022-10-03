@@ -120,7 +120,7 @@ Manuscript = getProperties({'LSM', 'Manuscript'});
 Powerpoint =  getProperties({'LSM', 'Powerpoint'});
 Poster =  getProperties({'LSM', 'Poster'});
 
-
+% journal specific page sizes
 Manuscript.Figure.W1 = 8.5; % one column
 Manuscript.Figure.W2 = 11.6; % column and a half
 Manuscript.Figure.W3 = 17.6;
@@ -176,34 +176,34 @@ Channels.Standard.C = [36 104 129];
 Channels.Standard.T = [45 108];
 Format.Colors.Standard = getColors(5);
 
-% 10-20 ROIs
-Channels.Standard_10_20.Fz = 11;
-Channels.Standard_10_20.Fp1 = 22;
-Channels.Standard_10_20.Fp2 = 9;
-Channels.Standard_10_20.F3 = 24;
-Channels.Standard_10_20.F4 = 124;
-Channels.Standard_10_20.F7 = 33;
-Channels.Standard_10_20.F8 = 122;
-Channels.Standard_10_20.Cz = 129; % TEMP
-Channels.Standard_10_20.C3 = 36;
-Channels.Standard_10_20.C4 = 104;
-Channels.Standard_10_20.T7 = 45;
-Channels.Standard_10_20.T8 = 108;
-Channels.Standard_10_20.Pz = 62;
-Channels.Standard_10_20.P3 = 52;
-Channels.Standard_10_20.P4 = 92;
-Channels.Standard_10_20.P7 = 58;
-Channels.Standard_10_20.P8 = 96;
-Channels.Standard_10_20.Oz = 75;
-Channels.Standard_10_20.O1 = 70;
-Channels.Standard_10_20.O2 = 83;
-
-Titles = fieldnames(Channels.Standard_10_20);
-Channels.Standard_10_20_All = {};
-for Indx = 1:numel(Titles)
-    Channels.Standard_10_20_All{Indx, 2} = Channels.Standard_10_20.(Titles{Indx});
-    Channels.Standard_10_20_All{Indx, 1} = Titles{Indx};
-end
+% % 10-20 ROIs
+% Channels.Standard_10_20.Fz = 11;
+% Channels.Standard_10_20.Fp1 = 22;
+% Channels.Standard_10_20.Fp2 = 9;
+% Channels.Standard_10_20.F3 = 24;
+% Channels.Standard_10_20.F4 = 124;
+% Channels.Standard_10_20.F7 = 33;
+% Channels.Standard_10_20.F8 = 122;
+% Channels.Standard_10_20.Cz = 129; % TEMP
+% Channels.Standard_10_20.C3 = 36;
+% Channels.Standard_10_20.C4 = 104;
+% Channels.Standard_10_20.T7 = 45;
+% Channels.Standard_10_20.T8 = 108;
+% Channels.Standard_10_20.Pz = 62;
+% Channels.Standard_10_20.P3 = 52;
+% Channels.Standard_10_20.P4 = 92;
+% Channels.Standard_10_20.P7 = 58;
+% Channels.Standard_10_20.P8 = 96;
+% Channels.Standard_10_20.Oz = 75;
+% Channels.Standard_10_20.O1 = 70;
+% Channels.Standard_10_20.O2 = 83;
+% 
+% Titles = fieldnames(Channels.Standard_10_20);
+% Channels.Standard_10_20_All = {};
+% for Indx = 1:numel(Titles)
+%     Channels.Standard_10_20_All{Indx, 2} = Channels.Standard_10_20.(Titles{Indx});
+%     Channels.Standard_10_20_All{Indx, 1} = Titles{Indx};
+% end
 
 P.Channels = Channels;
 P.Bands = Bands;

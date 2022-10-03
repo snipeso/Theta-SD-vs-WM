@@ -32,15 +32,15 @@ Questions = fieldnames(Answers);
 %%% Paper Figure
 
 
-%% Figure 3
+%% Figure 3: subjective sleepiness ratings
 
 %%% A: KSS
 
 % parameters
-Grid = [1 4];
-Format = P.Manuscript;
+Grid = [1 4]; % figure grid. Because of wide labels for Figure 3A, one slot is just dedicated to the labels
+Format = P.Manuscript; % this is part of chART, where the variables for formatting are pre-selected
 YLim = [0 1.3];
-Indx_BL = 1; % which is the baseline session to statistically compare to
+Indx_BL = 1; % which index is the baseline session to statistically compare to
 
 % data & labels
 Data = Answers.KSS;
@@ -55,13 +55,13 @@ data3D(Data, Indx_BL, Sessions.Labels, TaskLabels, ...
 % adustments
 legend({'' '', '', '', '', '', 'p<.05'})
 set(legend, 'position', [0.36    0.7562    0.11    0.0659],  'ItemTokenSize', [5 5])
-% set(legend, 'position', [0.3452    0.7562    0.1    0.0659])
 ylim(YLim)
 yticks(linspace(0, 1, numel(L)))
 yticklabels(L)
 
+% title
 X = xlim;
-text(X(1)+diff(X)/2, YLim(2), 'KSS', 'FontSize', Format.Text.TitleSize, ... % title
+text(X(1)+diff(X)/2, YLim(2), 'KSS', 'FontSize', Format.Text.TitleSize, ... 
     'FontName', Format.Text.FontName, 'FontWeight', 'bold', 'HorizontalAlignment', 'center') 
 
 PosA = get(gca, 'position');
@@ -69,6 +69,8 @@ Shift = PosA(3)*.2;
 PosA(1) = PosA(1)+Shift;
 PosA(3) = PosA(3)-Shift;
 set(gca, 'position', PosA) % shift so all text fits in plot
+
+
 
 %%% B: Sleep deprivation KSS
 
@@ -101,7 +103,7 @@ saveFig(strjoin({TitleTag, 'KSS'}, '_'), Paths.Paper, Format)
 
 
 
-%% Figure 3-1
+%% Figure 3-1: Questionnaire answers for each task
 
 % parameters
 Format = P.Manuscript;
@@ -125,7 +127,7 @@ Titles = {'Subjective Sleepiness', 'Relaxing', 'Engaging'; ...
     'Subjective Performance', 'Motivation', 'Slept',};
 
 
-
+%%% plot
 figure('units','centimeters','position',[0 0 Format.Figure.Width*1.2 Format.Figure.Height*.9])
 
 for Indx_G1 = 1:Grid(1)
@@ -137,8 +139,7 @@ for Indx_G1 = 1:Grid(1)
         L = Labels.(Q);
         
         % plot
-        Axis = subfigure([], Grid, [Indx_G1 AxesIndexes(Indx_G2)], [], true, {}, Format);
-        
+        Axis = subfigure([], Grid, [Indx_G1 AxesIndexes(Indx_G2)], [], true, {}, Format);      
         if strcmp(Q, 'Slept') % hack to have just the legend
             data3D(Answers.Motivation, Indx_BL, [], TaskLabels, ...
                 Format.Color.AllTasks, StatsP, Format);

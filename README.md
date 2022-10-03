@@ -1,18 +1,24 @@
 # EEG theta power during tasks and sleep deprivation
 This repository contains all the scripts used for *The theta paradox: 4-8 Hz EEG oscillations reflect both sleep pressure and cognitive control*. This was an investigation in the local changes in EEG theta power caused by sleep deprivation during different tasks. The data is available upon request.
 
-DISCLAIMER: This is NOT a toolbox, and is only being published for the sake of transparency.
+All EEG was preprocessed using the scripts in Preprocessed/, run in alphabetical order (pipeline depicted in Figure 6-1). Upcoming papers also use these scripts. 
+
+The scripts for the analyses are in Analysis/, and can be run in alphabetical order to reproduce the data in the order in which it appears in the paper.
+
+**DISCLAIMER:** This is NOT a toolbox, and is only being published for the sake of transparency. If you wish to use any of the code you are welcome to, but please cite the paper if you rely on substantial portions of it, especially of methodological relevance.
 
 
+## Quick access
 
-### Quick access
-**Plots**
-These were made using the separate repository [chART](https://github.com/snipeso/chart), with some help from [EEGLAB] (https://sccn.ucsd.edu/eeglab/downloadtoolbox.php).
+### Plots & table
+The plots were made using the separate repository [chART](https://github.com/snipeso/chart), with some functions from [EEGLAB](https://sccn.ucsd.edu/eeglab/downloadtoolbox.php).
 
-- Figure 3, Figure 3-1 in [C_Questionnaires.m](Analysis/C_Questionnaires.m)
+- Table 1: sleep stages and architecture in [B_SleepArchitecture.m](Analysis/B_SleepArchitecture.m)
+- Figure 3: subjective sleepiness ratings in [C_Questionnaires.m](Analysis/C_Questionnaires.m)
+    - Figure 3-1 in [C_Questionnaires.m](Analysis/C_Questionnaires.m)
 - Figure 4 
 
-**Statistics**
+### Statistics
 At the bottom of this README you can see the sources of the specific toolboxes, but these are the functions where I actually implement them:
 - [2 way rmANOVA](functions/stats/anova2way.m)
 - [paired t-tests](functions/stats/pairedttest.m)
