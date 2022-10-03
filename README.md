@@ -24,8 +24,8 @@ The plots were made using the separate repository [chART](https://github.com/sni
 - **Figure 9**: "table" of all t-values for anatomical theta sources in [H_Sources_Table.m](Analysis/H_Sources_Table.m)
 - **Figure 10, 11, 11-1, 12**: spectrum figures in [I_Task_Spectrums.m](Analysis/I_Task_Spectrums.m)
 - **Figure 13**: example burst in [J_Example_Bursts.m](Analysis/J_Example_Bursts.m)
-- **Figure 14, 14-1, 15** performance data in [K_Task_Performance.m](Analysis/K_Task_Performance.m)
-
+- **Figure 14, 14-1** performance data in [K_Task_Performance.m](Analysis/K_Task_Performance.m)
+- **Figure 15**: performance vs sdTheta in [L_Behavior_v_EEG.m](Analysis/L_Behavior_v_EEG.m)
 
 
 ### Statistics
@@ -35,7 +35,7 @@ At the bottom of this README you can see the sources of the specific toolboxes, 
 
 
 
-### Content
+## Content
 
 ***Preprocessing/*** contains the scripts used for preprocessing the data, and of course must be run first. These clean the raw EEG data as described in the paper. This works with the EEGLAB toolbox, and at each step saves the EEG data as a .set file. The scripts are run in alphabetical order ('A_EEG2SET.mat', 'B_Filtering_Downsampling.m', ...). The folder "Extras" is for other papers that used the same preprocessing, but needed a little extra manipulation.
 
@@ -45,15 +45,15 @@ At the bottom of this README you can see the sources of the specific toolboxes, 
 
 ***SpfT_Scoring/*** contains the quick scripts I used to blind myself for the scoring of the Speech Fluency Task data.
 
-***functions/*** contains all the functions used in the script folders. Functions in the *external* folder are, as you could imagine, from other toolboxes and little bits of code from other people. All other code was written by me (Sophia Snipes).
+***functions/*** contains all the functions used in the script folders. Functions in the *external* folder are, as you could imagine, from other toolboxes and little bits of code from other people. All other code was written by me (Sophia Snipes) unless specified otherwise.
 
 
 ## Setup
-Below are the instructions to reproduce my results starting from the raw data.
+Below are the instructions to reproduce my results starting from the raw data. Scripts were originally written in MATLAB 2019b, but then the latest iterations run in MATLAB 2022a, so hopefully everything is compatible with either, but I didn't check.
 
 1. Download EEGLAB
     - in the "pop_loadset" function, disable line 117:  `fprintf('pop_loadset(): loading file %s ...\n', filename)`; so that you can't see which file is being loaded during the randomized file cleaning
-    - if using the latest versions, you might need to set FORCE_EEGPLOT_LEGACY to **true** on line 220 of eegplot.m. They have some bugs.
+    - if using the 2022 versions, you might need to set FORCE_EEGPLOT_LEGACY to **true** on line 220 of eegplot.m. They have some bugs.
 2. Make sure to have these MATLAB toolboxes: 
     - Text Analytics Toolbox
     - Statistics and Machine Learning Toolbox
@@ -73,15 +73,14 @@ Scripts to clean the EEG data.
     5. **E_RemoveComponents.m** is another manual process that requires running over and over again until all files have been visualized. It shows the components that were automatically marked for removal, allows the user to select further components to remove over and over until the user is happy. Additional channels can further be removed at the end. This outputs a final '.set' file into *Preprocessing/Clean* which is used for data analysis.
     6. **F_eeglab3fieldtrip.m** converts data to fieldtrip datastructure for source localization. **F2_match2sample2fieldtrip.m** does the same, but using task trials.
 
-All other scripts are experimental and peripheral things that were not part of the preprocessing pipeline.
 
 
 ### Analysis
-Scripts used to create the results in the paper. Each script is similarly structured: first the general parameters are loaded in (e.g. path locations, formatting styles), then script-specific parameters are specified, then the data is loaded, and then the individual plots can be run, either in order or not. 
+Here are the scripts used to create the results in the paper. Each script is similarly structured: first the general parameters are loaded in (e.g. path locations, formatting styles), then script-specific parameters are specified, then the data is loaded, and then the individual plots can be run, either in order or not. 
 
-1. Modify **analysisParameters.m**. so that filepaths are correct. Like for preprocessing, this is now a function that indicates the parameters in common across scripts. Now the bulk of these are related to plotting and such.
-2. Run **A_Unlocked_Power.m** and the **A1_Locked_Power...** scripts to get the power spectrum data from the clean .set files created by the preprocessing. These are saved in *Final>Unlocked* and *Final>Locked* respectively. "Unlocked" refers to power that is not locked to any particular event, and just takes a certain number of minutes of data, whereas "Locked" takes epochs specific to the underlying task, which is why there's a seperate one for each task.
-3. Run the scripts used for the plots of the paper (C-L). These don't actually have to be run in order
+1. Modify **analysisParameters.m**. so that filepaths are correct. Unlike for preprocessing, this is now a function, and indicates the parameters in common across scripts. Now the bulk of these are related to plotting and such.
+2. Run **A_Unlocked_Power.m** and the **A1_Locked_Power...** scripts to get the power spectrum data from the clean .set files created by the preprocessing. The output is saved in *Final>Unlocked* and *Final>Locked* respectively. "Unlocked" refers to power that is not locked to any particular event, and just takes a certain number of minutes of data, whereas "Locked" takes epochs specific to the underlying task, which is why there's a seperate one for each task.
+3. Run the scripts used for the plots of the paper (B-L). These don't actually have to be run in order
 
 N.B. The scripts for the source localization are not included in this repository.
 
@@ -108,19 +107,20 @@ Task output is also saved as a JSON, but the scripts here will gladly convert th
 ## Credits
 
 ### External scripts and toolboxes
+For simplicity, these are already in this repo, saved in *functions/external/*.
 
-- For EEG: EEGLAB: https://sccn.ucsd.edu/eeglab/downloadtoolbox.php. I used version 2019_1 (until revisions)
-- Colormaps: https://colorcet.holoviz.org/ 
-- Normality tests: Ahmed BenSaïda (2021). Shapiro-Wilk and Shapiro-Francia normality tests. (https://www.mathworks.com/matlabcentral/fileexchange/13964-shapiro-wilk-and-shapiro-francia-normality-tests), MATLAB Central File Exchange. Retrieved August 13, 2021.
-- Effect size measurements: Harald Hentschke (2021). hhentschke/measures-of-effect-size-toolbox (https://github.com/hhentschke/measures-of-effect-size-toolbox), GitHub. Retrieved November 20, 2019.
-- Color converter: Vladimir Bychkovsky (2021). hsl2rgb and rgb2hsl conversion (https://www.mathworks.com/matlabcentral/fileexchange/20292-hsl2rgb-and-rgb2hsl-conversion), MATLAB Central File Exchange. Retrieved November 12, 2021.
-- Correction for multiple comparisons: Mass Univariate ERP Toolbox. (2017, October 2). OpenWetWare. Retrieved January 3, 2022 from https://openwetware.org/mediawiki/index.php?title=Mass_Univariate_ERP_Toolbox&oldid=1019603.
+- For EEG: [EEGLAB](https://sccn.ucsd.edu/eeglab/downloadtoolbox.php). I used version 2019_1 (until revisions)
+- Colormaps: [colorecet](https://colorcet.holoviz.org/)
+- Normality tests: [Ahmed BenSaïda (2021). Shapiro-Wilk and Shapiro-Francia normality tests](https://www.mathworks.com/matlabcentral/fileexchange/13964-shapiro-wilk-and-shapiro-francia-normality-tests), MATLAB Central File Exchange. Retrieved August 13, 2021.
+- Effect size measurements: [Harald Hentschke (2021)](https://github.com/hhentschke/measures-of-effect-size-toolbox), GitHub. Retrieved November 20, 2019.
+- Color converter: Vladimir Bychkovsky (2021). [hsl2rgb and rgb2hsl conversion](https://www.mathworks.com/matlabcentral/fileexchange/20292-hsl2rgb-and-rgb2hsl-conversion), MATLAB Central File Exchange. Retrieved November 12, 2021.
+- Correction for multiple comparisons: [Mass Univariate ERP Toolbox](https://openwetware.org/mediawiki/index.php?title=Mass_Univariate_ERP_Toolbox&oldid=1019603) (2017, October 2). OpenWetWare. Retrieved January 3, 2022.
 
 
 ### Reference papers and sources
 
 Overall pipeline was based on: 
-Makoto Miyakoshi (2020). Makoto's preprocessing pipeline (https://sccn.ucsd.edu/wiki/Makoto's_preprocessing_pipeline), Swartz Center for Computational Neuroscience wiki. Retrieved March 15, 2020.
+Makoto Miyakoshi (2020). [Makoto's preprocessing pipeline](https://sccn.ucsd.edu/wiki/Makoto's_preprocessing_pipeline), Swartz Center for Computational Neuroscience wiki. Retrieved March 15, 2020.
 
 ICA parameters were chosen based on: 
 Dimigen, O. (2020). Optimizing the ICA-based removal of ocular EEG artifacts from free viewing experiments. NeuroImage, 207, 116117.
