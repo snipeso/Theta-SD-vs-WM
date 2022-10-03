@@ -1,7 +1,9 @@
 # EEG theta power during tasks and sleep deprivation
-This repository contains all the scripts used for *The Theta Paradox: 4-8 Hz EEG oscillations reflect both sleep deprivation and cognitive control*. This was an investigation in the local changes in EEG theta power caused by sleep deprivation during different tasks. The data is available upon request.
+This repository contains all the scripts used for *The theta paradox: 4-8 Hz EEG oscillations reflect both sleep pressure and cognitive control*. This was an investigation in the local changes in EEG theta power caused by sleep deprivation during different tasks. The data is available upon request.
 
-DISCLAIMER: I am a psychologist by training, and did the best I could but this is not "professional" code. I prioritized making the scripts work intuitively (for me) over formal formatting correctness. Also, I am a PhD student 1 year from graduation, and don't really have time to make perfect documentation. If there's something not clear that you really want to know, just write to me. This is NOT a toolbox, and is only being published for the sake of transparency.
+DISCLAIMER: This is NOT a toolbox, and is only being published for the sake of transparency.
+
+
 
 ### Quick access
 **Plots**
