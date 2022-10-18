@@ -200,7 +200,7 @@ for Indx_P = 1:numel(Performance_Labels)
     end
     Colors(Indx_P, :) = PlotProps.Color.Tasks.(Task);
 end
-%%
+
 
 %%% identify only measures that show a significant change from BL to SD
 clc

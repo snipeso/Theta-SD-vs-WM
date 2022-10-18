@@ -72,7 +72,7 @@ Stats = anova2way(Correct, {'Session', 'Level'}, Sessions.Labels, Legend, StatsP
 dispStat(Stats, Stats.labels, '% Correct:')
 
 
-%% replicate previous study
+%% replicate previous study (reported statistics)
 clc
 
 
@@ -82,7 +82,7 @@ Indx_L = 2;
 Ret = {'Ret1', 'Ret2'};
 StatsP = P.StatsP;
 % StatsP.Correlation = 'Pearson';
-PlotProps = P.Manuscript;
+PlotProps = P.Powerpoint;
 
 % AFZ log difference vs behavioral difference
 AFZ = squeeze(log(bData(:, Indx_S, [1 Indx_L], [2 3], labels2indexes(16, Chanlocs), Indx_B)));
@@ -94,10 +94,13 @@ for Indx_E = 1:2
     Stats = correlation(Data1, Data2, StatsP);
     dispStat(Stats,[], ['fmTheta vs performance change ', Ret{Indx_E}])
 
-    figure
+    figure('Units','normalized', 'Position', [0 0 .3 .5])
     Stats = plotCorrelations(Data1, Data2, {'\Delta %Correct', '\Delta Theta'}, ...
         [], PlotProps.Color.Participants, PlotProps, StatsP);
     title(['L1 vs L', num2str(Levels(Indx_L)), ' (r=', num2str(Stats.r, '%2.2f'), '; p=', num2str(Stats.p, '%2.2f'), ')'])
+
+saveFig(strjoin({TitleTag, 'fmTheta_v_behavior', Ret{Indx_E}}, '_'), Paths.Powerpoint, PlotProps)
+
 
 end
 
@@ -124,11 +127,11 @@ Stats = topoCorr(Data2, Data1, Chanlocs, [], StatsP, PlotProps, P.Labels);
 
 Indx_B = 2;
 Indx_Ch = 1;
-Indx_E = 2;
+Indx_E = 3;
 Indx_S = 1;
 StatsP = P.StatsP;
 % Indx_L = 2;
-Indx_L = 3;
+Indx_L = 2;
 
 Data1 = squeeze(Correct(:, Indx_S, Indx_L)-Correct(:, Indx_S, 1));
 
