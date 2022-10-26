@@ -134,18 +134,18 @@ saveFig(strjoin({TitleTag, 'Means'}, '_'), Paths.Paper, PlotProps)
 %% baseline change in theta
 
 PlotProps = P.Powerpoint;
+Indx_B = 2;
 
 %%% D: task difference at baseline for Front ROI
 Data = squeeze(bData(:, 1, :, 1, Indx_B));
 MEANS = nanmean(Data);
 [~, Order] = sort(MEANS, 'descend');
 
-figure('Units','normalized', 'Position', [0 0 .5 .5])
+figure('Units','normalized', 'Position', [0 0 .35 .4])
 data2D('box', Data(:, Order), TaskLabels(Order), [], [], ...
     PlotProps.Color.AllTasks(Order, :), StatsP, PlotProps);
 ylabel(Labels.zPower)
-title('BL Front Means', 'FontSize', PlotProps.Text.TitleSize)
 
 
-saveFig(strjoin({TitleTag, 'Means'}, '_'), Paths.Powerpoint, PlotProps)
+saveFig(strjoin({TitleTag, 'BL front Means'}, '_'), Paths.Powerpoint, PlotProps)
 
