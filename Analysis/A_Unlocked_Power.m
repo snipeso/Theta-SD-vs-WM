@@ -16,11 +16,11 @@ Format = P.Format;
 Channels = P.Channels;
 Labels = P.Labels;
 % Tasks = P.AllTasks;
-Tasks = { 'Standing', 'Oddball'};
+Tasks = { 'Standing', 'Fixation', 'Game'};
 
 Refresh = false;
-WelchWindow = 8; % duration of window to do FFT
-Overlap = .75; % overlap of hanning windows for FFT
+WelchWindow = 4; % duration of window to do FFT
+Overlap = .5; % overlap of hanning windows for FFT
 
 EEG_Triggers.Start = 'S  1';
 EEG_Triggers.End = 'S  2';
@@ -30,11 +30,11 @@ Durations.Match2Sample =  [-2, -4, 1 2 4 6 8, 10, 12, 15, 20];
 Durations.LAT =  [-2, -4, 1 2 4 6 8, 10];
 Durations.PVT =  [-2, -4, 1 2 4 6 8];
 Durations.SpFT =  [-2, 1 2 4];
-Durations.Game =  [-2, -4, 1 2 4 6 8];
+Durations.Game =  4; % [-2, -4, 1 2 4 6 8];
 Durations.Music =  [-2, 1 2 4];
-Durations.Fixation = [5];
-Durations.Standing = [5];
-Durations.Oddball = [5];
+Durations.Fixation = [4];
+Durations.Standing = [4];
+Durations.Oddball = [4];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Calculate power for minutes of the recording
