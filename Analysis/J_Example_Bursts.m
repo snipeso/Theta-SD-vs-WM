@@ -44,11 +44,15 @@ end
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Paper Figure 10
+close all
+clc
 
-PlotProps = P.Manuscript;
+% PlotProps = P.Manuscript;
+PlotProps = P.Powerpoint;
 PlotProps.Axes.yPadding = 20;
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.7])
+% figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.7])
+% figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.7])
 
 B.Theta = Bands.Theta;
 
@@ -62,7 +66,7 @@ CornerLocations = [
     ];
 
 ProtoChannel = unique([Coordinates{:, 3}]);
-for Indx_E = 1:size(Coordinates, 1)
+for Indx_E = 2%1:size(Coordinates, 1)
     Start = Coordinates{Indx_E, 2};
     Stop = Start + 2;
 
@@ -71,7 +75,7 @@ for Indx_E = 1:size(Coordinates, 1)
         Title = text(.5, 1, Titles{Indx_E}, 'FontSize', PlotProps.Text.TitleSize, 'FontName', PlotProps.Text.FontName, ...
         'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
     
-    plotBurstFig(AllEEG(Indx_E), Start, Stop, Coordinates{Indx_E, 3}, B, Space, Log,  Coordinates{Indx_E, 4}, PlotProps, Labels);
+    plotBurstFig2(AllEEG(Indx_E), Start, Stop, Coordinates{Indx_E, 3}, B, Space, Log,  Coordinates{Indx_E, 4}, PlotProps, Labels);
     
     Axis.Units = 'normalized';
     Title.Units = 'normalized';
