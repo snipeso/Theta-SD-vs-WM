@@ -16,11 +16,11 @@ Format = P.Format;
 Channels = P.Channels;
 Labels = P.Labels;
 % Tasks = P.AllTasks;
-Tasks = { 'Standing', 'Oddball'};
+Tasks = { 'Standing', 'Fixation', 'Game'};
 
 Refresh = false;
-WelchWindow = 8; % duration of window to do FFT
-Overlap = .75; % overlap of hanning windows for FFT
+WelchWindow = 4; % duration of window to do FFT
+Overlap = .5; % overlap of hanning windows for FFT
 
 EEG_Triggers.Start = 'S  1';
 EEG_Triggers.End = 'S  2';
