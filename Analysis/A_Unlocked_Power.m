@@ -26,16 +26,6 @@ EEG_Triggers.Start = 'S  1';
 EEG_Triggers.End = 'S  2';
 
 % durations to loop through for each task
-Durations.Match2Sample =  [-2, -4, 1 2 4 6 8, 10, 12, 15, 20];
-Durations.LAT =  [-2, -4, 1 2 4 6 8, 10];
-Durations.PVT =  [-2, -4, 1 2 4 6 8];
-Durations.SpFT =  [-2, 1 2 4];
-Durations.Game =  [-2, -4, 1 2 4 6 8];
-Durations.Music =  [-2, 1 2 4];
-Durations.Fixation = [5];
-Durations.Standing = [5];
-Durations.Oddball = [5];
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Calculate power for minutes of the recording
 
@@ -46,7 +36,6 @@ for Indx_T = 1:numel(Tasks)
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'Clean', 'Power', Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', 'Cuts', Task);
-    
     Files = deblank(cellstr(ls(Source)));
     Files(~contains(Files, '.set')) = [];
     

@@ -8,7 +8,8 @@
 *.csv
 *.svg
 *.loc
-  
+*.tif
+*.eps
 
 # exceptions
 !All_Sentences.csv

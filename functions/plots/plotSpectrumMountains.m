@@ -36,7 +36,7 @@ Data2 = squeeze(Data(:, 2, :));
 plotMountains(Data1, Data2, X, 'pos', PlotProps.Color.Participants, PlotProps)
 
 set(gca,'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize, 'XGrid', 'on')
-
+h=gca; h.XAxis.TickLength = [0 0];
 
 if ~isempty(xLims)
     xlim(Lims)

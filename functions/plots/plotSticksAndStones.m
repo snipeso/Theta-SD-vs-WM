@@ -1,4 +1,4 @@
-function Stats = plotSticksAndStones(Data1, Data2, AxisLabels, Legend, Colors, Format)
+function Stats = plotSticksAndStones(Data1, Data2, AxisLabels, Legend, Colors, PlotProps)
 % Data1 and Data2 are P x G matrices, with G groups labeled with colors
 
 Dims = size(Data1);
@@ -10,7 +10,7 @@ hold on
 for Indx_G = 1:Dims(2)
     
     scatter(Data1(:, Indx_G), Data2(:, Indx_G), ...
-        Format.ScatterSize, Colors(Indx_G, :), 'filled', 'MarkerFaceAlpha', .5 )
+        PlotProps.Scatter.Size, Colors(Indx_G, :), 'filled', 'MarkerFaceAlpha', .5 )
     
     % get correlation
     [Stats.r(Indx_G), Stats.pvalue(Indx_G)] = corr(Data1(:, Indx_G), Data2(:, Indx_G));
@@ -25,7 +25,7 @@ FlippedColors = flipud(Colors);
 FlippedStats = flipud(Stats.pvalue);
 for Indx_L = 1:numel(L)
     if  FlippedStats(Indx_L) <= .05
-        L(Indx_L).LineWidth = Format.LW;
+        L(Indx_L).LineWidth = PlotProps.Line.Width;
     else
         L(Indx_L).LineWidth = 2;
     end
@@ -33,7 +33,7 @@ for Indx_L = 1:numel(L)
     
 end
 
-set(gca, 'FontName', Format.FontName, 'FontSize', Format.FontSize)
+set(gca, 'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.AxisSize)
 axis square
 if~isempty(Legend)
     legend(Legend)

@@ -1466,7 +1466,7 @@ if strcmp(ELECTRODES,'on')   % plot electrodes as spots
         EMARKER,'Color',ECOLOR,'markersize',EMARKERSIZE,'linewidth',EMARKERLINEWIDTH);
 %     hp2b = plot3(y(mark2chans),x(mark2chans),ones(size((mark2chans)))*ELECTRODE_HEIGHT,...
 %         EMARKER2,'Color',EMARKER2COLOR,'markerfacecolor',EMARKER2COLOR,'linewidth',EMARKER2LINEWIDTH,'markersize',EMARKERSIZE2);
-  hp2b = scatter(y(mark2chans),x(mark2chans), 40, EMARKER2COLOR, 'filled', 'linewidth',EMARKER2LINEWIDTH);
+  hp2b = scatter(y(mark2chans),x(mark2chans), EMARKERSIZE*5, EMARKER2COLOR, 'filled', 'linewidth',EMARKER2LINEWIDTH);
   end
 %
 %%%%%%%%%%%%%%%%%%%%%%%% Print electrode labels only %%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -24,6 +24,8 @@ if exist( 'D:\Data\Raw', 'dir')
     Core = 'D:\Data\';
 elseif exist( 'F:\Data\Raw', 'dir')
     Core = 'F:\Data\';
+elseif exist( 'E:\Data\Raw', 'dir')
+    Core = 'E:\Data\';
 else
     error('no data disk!')
 end
@@ -71,20 +73,20 @@ if Pix(3) < 2000
     Format.TitleSize = 15;
     Format.TopoRes = 150;
     Format.LW = 2;
-        Format.BarSize = 10;
+    Format.BarSize = 10;
     Format.Topo.Sig = 2; % marker size
     Format.ScatterSize = 10; % TODO: seperate features for small or big screen
-      Format.OSize = 5; % Spaghetti O
+    Format.OSize = 5; % Spaghetti O
 else
     Format.FontSize = 15;
     Format.TitleSize = 20;
     Format.TopoRes = 300;
-        Format.BarSize = 18;
+    Format.BarSize = 18;
     Format.LW = 4;
     Format.Topo.Sig = 5; % marker size
     Format.ScatterSize = 80; % TODO: seperate features for small or big screen
 
-      Format.OSize = 20; % Spaghetti O
+    Format.OSize = 20; % Spaghetti O
 end
 
 Format.Steps.Linear = 20;
@@ -272,43 +274,29 @@ P.StatsP = StatsP;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Alternative Format for Pixels
 
-Pixels = Format;
 
-% final figure size in pixels
-% lettering for figures
-Pixels.Letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-Pixels.Numerals = {'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'};
+% plot sizes depending on which screen being used
+Pix = get(0,'screensize');
+if Pix(3) < 2000
+    Format = getProperties({'LSM', 'SmallScreen'});
+else
+    Format = getProperties({'LSM', 'LargeScreen'});
+end
 
-Pixels.xPadding = 25; % border & distance between main figures
-Pixels.yPadding = 25;
-Pixels.xPaddingMinor = 25;
-Pixels.yPaddingMinor = 25;
-Pixels.PaddingExterior = 40;
-Pixels.LetterSize = 30;
-Pixels.TopoRes = 300;
-Pixels.TitleSize = 22;
-Pixels.FontSize = 18;
-Pixels.BarSize = 15;
-Pixels.PaddingLabels = Pixels.FontSize*2;
-Pixels.W = 42; % width of reference "paper"
-Pixels.H = 60; % width of reference "paper"
-Pixels.LW = 3;
-Pixels.ScatterSize = 100;
-Pixels.Topo.Sig = 3;
-Pixels.OSize = 10; % Spaghetti O
+Manuscript = getProperties({'LSM', 'Manuscript'});
+Powerpoint =  getProperties({'LSM', 'Powerpoint'});
+Poster =  getProperties({'LSM', 'Poster'});
 
 
-Format_PPT = Format;
-Format_PPT.Steps.Divergent = 40;
-Format_PPT.BarSize = 25;
-Format_PPT.TopoRes = 500;
+Manuscript.Figure.W1 = 8.5; % one column
+Manuscript.Figure.W2 = 11.6; % column and a half
+Manuscript.Figure.W3 = 17.6;
+Manuscript.Figure.Height = 25;
 
-
-P.Format_PPT = Format_PPT;
-P.Pixels = Pixels;
-P.Format = Format;
-P.Channels = Channels;
-P.Bands = Bands;
+P.Manuscript = Manuscript; % for papers
+P.Powerpoint = Powerpoint; % for presentations
+P.Poster = Poster;
+P.Format = Format; % plots just to view data
 
 
 

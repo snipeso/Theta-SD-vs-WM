@@ -22,4 +22,8 @@ Answers.Delay = cell2mat(AllAnswers.delay);
 Answers.RT = cell2mat(AllAnswers.rt);
 
 % deal with false alarms and bugs
-Answers.RT(Answers.RT<.1) = nan;
+Bugs = Answers.RT<.1;
+Answers.RT(Bugs) = nan;
+Answers.Type = ones(TotTrials, 1);
+Answers.Type(Answers.RT<.5) = 2;
+Answers.Type(Bugs) = 3;

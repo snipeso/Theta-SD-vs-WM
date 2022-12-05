@@ -1,7 +1,7 @@
 % Scripts for plotting figures based on trial data of the Short Term Memory
 % (STM, aka Match2Sample aka M2S task).
 
-clear
+% clear
 close all
 clc
 
@@ -19,8 +19,8 @@ Labels = P.Labels;
 
 SmoothFactor = 1; % in Hz, range to smooth over for spectrums
 
-Window = 2;
-ROI = 'preROI';
+Window = 2; % trial duration
+ROI = 'preROI'; % label for regions of interest
 Task = 'Match2Sample';
 Tag = ['w', num2str(Window)];
 
@@ -102,16 +102,10 @@ Epochs = Labels.Epochs;
 Levels = [1 3 6];
 Legend = append('L', string(Levels));
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Paper Figure
 
-
-%% Figure LOCZ showing fmTheta vs sdTheta
+%% Figure 4 showing fmTheta vs sdTheta
 
 PlotProps = P.Manuscript;
-PlotProps.External.EEGLAB.MarkerSize = 2; % tiny for this plot
-% Format.Axes.yPadding = 15;
-% Format.Axes.xPadding = 20;
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 CLims_Diff = [-7 7];
@@ -121,13 +115,15 @@ miniGrid = [5, 1];
 
 Order = {'left-outside', 'right-outside',  'left-inside',  'right-inside'};
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.55])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.6])
 
-%%% fmTheta
+%%% A: fmTheta
 N1 = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
 N3 = squeeze(bData(:, 1, 2, Indx_E, :, Indx_B));
 
 Space = subaxis(Grid, [1 1], [],  PlotProps.Indexes.Letters{1}, PlotProps);
+
+% I: topography
 Indx = 1; % tally of axes
 Axes = subfigure(Space, miniGrid, [1 1], [], false, PlotProps.Indexes.Numerals{Indx}, PlotProps); Indx = Indx+1;
 shiftaxis(Axes, [], PlotProps.Axes.yPadding)
@@ -135,7 +131,7 @@ topoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, PlotProps, Labels);
 colorbar off
 title('fmTheta', 'FontSize', PlotProps.Text.TitleSize)
 
-% balloon brains fmTheta
+% II-V: balloon brains fmTheta
 for Indx_F = 1:4
     subfigure(Space, miniGrid, [Indx_F+1 1], [], false, PlotProps.Indexes.Numerals{Indx}, PlotProps); Indx = Indx+1;
     plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, PlotProps)
@@ -143,12 +139,13 @@ for Indx_F = 1:4
 end
 
 
-
-%%% sdTheta
+%%% B: sdTheta
 BL = squeeze(bData(:, 1, 1, Indx_E, :, Indx_B));
 SD = squeeze(bData(:, 3, 1, Indx_E, :, Indx_B));
 
 Space = subaxis(Grid, [1 2], [],  PlotProps.Indexes.Letters{2}, PlotProps);
+
+% I: topography
 Indx = 1; % tally of axes
 Axes = subfigure(Space, miniGrid, [1 1], [], false, PlotProps.Indexes.Numerals{Indx}, PlotProps); Indx = Indx+1;
 shiftaxis(Axes, [], PlotProps.Axes.yPadding)
@@ -156,7 +153,7 @@ Stats = topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, PlotProps, Labels);
 colorbar off
 title('sdTheta', 'FontSize', PlotProps.Text.TitleSize)
 
-% balloon sdTheta
+% II-V: balloon brains sdTheta
 for Indx_F = 1:4
     Axes = subfigure(Space, miniGrid, [Indx_F+1 1], [], false, PlotProps.Indexes.Numerals{Indx}, PlotProps); Indx = Indx+1;
     plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, PlotProps)
@@ -166,9 +163,11 @@ end
 % colorbar
 subfigure([], Grid, [1 3], [], false, '', PlotProps);
 plotColorbar('Divergent', CLims_Diff, Labels.t, PlotProps)
+Pos = get(gca, 'Position');
+Pos(1) = Pos(1)-Pos(1)*.05;
+set(gca, 'position', Pos)
 
-
-%%% plot change based on table data
+%%% C: Change in t-values for anatomical areas
 
 % decide which labels to show
 KeepAreaLabels = {'Frontal Sup R', 'Cingulum Ant L', 'Precuneus R',  ...
@@ -189,15 +188,58 @@ Colors(Both, :) = repmat(getColors([1 1], 'rainbow', 'purple'), nnz(Both), 1);
 subfigure([], [5 3], [5 3], [5, 1], false, PlotProps.Indexes.Letters{3}, PlotProps);
 plotLadder([t_fmTheta, t_sdTheta], {'fmTheta', 'sdTheta'}, AreaLabels, Colors, ...
     {'Neither significant',  'Both signficant', 'sdTheta significant'}, 'northwest', PlotProps)
-set(legend, 'position', [ 0.7144    0.8449    0.1317    0.0566])
+set(legend, 'position', [0.6302    0.8123    0.2219    0.0865])
 ylim([-3.5 7.25])
 xlim([.65 2.2])
+Pos = get(gca, 'position');
+Pos(1) = Pos(1)+Pos(1)*.05;
+set(gca, 'position', Pos)
 
 % save
 saveFig(strjoin({TitleTag, 'sources'}, '_'), Paths.Paper, PlotProps)
 
 
-%% Figure M2SZ theta changes for each session
+%% Figure 4-1 fmTheta at baseline for different epochs
+
+PlotProps = P.Manuscript;
+PlotProps.Figure.Padding = 20;
+Indx_S = 1; % baseline
+Indx_B = 2; % theta
+Grid = [2, numel(Epochs)];
+CLims_Diff = [-7 7];
+
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.4])
+
+for Indx_E = 1:numel(Epochs)
+    for Indx_L =  2:numel(Levels)
+        N1 = squeeze(bData(:, Indx_S, 1, Indx_E, :, Indx_B));
+        N3 = squeeze(bData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
+
+        % plot
+        A = subfigure([], Grid, [Indx_L-1 Indx_E], [], false, {}, PlotProps);
+        topoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, PlotProps, Labels);
+        colorbar off
+
+        if Indx_L == 2 % only title for top row
+            title(Epochs{Indx_E}, 'FontName', PlotProps.Text.FontName, ...
+                'FontSize', PlotProps.Text.TitleSize)
+        end
+
+        if Indx_E ==1 % left labels of rows
+            X = get(gca, 'XLim');
+            Y = get(gca, 'YLim');
+            text(X(1)-diff(X)*.15, Y(1)+diff(Y)*.5, [Legend{Indx_L}; 'vs'; 'L1'], ...
+                'FontSize', PlotProps.Text.TitleSize, 'FontName', PlotProps.Text.FontName, ...
+                'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
+        end
+    end
+end
+
+saveFig(strjoin({TitleTag, 'epochs'}, '_'), Paths.Paper, PlotProps)
+
+
+
+%% Figure 5: interaction between STM task level and sleep deprivation theta power
 
 PlotProps = P.Manuscript;
 
@@ -206,30 +248,33 @@ Grid = [1 5];
 Indx_E = 2; % retention 1 period
 Indx_B = 2; % theta
 
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.4])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.45])
 Indx = 1; % tally of axes
 
-%%% fmTheta by session
+%%% A: fmTheta by session
 miniGrid = [2 3];
-
 Space = subaxis(Grid, [1, 1], [1 3], PlotProps.Indexes.Letters{Indx}, PlotProps); Indx = Indx+1;
 
 for Indx_L =  2:numel(Levels)
     for Indx_S = 1:nSessions
-        
+
         N1 = squeeze(bData(:, Indx_S, 1, Indx_E, :, Indx_B));
         N3 = squeeze(bData(:, Indx_S, Indx_L, Indx_E, :, Indx_B));
-        
+
         % plot
         A = subfigure(Space, miniGrid, [Indx_L-1 Indx_S], [], false, {}, PlotProps);
         shiftaxis(A, PlotProps.Axes.xPadding/2, [])
+
+        if Indx_L==numel(Levels) % shift up a bit for the colobar
+            A.Position(2) =  A.Position(2) + .1;
+        end
         Stats = topoDiff(N1, N3, Chanlocs, CLims_Diff, StatsP, PlotProps, Labels);
         colorbar off
-        
+
         if Indx_L == 2 % only title for top row
             title(Sessions.Labels{Indx_S}, 'FontName', PlotProps.Text.FontName, 'FontSize', PlotProps.Text.TitleSize)
         end
-        
+
         if Indx_S ==1 % left labels of rows
             X = get(gca, 'XLim');
             Y = get(gca, 'YLim');
@@ -237,7 +282,7 @@ for Indx_L =  2:numel(Levels)
                 'FontSize', PlotProps.Text.TitleSize, 'FontName', PlotProps.Text.FontName, ...
                 'FontWeight', 'Bold', 'HorizontalAlignment', 'Center');
         end
-        
+
         % save stats
         Title = strjoin({TitleTag, Sessions.Labels{Indx_S}, Legend{Indx_L}, 'vs', 'L1'}, '_');
         saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
@@ -245,83 +290,87 @@ for Indx_L =  2:numel(Levels)
 end
 
 
-%%% mean changes in ROIs
+%%% plot colorbar
+Space(2) = Space(2) - PlotProps.Axes.xPadding*1.5;
+A = subfigure(Space, miniGrid, [2 1], [1, 3], false, {}, PlotProps);
+PlotProps.Colorbar.Location = 'south';
+plotColorbar('Divergent', CLims_Diff, Labels.t, PlotProps)
+shiftaxis(A, PlotProps.Axes.xPadding, [])
+colormap(reduxColormap(PlotProps.Color.Maps.Divergent, PlotProps.Color.Steps.Divergent))
+
+
+%%% B: mean changes in ROIs
 miniGrid = [4, 1];
 YLims = [-.2; -.5; -.2];
 YLims = [YLims, YLims + [1.8; .8; .8]];
 
 Space = subaxis(Grid, [1, 4], [], PlotProps.Indexes.Letters{Indx}, PlotProps);
+Space(2) = Space(2)-PlotProps.Axes.yPadding;
 Indx = Indx+1;
 
 for Indx_Ch = 1:numel(ChLabels)
     Data = squeeze(bchData(:, :, :, Indx_E, Indx_Ch, Indx_B));
-    
+
     if Indx_Ch==1 % make only first plot twice as long
         Height = 2;
     else
         Height = 1;
     end
-    
+
     if Indx_Ch >1
         L = '';
     else
         L = Legend;
     end
-    
-    
+
     % plot
     A = subfigure(Space, miniGrid, [Indx_Ch+1, 1], [Height, 1], true, {}, PlotProps);
-    shiftaxis(A, [], PlotProps.Axes.yPadding/2)
-    Stats = data3D(Data, 1, Sessions.Labels, L, ...
-        PlotProps.Color.Levels, StatsP, PlotProps);
+    shiftaxis(A, PlotProps.Axes.xPadding/2, [])
+    data3D(Data, 1, Sessions.Labels, L, PlotProps.Color.Levels, StatsP, PlotProps);
+    set(gca, 'FontSize', PlotProps.Text.LegendSize)
+
     A.TickLength = [0 0];
     ylim(YLims(Indx_Ch, :))
     yticks(-1:.2:2)
     ylabel(Labels.zPower)
-    if Indx_Ch >1
-        legend off
-    end
-    
+
     if Indx_Ch ~= numel(ChLabels)
         xticklabels('')
     end
-    
+
     title(ChLabels{Indx_Ch}, 'FontSize', PlotProps.Text.TitleSize)
+    set(legend, 'ItemTokenSize', [5 5])
+    set(legend, 'Position', [0.6513    0.7455    0.0686    0.1258])
+
+    if Indx_Ch >1
+        legend off
+        ylabel('')
+    end
 end
 
 
-
-%%% SD vs BL by level
+%%% C: SD vs BL by level
 miniGrid = [3 1];
-PlotProps.External.EEGLAB.MarkerSize = 2;
 Space = subaxis(Grid, [1 5], [], PlotProps.Indexes.Letters{Indx}, PlotProps);
+Space(2) = Space(2)-PlotProps.Axes.yPadding;
+Space(4) = Space(4)+PlotProps.Axes.yPadding;
+PlotProps.Axes.xPadding = 0;
 
-% Space(1) = Space(1) - Format.Axes.xPadding;
 for Indx_L =  1:numel(Levels)
-    
+
     BL = squeeze(bData(:, 1, Indx_L, Indx_E, :, Indx_B));
     SD = squeeze(bData(:, 3, Indx_L, Indx_E, :, Indx_B));
-    
+
     % plot
     A = subfigure(Space, miniGrid, [Indx_L 1], [], false, {}, PlotProps);
     Stats = topoDiff(BL, SD, Chanlocs, CLims_Diff, StatsP, PlotProps, Labels);
-    shiftaxis(A, PlotProps.Axes.xPadding, [])
     colorbar off
     title(Legend{Indx_L}, 'FontSize', PlotProps.Text.TitleSize)
-    
+
     % save stats
     Title = strjoin({TitleTag, Legend{Indx_L}, 'SDvsBL'}, '_');
     saveStats(Stats, 'Paired', Paths.PaperStats, Title, StatsP)
 end
-
-
-%%% plot colorbar
-Space(1) = Space(1) - PlotProps.Axes.xPadding*1.55;
-A = subfigure(Space, miniGrid, [3 2], [3, 1], false, {}, PlotProps);
-plotColorbar('Divergent', CLims_Diff, Labels.t, PlotProps)
-shiftaxis(A, PlotProps.Axes.xPadding, [])
-colormap(reduxColormap(PlotProps.Color.Maps.Divergent, PlotProps.Color.Steps.Divergent))
-
 
 % save
 saveFig(strjoin({TitleTag, '_sessions'}, '_'), Paths.Paper, PlotProps)
@@ -334,57 +383,55 @@ Indx_E = 2; % retention
 Indx_B = 2; % theta
 
 FactorLabels = {'Session', 'Task'};
-
 DispStats = {};
 
 for Indx_Ch = 1:numel(ChLabels)
- Data = squeeze(bchData(:, :, :, Indx_E, Indx_Ch, Indx_B));
- 
-  % 2 way repeated measures anova with factors Session and Level
-        Stats = anova2way(Data, FactorLabels, Sessions.Labels, Legend, StatsP);
-        TitleStats = strjoin({TitleTag, 'rmANOVA', ChLabels{Indx_Ch}}, '_');
-        saveStats(Stats, 'rmANOVA', Paths.PaperStats, TitleStats, StatsP)
-         DispStats = [DispStats, Stats];
-        
-end
+    Data = squeeze(bchData(:, :, :, Indx_E, Indx_Ch, Indx_B));
 
+    % 2 way repeated measures anova with factors Session and Level
+    Stats = anova2way(Data, FactorLabels, Sessions.Labels, Legend, StatsP);
+    TitleStats = strjoin({TitleTag, 'rmANOVA', ChLabels{Indx_Ch}}, '_');
+    saveStats(Stats, 'rmANOVA', Paths.PaperStats, TitleStats, StatsP)
+    DispStats = [DispStats, Stats];
+
+end
 clc
 
 for Indx_Ch = 1:numel(ChLabels)
-    
     dispStat(DispStats{Indx_Ch}, [], ChLabels{Indx_Ch})
-    
 end
 
 
-%% Suppl. Figure SUP_M2SSPEC
+%% Suppl. Figure (bioarXiv): spectrums STM trials
 
 PlotProps = P.Manuscript;
-% Format.PaddingExterior = 90;
+PlotProps.Figure.Padding = 30;
 Grid = [numel(ChLabels), nSessions];
 YLim = [-.8 3.1];
+Indx_E = 2;
 
 Log = true; % whether to plot on log scale or not
-figure('units','centimeters','position',[0 0 PlotProps.Figure.Width PlotProps.Figure.Height*.47])
+figure('units','centimeters','position',[0 0 PlotProps.Figure.W3 PlotProps.Figure.Height*.6])
 Indx = 1; % tally of axes
 
 
 for Indx_Ch = 1:numel(ChLabels)
     for Indx_S = 1:nSessions
         Data = squeeze(chData(:, Indx_S, :, Indx_E, Indx_Ch, :));
-        
+
         % plot
         subfigure([], Grid, [Indx_Ch, Indx_S], [], true, '', PlotProps); Indx = Indx+1;
         spectrumDiff(Data, Freqs, 1, Legend, PlotProps.Color.Levels, Log, PlotProps, StatsP, Labels);
         ylim(YLim)
         xlim(log([1 40]))
-        
+          set(legend, 'ItemTokenSize', [7 7])
+
         % plot labels/legends only in specific locations
         if Indx_Ch > 1 || Indx_S > 1 % first tile
             legend off
-            
+
         end
-        
+
         if Indx_S == 1 % first column
             ylabel(Labels.zPower)
             X = double(get(gca, 'XLim'));
@@ -394,11 +441,11 @@ for Indx_Ch = 1:numel(ChLabels)
         else
             ylabel ''
         end
-        
+
         if Indx_Ch == 1 % first row
             title(Sessions.Labels{Indx_S}, 'FontSize', PlotProps.Text.TitleSize, 'Color', 'k')
         end
-        
+
         if Indx_Ch == numel(ChLabels) % last row
             xlabel(Labels.Frequency)
         else
@@ -410,10 +457,6 @@ end
 % save
 saveFig(strjoin({TitleTag, 'Spectrums', Epochs{Indx_E}}, '_'), Paths.Paper, PlotProps)
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -430,7 +473,7 @@ figure('units','centimeters','position',[0 0 PlotProps.Figure.Width*.5 PlotProps
 BL =  squeeze(bData(:, 1, 1, 2, :, 2));
 Cond =  squeeze(bData(:, 1, 2, 2, :, 2));
 Data = (Cond-BL)./BL;
-Axes = subfigure([], Grid, [1 1], [], false, PlotProps.Indexes.Letters{1}, PlotProps); 
+Axes = subfigure([], Grid, [1 1], [], false, PlotProps.Indexes.Letters{1}, PlotProps);
 Stats = topoDiff(BL, Cond, Chanlocs, [1 5.5], StatsP, PlotProps, Labels);
 colormap(reduxColormap(bone, 15))
 title('Cognition Theta', 'FontSize',PlotProps.Text.TitleSize)
@@ -440,7 +483,7 @@ colorbar off
 BL =  squeeze(bData(:, 1, 1, 2, :, 2));
 Cond =  squeeze(bData(:, 3, 1, 2, :, 2));
 Data = (Cond-BL)./BL;
-Axes = subfigure([], Grid, [1 2], [], false, PlotProps.Indexes.Letters{2}, PlotProps); 
+Axes = subfigure([], Grid, [1 2], [], false, PlotProps.Indexes.Letters{2}, PlotProps);
 Stats = topoDiff(BL, Cond, Chanlocs, CLims, StatsP, PlotProps, Labels);
 colormap(reduxColormap(bone, 15))
 title('Drowsiness Theta',  'FontSize',PlotProps.Text.TitleSize)
@@ -528,7 +571,7 @@ figure('units','centimeters','position',[0 0 50 10])
 for Indx_F = 1:4
     subfigure([], Grid, [1, Indx_F], [], false, '', Powerpoint);
     plotBalloonBrain(fmTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
-    
+
 end
 
 saveFig('fmTheta_horizontal', Paths.Powerpoint, PlotProps)
@@ -538,7 +581,7 @@ figure('units','centimeters','position',[0 0 50 10])
 for Indx_F = 1:4
     subfigure([], Grid, [1, Indx_F], [], false, '', Powerpoint);
     plotBalloonBrain(sdTheta_Map, Order{Indx_F}, CLims_Diff, PlotPatch, Powerpoint)
-    
+
 end
 
 saveFig('sdTheta_horizontal', Paths.Powerpoint, PlotProps)

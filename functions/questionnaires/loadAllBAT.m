@@ -1,4 +1,6 @@
 function [Answers, Labels] = loadAllBAT(Filepath, Participants, Sessions, Tasks)
+% [Answers, Labels] = loadAllBAT(Filepath, Participants, Sessions, Tasks)
+%
 % loads all the questionnaire data into a struct, with each field
 % representing a different question, and holding a P x S x T matrix. Needs
 % a CSV file with all the questionnaire data.
@@ -64,8 +66,20 @@ for Indx_T = 1:numel(Tasks)
     
     Answers.Slept(:, :, Indx_T) = Data;
     Labels.Slept = L;
-    
 end
 
+% set to nan all answers for a questionnaire when more than 4 participants are missing data
+for Indx_T = 1:numel(Tasks)
+    for Indx_Q = 1:numel(Titles)
+        NanP = nnz(any(isnan(Answers.(Titles{Indx_Q})(:, :, Indx_T)), 2));
+        
+        if NanP > 4
+            Answers.(Titles{Indx_Q})(:, :, Indx_T) = nan;
+        end
+    end
+end
 
+% adjust KSS labels
+Labels.KSS(7:9) = {'Sleepy, but no effort to keep awake', 'Sleepy, some effort to keep awake', ...
+    'Fighting sleep'};
 

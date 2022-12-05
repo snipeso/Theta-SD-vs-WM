@@ -14,9 +14,9 @@ Paths = P.Paths;
 Participants = P.Participants;
 Nights = P.Nights;
 
-Variables = {'wake',  'n1', 'n2', 'n3', 'rem',};
-sqVariables = {'sol', 'sd', 'waso', 'se', 'rol'};
-
+% sleep architecture specific labels
+Stages = {'wake',  'n1', 'n2', 'n3', 'rem',};
+ExtraVariables = {'sol', 'sd', 'waso', 'se', 'rol'};
 TableLabels = {'Wake (min)', 'N1', 'N2', 'N3' 'REM', 'SOL', 'SD', 'WASO', 'SE', 'ROL'};
 
 Results = fullfile(Paths.Results, 'Sleep');
@@ -28,56 +28,56 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% gather data from everyone
 
-Variables_Matrix = nan(numel(Participants), numel(Nights)+1, numel(Variables));
-sqVariables_Matrix = nan(numel(Participants), numel(Nights)+1, numel(Variables));
+Stages_Matrix = nan(numel(Participants), numel(Nights)+1, numel(Stages));
+ExtraVariables_Matrix = nan(numel(Participants), numel(Nights)+1, numel(Stages));
 
 for Indx_P = 1:numel(Participants)
-    
+
     % get sleep data
     for Indx_N  = 1:numel(Nights)
-        
+
         % get location
         Folder = strjoin({Participants{Indx_P}, 'Sleep', Nights{Indx_N}}, '_');
         Path = fullfile(Paths.Scoring, 'Sleep', Folder);
-        
+
         % get scoring info
         [Percent, Minutes, SleepQuality] = loadScoring(Path);
-        
+
         % load into matrices
-        for Indx_V = 1:numel(Variables)
-            Variables_Matrix(Indx_P, Indx_N, Indx_V) = Minutes.(Variables{Indx_V});
+        for Indx_S = 1:numel(Stages)
+            Stages_Matrix(Indx_P, Indx_N, Indx_S) = Minutes.(Stages{Indx_S});
         end
-        
-        for Indx_sqV = 1:numel(sqVariables)
-            sqVariables_Matrix(Indx_P, Indx_N, Indx_sqV) = SleepQuality.(sqVariables{Indx_sqV});
+
+        for Indx_eV = 1:numel(ExtraVariables)
+            ExtraVariables_Matrix(Indx_P, Indx_N, Indx_eV) = SleepQuality.(ExtraVariables{Indx_eV});
         end
     end
-    
+
     %%% get MWT data (for potential future reference)
     Folder = strjoin({Participants{Indx_P}, 'MWT', 'Main'}, '_');
     Path = fullfile(Paths.Scoring, 'MWT', Folder);
-    
+
     % get scoring info
     [Percent, Minutes, SleepQuality] = loadScoring(Path);
     if isempty(fieldnames(Percent))
         continue
     end
-    
+
     % load into matrices
-    for Indx_V = 1:numel(Variables)
-        Variables_Matrix(Indx_P, end, Indx_V) = Minutes.(Variables{Indx_V});
+    for Indx_S = 1:numel(Stages)
+        Stages_Matrix(Indx_P, end, Indx_S) = Minutes.(Stages{Indx_S});
     end
-    
-    for Indx_sqV = 1:numel(sqVariables)
-        sqVariables_Matrix(Indx_P, end, Indx_sqV) = SleepQuality.(sqVariables{Indx_sqV});
+
+    for Indx_eV = 1:numel(ExtraVariables)
+        ExtraVariables_Matrix(Indx_P, end, Indx_eV) = SleepQuality.(ExtraVariables{Indx_eV});
     end
 end
 
-%% create and save table with all sleep architecture things
+%% Table 1
 
 % join variables
-Matrix = cat(3, Variables_Matrix(:, 1:numel(Nights), :), sqVariables_Matrix(:, 1:numel(Nights), :));
-Labels = [Variables, sqVariables];
+Matrix = cat(3, Stages_Matrix(:, 1:numel(Nights), :), ExtraVariables_Matrix(:, 1:numel(Nights), :));
+Labels = [Stages, ExtraVariables];
 
 
 % create table
@@ -90,11 +90,11 @@ writetable(Table, fullfile(P.Paths.PaperStats, 'Sleep_Architecture.csv'));
 %% Display change from baseline as average
 clc
 
-for Indx_V = 1:numel(Variables)
-   BL = squeeze(Variables_Matrix(:, 1, Indx_V));
-   SD = squeeze(Variables_Matrix(:, 3, Indx_V));
-    
+for Indx_S = 1:numel(Stages)
+    BL = squeeze(Stages_Matrix(:, 1, Indx_S));
+    SD = squeeze(Stages_Matrix(:, 3, Indx_S));
+
     Change = nanmean(100*((SD-BL)./BL));
-    disp([Variables{Indx_V}, ' SD change from BL: ', num2str(round(Change)), '%'])
+    disp([Stages{Indx_S}, ' SD change from BL: ', num2str(round(Change)), '%'])
 end
 
