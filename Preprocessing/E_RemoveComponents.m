@@ -13,9 +13,9 @@ Prep_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data_Type = 'Power';
-Data_Extention = 'MAT';
+Data_Extention = 'SET';
 Comp_Extension = '.set';
-allTasks  = {'TV'}; % which tasks to convert (for now)
+allTasks  = {'LAT'}; % which tasks to convert (for now)
 % allTasks  = {'Fixation', 'Oddball',  'Standing'}; % which tasks to convert (for now)
 Filename = [];
 Refresh = false; % redo already done files
@@ -58,15 +58,15 @@ load('StandardChanlocs128.mat', 'StandardChanlocs')
 load('Cz.mat', 'CZ')
 
 if strcmp(Data_Extention, 'SET')
-Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
+    Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
 else
-Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'MAT', Task);
+    Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'MAT', Task);
 
 end
 Source_Comps = fullfile(Paths.Preprocessed, ICA_Folder, Component_Folder, Task);
 
-% Destination = fullfile(Paths.Preprocessed, Destination_Folder, 'Waves', Task);
-Destination = fullfile(Paths.Preprocessed, Destination_Folder, Data_Type, Task);
+Destination = fullfile(Paths.Preprocessed, Destination_Folder, 'Waves', Task);
+% Destination = fullfile(Paths.Preprocessed, Destination_Folder, Data_Type, Task);
 
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
 
@@ -95,13 +95,13 @@ for Indx_F = 1:nFiles % loop through files in source folder
     Filename_Core = extractBefore(Filename_Comps, '_ICA_Components');
 
     if strcmp(Data_Extention, 'SET')
-    Filename_Data = [Filename_Core, '_' Data_Type, '.set'];
-    Filename_Destination = [Filename_Core, '_Clean.set'];
+        Filename_Data = [Filename_Core, '_' Data_Type, '.set'];
+%         Filename_Destination = [Filename_Core, '_Clean.set'];
 
     else
         Filename_Data = [Filename_Core, '_' Data_Type, '.mat'];
-        Filename_Destination = [Filename_Core, '_Clean.mat'];
     end
+        Filename_Destination = [Filename_Core, '_Clean.mat'];
 
     Filename_Cuts =  [Filename_Core, '_Cuts.mat'];
 
@@ -119,8 +119,8 @@ for Indx_F = 1:nFiles % loop through files in source folder
     if strcmp(Data_Extention, 'SET')
         Data = pop_loadset('filepath', Source_Data, 'filename', Filename_Data);
     else
-    load(fullfile(Source_Data, Filename_Data), 'EEG')
-    Data = EEG;
+        load(fullfile(Source_Data, Filename_Data), 'EEG')
+        Data = EEG;
     end
     clc
     EEG = pop_loadset('filepath', Source_Comps, 'filename', Filename_Comps); % this is the data where components were generated (and save the bad ones)
