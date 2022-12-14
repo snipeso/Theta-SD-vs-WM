@@ -9,15 +9,15 @@ else
     Stats = [];
     % TODO: plot stars for group comparison
 end
-
-switch PlotType
-    case 'line'
-        plotConfettiSpaghetti(Data, Stats, XLabels, Colors, YLims, PlotProps)
-    case 'box'
-        plotScatterBox(Data, Stats, XLabels, Colors, YLims, PlotProps)
-    otherwise
-        error('Unknown plot type')
-end
+% 
+% switch PlotType
+%     case 'line'
+%         plotConfettiSpaghetti(Data, Stats, XLabels, Colors, YLims, PlotProps)
+%     case 'box'
+%         plotScatterBox(Data, Stats, XLabels, Colors, YLims, PlotProps)
+%     otherwise
+%         error('Unknown plot type')
+% end
 
 
 % set y axis
