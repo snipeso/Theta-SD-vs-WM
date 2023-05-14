@@ -16,21 +16,21 @@ Freqs = AllFreqs(XIndx(1):XIndx(2));
 % Adjustments for a log scale
 if xLog
     set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', log(Labels.logBands))
-    
+
     X = log(Freqs);
-    
+
     xticks(log(Labels.logBands))
     xticklabels(Labels.logBands)
-    
+
     xLims = log(Freqs([1, end]));
 
 else
     set(gca, 'XGrid', 'on', 'YGrid', 'on', 'XTick', Labels.Bands)
-    
+
     X = Freqs;
     xticks(Labels.Bands)
     xticklabels(Labels.Bands)
-    
+
     xLims = Freqs([1, end]);
 end
 
@@ -42,16 +42,16 @@ Max = max(Means(:));
 
 %%% Get stats
 if ~isempty(StatsP)
-Data1 = squeeze(Data(:, BL_Indx, :)); % baseline
-Data2 = Data;
-Data2(:, BL_Indx, :) = []; % sessions to compare to the baseline
-Stats = pairedttest(Data1, Data2, StatsP);
-Stats.freqs = Freqs;
-Stats.lines = LineLabels;
-Stats.lines(BL_Indx) = [];
-Dims = size(Data1);
+    Data1 = squeeze(Data(:, BL_Indx, :)); % baseline
+    Data2 = Data;
+    Data2(:, BL_Indx, :) = []; % sessions to compare to the baseline
+    Stats = pairedttest(Data1, Data2, StatsP);
+    Stats.freqs = Freqs;
+    Stats.lines = LineLabels;
+    Stats.lines(BL_Indx) = [];
+    Dims = size(Data1);
 
-Sig = [zeros(1, Dims(2)); Stats.p_fdr < StatsP.Alpha];
+    Sig = [zeros(1, Dims(2)); Stats.p_fdr < StatsP.Alpha];
 else
     Dims = size(Data);
     Sig = zeros(Dims(2), Dims(3));
@@ -73,5 +73,8 @@ if ~isempty(LineLabels) && ~isempty(StatsP)
     Alpha = num2str(StatsP.Alpha);
     Sig = ['p<', Alpha(2:end)];
     legend([LineLabels, Sig])
+elseif ~isempty(LineLabels) 
+legend(LineLabels)
+set(legend, 'ItemTokenSize', [10 10])
 end
 
