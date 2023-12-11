@@ -13,7 +13,7 @@ function EEG = loadEEGtoCut(Source, Destination, FilteredFilename, Subfolders, i
 % there exists already a cuts file or the ICA file; this is for second-pass
 % cleaning, since step E will delete all ICA files if "redo" was selected.
 
-Extention = '_Cuts.mat';
+Extention = '.mat';
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
@@ -45,8 +45,8 @@ if isempty(FilteredFilename)
         Folder = Unchecked{Indx};
         
         AllEEG = ls(fullfile(Source, Folder));
-        AllEEG = AllEEG(contains(string(AllEEG), '.set'), :); % only take sets
-        AllEEG = extractBefore(cellstr(AllEEG), '_Cutting.set'); % get filename cores
+        AllEEG = AllEEG(contains(string(AllEEG), '.mat'), :); % only take sets
+        AllEEG = extractBefore(cellstr(AllEEG), '.mat'); % get filename cores
         
         % check if it has already been done
         switch ifExists
@@ -59,23 +59,23 @@ if isempty(FilteredFilename)
                 Uncut = AllEEG;
                 Uncut(contains(AllEEG, intersect(AllEEG, All_Cuts))) = [];
                 
-            case 'ICA' % see if ICA file already exists
-                ICA_Folder = fullfile(extractBefore(Destination, 'Cutting'), 'ICA', 'Components', Folder);
-                
-                All_ICA = string(ls(ICA_Folder)); % do the same for the ICA files
-                All_ICA = All_ICA(contains(All_ICA, '.set'), :);
-                All_ICA = extractBefore(cellstr(All_ICA), '_ICA_');
-                
-                % select list of all files that don't already have ICA file
-                Uncut = AllEEG;
-                Uncut(contains(AllEEG, intersect(AllEEG, All_ICA))) = [];
+            % case 'ICA' % see if ICA file already exists
+            %     ICA_Folder = fullfile(extractBefore(Destination, 'Cutting'), 'ICA', 'Components', Folder);
+            % 
+            %     All_ICA = string(ls(ICA_Folder)); % do the same for the ICA files
+            %     All_ICA = All_ICA(contains(All_ICA, '.mat'), :);
+            %     All_ICA = extractBefore(cellstr(All_ICA), '_ICA_');
+            % 
+            %     % select list of all files that don't already have ICA file
+            %     Uncut = AllEEG;
+            %     Uncut(contains(AllEEG, intersect(AllEEG, All_ICA))) = [];
                 
             otherwise % just choose randomly
                 Uncut = AllEEG;
         end
         
         if ~isempty(Uncut) % randomly select one of the uncut files left
-            FilteredFilename = [Uncut{randi(numel(Uncut))}, '_Cutting.set'];
+            FilteredFilename = [Uncut{randi(numel(Uncut))}, '.mat'];
             Source = fullfile(Source, Folder);
             Destination = fullfile(Destination, Folder);
         else % if no more uncut files, remove this folder from list
@@ -88,10 +88,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Load the EEG file
 
-CutFilename = [extractBefore(FilteredFilename, '_Cutting.set'), Extention];
+CutFilename = [extractBefore(FilteredFilename, '.mat'), Extention];
 
 % load EEG
-EEG = pop_loadset('filename', FilteredFilename, 'filepath', Source);
+load(fullfile(Source, FilteredFilename), 'EEG')
 clc % don't show filename info
 
 % save the corresponding file inside the mat file.

@@ -22,27 +22,27 @@ Prep_Parameters
 %%% Parameters
 
 % % Single filename
-Filename = 'P15_LAT_Session2Beam3_Cutting.set'; % choose this if you want to clean a specific file P07_Standing_Main8
+% Filename = 'P166_Providence_Session1_eve_Oddball_n_2.mat'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 % % Filename list
 % Filename = [
 %     "P13_SpFT_Session2_Cutting.set"
 % ];
 
-
-Source_Folder = 'SET'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
+Dataset = 'Providence';
+Source_Folder = 'MAT'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'Cuts'; % location where to save cuts
 ifExists = 'SET';
-allTasks = { 'Game', 'Match2Sample', 'PVT', 'LAT', 'SpFT', 'Music'}; % comment out if you want all possible files
+allTasks = { 'Oddball'}; % comment out if you want all possible files
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if exist('Filename', 'var') && size(Filename, 1)==1
     FN = split(Filename, '_');
-    Folder = FN{2};
+    Folder = FN{5};
     
-    Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Folder);
-    Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder, Folder);
+    Source = fullfile(Paths.Preprocessed, 'Power', Source_Folder, Dataset, Folder);
+    Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder,  Dataset, Folder);
     allTasks = Folder;
     
 elseif exist('Filename', 'var') && size(Filename, 1)>1
@@ -50,13 +50,13 @@ elseif exist('Filename', 'var') && size(Filename, 1)>1
     FN = split(Filename, '_');
     Folder = FN{2};
     
-    Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Folder);
-    Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder, Folder);
+    Source = fullfile(Paths.Preprocessed, 'Power', Source_Folder,  Dataset, Folder);
+    Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder,  Dataset, Folder);
     allTasks = Folder;
     
 else
-    Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder);
-    Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder);
+    Source = fullfile(Paths.Preprocessed, 'Power', Source_Folder,  Dataset);
+    Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder,  Dataset);
     Filename = [];
 end
 
@@ -70,13 +70,13 @@ rmCh(EEG.CutFilepath, EEG_Channels.notEEG)
 % open the window for cleaning the data
 markData(EEG)  % rerun this every time you want to see updates on removed channels and segments
 
-EEGr = EEG;
-try
-    EEGr = pop_select(EEGr, 'nochannel', m.badchans);
-end
+% EEGr = EEG;
+% try
+%     EEGr = pop_select(EEGr, 'nochannel', m.badchans);
+% end
 
-EEGr = pop_reref(EEGr, []);
-PlotSpectopo(EEGr, 100, 200);
+% EEGr = pop_reref(EEGr, []);
+% PlotSpectopo(EEGr, 100, 200);
 
 %% remove or restore a whole channel
 %%% Use these to mark whole channels to be removed; sometimes this is a

@@ -12,13 +12,8 @@ Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'Preprocessing');
 
 
-if exist( 'D:\Data\Raw', 'dir')
-    Core = 'D:\Data\';
-elseif exist( 'F:\Data\Raw', 'dir')
-    Core = 'F:\Data\';
-else
-    error('no data disk!')
-end
+Core ='D:\Data\AllWake';
+
 Paths.Datasets = fullfile(Core, 'Raw');
 Paths.Preprocessed = fullfile(Core, 'Preprocessed');
 Paths.Final = fullfile(Core, 'Final'); % where data gets saved once its been turned into something else
