@@ -20,7 +20,7 @@ Prep_Parameters
 %%% Parameters
 
 % % Single filename
-% Filename = 'P168_Providence_Session1_eve_Oddball_n_2.mat'; % choose this if you want to clean a specific file P07_Standing_Main8
+Filename = 'P158_Providence_Session1_eve_Oddball_n_2.mat'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 % % Filename list
 % Filename = [
