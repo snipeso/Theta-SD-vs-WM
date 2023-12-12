@@ -10,11 +10,12 @@ Prep_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Tasks = {'Match2Sample'}; % select this if you only need to filter one folder
+Tasks = {'Oddball'}; % select this if you only need to filter one folder
+Dataset = 'Providence';
 Refresh = false;
 
 Source_Cuts_Folder = 'Cuts'; % 'Cuts'
-Destination_Folder = 'Components'; % 'Components'
+Destination_Folder = 'Manual'; % 'Components'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -29,41 +30,39 @@ for Indx_T = 1:numel(Tasks)
     Task = Tasks{Indx_T};
     
     % get files and paths
-    Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Task);
-    Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Task);
-    Destination = fullfile(Paths.Preprocessed, 'ICA', Destination_Folder, Task);
+    Source = fullfile(Paths.Preprocessed, 'ICA', 'MAT', Dataset, Task);
+    Source_Cuts = fullfile(Paths.Preprocessed, 'Cutting', Source_Cuts_Folder, Dataset, Task);
+    Destination = fullfile(Paths.Preprocessed, 'ICA', Destination_Folder, Dataset, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
     end
     
     Files = deblank(cellstr(ls(Source)));
-    Files(~contains(Files, '.set')) = [];
+    Files(~contains(Files, '.mat')) = [];
     
     for Indx_F = 1:numel(Files) % loop through files in target folder
         
         % get filenames
-        Filename_Source = Files{Indx_F};
-        Filename_Cuts =  [extractBefore(Filename_Source,'_ICA'), '_Cuts.mat'];
-        Filename_Destination = [extractBefore(Filename_Source,'.set'), '_Components.set'];
-        
+        Filename = Files{Indx_F};
+
         % skip if file already exists
-        if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
-            disp(['***********', 'Already did ', Filename_Destination, '***********'])
+        if ~Refresh && exist(fullfile(Destination, Filename), 'file')
+            disp(['***********', 'Already did ', Filename, '***********'])
             continue
-        elseif ~exist(fullfile(Source_Cuts, Filename_Cuts), 'file')
-            disp(['***********', 'No cuts for ', Filename_Destination, '***********'])
+        elseif ~exist(fullfile(Source_Cuts, Filename), 'file')
+            disp(['***********', 'No cuts for ', Filename, '***********'])
             continue
         end
         
         % load dataset
-        EEG = pop_loadset('filepath', Source, 'filename', Filename_Source);
+        load(fullfile(Source, Filename), 'EEG')
         
         % convert to double
         EEG.data = double(EEG.data);
         
         % interpote bad snippets and remove bad channels
-        [EEG, TMPREJ] = cleanCuts(EEG, fullfile(Source_Cuts, Filename_Cuts));
+        [EEG, TMPREJ] = cleanCuts(EEG, fullfile(Source_Cuts, Filename));
         
         % add Cz
         EEG.data(end+1, :) = zeros(1, size(EEG.data, 2));
@@ -81,7 +80,7 @@ for Indx_T = 1:numel(Tasks)
         % run ICA (takes a while)
         Rank = sum(eig(cov(double(EEG.data'))) > 1E-7);
         if Rank ~= size(EEG.data, 1)
-            warning(['Applying PCA reduction for ', Filename_Source])
+            warning(['Applying PCA reduction for ', Filename])
         end
         
         % calculate components
@@ -91,13 +90,8 @@ for Indx_T = 1:numel(Tasks)
         EEG = iclabel(EEG);
         
         % save new dataset
-        pop_saveset(EEG, 'filename', Filename_Destination, ...
-            'filepath', Destination, ...
-            'check', 'on', ...
-            'savemode', 'onefile', ...
-            'version', '7.3');
-        
-        disp(['***********', 'Finished ', Filename_Destination, '***********'])
+        save(fullfile(Destination, Filename), 'EEG')
+        disp(['***********', 'Finished ', Filename, '***********'])
         clear cutData srate badchans TMPREJ
     end
 end

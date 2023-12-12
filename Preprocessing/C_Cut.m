@@ -3,8 +3,6 @@
 %%% noise.
 %%% Below, additional functions are provided you can call from the editor.
 
-%%% ELIAS: I guess this information was for me ;)
-
 
 %% Section 1: Choose a file
 %%% Choose the folder you want to edit, change the variable Source_Folder
@@ -22,7 +20,7 @@ Prep_Parameters
 %%% Parameters
 
 % % Single filename
-% Filename = 'P166_Providence_Session1_eve_Oddball_n_2.mat'; % choose this if you want to clean a specific file P07_Standing_Main8
+% Filename = 'P168_Providence_Session1_eve_Oddball_n_2.mat'; % choose this if you want to clean a specific file P07_Standing_Main8
 
 % % Filename list
 % Filename = [
@@ -32,7 +30,7 @@ Prep_Parameters
 Dataset = 'Providence';
 Source_Folder = 'MAT'; % location of cut sources (use a different one [e.g. 'SET/Game'] if you don't want to randomly choose from whole pool)
 Destination_Folder = 'Cuts'; % location where to save cuts
-ifExists = 'SET';
+ifExists = 'Cuts';
 allTasks = { 'Oddball'}; % comment out if you want all possible files
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,7 +39,7 @@ if exist('Filename', 'var') && size(Filename, 1)==1
     FN = split(Filename, '_');
     Folder = FN{5};
     
-    Source = fullfile(Paths.Preprocessed, 'Power', Source_Folder, Dataset, Folder);
+    Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder, Dataset, Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder,  Dataset, Folder);
     allTasks = Folder;
     
@@ -50,12 +48,12 @@ elseif exist('Filename', 'var') && size(Filename, 1)>1
     FN = split(Filename, '_');
     Folder = FN{2};
     
-    Source = fullfile(Paths.Preprocessed, 'Power', Source_Folder,  Dataset, Folder);
+    Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder,  Dataset, Folder);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder,  Dataset, Folder);
     allTasks = Folder;
     
 else
-    Source = fullfile(Paths.Preprocessed, 'Power', Source_Folder,  Dataset);
+    Source = fullfile(Paths.Preprocessed, 'Cutting', Source_Folder,  Dataset);
     Destination = fullfile(Paths.Preprocessed, 'Cutting', Destination_Folder,  Dataset);
     Filename = [];
 end
@@ -65,6 +63,7 @@ m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to cur
 
 
 % remove already the channels that don't get used for the ICA anyway
+% EEG_Channels.notEEG = [81 75 94 95 49 56];
 rmCh(EEG.CutFilepath, EEG_Channels.notEEG)
 
 % open the window for cleaning the data
