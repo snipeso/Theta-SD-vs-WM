@@ -17,8 +17,8 @@ Data_Type = 'Power';
 Task  = 'Oddball'; % which tasks to convert (for now)
 Dataset = 'Providence';
 Filename = [];
-Refresh = true; % redo already done files
-CheckOutput = false; % manually verify if selection was good at the end
+Refresh = false; % redo already done files
+CheckOutput = true; % manually verify if selection was good at the end
 MinTimeData = 60;
 MinCh = 100;
 

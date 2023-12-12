@@ -62,6 +62,7 @@ badcomps = find(EEG.reject.gcompreject); % get indexes of selected components
 NewEEG = pop_subcomp(NewEEG, badcomps);
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % plot outcome
